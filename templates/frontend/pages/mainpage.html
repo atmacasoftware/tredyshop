@@ -1,0 +1,445 @@
+{% extends 'frontend/layout.html' %}
+{% load static %}
+{% block title %}<title>TredyShop - Kalitenin Adresi</title>{% endblock %}
+
+{% block mainpage %}
+
+    <!-- /header -->
+    <section class="all-s">
+        <div class="ads-group v2 nospc">
+            <div class="container container-240">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 set-w hidden-xs hidden-sm "></div>
+                    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12 set-flex ">
+                        <div class="slide-home3">
+                            <div class="e-slide v2 js-slider-3items">
+                                {% for ms in sliders %}
+                                    <div class="e-slide-img">
+                                        <a href="#"><img src="{{ ms.get_image }}" alt=""></a>
+                                        <div class="slide-content v2">
+                                            <p class="cate v2">{{ ms.subtitle }}</p>
+                                            <h3 class="v2" style="color: {{ ms.title_color }}">{{ ms.title }}</h3>
+                                            <a href="{% if ms.type == 'Bilgi' or ms.type == 'Duyuru' %}{% url 'slider_info' ms.slug %}{% endif %}"
+                                               class="slide-btn e-yl-gradient">{{ ms.button }}<i
+                                                    class="ion-ios-arrow-forward"></i></a>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="homepage-banner">
+            <div class="container container-240">
+                <div class="row">
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <div class="banner-img banner-img2">
+                            <a href="#"><img src="{% static 'img/banner/h1_b2.jpg' %}" alt=""
+                                             class="img-responsive"></a>
+                            <div class="h-banner-content">
+                                <p class="content-name">The pro stage for your home</p>
+                                <p class="content-price">From <span class="red">69.99</span></p>
+                                <a href="#" class="btn-banner">Shop now<i class="ion-ios-arrow-forward"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <div class="banner-img banner-img2">
+                            <a href="#"><img src="{% static 'img/banner/h1_b3.jpg' %}" alt=""
+                                             class="img-responsive"></a>
+                            <div class="h-banner-content">
+                                <p class="content-name">Smart speaker for music lovers</p>
+                                <p class="content-price">From <span class="red">39.99</span></p>
+                                <a href="#" class="btn-banner">Shop now<i class="ion-ios-arrow-forward"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% include 'frontend/partials/__flash_deals.html' %}
+
+        <div class="bestseller2">
+            <div class="container container-240">
+                <div class="h-heading">
+                    <div class="title-icon t-inline">
+                        <img src="{% static 'img/iconbs.png' %}" alt="">
+                        <h1>Çok Satanlar</h1>
+                    </div>
+                </div>
+                <div id="bestseller">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-6 product-item">
+                            <div class="pd-bd product-inner v3">
+                                <div class="product-img v2">
+                                    <a href="{{ most_seller.get_url }}"><img
+                                            src="{{ most_seller.get_image }}" alt=""
+                                            class="img-reponsive"></a>
+                                </div>
+                                <div class="product-info">
+                                    <div class="color-group">
+                                        {% if most_seller.variant.color %}
+                                            {% for c in most_seller.variant.color %}
+                                                <a href="#" class="circle black"></a>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                    {% if most_seller.descriptionlist %}
+                                        <div class="element-list element-list-left">
+                                            <ul class="desc-list">
+                                                {% for d in most_seller.descriptionlist %}
+                                                    <li>{{ d.list }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                    <div class="element-list element-list-middle">
+                                        <div class="product-rating bd-rating">
+                                                    <span class="rating">
+                                    <i class="fa fa-star{% if most_seller.averageReview < 0.5 %}-o{% elif most_seller.averageReview >= 0.5 and most_seller.averageReview < 1 %}-half-alt {% endif %}"></i><i
+                                                            class="fa fa-star{% if most_seller.averageReview < 1.5 %}-o{% elif most_seller.averageReview >= 1.5 and most_seller.averageReview < 2 %}-half-alt {% endif %}"></i><i
+                                                            class="fa fa-star{% if most_seller.averageReview < 2.5 %}-o{% elif most_seller.averageReview >= 2.5 and most_seller.averageReview < 3 %}-half-alt {% endif %}"></i><i
+                                                            class="fa fa-star{% if most_seller.averageReview < 3.5 %}-o{% elif most_seller.averageReview >= 3.5 and most_seller.averageReview < 4 %}-half-alt {% endif %}"></i><i
+                                                            class="fa fa-star{% if most_seller.averageReview < 4.5 %}-o{% elif most_seller.averageReview >= 4.5 and most_seller.averageReview < 5 %}-half-alt {% endif %}"></i>
+                                </span>
+                                            <div class="number-rating">( {{ most_seller.countReview }}
+                                                değerlendirme )
+                                            </div>
+                                        </div>
+                                        <p class="product-cate">{{ most_seller.category }}</p>
+                                        <h3 class="product-title"><a
+                                                href="{{ most_seller.get_url }}">{{ most_seller.title }}</a>
+                                        </h3>
+                                        <div class="product-bottom">
+                                            <div class="product-price">
+                                                {% if most_seller.is_discountprice == True %}
+                                                    <span class="red">{{ most_seller.discountprice }} TL</span>
+                                                    <span class="old">{{ most_seller.price }} TL</span>
+                                                {% else %}
+                                                    <span>{{ most_seller.price }} TL</span>
+                                                {% endif %}
+                                            </div>
+                                            <a href="{{ most_seller.get_url }}" class="btn-icon btn-view">
+                                                <span class="icon-bg icon-view"></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="product-button-group"
+                                         style="display: flex; justify-content: center;align-items: center;">
+                                        <a href="{{ most_seller.get_url }}" class="btn btn-gradient">Ürünü
+                                            Gör
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12 product-item">
+                                    {% for ms2 in most_seller2 %}
+                                        <div class="pd-bd product-inner">
+                                            <div class="product-img">
+                                                <a href="{{ ms2.get_url }}"><img
+                                                        src="{{ ms2.get_image }}" alt=""
+                                                        class="img-reponsive"></a>
+                                            </div>
+                                            <div class="product-info">
+                                                <div class="color-group">
+                                                </div>
+                                                {% if ms2.descriptionlist %}
+                                                    <div class="element-list element-list-left">
+                                                        <ul class="desc-list">
+                                                            {% for d in ms2.descriptionlist %}
+                                                                <li>{{ d.list }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </div>
+                                                {% endif %}
+                                                <div class="element-list element-list-middle">
+                                                    <div class="product-rating bd-rating">
+                                                                    <span class="rating">
+                                    <i class="fa fa-star{% if most_seller.averageReview < 0.5 %}-o{% elif most_seller.averageReview >= 0.5 and most_seller.averageReview < 1 %}-half-alt {% endif %}"></i><i
+                                                                            class="fa fa-star{% if most_seller.averageReview < 1.5 %}-o{% elif most_seller.averageReview >= 1.5 and most_seller.averageReview < 2 %}-half-alt {% endif %}"></i><i
+                                                                            class="fa fa-star{% if most_seller.averageReview < 2.5 %}-o{% elif most_seller.averageReview >= 2.5 and most_seller.averageReview < 3 %}-half-alt {% endif %}"></i><i
+                                                                            class="fa fa-star{% if most_seller.averageReview < 3.5 %}-o{% elif most_seller.averageReview >= 3.5 and most_seller.averageReview < 4 %}-half-alt {% endif %}"></i><i
+                                                                            class="fa fa-star{% if most_seller.averageReview < 4.5 %}-o{% elif most_seller.averageReview >= 4.5 and most_seller.averageReview < 5 %}-half-alt {% endif %}"></i>
+                                </span>
+                                                        <div class="number-rating">( {{ ms2.countReview }}
+                                                            reviews )
+                                                        </div>
+                                                    </div>
+                                                    <p class="product-cate">{{ ms2.category }}</p>
+                                                    <h3 class="product-title"><a
+                                                            href="{{ ms2.get_url }}">{{ ms2.title }}</a>
+                                                    </h3>
+                                                    <div class="product-bottom">
+                                                        <div class="product-price">
+                                                            {% if ms2.is_discountprice == True %}
+                                                                <span class="red">{{ ms2.discountprice }} TL</span>
+                                                                <span class="old">{{ ms2.price }} TL</span>
+                                                            {% else %}
+                                                                <span>{{ ms2.price }} TL</span>
+                                                            {% endif %}
+                                                        </div>
+                                                        <a href="{{ ms2.get_url }}"
+                                                           class="btn-icon btn-view">
+                                                            <span class="icon-bg icon-view"></span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="product-button-group"
+                                                     style="display: flex; justify-content: center;align-items: center;">
+                                                    <a href="{{ ms2.get_url }}"
+                                                       class="btn btn-gradient">Ürünü
+                                                        Gör
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-6 product-item">
+                                    {% for ms3 in most_seller3 %}
+                                        <div class="pd-bd product-inner">
+                                            <div class="product-img">
+                                                <a href="{{ ms3.get_url }}"><img src="{{ ms3.get_image }}"
+                                                                                 alt=""
+                                                                                 class="img-reponsive"></a>
+                                            </div>
+                                            <div class="product-info">
+                                                <div class="color-group">
+                                                </div>
+                                                {% if ms3.descriptionlist %}
+                                                    <div class="element-list element-list-left">
+                                                        <ul class="desc-list">
+                                                            {% for d in ms3.descriptionlist %}
+                                                                <li>{{ d.list }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </div>
+                                                {% endif %}
+                                                <div class="element-list element-list-middle">
+                                                    <div class="product-rating bd-rating">
+                                                        <i class="fa fa-star{% if ms3.averageReview < 0.5 %}-o{% elif ms3.averageReview >= 0.5 and ms3.averageReview < 1 %}-half-alt {% endif %}"></i><i
+                                                            class="fa fa-star{% if ms3.averageReview < 1.5 %}-o{% elif ms3.averageReview >= 1.5 and ms3.averageReview < 2 %}-half-alt {% endif %}"></i><i
+                                                            class="fa fa-star{% if ms3.averageReview < 2.5 %}-o{% elif ms3.averageReview >= 2.5 and ms3.averageReview < 3 %}-half-alt {% endif %}"></i><i
+                                                            class="fa fa-star{% if ms3.averageReview < 3.5 %}-o{% elif ms3.averageReview >= 3.5 and ms3.averageReview < 4 %}-half-alt {% endif %}"></i><i
+                                                            class="fa fa-star{% if ms3.averageReview < 4.5 %}-o{% elif ms3.averageReview >= 4.5 and ms3.averageReview < 5 %}-half-alt {% endif %}"></i>
+                                                        </span>
+                                                        <div class="number-rating">( {{ ms3.countReview }}
+                                                            değerlendirme )
+                                                        </div>
+                                                    </div>
+                                                    <p class="product-cate">{{ ms3.category }}</p>
+                                                    <h3 class="product-title"><a
+                                                            href="#">{{ ms3.title }}</a>
+                                                    </h3>
+                                                    <div class="product-bottom">
+                                                        <div class="product-price">
+                                                            {% if ms3.is_discountprice == True %}
+                                                                <span class="red">{{ ms3.discountprice }} TL</span>
+                                                                <span class="old">{{ ms3.price }} TL</span>
+                                                            {% else %}
+                                                                <span>{{ ms3.price }} TL</span>
+                                                            {% endif %}
+                                                        </div>
+                                                        <a href="{{ ms3.get_url }}"
+                                                           class="btn-icon btn-view">
+                                                            <span class="icon-bg icon-view"></span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="product-button-group"
+                                                     style="display: flex; justify-content: center;align-items: center;">
+                                                    <a href="{{ ms3.get_url }}"
+                                                       class="btn btn-gradient">Ürünü
+                                                        Gör
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-6 product-item">
+                                    {% for ms4 in most_seller4 %}
+                                        {% if ms3.category.id == c.id %}
+                                            <div class="pd-bd product-inner">
+                                                <div class="product-img">
+                                                    <a href="{{ ms4.get_url }}"><img src="{{ ms4.get_image }}"
+                                                                                     alt=""
+                                                                                     class="img-reponsive"></a>
+                                                </div>
+                                                <div class="product-info">
+                                                    <div class="color-group">
+                                                    </div>
+                                                    {% if ms4.descriptionlist %}
+                                                        <div class="element-list element-list-left">
+                                                            <ul class="desc-list">
+                                                                {% for d in ms4.descriptionlist %}
+                                                                    <li>{{ d.list }}</li>
+                                                                {% endfor %}
+                                                            </ul>
+                                                        </div>
+                                                    {% endif %}
+                                                    <div class="element-list element-list-middle">
+                                                        <div class="product-rating bd-rating">
+                                                            <i class="fa fa-star{% if ms4.averageReview < 0.5 %}-o{% elif ms4.averageReview >= 0.5 and ms4.averageReview < 1 %}-half-alt {% endif %}"></i><i
+                                                                class="fa fa-star{% if ms4.averageReview < 1.5 %}-o{% elif ms4.averageReview >= 1.5 and ms4.averageReview < 2 %}-half-alt {% endif %}"></i><i
+                                                                class="fa fa-star{% if ms4.averageReview < 2.5 %}-o{% elif ms4.averageReview >= 2.5 and ms4.averageReview < 3 %}-half-alt {% endif %}"></i><i
+                                                                class="fa fa-star{% if ms4.averageReview < 3.5 %}-o{% elif ms4.averageReview >= 3.5 and ms4.averageReview < 4 %}-half-alt {% endif %}"></i><i
+                                                                class="fa fa-star{% if ms4.averageReview < 4.5 %}-o{% elif ms4.averageReview >= 4.5 and ms4.averageReview < 5 %}-half-alt {% endif %}"></i>
+                                                            </span>
+                                                            <div class="number-rating">( {{ ms4.countReview }}
+                                                                değerlendirme )
+                                                            </div>
+                                                        </div>
+                                                        <p class="product-cate">{{ ms4.category }}</p>
+                                                        <h3 class="product-title"><a
+                                                                href="#">{{ ms4.title }}</a>
+                                                        </h3>
+                                                        <div class="product-bottom">
+                                                            <div class="product-price">
+                                                                {% if ms4.is_discountprice == True %}
+                                                                    <span class="red">{{ ms4.discountprice }} TL</span>
+                                                                    <span class="old">{{ ms4.price }} TL</span>
+                                                                {% else %}
+                                                                    <span>{{ ms4.price }} TL</span>
+                                                                {% endif %}
+                                                            </div>
+                                                            <a href="{{ ms4.get_url }}"
+                                                               class="btn-icon btn-view">
+                                                                <span class="icon-bg icon-view"></span>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="product-button-group"
+                                                         style="display: flex; justify-content: center;align-items: center;">
+                                                        <a href="{{ ms4.get_url }}"
+                                                           class="btn btn-gradient">Ürünü
+                                                            Gör
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="releases spc1 bg-gradient bg-insinde">
+            <div class="container container-240">
+                <div class="title-icon t-column mg-50">
+                    <div class="t-inside">
+                        <img src="{% static 'img/real.png' %}" alt="">
+                    </div>
+                    <h1>Yeni Yayınlananlar</h1>
+                </div>
+                <ul class="product-tab-sw2">
+                    {% for c in maincategories %}
+                        <li class="{% if forloop.counter == 1 %}active{% endif %}"><a data-toggle="tab"
+                                                                                      href="#releases-{{ c.slug }}"
+                                                                                      aria-expanded="true">{{ c.title }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="tab-content">
+                    {% for c in maincategories %}
+                        <div id="releases-{{ c.slug }}"
+                             class="tab-pane fade {% if forloop.counter == 1 %}in active{% endif %}">
+                            <div class="owl-carousel owl-theme owl-cate v3 js-owl-cate">
+                                {% for p in new_release %}
+                                    {% if p.category.id == c.id %}
+                                        <div class="product-item">
+                                            <div class="pd-bd product-inner">
+                                                <div class="product-img">
+                                                    <a href="{{ p.get_url }}"><img src="{{ p.get_image }}" alt=""
+                                                                                   class="img-reponsive"></a>
+                                                    {% if p.discountRate != None %}
+                                                        <div class="ribbon-price red">
+                                                            <span>- {{ p.discountRate }}% </span></div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="product-info">
+                                                    <div class="color-group">
+                                                    </div>
+                                                    <div class="element-list element-list-left">
+                                                    </div>
+                                                    <div class="element-list element-list-middle">
+                                                        <p class="product-cate">{{ p.category }}</p>
+                                                        <h3 class="product-title"><a
+                                                                href="{{ p.get_url }}">{{ p.title|truncatechars_html:30 }}</a>
+                                                        </h3>
+                                                        <div class="product-bottom">
+                                                            <div class="product-price">
+                                                                <span>{% if p.is_discountprice == True %}
+                                                                    <span style="text-decoration-line: line-through;color: red; font-size: 1.3rem">{{ p.price }} TL</span>
+                                                                    &nbsp; <span>{{ p.discountprice }} TL</span>
+                                                                    {% else %}{{ p.price }} TL{% endif %}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="product-button-group"
+                                                         style="display: flex; justify-content: center;align-items: center;">
+                                                        <a href="{{ p.get_url }}" class="btn btn-gradient">Ürünü Gör
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="container container-240">
+            <div class="brand">
+                <div class="ecome-heading style5v3 spc4">
+                    <div class="title-icon t-inline t-line">
+                        <img src="{% static 'img/iconbrand.png' %}" alt="">
+                        <h1>Markalar</h1>
+                    </div>
+                </div>
+
+                <div class="owl-carousel owl-theme owl-brand js-owl-brand">
+                    {% for b in brands %}
+                        <div class="brand-item">
+                            <a href="#" class="hover-images"><img src="{{ b.get_image }}" alt=""></a>
+                        </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+
+        <!-- e-category  -->
+        <div class="e-category mt-30">
+            <div class="container container-240">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        {% include 'frontend/partials/__top_like_product.html' %}
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        {% include 'frontend/partials/__top_rated_product.html' %}
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4">
+                        {% include 'frontend/partials/__top_selling_product.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

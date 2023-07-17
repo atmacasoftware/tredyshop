@@ -1,0 +1,16 @@
+{% load static %}
+
+{% for q in data %}
+    <div class="qa-element">
+        <div class="qa-quest">
+            <span class="qa-icon">Q</span>
+            <h3>{{ q.question }}</h3>
+        </div>
+        <div class="qa-answer">
+            <span class="qa-icon">A</span>
+            <p>{% if q.answer == '' %}Cevap verilmesi
+                bekleniyor...{% else %}
+                {{ q.answer }}{% endif %}</p>
+        </div>
+    </div>
+{% endfor %}

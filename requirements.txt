@@ -1,0 +1,4 @@
+Django
+django-ckeditor
+django-import-export
+django-admin-thumbnails

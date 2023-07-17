@@ -1,0 +1,162 @@
+{% load static %}
+
+<header id="header" class="{% if request.path == '/' %}header-v3 bg-w{% else %}header-v5{% endif %}">
+    <div class="topbar">
+        <div class="container container-240">
+            <div class="row flex">
+                <div class="col-md-6 col-sm-6 col-xs-4 flex-left">
+                    <div class="topbar-left">
+
+                        <div class="element hidden-xs hidden-sm">
+                            <a href="#"><i class="fa fa-truck"></i><span>Sipariş Takibi</span></a>
+                        </div>
+                        <div class="element element-account hidden-md">
+                            <a href="{% url 'profile_mainpage' %}"><i class="fa fa-user"></i><span>Hesabım</span></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-8 flex-right">
+                    <div class="topbar-right">
+
+                        <div class="element hidden-xs hidden-sm">
+                            <a href="{% url 'faq' %}">SSS</a>
+                        </div>
+                        <div class="element hidden-xs hidden-sm">
+                            <a href="https://wa.me/08503098552" target="_blank">Canlı Yardım</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header-center">
+        <div class="container container-240">
+            <div class="row flex">
+                <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6 v-center header-logo">
+                    <a href="{% url 'mainpage' %}"><img src="{% static 'img/logo.png' %}" alt="" class="img-reponsive"></a>
+                </div>
+                <div class="col-lg-7 col-md-7 v-center header-search hidden-xs hidden-sm">
+                    <form method="get" class="searchform ajax-search" role="search" action="{% url 'search' %}"
+                          id="generalSearchForm">
+                        <input type="hidden" name="type" value="product">
+                        <input type="text" id="generalSearch" name="q"
+                               class="form-control" placeholder="Keşfetmeye başla...">
+                        <ul class="list-product-search hidden-xs hidden-sm">
+
+                        </ul>
+                        <span class="input-group-btn">
+                                          <button class="button_search" type="submit"><i
+                                                  class="ion-ios-search-strong"></i></button>
+                                </span>
+                    </form>
+                    <div class="tags">
+                        <span>En çok arananlar :</span>
+                        {% for keyword in search_keywords %}
+                            <a href="#">{{ keyword.keyword }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-lg-3  col-md-3 col-sm-6 col-xs-6 v-center header-sub">
+                    <div class="right-panel">
+                        <div class="header-sub-element hidden-xs hidden-sm">
+                            <a href="https://wa.me/08503098552" target="_blank" class="header_whatsapp">
+                                <div class="sub-left">
+                                    <img src="{% static 'img/whatsapp_help.png' %}" alt="Whatsapp"
+                                         style="height: 45px;width: auto;">
+                                </div>
+                                <div class="sub-right">
+                                    <span>Whatsapp Destek</span>
+                                    <div class="phone">0(850) 309 8552</div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="header-sub-element row">
+                            <div class="account-dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                   aria-haspopup="true" aria-expanded="false">
+                                    <img src="{% static 'img/icon-user.png' %}" alt="">
+                                </a>
+                                <div class="dropdown-menu dropdown-account">
+                                    {% if request.user.is_authenticated %}
+                                        <ul class="mini-products-list">
+                                            <li class="item-cart">
+                                                <a href="{% url 'profile_mainpage' %}"><i
+                                                        class="fa fa-user"></i>{{ request.user.get_full_name }}
+                                                </a>
+                                            </li>
+                                            <li class="item-cart">
+                                                <a href="{% url 'order_page' %}"><i class="fa fa-truck"></i>Siparişlerim</a>
+                                            </li>
+                                            <li class="item-cart">
+                                                <a href=""><i class="fa fa-gift"></i>Kuponlarım</a>
+                                            </li>
+                                            <li class="item-cart">
+                                                <a href=""><i class="fa fa-life-ring"></i>Soru ve Taleplerim</a>
+                                            </li>
+                                            <li class="item-cart">
+                                                <a href="{% url 'reviews' %}"><i class="fa fa-commenting"></i>Değerlendirmelerim</a>
+                                            </li>
+                                            <li class="item-cart">
+                                                <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i>Çıkış
+                                                    Yap</a>
+                                            </li>
+                                        </ul>
+                                    {% else %}
+                                        <ul>
+                                            <li style="height: 30px;"><a href="{% url 'login' %}">Giriş Yap</a></li>
+                                            <li style="height: 30px;"><a href="{% url 'register' %}">Kayıt Ol</a></li>
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <a href="{% url 'wishlist' %}"><img src="{% static 'img/icon-heart.png' %}" alt=""></a>
+                            <div class="cart">
+                                <a href="{% url 'cart' %}" class="dropdown-toggle" id="label5">
+                                    <img src="{% static 'img/icon-cart.png' %}" alt="">
+                                    <span class="count cart-count">{{ cart_count }}</span>
+                                </a>
+
+                            </div>
+                            <a href="#" class="hidden-md hidden-lg icon-pushmenu js-push-menu">
+                                <i class="fa fa-bars f-15"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header-bottom hidden-xs hidden-sm">
+        <div class="container container-240">
+            <div class="row">
+                <div class="col-lg-3 widget-verticalmenu">
+                    {% include 'frontend/partials/_menu.html' %}
+                </div>
+                <div class="col-lg-9 widget-left">
+                    <div class="flex lr">
+                        <nav class="main-menu flex align-center">
+                            <div class="collapse navbar-collapse" id="myNavbar">
+                                <ul class="nav navbar-nav js-menubar">
+                                    <li class="level1 active hassub"><a href="#">Kampanyalar</a></li>
+                                    <li class="level1 dropdown hassub"><a href="#">Süper Fırsatlar<span
+                                            class="h-ribbon h-pos e-green">sale</span></a>
+                                    </li>
+                                    <li class="level1 active dropdown">
+                                        <a href="#">Müşteri Destek</a>
+                                    </li>
+                                    <li class="level1 active dropdown">
+                                        <a href="#">Blog</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </nav>
+                        <div class="header-bottom-right hidden-xs hidden-sm">
+                            <img src="{% static 'img/icon-ship.png' %}" alt="" class="img-reponsive">
+                            <span>{{ setting.free_shipping }} ve üzeri alışverişlerde ücretsiz kargo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

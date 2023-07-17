@@ -1,0 +1,54 @@
+{% load static %}
+
+{% for r in data %}
+    <div class="reviews__list-item">
+        <div class="review-data">
+            <div class="review-data-topline">
+                <div class="review-data-topline__avatar">
+                    <div class="avatar">
+                        <span>{{ r.user.first_name|slice:1 }} {{ r.user.last_name|slice:1 }}</span>
+                    </div>
+                </div>
+                <div class="review-data-topline__name">
+                                                                                        <span class="name">
+                                                                                           {{ r.user.first_name|truncatechars_html:3 }} {{ r.user.last_name|truncatechars_html:3 }}
+                                                                                        </span>
+                </div>
+                <div class="review-data-topline__grade">
+                                                                                            <span class="rating">
+                                                                           <i class="fa fa-star{% if r.rating < 0.5 %}-o{% elif r.rating >= 0.5 and r.rating < 1 %}-half-alt {% endif %}"></i>
+                                                                            <i class="fa fa-star{% if r.rating < 1.5 %}-o{% elif r.rating >= 1.5 and r.rating < 2 %}-half-alt {% endif %}"></i>
+                                                                            <i class="fa fa-star{% if r.rating < 2.5 %}-o{% elif r.rating >= 2.5 and r.rating < 3 %}-half-alt {% endif %}"></i>
+                                                                            <i class="fa fa-star{% if r.rating < 3.5 %}-o{% elif r.rating >= 3.5 and r.rating < 4 %}-half-alt {% endif %}"></i>
+                                                                            <i class="fa fa-star{% if r.rating < 4.5 %}-o{% elif r.rating >= 4.5 and r.rating < 5 %}-half-alt {% endif %}"></i>
+                                                                        </span>
+                    <span class="date">
+                                                                                            {{ r.created_at }}
+                                                                                        </span>
+                </div>
+            </div>
+            <div class="review-data-midline">
+                <div class="review-text-box">
+                    {{ r.review }}
+                </div>
+                <div class="review-media-box">
+                    <div class="row">
+                        {% for i in r.photoReview %}
+                            <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-3">
+                                <div class="review-media-item">
+                                    <a data-gall="review-1-attachements"
+                                       href="{{ i.get_image }}"
+                                       class="a-block venobox vbox-item">
+                                        <img src="{{ i.get_image }}"
+                                             alt="IMG">
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endfor %}

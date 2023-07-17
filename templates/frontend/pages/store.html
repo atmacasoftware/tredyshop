@@ -1,0 +1,489 @@
+{% extends 'frontend/layout.html' %}
+{% load static %}
+
+
+{% block store %}
+    <hr>
+    <div class="container container-240 shop-collection catleft">
+        <ul class="breadcrumb">
+            <li><a href="{% url 'mainpage' %}">Anasayfa</a></li>
+            {% if categroy_slug != None and subcategory_slug == None and brands_slug == None %}
+                <li class="active">{{ category_s.title }}</li>
+            {% elif categroy_slug != None and subcategory_slug != None and brands_slug == None %}
+                <li><a href="{{ category_s.get_url }}">{{ category_s.title }}</a></li>
+                <li class="active">{{ subcategory_s.title }}</li>
+            {% elif categroy_slug == None and subcategory_slug == None and brands_slug != None %}
+                <li class="active">{{ brands_s.title }}</li>
+            {% endif %}
+        </ul>
+        <div class="filter-collection-left hidden-lg hidden-md">
+            <a class="btn">Filter</a>
+        </div>
+        <div class="row shop-colect">
+            <div class="col-md-3 col-sm-3 col-xs-12 col-left collection-sidebar" id="filter-sidebar">
+                <div class="close-sidebar-collection hidden-lg hidden-md">
+                    <span>filter</span><i class="icon_close ion-close"></i>
+                </div>
+                <div class="filter filter-cate">
+                    <ul class="wiget-content v3">
+                        <li class="active"><a href="{{ category_s.get_url }}">{{ category_s.title }} Kategorileri</a>
+                            <ul class="wiget-content v4">
+                                {% for sc in subcategories %}
+                                    {% if sc.maincategory.id == category_s.id %}
+                                        <li><a href="{{ sc.get_url }}">{{ sc.title }} <span
+                                                class="number">({{ sc.product_count }})</span></a></li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </li>
+
+                    </ul>
+                </div>
+                <div class="filter filter-group">
+
+                    <div class="filter-price filter-inside">
+                        <h3>Price</h3>
+                        <div class="filter-content">
+                            <div class="price-range-holder">
+                                <div class="slider slider-horizontal" id="">
+                                    <div class="slider-track">
+                                        <div class="slider-track-low" style="left: 0px; width: 0%;"></div>
+                                        <div class="slider-selection" style="left: 0%; width: 50%;"></div>
+                                        <div class="slider-track-high" style="right: 0px; width: 50%;"></div>
+                                    </div>
+                                    <div class="tooltip tooltip-main top" role="presentation"
+                                         style="left: 25%; margin-left: -33px;">
+                                        <div class="tooltip-arrow"></div>
+                                        <div class="tooltip-inner">100 : 400</div>
+                                    </div>
+                                    <div class="tooltip tooltip-min top" role="presentation"
+                                         style="left: 0%; margin-left: -18px; display: none;">
+                                        <div class="tooltip-arrow"></div>
+                                        <div class="tooltip-inner">100</div>
+                                    </div>
+                                    <div class="tooltip tooltip-max top" role="presentation"
+                                         style="left: 50%; margin-left: -18px; display: none;">
+                                        <div class="tooltip-arrow"></div>
+                                        <div class="tooltip-inner">400</div>
+                                    </div>
+                                    <div class="slider-handle min-slider-handle round" role="slider" aria-valuemin="100"
+                                         aria-valuemax="700" aria-valuenow="100" tabindex="0" style="left: 0%;"></div>
+                                    <div class="slider-handle max-slider-handle round" role="slider" aria-valuemin="100"
+                                         aria-valuemax="700" aria-valuenow="400" tabindex="0" style="left: 50%;"></div>
+                                </div>
+                                <input type="text" class="price-slider" value="100,400" data-value="100,400"
+                                       style="display: none;">
+                            </div>
+                            <span class="min-max">
+                                    Price: $25 — $258
+                                </span>
+                            <a href="#" class="btn-filter e-gradient">Filter</a>
+                        </div>
+                    </div>
+                    <div class="filter-brand filter-inside">
+                        <h3>Markalar</h3>
+                        <ul class="e-filter brand-filter" style="max-height: 200px;overflow: auto">
+                            {% for b in brands %}
+                                <li class=""><a href="#">{{ b.title }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="filter-color filter-brand filter-inside">
+                        <h3>Color</h3>
+                        <ul class="e-filter brand-filter">
+                            <li><a href="#">Black <span class="number">(80)</span></a></li>
+                            <li><a href="#">Black Leather <span class="number">(80)</span></a></li>
+                            <li class="active-filter"><a href="#">Black with Red <span class="number">(80)</span></a>
+                            </li>
+                            <li><a href="#">Gold <span class="number">(80)</span></a></li>
+                            <li><a href="#">Spacegrey <span class="number">(80)</span></a></li>
+                        </ul>
+                        <a href="#" class="btn-showmore">Show more +</a>
+                    </div>
+                </div>
+                <div class="filter filter-product e-category">
+                    <h1 class="widget-blog-title">Top Products</h1>
+                    <div class="owl-carousel owl-theme js-owl-post">
+                        <div class="item">
+                            <div class="cate-item">
+                                <div class="product-img">
+                                    <a href="#"><img src="img/product/phone4.jpg" alt="" class="img-reponsive"></a>
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-title"><a href="#">Epson Home Cinema </a></h3>
+                                    <div class="product-price v2"><span>$780.00</span></div>
+                                </div>
+                            </div>
+                            <div class="cate-item">
+                                <div class="product-img">
+                                    <a href="#"><img src="img/product/sound.jpg" alt="" class="img-reponsive"></a>
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-title"><a href="#">Epson Home Cinema </a></h3>
+                                    <div class="product-price v2"><span>$780.00</span></div>
+                                </div>
+                            </div>
+                            <div class="cate-item">
+                                <div class="product-img">
+                                    <a href="#"><img src="img/product/ring.jpg" alt="" class="img-reponsive"></a>
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-title"><a href="#">Epson Home Cinema </a></h3>
+                                    <div class="product-price v2"><span>$780.00</span></div>
+                                </div>
+                            </div>
+                            <div class="cate-item">
+                                <div class="product-img">
+                                    <a href="#"><img src="img/product/macbookair.jpg" alt="" class="img-reponsive"></a>
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-title"><a href="#">Epson Home Cinema </a></h3>
+                                    <div class="product-price v2"><span>$780.00</span></div>
+                                </div>
+                            </div>
+                            <div class="cate-item">
+                                <div class="product-img">
+                                    <a href="#"><img src="img/product/phone3.jpg" alt="" class="img-reponsive"></a>
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-title"><a href="#">Epson Home Cinema </a></h3>
+                                    <div class="product-price v2"><span>$780.00</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="item">
+                            <div class="cate-item">
+                                <div class="product-img">
+                                    <a href="#"><img src="img/product/phone4.jpg" alt="" class="img-reponsive"></a>
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-title"><a href="#">Epson Home Cinema </a></h3>
+                                    <div class="product-price v2"><span>$780.00</span></div>
+                                </div>
+                            </div>
+                            <div class="cate-item">
+                                <div class="product-img">
+                                    <a href="#"><img src="img/product/sound.jpg" alt="" class="img-reponsive"></a>
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-title"><a href="#">Epson Home Cinema </a></h3>
+                                    <div class="product-price v2"><span>$780.00</span></div>
+                                </div>
+                            </div>
+                            <div class="cate-item">
+                                <div class="product-img">
+                                    <a href="#"><img src="img/product/ring.jpg" alt="" class="img-reponsive"></a>
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-title"><a href="#">Epson Home Cinema </a></h3>
+                                    <div class="product-price v2"><span>$780.00</span></div>
+                                </div>
+                            </div>
+                            <div class="cate-item">
+                                <div class="product-img">
+                                    <a href="#"><img src="img/product/macbookair.jpg" alt="" class="img-reponsive"></a>
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-title"><a href="#">Epson Home Cinema </a></h3>
+                                    <div class="product-price v2"><span>$780.00</span></div>
+                                </div>
+                            </div>
+                            <div class="cate-item">
+                                <div class="product-img">
+                                    <a href="#"><img src="img/product/phone3.jpg" alt="" class="img-reponsive"></a>
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-title"><a href="#">Epson Home Cinema </a></h3>
+                                    <div class="product-price v2"><span>$780.00</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="item">
+                            <div class="cate-item">
+                                <div class="product-img">
+                                    <a href="#"><img src="img/product/phone4.jpg" alt="" class="img-reponsive"></a>
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-title"><a href="#">Epson Home Cinema </a></h3>
+                                    <div class="product-price v2"><span>$780.00</span></div>
+                                </div>
+                            </div>
+                            <div class="cate-item">
+                                <div class="product-img">
+                                    <a href="#"><img src="img/product/sound.jpg" alt="" class="img-reponsive"></a>
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-title"><a href="#">Epson Home Cinema </a></h3>
+                                    <div class="product-price v2"><span>$780.00</span></div>
+                                </div>
+                            </div>
+                            <div class="cate-item">
+                                <div class="product-img">
+                                    <a href="#"><img src="img/product/ring.jpg" alt="" class="img-reponsive"></a>
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-title"><a href="#">Epson Home Cinema </a></h3>
+                                    <div class="product-price v2"><span>$780.00</span></div>
+                                </div>
+                            </div>
+                            <div class="cate-item">
+                                <div class="product-img">
+                                    <a href="#"><img src="img/product/macbookair.jpg" alt="" class="img-reponsive"></a>
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-title"><a href="#">Epson Home Cinema </a></h3>
+                                    <div class="product-price v2"><span>$780.00</span></div>
+                                </div>
+                            </div>
+                            <div class="cate-item">
+                                <div class="product-img">
+                                    <a href="#"><img src="img/product/phone3.jpg" alt="" class="img-reponsive"></a>
+                                </div>
+                                <div class="product-info">
+                                    <h3 class="product-title"><a href="#">Epson Home Cinema </a></h3>
+                                    <div class="product-price v2"><span>$780.00</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="banner">
+                    <a class="image-bd hover-images" href=""><img src="img/o-banner3.jpg" alt="" class="img-reponsive"></a>
+                </div>
+            </div>
+            <div class="col-md-9 col-sm-12 col-xs-12 collection-list">
+                <div class="e-product">
+                    <div class="pd-banner">
+                        <a href="#" class="image-bd effect_img2"><img src="{% static 'img/o-banner2.jpg' %}" alt=""
+                                                                      class="img-reponsive"></a>
+                    </div>
+                    <div class="pd-top">
+                        <h1 class="title v2">
+                            {% if categroy_slug != None and subcategory_slug == None and brands_slug == None %}
+                                {{ category_s.title }}{% elif categroy_slug != None and subcategory_slug != None and brands_slug == None %}
+                                {{ subcategory_s.title }}{% elif categroy_slug == None and subcategory_slug == None and brands_slug != None %}
+                                {{ brands_s.title }}{% endif %}</h1>
+                        <div class="show-element">
+                            <span>{% if categroy_slug != None and subcategory_slug == None and brands_slug == None %}
+                                {{ category_s.product_count }} ürün bulundu.
+                                {% elif categroy_slug != None and subcategory_slug != None and brands_slug == None %}{{ subcategory_s.product_count }}
+                                ürün bulundu.
+                                {% elif categroy_slug == None and subcategory_slug == None and brands_slug != None %}{{ brands_s.product_count }}
+                                ürün bulundu.{% endif %}</span></div>
+                    </div>
+                    <div class="pd-middle">
+                        <div class="view-mode view-group">
+                            <a class="grid-icon col active"><img src="{% static 'img/grid.png' %}" alt=""></a>
+                            <a class="grid-icon col2"><img src="{% static 'img/grid2.png' %}" alt=""></a>
+                            <a class="list-icon list"><img src="{% static 'img/list.png' %}" alt=""></a>
+                        </div>
+                        <div class="pd-sort">
+                            <div class="filter-sort">
+                                <div class="dropdown">
+                                    <button class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        <span class="dropdown-label">Sıralama</span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="manual">Öne Çıkanlar</a></li>
+                                        <li><a href="best-selling">En Çok Satılanlar</a></li>
+                                        <li><a href="price-descending">Artan Fiyat</a></li>
+                                        <li><a href="price-ascending">Azalan Fiyat</a></li>
+                                        <li><a href="created-ascending">En Yeniler</a></li>
+                                        <li><a href="created-descending">En Eskiler</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-collection-grid product-grid">
+                        <div class="row">
+                            {% for product in products %}
+                                <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4 product-item">
+                                    <div class="pd-bd product-inner">
+                                        <div class="product-img">
+                                            <a href="{% url 'products_detail' product.slug %}"><img
+                                                    src="{{ product.get_image }}" alt="" class="img-reponsive"></a>
+                                        </div>
+                                        <div class="product-info">
+                                            <div class="color-group"></div>
+                                            <div class="element-list element-list-left">
+                                                <ul class="desc-list">
+                                                    {% for description in descriptions %}
+                                                        {% if description.product.id == product.id %}
+                                                            <li>{{ description.list }}</li>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                            <div class="element-list element-list-middle">
+                                                <div class="product-rating bd-rating">
+                                                    <span class="star star-5"></span>
+                                                    <span class="star star-4"></span>
+                                                    <span class="star star-3"></span>
+                                                    <span class="star star-2"></span>
+                                                    <span class="star star-1"></span>
+                                                    <div class="number-rating">( 896 reviews )</div>
+                                                </div>
+                                                <p class="product-cate">{{ product.category.title }}</p>
+                                                <h3 class="product-title"><a
+                                                        href="{% url 'products_detail' product.slug %}">{{ product.title|truncatechars_html:25 }}</a>
+                                                </h3>
+                                                <div class="product-bottom">
+                                                    <div class="product-price"><span>{{ product.price }} TL</span></div>
+                                                    <a href="{% url 'products_detail' product.slug %}"
+                                                       class="btn-icon btn-view">
+                                                        <span class="icon-bg icon-view"></span>
+                                                    </a>
+                                                </div>
+                                                <div class="product-bottom-group">
+                                                    <a href="#" class="btn-icon">
+                                                        <span class="icon-bg icon-cart"></span>
+                                                    </a>
+                                                    <a href="#" class="btn-icon">
+                                                        <span class="icon-bg icon-wishlist"></span>
+                                                    </a>
+                                                    <a href="#" class="btn-icon">
+                                                        <span class="icon-bg icon-compare"></span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="product-button-group">
+                                                <a href="#" class="btn-icon">
+                                                    <span class="icon-bg icon-cart"></span>
+                                                </a>
+                                                <a href="#" class="btn-icon">
+                                                    <span class="icon-bg icon-wishlist"></span>
+                                                </a>
+                                                <a href="#" class="btn-icon">
+                                                    <span class="icon-bg icon-compare"></span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="pd-middle space-v1">
+                        <ul class="pagination">
+                            <li class="active"><a href="#">1</a></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#"><i class="ion-ios-arrow-forward"></i></a></li>
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="e-category">
+        <div class="container container-240">
+            <div class="row">
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <h1 class="cate-title">Featured Products</h1>
+                    <div class="cate-item">
+                        <div class="product-img">
+                            <a href="#"><img src="img/product/usb.jpg" alt="" class="img-reponsive"></a>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title"><a href="#">Epson Home Cinema 5040UB </a></h3>
+                            <div class="product-price v2"><span>$780.00</span></div>
+                        </div>
+                    </div>
+
+                    <div class="cate-item">
+                        <div class="product-img">
+                            <a href="#"><img src="img/product/macbook.jpg" alt="" class="img-reponsive"></a>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title"><a href="#">Epson Home Cinema 5040UB </a></h3>
+                            <div class="product-price v2"><span>$780.00</span></div>
+                        </div>
+                    </div>
+
+                    <div class="cate-item">
+                        <div class="product-img">
+                            <a href="#"><img src="img/product/flycam.jpg" alt="" class="img-reponsive"></a>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title"><a href="#">Epson Home Cinema 5040UB </a></h3>
+                            <div class="product-price v2"><span>$780.00</span></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <h1 class="cate-title">Top Rated Products</h1>
+                    <div class="cate-item">
+                        <div class="product-img">
+                            <a href="#"><img src="img/product/samsung.jpg" alt="" class="img-reponsive"></a>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title"><a href="#">Epson Home Cinema 5040UB </a></h3>
+                            <div class="product-price v2"><span>$780.00</span></div>
+                        </div>
+                    </div>
+
+                    <div class="cate-item">
+                        <div class="product-img">
+                            <a href="#"><img src="img/product/headphone2.jpg" alt="" class="img-reponsive"></a>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title"><a href="#">Epson Home Cinema 5040UB </a></h3>
+                            <div class="product-price v2"><span>$780.00</span></div>
+                        </div>
+                    </div>
+
+                    <div class="cate-item">
+                        <div class="product-img">
+                            <a href="#"><img src="img/product/anker.jpg" alt="" class="img-reponsive"></a>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title"><a href="#">Epson Home Cinema 5040UB </a></h3>
+                            <div class="product-price v2"><span>$780.00</span></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-xs-12 col-sm-4 col-md-4">
+                    <h1 class="cate-title">Top Selling Products</h1>
+                    <div class="cate-item">
+                        <div class="product-img">
+                            <a href="#"><img src="img/product/headphone.jpg" alt="" class="img-reponsive"></a>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title"><a href="#">Epson Home Cinema 5040UB </a></h3>
+                            <div class="product-price v2"><span>$780.00</span></div>
+                        </div>
+                    </div>
+
+                    <div class="cate-item">
+                        <div class="product-img">
+                            <a href="#"><img src="img/product/samsung2.jpg" alt="" class="img-reponsive"></a>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title"><a href="#">Epson Home Cinema 5040UB </a></h3>
+                            <div class="product-price v2"><span>$780.00</span></div>
+                        </div>
+                    </div>
+
+                    <div class="cate-item">
+                        <div class="product-img">
+                            <a href="#"><img src="img/product/sound.jpg" alt="" class="img-reponsive"></a>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title"><a href="#">Epson Home Cinema 5040UB </a></h3>
+                            <div class="product-price v2"><span>$780.00</span></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

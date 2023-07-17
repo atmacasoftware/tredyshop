@@ -1,0 +1,47 @@
+{% load static %}
+
+<!-- push menu-->
+<div class="pushmenu menu-home5">
+    <div class="menu-push">
+        <span class="close-left js-close"><i class="icon-close f-20"></i></span>
+        <div class="clearfix"></div>
+        <form role="search" method="get" id="searchform" class="searchform" action="{% url 'search' %}">
+            <div>
+                <label class="screen-reader-text" for="q"></label>
+                <input type="text" placeholder="Keşfetmeye başla..." value="" name="q" id="q" autocomplete="off">
+                <input type="hidden" name="type" value="product">
+                <button type="submit" id="searchsubmit"><i class="ion-ios-search-strong"></i></button>
+            </div>
+        </form>
+        <ul class="nav-home5 js-menubar">
+            <li class="level1 active dropdown"><a href="#">Kategoriler</a>
+                <span class="icon-sub-menu"></span>
+                <div class="menu-level1 js-open-menu">
+                    <ul class="level1">
+                        <li class="level2"><a href="">Yeni Ürünler</a></li>
+                        <li class="level2"><a href="">En Çok Satılan</a></li>
+                        {% for mc in maincategories %}
+                            <li class="level2">
+                                <a href="{{ mc.get_url }}">{{ mc.title }}</a>
+                                <ul class="menu-level-2">
+                                    {% for sc in subcategories %}
+                                        {% if sc.maincategory.id == mc.id %}
+                                            <li class="level3"><a href="{{ sc.get_url }}" title="">{{ sc.title }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+            </li>
+            <li class="level1 active"><a href="#">Kampanyalar</a></li>
+            <li class="level1 active"><a href="#">Süper Fırsatlar</a></li>
+            <li class="level1 active"><a href="#">Müşteri Destek</a></li>
+            <li class="level1 active"><a href="#">Blog</a></li>
+        </ul>
+    </div>
+</div>
+<!-- end push menu-->

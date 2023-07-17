@@ -1,0 +1,48 @@
+{% load static %}
+
+<div class="bestseller single-space">
+    <div class="ecome-heading" style="margin-bottom: 20px;">
+        <h1>Benzer Ürünler</h1>
+    </div>
+
+    <div class="owl-carousel owl-theme owl-cate v2 js-owl-cate owl-loaded owl-drag">
+        {% for p in similar_product %}
+            <div class="product-item">
+                <div class="pd-bd product-inner">
+                    <div class="product-img">
+                        <a href="#"><img src="{{ p.get_image }}" alt=""
+                                         class="img-reponsive"></a>
+                    </div>
+                    <div class="product-info">
+                        <div class="color-group">
+                        </div>
+                        <div class="element-list element-list-left">
+                        </div>
+                        <div class="element-list element-list-middle">
+                            <p class="product-cate">{{ p.category.title }}</p>
+                            <h3 class="product-title"><a href="#">{{ p.title|truncatechars_html:23 }}</a></h3>
+                            <div class="product-bottom">
+                                <div class="product-price"><span>{% if p.is_discountprice == True %}<span style="text-decoration-line: line-through;color: red; font-size: 1.3rem">{{ p.price }} TL</span>&nbsp; <span>{{ p.discountprice }} TL</span> {% else %}{{ p.price }} TL{% endif %}</span></div>
+                                <a href="{{ p.get_url }}" class="btn-icon btn-view">
+                                    <span class="icon-bg icon-view"></span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="product-button-group">
+                            <a href="#" class="btn-icon">
+                                <span class="icon-bg icon-cart"></span>
+                            </a>
+                            <a href="#" class="btn-icon">
+                                <span class="icon-bg icon-wishlist"></span>
+                            </a>
+                            <a href="#" class="btn-icon">
+                                <span class="icon-bg icon-compare"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>

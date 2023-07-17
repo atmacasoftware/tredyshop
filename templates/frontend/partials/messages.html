@@ -1,0 +1,11 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'plugins/toastr/toastr.min.css' %}">
+<script src="{% static 'js/jquery.js' %}"></script>
+<script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
+{% for message in messages %}
+    <script>
+        $(function () {
+            toastr.{{ message.tags }}("{{ message }}")
+        });
+    </script>
+{% endfor %}

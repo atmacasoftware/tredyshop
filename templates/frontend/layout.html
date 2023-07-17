@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    {% block title %}<title></title>{% endblock %}
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/slick.css' %}">
+    <link rel="stylesheet" href="{% static 'css/slick-theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+</head>
+
+<body>
+
+{% include 'frontend/partials/_navbar.html' %}
+
+{% include 'frontend/partials/messages.html' %}
+{% include 'frontend/partials/_header.html' %}
+<div class="h3-bg">
+    <div class="wrappage v2">
+        {% block mainpage %}
+        {% endblock %}
+        {% block slider %}
+        {% endblock %}
+        {% block store %}
+        {% endblock %}
+        {% block product %}
+        {% endblock %}
+        {% block account %}
+        {% endblock %}
+        {% block profile %}
+        {% endblock %}
+        {% block cart %}
+        {% endblock %}
+        {% block reset_password %}
+        {% endblock %}
+        {% block checkout %}
+        {% endblock %}
+        {% block information %}
+        {% endblock %}
+    </div>
+</div>
+{% include 'frontend/partials/__feature.html' %}
+{% include 'frontend/partials/_footer.html' %}
+
+<script src="{% static 'js/jquery.js' %}"></script>
+<script src="{% static 'js/bootstrap.js' %}"></script>
+<script src="{% static 'js/search.js' %}"></script>
+<script src="{% static 'js/owl.carousel.min.js' %}"></script>
+<script src="{% static 'js/slick.js' %}"></script>
+<script src="{% static 'js/countdown.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+<script src="https://kit.fontawesome.com/7ffad3a2e0.js" crossorigin="anonymous"></script>
+
+</body>
+
+</html>

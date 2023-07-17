@@ -1,0 +1,77 @@
+{% load static %}
+
+<footer>
+    <div class="f-top v2">
+        <div class="container container-240">
+            <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                    <div class="footer-block footer-about">
+                        <div class="f-logo">
+                            <a href="#"><img src="{% static 'img/logo.png' %}" alt="" class="img-reponsive"></a>
+                        </div>
+                        <ul class="footer-block-content">
+                            <li class="email">
+                                <span>{{ setting.email }}</span>
+                            </li>
+                        </ul>
+                        <div class="footer-social social">
+                            <h3 class="footer-block-title">Bizi Takip Edin</h3>
+                            <a href="{{ setting.instagram }}" target="_blank" class="fa fa-instagram"></a>
+                            <a href="{{ setting.facebook }}" target="_blank" class="fa fa-facebook"></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+                    <div class="footer-block">
+                        <h3 class="footer-block-title">Hızlı Menu</h3>
+                        <ul class="footer-block-content">
+                            {% for c in maincategories %}
+                                <li><a href="{{ c.get_url }}">{{ c.title }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2">
+                    <div class="footer-block">
+                        <h3 class="footer-block-title">Destek</h3>
+                        <ul class="footer-block-content">
+                            <li><a href="{% url 'profile_mainpage' %}">Hesabım</a></li>
+                            <li><a href="#">Sipariş Takibi</a></li>
+                            <li><a href="#">Returns/Exchange</a></li>
+                            <li><a href="#">Sıkça Sorulan Sorular</a></li>
+                            <li><a href="#">Müşteri Destek</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                    <div class="footer-block">
+                        <div class="footer-block-newsletter">
+                            <h3 class="footer-block-title">Abonelik</h3>
+                            <p>Promosyonlar ve kuponlarla ilgili güncellemeler almak için şimdi kaydolun.</p>
+                            <form class="form_newsletter" action="#" method="post">
+                                <input type="email" value="" placeholder="E-posta adresinizi yazınız."
+                                       name="EMAIL"
+                                       id="mail" class="newsletter-input form-control">
+                                <button id="subscribe" class="button_mini btn btn-gradient" type="submit">
+                                    Abone Ol
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="f-bottom">
+        <div class="container container-240">
+            <div class="row flex lr">
+                <div class="col-xs-6 f-copyright"><span>© 2023 TredyShop. All rights reserved.</span>
+                </div>
+                <div class="col-xs-6 f-payment hidden-xs">
+                    <a href="#"><img src="{% static 'img/payment/mastercard.png' %}" alt="" class="img-reponsive"></a>
+                    <a href="#"><img src="{% static 'img/payment/visa.png' %}" alt="" class="img-reponsive"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

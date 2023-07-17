@@ -1,0 +1,8 @@
+{% autoescape off %}
+
+    Merhaba, {{ user.get_full_name }},
+
+    Lütfen aşağıdaki linke tıklayarak hesabınızı aktif ediniz. Keyifli alışverişler dileriz.
+    https://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+{% endautoescape %}

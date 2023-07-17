@@ -1,0 +1,546 @@
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews {
+    padding: 25px;
+    background: #fff;
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__header {
+    margin-bottom: 30px
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__header div.reviews-gallery div.reviews-gallery__header {
+    font-size: 16px;
+    font-weight: 500;
+    color: #010101;
+    margin-bottom: 15px
+}
+
+@media (max-width: 1199.98px) {
+    div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__header div.reviews-gallery div.reviews-gallery__header {
+        font-size: 14px
+    }
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__header div.reviews-gallery div.reviews-gallery__body div.row {
+    margin-left: -5px;
+    margin-right: -5px
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__header div.reviews-gallery div.reviews-gallery__body div.row div.col-xxl-1 {
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-bottom: 10px
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__header div.reviews-gallery div.reviews-gallery__body div.reviews-gallery__item div.image {
+    overflow: hidden;
+    border-radius: 3px;
+    width: auto;
+    height: 101px;
+}
+
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__header div.reviews-gallery div.reviews-gallery__body div.reviews-gallery__item div.image a {
+    text-decoration: none
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__header div.reviews-gallery div.reviews-gallery__body div.reviews-gallery__item div.image a img {
+    width: 100%
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__filter {
+    margin-bottom: 30px
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__filter div.reviews__filter-sortby {
+    display: inline-block
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__filter div.reviews__filter-sortby div.reviews__filter-select {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__filter div.reviews__filter-sortby div.reviews__filter-select div.select-holder div.nice-select {
+    border: 2px solid rgba(32, 35, 51, .2)
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__filter div.reviews__filter-sortby div.reviews__filter-select div.reviews-total {
+    margin-left: 30px;
+    overflow: hidden
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__filter div.reviews__filter-sortby div.reviews__filter-select div.reviews-total span {
+    color: #010101;
+    font-size: 16px
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__filter div.reviews__filter-sortby div.reviews__filter-select div.reviews-total span b {
+    font-weight: 500
+}
+
+@media (max-width: 1199.98px) {
+    div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__filter div.reviews__filter-sortby div.reviews__filter-select div.reviews-total {
+        margin-left: 15px
+    }
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item {
+    margin-bottom: 30px;
+    border-top: 1px solid rgba(32, 35, 51, .12);
+    padding-top: 25px
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-topline {
+    width: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    margin-bottom: 25px
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-topline div.review-data-topline__avatar {
+    width: 40px;
+    -ms-flex-negative: 0;
+    flex-shrink: 0
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-topline div.review-data-topline__avatar div.avatar {
+    width: 45px;
+    height: 45px;
+    overflow: hidden;
+    border-radius: 50px;
+    border: 1px solid rgba(32, 35, 51, .12);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #EF0000;
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-topline div.review-data-topline__avatar div.avatar span {
+    color: white;
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-topline div.review-data-topline__name {
+    margin-left: 15px
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-topline div.review-data-topline__name span.name {
+    font-weight: 500;
+    color: #010101;
+    font-size: 16px;
+    line-height: 1;
+    display: block;
+    margin-bottom: 5px
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-topline div.review-data-topline__name span.resident {
+    font-size: 14px;
+    color: rgba(32, 35, 51, .8);
+    line-height: 1
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-topline div.review-data-topline__grade {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: end;
+    -ms-flex-align: end;
+    align-items: flex-end;
+    margin-left: auto
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-topline div.review-data-topline__grade span.date {
+    font-size: 13px;
+    line-height: 1;
+    color: rgba(32, 35, 51, .8)
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-topline div.review-data-topline__grade span.rating {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    line-height: 1;
+    margin-bottom: 10px
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-topline div.review-data-topline__grade span.rating span.rating-star {
+    width: 17px;
+    height: 17px;
+    line-height: 1;
+    padding: 0;
+    margin: 0
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-topline div.review-data-topline__grade span.rating span.rating-star svg {
+    width: 100%;
+    height: 100%;
+    stroke: #000;
+    fill: #000
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-topline div.review-data-topline__grade span.rating span.rating-star.inactive svg {
+    stroke: #efeff0;
+    fill: #efeff0
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-midline {
+    margin-bottom: 20px
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-midline div.review-text-box {
+    margin-bottom: 25px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #010101
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-midline div.review-media-box div.row {
+    margin-left: -5px;
+    margin-right: -5px
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-midline div.review-media-box div.row div.col-xxl-1 {
+    padding-left: 5px;
+    padding-right: 5px
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-midline div.review-media-box div.review-media-item {
+    border-radius: 2px;
+    border: 1px solid rgba(32, 35, 51, .12);
+    overflow: hidden
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-midline div.review-media-box div.review-media-item img {
+    width: 100%
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-botline div.review-vote span.review-vote__cta {
+    display: block;
+    width: 100%;
+    font-size: 13px;
+    color: #067aff;
+    margin-bottom: 10px;
+    font-weight: 500
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-botline div.review-vote div.review-vote__controls button.btn {
+    margin: 0 10px 0 0;
+    padding: 10px 20px;
+    background: #efeff0;
+    border-radius: 2px;
+    line-height: 1;
+    vertical-align: middle;
+    color: #010101
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-botline div.review-vote div.review-vote__controls button.btn:active,
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-botline div.review-vote div.review-vote__controls button.btn:hover {
+    color: #067aff
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-botline div.review-vote div.review-vote__controls button.btn.active {
+    background: #202333;
+    color: #fff
+}
+
+@media (max-width: 1199.98px) {
+    div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-botline,
+    div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-midline {
+        margin-left: 0
+    }
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__footer {
+    border-top: 1px solid rgba(32, 35, 51, .12);
+    padding-top: 25px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    width: 100%
+}
+
+@media (max-width: 1199.98px) {
+    div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews {
+        margin-bottom: 20px;
+        padding: 15px;
+        border-radius: 4px
+    }
+
+    div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__footer div.btn {
+        width: 100%
+    }
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid rgba(32, 35, 51, .12)
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart div.ratings-chart__header {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 25px;
+    border-bottom: 1px solid rgba(32, 35, 51, .12)
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart div.ratings-chart__header div.ratings-chart__num span {
+    font-size: 33px;
+    line-height: 33px;
+    color: #010101;
+    font-weight: 600;
+    display: inline-block
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart div.ratings-chart__header div.ratings-chart__stars span.rating {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    line-height: 1
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart div.ratings-chart__header div.ratings-chart__stars span.rating span.rating-star {
+    width: 20px;
+    height: 20px;
+    line-height: 1;
+    padding: 0;
+    margin: 0
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart div.ratings-chart__header div.ratings-chart__stars span.rating span.rating-star svg {
+    width: 100%;
+    height: 100%;
+    stroke: #000;
+    fill: #000
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart div.ratings-chart__header div.ratings-chart__stars span.rating span.rating-star.inactive svg {
+    stroke: #efeff0;
+    fill: #efeff0
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart div.ratings-chart__body {
+    padding: 25px
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart div.ratings-chart__body div.ratings-base-num {
+    margin-bottom: 10px
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart div.ratings-chart__body div.ratings-base-num span {
+    display: block;
+    font-size: 14px;
+    color: rgba(32, 35, 51, .8);
+    font-weight: 400
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart div.ratings-chart__body div.ratings-chart__bars div.rating-bar {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    width: 100%;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    margin-bottom: 15px
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart div.ratings-chart__body div.ratings-chart__bars div.rating-bar div.rating-bar__grade {
+    width: 20px;
+    min-width: 20px;
+    line-height: 1
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart div.ratings-chart__body div.ratings-chart__bars div.rating-bar div.rating-bar__grade span {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 14px;
+    color: #010101
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart div.ratings-chart__body div.ratings-chart__bars div.rating-bar div.rating-bar__line {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    line-height: 1
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart div.ratings-chart__body div.ratings-chart__bars div.rating-bar div.rating-bar__line span.prog-line {
+    display: block;
+    position: relative;
+    width: 100%;
+    border-radius: 2px;
+    background: #efeff0;
+    height: 8px
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart div.ratings-chart__body div.ratings-chart__bars div.rating-bar div.rating-bar__line span.prog-line span.prog-line-bar {
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    height: 100%;
+    top: 0;
+    border-radius: inherit;
+    background: #067aff
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart div.ratings-chart__body div.ratings-chart__bars div.rating-bar:last-child {
+    margin-bottom: 0
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart div.ratings-chart__footer {
+    padding: 25px;
+    padding-top: 5px
+}
+
+@media (max-width: 1199.98px) {
+    div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart {
+        border-radius: 4px
+    }
+
+    div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart div.ratings-chart__header {
+        padding: 15px
+    }
+
+    div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart div.ratings-chart__body {
+        padding: 15px
+    }
+
+    div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart div.ratings-chart__footer {
+        padding: 15px;
+        padding-top: 5px
+    }
+}
+
+
+div.page-container.product div.page-section.page-section.prod-specifications {
+    border-bottom: 1px solid rgba(32, 35, 51, .12);
+    padding-bottom: 50px
+}
+
+div.page-container.product div.page-section.page-section.prod-specifications div.prod-specifications__group-title {
+    margin-bottom: 10px
+}
+
+div.page-container.product div.page-section.page-section.prod-specifications div.prod-specifications__group-title h4 {
+    color: #010101;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 0;
+    margin: 0
+}
+
+div.page-container.product div.page-section.page-section.prod-specifications div.page-section__body div.prod-specifications__body div.specifications div.specifications__item {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    margin-bottom: 15px;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start
+}
+
+div.page-container.product div.page-section.page-section.prod-specifications div.page-section__body div.prod-specifications__body div.specifications div.specifications__item div.prop {
+    width: auto
+}
+
+div.page-container.product div.page-section.page-section.prod-specifications div.page-section__body div.prod-specifications__body div.specifications div.specifications__item div.prop span {
+    color: rgba(32, 35, 51, .8);
+    font-size: 16px
+}
+
+@media (max-width: 1199.98px) {
+    div.page-container.product div.page-section.page-section.prod-specifications div.page-section__body div.prod-specifications__body div.specifications div.specifications__item div.prop span {
+        font-size: 14px
+    }
+}
+
+div.page-container.product div.page-section.page-section.prod-specifications div.page-section__body div.prod-specifications__body div.specifications div.specifications__item div.dots {
+    -webkit-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    border-bottom: 1px dashed rgba(32, 35, 51, .12);
+    height: 17px;
+    margin: 0 5px
+}
+
+div.page-container.product div.page-section.page-section.prod-specifications div.page-section__body div.prod-specifications__body div.specifications div.specifications__item div.val {
+    width: auto
+}
+
+div.page-container.product div.page-section.page-section.prod-specifications div.page-section__body div.prod-specifications__body div.specifications div.specifications__item div.val span {
+    color: #010101;
+    font-size: 16px;
+    display: block;
+    text-align: right
+}
+
+@media (max-width: 1199.98px) {
+    div.page-container.product div.page-section.page-section.prod-specifications div.page-section__body div.prod-specifications__body div.specifications div.specifications__item div.val span {
+        font-size: 14px
+    }
+}
+
+@media (max-width: 1199.98px) {
+    div.page-container.product div.page-section.page-section.prod-specifications div.page-section__body div.prod-specifications__body {
+        border-radius: 4px
+    }
+}
+
+div.page-container.product div.page-section.page-section.prod-specifications div.page-section__body div.prod-specifications__footer span {
+    font-size: 13px;
+    color: #010101;
+    font-weight: 500
+}
+
+div.page-container.product div.page-section.page-section.prod-specifications div.page-section__body div.prod-specifications__footer span a {
+    text-decoration: none;
+    color: #067aff
+}

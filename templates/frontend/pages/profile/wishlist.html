@@ -1,0 +1,140 @@
+{% extends 'frontend/layout.html' %}
+{% load static %}
+
+{% block profile %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <hr>
+    <div class="container container-240 page-container profile mt-20">
+        <div class="page-section reviews">
+            <div class="page-margin">
+                <div class="page-margin__content">
+                    <div class="page-section__body">
+                        <div class="profile-page__body">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    {% include 'frontend/pages/profile/partials/_sidebar.html' %}
+                                </div>
+                                <div class="col-lg-9 mt-30">
+                                    <div class="shopping-cart v2 bd-7">
+                                        <div class="cmt-title text-center abs">
+                                            <h1 class="page-title v4">Favorilerim</h1>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table cart-table">
+
+                                                <tbody>
+                                                {% for p in favourite_products %}
+                                                    <tr class="item_cart">
+                                                        <td class="product-name flex align-center">
+                                                            <a href="{% url 'delete_wishlist' p.id %}"
+                                                               class="btn-del"><i
+                                                                    class="ion-ios-close-empty"></i></a>
+                                                            <div class="product-img">
+                                                                <img src="{{ p.product.get_image }}" alt="Futurelife">
+                                                            </div>
+                                                            <div class="product-info">
+                                                                <a href="{{ p.product.get_url }}"
+                                                                   title="">{{ p.product.title }}</a>
+                                                            </div>
+                                                        </td>
+
+
+                                                        <td class="total-price">
+                                                            <p class="price">
+                                                                {% if p.product.is_discountprice == True %}
+                                                                    <span>{% if p.product.is_discountprice == True %}
+                                                                        <span style="text-decoration-line: line-through;color: red; font-size: 1.3rem">{{ p.product.price }} TL</span>
+                                                                        &nbsp;
+                                                                        <span>{{ p.product.discountprice }} TL</span> {% else %}
+                                                                        {{ p.product.price }} TL{% endif %}</span>
+                                                                {% endif %}
+                                                            </p>
+                                                        </td>
+                                                        <td class="w-status">
+                                                            <p>
+                                                                {% if p.product.amount == 0 %}
+                                                                    Stokta Yok
+                                                                {% else %}
+                                                                    Stokta
+                                                                {% endif %}
+                                                            </p>
+                                                        </td>
+                                                        <td class="w-button">
+                                                            <a class="btn-addcart btn-gradient">Sepete Ekle</a>
+                                                        </td>
+                                                    </tr>
+                                                {% empty %}
+                                                    <div class="d-block">
+                                                        <div class="placeholder-message">
+                                                            <div class="icon">
+                                                    <span>
+                                                        <svg width="36" height="36" viewBox="0 0 36 36" fill="none"
+                                                             xmlns="https://www.w3.org/2000/svg">
+                                                            <path d="M36 18C36 27.941 27.941 36 18 36C8.06 36 0 27.941 0 18C0 8.06 8.06 0 18 0C27.941 0 36 8.06 36 18Z"
+                                                                  fill="#FFCC4D"/>
+                                                            <path d="M6.00101 20C5.69701 20 5.39701 19.862 5.20001 19.6C4.86801 19.159 4.95801 18.532 5.40001 18.201C5.54301 18.094 8.35101 16.018 12.256 15.268C9.78101 14.027 7.03401 14 6.99901 14C6.44701 13.998 6.00001 13.55 6.00101 12.998C6.00101 12.447 6.44801 12 7.00001 12C7.22101 12 12.452 12.038 15.707 15.293C15.993 15.579 16.079 16.009 15.924 16.383C15.769 16.757 15.404 17 15 17C10.387 17 6.63701 19.772 6.60001 19.8C6.42001 19.935 6.20901 20 6.00101 20V20ZM29.999 19.999C29.791 19.999 29.581 19.935 29.401 19.801C29.363 19.772 25.59 17 21 17C20.596 17 20.23 16.757 20.076 16.383C19.921 16.009 20.007 15.579 20.293 15.293C23.549 12.038 28.779 12 29 12C29.552 12 29.998 12.447 29.999 12.998C30 13.55 29.553 13.998 29.002 14C28.966 14 26.219 14.027 23.744 15.268C27.649 16.018 30.457 18.093 30.599 18.201C31.04 18.532 31.13 19.157 30.8 19.599C30.604 19.86 30.304 19.999 29.999 19.999ZM7.00001 21.263C7.00001 25.227 11.596 30.263 18 30.263C24.404 30.263 29 25.263 29 21.263C29 21.263 18.667 24.019 7.00001 21.263Z"
+                                                                  fill="#66471B"/>
+                                                            <path d="M18.545 23.604L17.454 23.599C14.238 23.525 12 23.003 12 23.003V29.964C12 32.964 14 35.964 18 35.964C22 35.964 24 32.964 24 29.964V23.044C22.078 23.439 20.213 23.587 18.545 23.604V23.604Z"
+                                                                  fill="#E8596E"/>
+                                                            <path d="M18 31.844C18.301 31.844 18.545 31.6 18.545 31.299V23.605L17.454 23.6V31.299C17.455 31.6 17.699 31.844 18 31.844Z"
+                                                                  fill="#DD2F45"/>
+                                                        </svg>
+                                                    </span>
+                                                            </div>
+                                                            <h2>
+                                                                Favori listeniz boş
+                                                            </h2>
+                                                            <p>
+                                                                Görünüşe göre henüz favori listenize ürün
+                                                                eklememişsiniz.
+                                                            </p>
+                                                            <p>
+                                                                İstek listenize bir ürün eklemek ürün açıklama sayfasında bulunan
+                                                                <span
+                                                                    class="inline-icon"><svg
+                                                                    xmlns="https://www.w3.org/2000/svg" width="24"
+                                                                    height="24" viewBox="0 0 24 24" fill="none"
+                                                                    stroke="currentColor" stroke-width="2"
+                                                                    stroke-linecap="round" stroke-linejoin="round"
+                                                                    class="feather feather-heart">
+                                                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                                        </svg></span> butonuna tıklayınız.
+                                                            </p>
+                                                            <div class="btn-controls">
+                                                                <div class="btn-control__item">
+                                                                    <a href="{% url 'mainpage' %}" class="a-block">
+                                                                        <div class="btn btn-primary btn-icon btn-lg">
+                                                                <span class="icon">
+                                                                    <svg xmlns="https://www.w3.org/2000/svg" width="24"
+                                                                         height="24" viewBox="0 0 24 24" fill="none"
+                                                                         stroke="currentColor" stroke-width="2"
+                                                                         stroke-linecap="round" stroke-linejoin="round"
+                                                                         class="feather feather-arrow-up-right">
+                                                                        <line x1="7" y1="17" x2="17" y2="7"></line>
+                                                                        <polyline points="7 7 17 7 17 17"></polyline>
+                                                                    </svg>
+                                                                </span>
+                                                                            <span class="text">
+                                                                   Hadi Alışverişe Başlayalım
+                                                                </span>
+                                                                        </div>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

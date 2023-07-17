@@ -1,0 +1,19 @@
+{% load static %}
+
+<h1 class="cate-title">En Çok Satanlar</h1>
+{% for p in most_selling %}
+    <div class="cate-item">
+        <div class="product-img">
+            <a href="{{ p.get_url }}"><img src="{{ p.get_image }}" alt="" class="img-reponsive"></a>
+        </div>
+        <div class="product-info">
+            <h3 class="product-title"><a href="{{ p.get_url }}">{{ p.title }}</a></h3>
+            <div class="product-price v2">
+            <span>{% if p.is_discountprice == True %}
+                <span style="text-decoration-line: line-through;color: red; font-size: 1.3rem">{{ p.price }} TL</span>
+                &nbsp; <span>{{ p.discountprice }} TL</span>
+                {% else %}{{ p.price }} TL{% endif %}</span>
+            </div>
+        </div>
+    </div>
+{% endfor %}
