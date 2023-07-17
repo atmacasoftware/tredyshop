@@ -13,7 +13,8 @@ class Setting(models.Model):
     title = models.CharField(max_length=255, verbose_name="Başlık", blank=True, null=True)
     free_shipping = models.BigIntegerField(verbose_name="Ücretsiz Kargo Tutarı", null=True, blank=True)
     shipping_company = models.CharField(max_length=100, verbose_name="Kargo Firması", null=True, blank=True)
-    shipping_price = models.DecimalField(max_digits=20, decimal_places=2, verbose_name="Kargo Ücreti", null=True, blank=True)
+    shipping_price = models.DecimalField(max_digits=20, decimal_places=2, verbose_name="Kargo Ücreti", null=True,
+                                         blank=True)
     keywords = models.CharField(max_length=255, verbose_name="Anahtar Kelime", blank=True, null=True)
     description = models.CharField(max_length=255, verbose_name="Açıklama", null=True, blank=True)
     company = models.CharField(max_length=255, verbose_name="Şirket Adı", null=True, blank=True)
@@ -43,6 +44,7 @@ class Setting(models.Model):
         verbose_name = "1) Ayarlar"
         verbose_name_plural = "1) Ayarlar"
 
+
 class City(models.Model):
     title = models.CharField(max_length=100, null=True, blank=False, verbose_name="Şehir Adı")
     code = models.IntegerField(verbose_name="Plaka Kodu", null=True)
@@ -55,10 +57,8 @@ class City(models.Model):
         verbose_name_plural = "2) Şehirler"
         ordering = ['code']
 
-
     def __str__(self):
         return f"{self.title}"
-
 
     def save(self, *args, **kwargs):
         if not self.id and not self.slug:
@@ -94,10 +94,8 @@ class County(models.Model):
         verbose_name_plural = "3) İlçeler"
         ordering = ['id']
 
-
     def __str__(self):
         return f"{self.title}"
-
 
     def save(self, *args, **kwargs):
         if not self.id and not self.slug:
@@ -122,7 +120,6 @@ class County(models.Model):
 
 
 class Slider(models.Model):
-
     TYPE = (
         ("Ürün", "Ürün"),
         ("Bilgi", "Bilgi"),
@@ -130,13 +127,14 @@ class Slider(models.Model):
     )
 
     title = models.CharField(max_length=40, null=True, blank=False, verbose_name="Başlık")
-    title_color = models.CharField(max_length=40,verbose_name="Başlık Rengi", null=True, blank=False)
+    title_color = models.CharField(max_length=40, verbose_name="Başlık Rengi", null=True, blank=False)
     subtitle = models.CharField(max_length=40, null=True, blank=True, verbose_name="Alt Başlık")
-    subtitle_color = models.CharField(max_length=40,verbose_name="Alt Başlık Rengi", null=True, blank=True)
+    subtitle_color = models.CharField(max_length=40, verbose_name="Alt Başlık Rengi", null=True, blank=True)
     button = models.CharField(max_length=40, null=True, blank=False, verbose_name="Button Yazısı")
     button_color = models.CharField(max_length=40, verbose_name="Buton Rengi", null=True, blank=False)
     button_link = models.CharField(max_length=300, verbose_name="Gideceği Adres", null=True, blank=True)
-    image = models.ImageField(blank=False, upload_to='img/slider/', null=True, verbose_name="Resim", help_text="1071px x 593px")
+    image = models.ImageField(blank=False, upload_to='img/slider/', null=True, verbose_name="Resim",
+                              help_text="1071px x 593px")
     type = models.CharField(choices=TYPE, max_length=30, verbose_name="Slider Tipi", null=True, default="Bilgi")
     content = RichTextUploadingField(verbose_name="İçerik", null=True, blank=True)
     is_publish = models.BooleanField(default=True, verbose_name="Yayınlansın", null=True)
@@ -188,7 +186,7 @@ class Slider(models.Model):
 class MostSearchingKeyword(models.Model):
     keyword = models.CharField(max_length=50, null=True, blank=False)
     ip = models.CharField(max_length=20, blank=True)
-    count = models.BigIntegerField(default=0 ,verbose_name="Arama Sayısı", null=True)
+    count = models.BigIntegerField(default=0, verbose_name="Arama Sayısı", null=True)
     slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -225,10 +223,11 @@ class MostSearchingKeyword(models.Model):
                     break
         super(MostSearchingKeyword, self).save(*args, **kwargs)
 
+
 class SSS(models.Model):
     question = models.CharField(max_length=255, verbose_name="Soru", null=True, blank=False)
     answer = models.TextField(max_length=1000, verbose_name="Cevap", null=True, blank=False)
-    icon = models.CharField(max_length=5000,verbose_name="İkon", null=True, blank=True)
+    icon = models.CharField(max_length=5000, verbose_name="İkon", null=True, blank=True)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -239,3 +238,33 @@ class SSS(models.Model):
 
     def __str__(self):
         return f"{self.question}"
+
+
+class Contracts(models.Model):
+    delivery = RichTextUploadingField(verbose_name="Teslimat Koşulları", null=True, blank=True)
+    membership = RichTextUploadingField(verbose_name="Üyelik Sözleşmesi", null=True, blank=True)
+    term_of_use = RichTextUploadingField(verbose_name="Site Kullanım Şartları", null=True, blank=True)
+    security = RichTextUploadingField(verbose_name="Gizlilik Politikası", null=True, blank=True)
+    kvkk = RichTextUploadingField(verbose_name="KVKK Aydınlatma Politası", null=True, blank=True)
+    cookie = RichTextUploadingField(verbose_name="Cookies", null=True, blank=True)
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "7) Sözleşmeler"
+        verbose_name_plural = "7) Sözleşmeler"
+        ordering = ['created_at']
+
+
+class Cookies(models.Model):
+    cookie_provider = models.CharField(max_length=255, null=True, blank=True, verbose_name="Cookie Sağlayıcısı")
+    cookie_name = models.CharField(max_length=255, null=True, blank=True, verbose_name="Cookie İsmi")
+    cookie_aim = models.CharField(max_length=255, null=True, blank=True, verbose_name="Cookie Amacı")
+    cookie_type = models.CharField(max_length=255, null=True, blank=True, verbose_name="Cookie Tipi")
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "8) Çerezler"
+        verbose_name_plural = "8) Çerezler"
+        ordering = ['created_at']

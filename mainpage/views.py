@@ -125,3 +125,12 @@ def sss(request):
         'faq':faq,
     })
     return render(request, 'frontend/information/faq.html', context)
+
+def delivery_conditional(request):
+    context = {}
+    contracts = Contracts.objects.all().last()
+    context.update({
+        'contracts':contracts
+    })
+
+    return render(request, 'frontend/information/delivery_conditional.html', context)

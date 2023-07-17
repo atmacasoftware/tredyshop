@@ -1,7 +1,7 @@
 from django.contrib import admin
 from mainpage.models import *
 from import_export.admin import ImportExportModelAdmin
-from mainpage.resource import CityResource, CountyResource, SSSResource
+from mainpage.resource import CityResource, CountyResource, SSSResource, ContractsResource, CookiesResource
 
 
 # Register your models here.
@@ -28,9 +28,15 @@ class SSSAdmin(ImportExportModelAdmin):
     list_filter = ['question']
     resource_class = SSSResource
 
+
+class ContractsAdmin(ImportExportModelAdmin):
+    list_display = ['created_at', 'updated_at']
+    resource_class = ContractsResource
+
 admin.site.register(Setting)
 admin.site.register(City, CityAdmin)
 admin.site.register(County, CountyAdmin)
 admin.site.register(Slider, SliderAdmin)
 admin.site.register(MostSearchingKeyword, MostSearchAdmin)
 admin.site.register(SSS, SSSAdmin)
+admin.site.register(Contracts, ContractsAdmin)

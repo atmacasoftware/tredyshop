@@ -25,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-j3as3&cg=cfs!g9#&sh%3ldkb7yt@kplaqvw*o4s0(*lh=5^9$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["tredyshop.com", "www.tredyshop.com", "127.0.0.1"]
 
 # Application definition
 
@@ -102,9 +102,9 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ecommerce',
-        'USER': 'root',
-        'PASSWORD': '',
+        'NAME': 'tredyshopdb',
+        'USER': 'tredyshopadmin',
+        'PASSWORD': 'eL!a_8uPDj(j',
         'HOST': 'localhost',
         'PORT': '3306',
         "OPTION": {
