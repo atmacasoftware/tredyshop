@@ -8,4 +8,6 @@ urlpatterns = [
     path('bilgi-duyuru/<str:slider_slug>', slider_info, name="slider_info"),
     path('sikca-sorulan-sorular', sss, name="faq"),
     path('teslimat-kosullari', delivery_conditional, name="delivery_conditional"),
+    path('uyelik-sozlesmesi', membership_contract, name="membership_contract"),
+    path('site-kullanim-sartlari', terms_of_use, name="terms_of_use"),
 ]

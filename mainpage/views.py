@@ -134,3 +134,30 @@ def delivery_conditional(request):
     })
 
     return render(request, 'frontend/information/delivery_conditional.html', context)
+
+def membership_contract(request):
+    context = {}
+    contracts = Contracts.objects.all().last()
+    context.update({
+        'contracts':contracts
+    })
+
+    return render(request, 'frontend/information/membership_contract.html', context)
+
+def terms_of_use(request):
+    context = {}
+    contracts = Contracts.objects.all().last()
+    context.update({
+        'contracts':contracts
+    })
+
+    return render(request, 'frontend/information/terms_of_use.html', context)
+
+def security_policy(request):
+    context = {}
+    contracts = Contracts.objects.all().last()
+    context.update({
+        'contracts':contracts
+    })
+
+    return render(request, 'frontend/information/terms_of_use.html', context)

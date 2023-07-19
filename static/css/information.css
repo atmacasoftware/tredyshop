@@ -1,0 +1,15 @@
+.nav-menu__list-item span{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-menu__list-item span i{
+    color: black;
+    font-size: 1.5rem;
+}
+
+.nav-menu__list-item.active span i{
+    color: blue;
+    font-size: 1.5rem;
+}

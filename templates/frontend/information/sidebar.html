@@ -4,40 +4,61 @@
             <div class="nav-menu__list">
                 <a href="{% url 'faq' %}"
                    class="nav-menu__list-item {% if request.path == '/sikca-sorulan-sorular' %}active{% endif %}">
-
+                    <span class="icon">
+                        <i class="fa fa-question-circle"></i>
+                    </span>
                     <span class="text">
-                                                    Sıkça Sorulan Sorular
-                                                </span>
+                        Sıkça Sorulan Sorular
+                    </span>
                 </a>
-                <a href="{% url 'delivery_conditional' %}" class="nav-menu__list-item {% if request.path == '/teslimat-kosullari' %}active{% endif %}">
+                <a href="{% url 'delivery_conditional' %}"
+                   class="nav-menu__list-item {% if request.path == '/teslimat-kosullari' %}active{% endif %}">
+                    <span class="icon">
+                        <i class="fa fa-truck"></i>
+                    </span>
                     <span class="text">
-                                                    Teslimat Koşulları
-                                                </span>
+                        Teslimat Koşulları
+                    </span>
+                </a>
+                <a href="{% url 'membership_contract' %}" class="nav-menu__list-item {% if request.path == '/uyelik-sozlesmesi' %}active{% endif %}">
+                    <span class="icon">
+                        <i class="fa fa-user"></i>
+                    </span>
+                    <span class="text">
+                        Üyelik Sözleşmesi
+                    </span>
+                </a>
+                <a href="{% url 'terms_of_use' %}" class="nav-menu__list-item {% if request.path == '/site-kullanim-sartlari' %}active{% endif %}">
+                    <span class="icon">
+                        <i class="fa fa-sitemap"></i>
+                    </span>
+                    <span class="text">
+                        Site Kullanım Şartları
+                    </span>
                 </a>
                 <a href="faq.html" class="nav-menu__list-item">
+                    <span class="icon">
+                        <i class="fa fa-user-secret"></i>
+                    </span>
                     <span class="text">
-                                                    Üyelik Sözleşmesi
-                                                </span>
+                        Gizlilik Politikası
+                    </span>
                 </a>
                 <a href="faq.html" class="nav-menu__list-item">
+                    <span class="icon">
+                        <i class="fa fa-cookie"></i>
+                    </span>
                     <span class="text">
-                                                    Site Kullanım Şartları
-                                                </span>
+                        Çerezler
+                    </span>
                 </a>
                 <a href="faq.html" class="nav-menu__list-item">
+                    <span class="icon">
+                        <i class="fa fa-align-center"></i>
+                    </span>
                     <span class="text">
-                                                    Gizlilik Politikası
-                                                </span>
-                </a>
-                <a href="faq.html" class="nav-menu__list-item">
-                    <span class="text">
-                                                    Çerezler
-                                                </span>
-                </a>
-                <a href="faq.html" class="nav-menu__list-item">
-                    <span class="text">
-                                                    KVKK Aydınlatma Metni
-                                                </span>
+                        KVKK Aydınlatma Metni
+                    </span>
                 </a>
             </div>
         </div>

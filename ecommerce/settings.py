@@ -102,9 +102,9 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'tredyshopdb',
-        'USER': 'tredyshopadmin',
-        'PASSWORD': 'eL!a_8uPDj(j',
+        'NAME': 'httpdyme_tredyshopdb',
+        'USER': 'httpdyme_tredyshopadmin',
+        'PASSWORD': 'NHrH0EoT)b=.',
         'HOST': 'localhost',
         'PORT': '3306',
         "OPTION": {
