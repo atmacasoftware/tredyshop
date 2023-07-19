@@ -109,8 +109,9 @@ DATABASES = {
         'PORT': '3306',
         "OPTION": {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1",
-            'charset': 'utf8_turkish_ci',
             "autocommit": True,
+            'timeout': 99999999,
+            'net_read_timeout': 9999999
         }
     }
 
