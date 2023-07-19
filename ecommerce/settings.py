@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-j3as3&cg=cfs!g9#&sh%3ldkb7yt@kplaqvw*o4s0(*lh=5^9$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["tredyshop.com", "www.tredyshop.com", "127.0.0.1"]
 
@@ -99,23 +99,43 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'httpdyme_tredyshopdb',
-        'USER': 'httpdyme_tredyshopadmin',
-        'PASSWORD': 'NHrH0EoT)b=.',
-        'HOST': 'localhost',
-        'PORT': '',
-        "OPTION": {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1",
-            "autocommit": True,
-            'timeout': 99999999,
-            'net_read_timeout': 9999999
-        }
-    }
 
-}
+if DEBUG == True:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'httpdyme_tredyshopdb',
+            'USER': 'httpdyme_tredyshopadmin',
+            'PASSWORD': 'NHrH0EoT)b=.',
+            'HOST': 'localhost',
+            'PORT': '',
+            "OPTION": {
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1",
+                "autocommit": True,
+                'timeout': 99999999,
+                'net_read_timeout': 9999999
+            }
+        }
+
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'httpdyme_tredyshopdb',
+            'USER': 'httpdyme_tredyshopadmin',
+            'PASSWORD': 'NHrH0EoT)b=.',
+            'HOST': 'localhost',
+            'PORT': '3306',
+            "OPTION": {
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1",
+                "autocommit": True,
+                'timeout': 99999999,
+                'net_read_timeout': 9999999
+            }
+        }
+
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
