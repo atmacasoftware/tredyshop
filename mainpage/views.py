@@ -161,3 +161,12 @@ def security_policy(request):
     })
 
     return render(request, 'frontend/information/terms_of_use.html', context)
+
+def kvkk(request):
+    context = {}
+    contracts = Contracts.objects.all().last()
+    context.update({
+        'contracts':contracts
+    })
+
+    return render(request, 'frontend/information/terms_of_use.html', context)

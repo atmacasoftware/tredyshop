@@ -100,42 +100,23 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 
-if DEBUG == True:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'httpdyme_tredyshopdb',
-            'USER': 'httpdyme_tredyshopadmin',
-            'PASSWORD': 'NHrH0EoT)b=.',
-            'HOST': 'localhost',
-            'PORT': '',
-            "OPTION": {
-                'init_command': "SET sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1",
-                "autocommit": True,
-                'timeout': 99999999,
-                'net_read_timeout': 9999999
-            }
-        }
 
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'httpdyme_tredyshopdb',
-            'USER': 'httpdyme_tredyshopadmin',
-            'PASSWORD': 'NHrH0EoT)b=.',
-            'HOST': 'localhost',
-            'PORT': '3306',
-            "OPTION": {
-                'init_command': "SET sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1",
-                "autocommit": True,
-                'timeout': 99999999,
-                'net_read_timeout': 9999999
-            }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'httpdyme_tredyshopdb',
+        'USER': 'httpdyme_tredyshopadmin',
+        'PASSWORD': 'NHrH0EoT)b=.',
+        'HOST': 'localhost',
+        'PORT': '',
+        "OPTION": {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1",
+            "autocommit": True,
+            'timeout': 99999999,
+            'net_read_timeout': 9999999
         }
-
     }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

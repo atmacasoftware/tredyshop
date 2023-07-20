@@ -36,7 +36,7 @@
                         Site Kullanım Şartları
                     </span>
                 </a>
-                <a href="faq.html" class="nav-menu__list-item">
+                <a href="{% url 'security_policy' %}" class="nav-menu__list-item {% if request.path == '/gizlilik-politikasi' %}active{% endif %}">
                     <span class="icon">
                         <i class="fa fa-user-secret"></i>
                     </span>
@@ -52,7 +52,7 @@
                         Çerezler
                     </span>
                 </a>
-                <a href="faq.html" class="nav-menu__list-item">
+                <a href="{% url 'kvkk' %}" class="nav-menu__list-item {% if request.path == '/kvkk-aydinlatma-metni' %}active{% endif %}">
                     <span class="icon">
                         <i class="fa fa-align-center"></i>
                     </span>
