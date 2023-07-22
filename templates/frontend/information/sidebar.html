@@ -44,7 +44,7 @@
                         Gizlilik Politikası
                     </span>
                 </a>
-                <a href="faq.html" class="nav-menu__list-item">
+                <a href="{% url 'cookies' %}" class="nav-menu__list-item {% if request.path == '/cerez-politikasi' %}active{% endif %}">
                     <span class="icon">
                         <i class="fa fa-cookie"></i>
                     </span>

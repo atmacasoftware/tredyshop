@@ -1,0 +1,59 @@
+{% extends 'frontend/information/index.html' %}
+{% load static %}
+
+{% block title %}<title>Çerez Politikası</title>{% endblock %}
+
+{% block information %}
+
+    <div class="page-container faqs mt-5">
+
+        <div class="page-section">
+            <div class="page-margin">
+                <div class="page-margin__content">
+                    <div class="page-section__body">
+                        <div class="row">
+                            {% include 'frontend/information/sidebar.html' %}
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div class="popular-questions">
+                                    <div class="page-section__header">
+                                        <h2>
+                                            Çerez Politikası
+                                        </h2>
+                                    </div>
+                                    <p>{{ contracts.cookie|safe }}</p>
+                                    <table>
+
+                                        <ul class="responsive-table">
+                                            <li class="table-header">
+                                                <div class="col col-1">Cookie Sağlayıcısı</div>
+                                                <div class="col col-1">Cookie İsmi</div>
+                                                <div class="col col-2">Cookie Amacı</div>
+                                                <div class="col col-1">Cookie Tipi</div>
+                                            </li>
+                                            {% for c in cookie %}
+                                                <li class="table-row">
+                                                    <div class="col col-1"
+                                                         data-label="Cookie Sağlayıcısı">{{ c.cookie_provider }}</div>
+                                                    <div class="col col-1"
+                                                         data-label="Cookie İsmi">{{ c.cookie_name }}</div>
+                                                    <div class="col col-2" data-label="Cookie Amacı">{{ c.cookie_aim }}
+                                                    </div>
+                                                    <div class="col col-1"
+                                                         data-label="Cookie Tipi">{{ c.cookie_type }}</div>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                {% include 'frontend/information/live_chat.html' %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

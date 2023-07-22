@@ -5,7 +5,7 @@ from django.db.models import Avg, Count
 from django.utils.safestring import mark_safe
 from django.template.defaultfilters import slugify
 from django.urls import reverse
-from categorymodel.models import MainCategory, SubCategory
+from categorymodel.models import MainCategory, SubCategory, SubBottomCategory
 from user_accounts.models import User
 
 
@@ -76,9 +76,11 @@ class Product(models.Model):
     )
 
     category = models.ForeignKey(MainCategory, on_delete=models.CASCADE, null=True, blank=False,
-                                 verbose_name="Ana Kategori", related_name="main_category")
+                                 verbose_name="1. Düzey Kategori", related_name="main_category")
     subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, null=True, blank=False,
-                                    verbose_name="Alt Kategori", related_name="sub_category")
+                                    verbose_name="2. Düzey Kategori", related_name="sub_category")
+    subbottomcategory = models.ForeignKey(SubBottomCategory, on_delete=models.CASCADE, null=True, blank=True,
+                                    verbose_name="3. Düzey Kategori", related_name="subbottom_category")
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Marka",
                               related_name="brands")
     title = models.CharField(max_length=50, verbose_name="Başlık")

@@ -49,18 +49,18 @@ class ImagesAdmin(admin.ModelAdmin):
     list_display = ['image', 'title', 'image_thumbnail']
 
 
-class ProductAdmin(admin.ModelAdmin):
+class ProductAdmin(ImportExportModelAdmin):
     list_display = ['stock_code', 'title', 'category', 'subcategory', 'brand', 'price', 'amount', 'status', 'image_tag']
     readonly_fields = ('image_tag',)
     list_filter = ['status']
     inlines = [ProductImageInline, ProductVariantsInline, ProductDescriptionInline, ProductSpecificationInline,
                ProductKeywordInline]
+    resource_class = ProductResource
 
-
-class BrandAdmin(admin.ModelAdmin):
+class BrandAdmin(ImportExportModelAdmin):
     list_display = ['title', 'is_active']
     list_filter = ['is_active']
-
+    resource_class = BrandResource
 
 class ReviewRatingAdmin(admin.ModelAdmin):
     list_display = ['product', 'user', 'rating', 'created_at']

@@ -261,6 +261,7 @@ class Cookies(models.Model):
     cookie_name = models.CharField(max_length=255, null=True, blank=True, verbose_name="Cookie İsmi")
     cookie_aim = models.CharField(max_length=255, null=True, blank=True, verbose_name="Cookie Amacı")
     cookie_type = models.CharField(max_length=255, null=True, blank=True, verbose_name="Cookie Tipi")
+    is_active = models.BooleanField(default=True, verbose_name="Aktif mi?", null=True)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

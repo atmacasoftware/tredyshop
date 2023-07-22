@@ -22952,7 +22952,7 @@ span.star:before {
 .social a {
     width: 46px;
     height: 45px;
-    background: #000;
+    background: #000!important;
     line-height: 45px;
     border-radius: 100%;
     -webkit-transition: all 0.3s ease 0s;
@@ -23175,11 +23175,7 @@ footer .f-top [class*="col-xs-"] {
         /* NEW - Chrome */
         display: flex;
         /* NEW, Spec - Opera 12.1, Firefox 20+ */
-        -moz-justify-content: flex-end;
-        -ms-justify-content: flex-end;
-        -webkit-box-pack: end;
-        justify-content: flex-end;
-        -ms-flex-pack: flex-end;
+        flex-direction: column;
     }
 }
 

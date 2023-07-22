@@ -1,6 +1,8 @@
 from django.db.models import Q, Count
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+
+from customer.models import Subscription
 from mainpage.models import *
 from product.models import Product, Brand, ReviewRating
 from orders.models import OrderProduct
@@ -170,3 +172,25 @@ def kvkk(request):
     })
 
     return render(request, 'frontend/information/terms_of_use.html', context)
+
+def cookies(request):
+    context = {}
+    contracts = Contracts.objects.all().last()
+    cookie = Cookies.objects.filter(is_active=True)
+    context.update({
+        'contracts': contracts,
+        'cookie':cookie
+    })
+
+    return render(request, 'frontend/information/cookies.html', context)
+
+def subscription(request):
+    if 'subscriptionBtn' in request.POST:
+        email = request.POST.get('email')
+        ip = request.META.get('REMOTE_ADDR')
+        if email != '':
+            if Subscription.objects.filter(email=email).exists():
+                return redirect(request.META.get('HTTP_REFERER'))
+            else:
+                Subscription.objects.create(email=email, ip=ip)
+            return redirect(request.META.get('HTTP_REFERER'))
