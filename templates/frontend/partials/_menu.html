@@ -1,4 +1,5 @@
 {% load static %}
+{% load static %}
 {% if request.path == '/' %}
     <div class="navbar-vertical">
         <button class="navbar-toggles"><span>Kategoriler</span></button>
@@ -6,25 +7,25 @@
 
     <div class="vertical-wrapper">
         <ul class="vertical-group">
-            <li class="vertical-item level1 mega-parent"><a href="#">Yeni Ürünler</a></li>
-            <li class="vertical-item level1 mega-parent"><a href="#">En Çok Satılan
-                <span
-                        class="h-ribbon e-red mg-l10">Hot</span></a></li>
             {% for mc in maincategories %}
                 <li class="vertical-item level1 vertical-drop"><a href="{{ mc.get_url }}">{{ mc.title }}</a>
                     <div class="menu-level-1 dropdown-menu vertical-menu v2 tvbg pd2 style1">
                         <ul class="level1">
-                            <li class="level2">
-                                <a href="{{ mc.get_url }}">{{ mc.title }}</a>
-                                <ul class="menu-level-2">
-                                    {% for sc in subcategories %}
-                                        {% if sc.maincategory.id == mc.id %}
-                                            <li class="level3"><a href="{{ sc.get_url }}" title="">{{ sc.title }}</a>
-                                            </li>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            </li>
+                            {% for sc in subcategories %}
+                                {% if sc.maincategory.id == mc.id %}
+                                    <li class="level2 col-md-4">
+                                        <a href="{{ sc.get_url }}">{{ sc.title }}</a>
+                                        <ul class="menu-level-2">
+                                            {% for sbc in subbottomcategories %}
+                                                {% if sbc.subcategory.id == sc.id %}
+                                                    <li class="level3"><a href="{{ sbc.get_url }}"
+                                                                          title="">{{ sbc.title }}</a></li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
                         </ul>
                     </div>
                 </li>
@@ -38,24 +39,25 @@
     </div>
     <div class="vertical-wrapper">
         <ul class="vertical-group">
-            <li class="vertical-item level1 mega-parent"><a href="#">Yeni Ürünler</a></li>
-            <li class="vertical-item level1 mega-parent"><a href="#">En Çok Satılan <span
-                    class="h-ribbon e-red mg-l10">Hot</span></a></li>
             {% for mc in maincategories %}
                 <li class="vertical-item level1 vertical-drop"><a href="{{ mc.get_url }}">{{ mc.title }}</a>
                     <div class="menu-level-1 dropdown-menu vertical-menu v2 tvbg pd2 style1">
                         <ul class="level1">
-                            <li class="level2">
-                                <a href="#">{{ mc.title }}</a>
-                                <ul class="menu-level-2">
-                                    {% for sc in subcategories %}
-                                        {% if sc.maincategory.id == mc.id %}
-                                            <li class="level3"><a href="{{ sc.get_url }}" title="">{{ sc.title }}</a>
-                                            </li>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            </li>
+                            {% for sc in subcategories %}
+                                {% if sc.maincategory.id == mc.id %}
+                                    <li class="level2 col-md-4">
+                                        <a href="{{ sc.get_url }}">{{ sc.title }}</a>
+                                        <ul class="menu-level-2">
+                                            {% for sbc in subbottomcategories %}
+                                                {% if sbc.subcategory.id == sc.id %}
+                                                    <li class="level3"><a href="{{ sbc.get_url }}"
+                                                                          title="">{{ sbc.title }}</a></li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
                         </ul>
                     </div>
                 </li>

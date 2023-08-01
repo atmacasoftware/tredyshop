@@ -1,0 +1,34 @@
+{% extends 'backend/layout.html' %}
+{% load static %}
+
+{% block title %}<title>HaydiGiy/Modaymış Ürünleri Ekle/Güncelle</title>{% endblock %}
+
+{% block modaymis %}
+
+    <div class="card mt-5">
+        <div class="card-header">
+            HaydiGiy / Modaymış Ürünleri Yükle / Güncelle
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Veri Yükle</h5>
+            <p class="card-text">Butona basarak verilerinizi yükleyebilir veya güncelleyebilirsiniz.</p>
+            <div class="row">
+                <div class="col-lg-6">
+                    <form action="" method="post" class="w-100">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-block w-100 btn-primary" id="modaymisUpload" name="upload">Veri Yükle</button>
+                    </form>
+                </div>
+                <div class="col-lg-6">
+                    <form action="" method="post" class="w-100">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-block w-100 btn-success" id="modaymisUpdate" name="update">Veri Güncelle
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+

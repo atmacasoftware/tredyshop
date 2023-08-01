@@ -8,4 +8,5 @@ urlpatterns = [
     path('favourite', ajax_favourite, name="ajax_favourite"),
     path('ajaxcolor', ajaxcolor, name="ajaxcolor"),
     path('stockalarm', ajax_stockalarm, name="ajax_stockalarm"),
+    path('haydi-giy-modaymis/xml/veri-yukle-guncelle/', modaymis_product_load, name="modaymis_product_load"),
 ]

@@ -137,12 +137,12 @@
                         <nav class="main-menu flex align-center">
                             <div class="collapse navbar-collapse" id="myNavbar">
                                 <ul class="nav navbar-nav js-menubar">
-                                    <li class="level1 active hassub"><a href="#">Kampanyalar</a></li>
-                                    <li class="level1 dropdown hassub"><a href="#">Süper Fırsatlar<span
+                                    <li class="level1 active hassub"><a href="{% url 'new_product' %}">Yeni Ürünler<span
+                                            class="h-ribbon h-pos e-red">HOT</span></a></li>
+                                    <li class="level1 active hassub"><a href="{% url 'most_sell_product' %}">En Çok Satılan<span
+                                            class="h-ribbon h-pos e-skyblue">MOST</span></a></li>
+                                    <li class="level1 dropdown hassub"><a href="{% url 'most_discount_product' %}">Süper Fırsatlar<span
                                             class="h-ribbon h-pos e-green">sale</span></a>
-                                    </li>
-                                    <li class="level1 active dropdown">
-                                        <a href="#">Müşteri Destek</a>
                                     </li>
                                     <li class="level1 active dropdown">
                                         <a href="#">Blog</a>
@@ -152,7 +152,7 @@
                         </nav>
                         <div class="header-bottom-right hidden-xs hidden-sm">
                             <img src="{% static 'img/icon-ship.png' %}" alt="" class="img-reponsive">
-                            <span>{{ setting.free_shipping }} ve üzeri alışverişlerde ücretsiz kargo</span>
+                            <span>{{ setting.free_shipping }} TL ve üzeri alışverişlerde ücretsiz kargo</span>
                         </div>
                     </div>
                 </div>

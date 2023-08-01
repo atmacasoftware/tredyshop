@@ -1,10 +1,15 @@
 {% extends 'frontend/layout.html' %}
 {% load static %}
 {% block title %}<title>TredyShop - Kalitenin Adresi</title>{% endblock %}
+{% block seodescription %}
+    <meta name="description" content="{{ setting.description }}">{% endblock %}
+{% block seokeyword %}
+    <meta name="keywords" content="{{ setting.keywords }}">{% endblock %}
+{% block canonical %}
+    <link rel="canonical" href="https://www.tredyshop.com">{% endblock %}
 
 {% block mainpage %}
 
-    <!-- /header -->
     <section class="all-s">
         <div class="ads-group v2 nospc">
             <div class="container container-240">
@@ -15,13 +20,19 @@
                             <div class="e-slide v2 js-slider-3items">
                                 {% for ms in sliders %}
                                     <div class="e-slide-img">
-                                        <a href="#"><img src="{{ ms.get_image }}" alt=""></a>
+                                        <a href="{% url 'slider_info' ms.slug %}"><img src="{{ ms.get_image }}" alt=""></a>
                                         <div class="slide-content v2">
-                                            <p class="cate v2">{{ ms.subtitle }}</p>
-                                            <h3 class="v2" style="color: {{ ms.title_color }}">{{ ms.title }}</h3>
-                                            <a href="{% if ms.type == 'Bilgi' or ms.type == 'Duyuru' %}{% url 'slider_info' ms.slug %}{% endif %}"
-                                               class="slide-btn e-yl-gradient">{{ ms.button }}<i
-                                                    class="ion-ios-arrow-forward"></i></a>
+                                            {% if ms.subtitle != None %}
+                                                <p class="cate v2">{{ ms.subtitle }}</p>
+                                            {% endif %}
+                                            {% if ms.button != None %}
+                                                <a href="
+
+
+                                                        {% if ms.type == 'Bilgi' or ms.type == 'Duyuru' %}{% url 'slider_info' ms.slug %}{% endif %}"
+                                                   class="slide-btn e-yl-gradient">{{ ms.button }}<i
+                                                        class="ion-ios-arrow-forward"></i></a>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 {% endfor %}
@@ -34,28 +45,20 @@
 
 
         <div class="homepage-banner">
-            <div class="container container-240">
+            <div class="container container-240 mt-30">
                 <div class="row">
                     <div class="col-md-6 col-sm-6 col-xs-6">
                         <div class="banner-img banner-img2">
-                            <a href="#"><img src="{% static 'img/banner/h1_b2.jpg' %}" alt=""
-                                             class="img-responsive"></a>
-                            <div class="h-banner-content">
-                                <p class="content-name">The pro stage for your home</p>
-                                <p class="content-price">From <span class="red">69.99</span></p>
-                                <a href="#" class="btn-banner">Shop now<i class="ion-ios-arrow-forward"></i></a>
-                            </div>
+                            <a href="{% url 'under_50_price' %}"><img src="{% static 'img/banner/under_price.jpg' %}"
+                                                                      alt=""
+                                                                      class="img-responsive"></a>
                         </div>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6">
                         <div class="banner-img banner-img2">
-                            <a href="#"><img src="{% static 'img/banner/h1_b3.jpg' %}" alt=""
-                                             class="img-responsive"></a>
-                            <div class="h-banner-content">
-                                <p class="content-name">Smart speaker for music lovers</p>
-                                <p class="content-price">From <span class="red">39.99</span></p>
-                                <a href="#" class="btn-banner">Shop now<i class="ion-ios-arrow-forward"></i></a>
-                            </div>
+                            <a href="{% url 'most_discount_product' %}"><img
+                                    src="{% static 'img/banner/most_discount.jpg' %}" alt=""
+                                    class="img-responsive"></a>
                         </div>
                     </div>
                 </div>
@@ -79,7 +82,7 @@
                                 <div class="product-img v2">
                                     <a href="{{ most_seller.get_url }}"><img
                                             src="{{ most_seller.get_image }}" alt=""
-                                            class="img-reponsive"></a>
+                                            class="img-reponsive" style="height: 300px; width: auto"></a>
                                 </div>
                                 <div class="product-info">
                                     <div class="color-group">
@@ -146,7 +149,7 @@
                                             <div class="product-img">
                                                 <a href="{{ ms2.get_url }}"><img
                                                         src="{{ ms2.get_image }}" alt=""
-                                                        class="img-reponsive"></a>
+                                                        class="img-reponsive" style="height: 250px;width: auto;"></a>
                                             </div>
                                             <div class="product-info">
                                                 <div class="color-group">
@@ -209,7 +212,7 @@
                                             <div class="product-img">
                                                 <a href="{{ ms3.get_url }}"><img src="{{ ms3.get_image }}"
                                                                                  alt=""
-                                                                                 class="img-reponsive"></a>
+                                                                                 class="img-reponsive" style="width: auto;"></a>
                                             </div>
                                             <div class="product-info">
                                                 <div class="color-group">
@@ -345,7 +348,7 @@
                     <h1>Yeni Yayınlananlar</h1>
                 </div>
                 <ul class="product-tab-sw2">
-                    {% for c in maincategories %}
+                    {% for c in maincategories|slice:7 %}
                         <li class="{% if forloop.counter == 1 %}active{% endif %}"><a data-toggle="tab"
                                                                                       href="#releases-{{ c.slug }}"
                                                                                       aria-expanded="true">{{ c.title }}</a>
@@ -353,7 +356,7 @@
                     {% endfor %}
                 </ul>
                 <div class="tab-content">
-                    {% for c in maincategories %}
+                    {% for c in maincategories|slice:7 %}
                         <div id="releases-{{ c.slug }}"
                              class="tab-pane fade {% if forloop.counter == 1 %}in active{% endif %}">
                             <div class="owl-carousel owl-theme owl-cate v3 js-owl-cate">
@@ -362,8 +365,8 @@
                                         <div class="product-item">
                                             <div class="pd-bd product-inner">
                                                 <div class="product-img">
-                                                    <a href="{{ p.get_url }}"><img src="{{ p.get_image }}" alt=""
-                                                                                   class="img-reponsive"></a>
+                                                    <a href="{{ p.get_url }}" style="display: flex; justify-content: center; align-items: center;"><img src="{{ p.get_image }}" alt=""
+                                                                                   class="img-reponsive" style="height: 200px; width: auto;"></a>
                                                     {% if p.discountRate != None %}
                                                         <div class="ribbon-price red">
                                                             <span>- {{ p.discountRate }}% </span></div>
@@ -416,7 +419,7 @@
                 <div class="owl-carousel owl-theme owl-brand js-owl-brand">
                     {% for b in brands %}
                         <div class="brand-item">
-                            <a href="#" class="hover-images"><img src="{{ b.get_image }}" alt=""></a>
+                            <a href="{{ b.get_url }}" class="hover-images"><span>{{ b.title }}</span></a>
                         </div>
                     {% endfor %}
                 </div>
@@ -428,13 +431,13 @@
         <div class="e-category mt-30">
             <div class="container container-240">
                 <div class="row">
-                    <div class="col-xs-12 col-sm-4 col-md-4">
+                    <div class="col-xs-12 col-sm-4 col-md-4" style="margin-bottom: 30px;">
                         {% include 'frontend/partials/__top_like_product.html' %}
                     </div>
-                    <div class="col-xs-12 col-sm-4 col-md-4">
+                    <div class="col-xs-12 col-sm-4 col-md-4" style="margin-bottom: 30px;">
                         {% include 'frontend/partials/__top_rated_product.html' %}
                     </div>
-                    <div class="col-xs-12 col-sm-4 col-md-4">
+                    <div class="col-xs-12 col-sm-4 col-md-4" style="margin-bottom: 30px;">
                         {% include 'frontend/partials/__top_selling_product.html' %}
                     </div>
                 </div>

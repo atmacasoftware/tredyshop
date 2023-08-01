@@ -1,0 +1,47 @@
+{% extends 'frontend/layout.html' %}
+{% load static %}
+
+{% block title %}<title>Bir Hata Oluştu</title>{% endblock %}
+
+{% block page_error %}
+    <hr>
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <div class="page-container error">
+        <!-- ~~~~~~~~~~~~~~~~~ Error static content section [START] ~~~~~~~~~~~~~~~~~ -->
+        <div class="page-section static-message">
+            <div class="page-margin">
+                <div class="page-margin__content">
+                    <div class="page-section__body">
+                        <div class="error-page">
+                            <div class="error-page__code">
+                                <img src="{% static 'img/info-gf/500-error.png' %}" alt="IMG">
+                            </div>
+                            <div class="error-page__body">
+                                <h2>
+                                    Oops, Bir Hata Oluştu!
+                                </h2>
+                                <p>
+                                    İsteğiniz işlenirken sunucu bilinmeyen bir nedenle çöktü. Sayfayı yenileyin veya hata tekrarlanırsa bizimle iletişime geçin veya bir süre bekleyip tekrar deneyin.
+                                </p>
+                                <div class="btn-controls">
+                                    <div class="btn-control__item">
+                                        <a href="{% url 'mainpage' %}" class="a-block">
+                                            <div class="btn btn-primary btn-icon btn-lg outline">
+                                                <span class="icon" >
+                                                    <i class="fa fa-home"></i>
+                                                </span>
+                                                <span class="text" style="color: white;">
+                                                    Anasayfaya Git
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

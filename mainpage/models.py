@@ -1,11 +1,11 @@
-from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
 from django.utils.safestring import mark_safe
-from django.utils.text import slugify
 from autoslug import AutoSlugField
 from django.urls import reverse
 from product.models import Product
-
+from django_ckeditor_5.fields import CKEditor5Field
+from django.template import defaultfilters
+from unidecode import unidecode
 
 # Create your models here.
 
@@ -62,11 +62,7 @@ class City(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.id and not self.slug:
-            self.title = self.title.replace("ı", "i")
-            self.title = self.title.replace("ö", "o")
-            self.title = self.title.replace("ü", "u")
-            self.title = self.title.replace("ş", "s")
-            slug = slugify(self.title)
+            slug = defaultfilters.slugify(unidecode(self.title))
             slug_exists = True
             counter = 1
             self.slug = slug
@@ -99,11 +95,7 @@ class County(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.id and not self.slug:
-            self.title = self.title.replace("ı", "i")
-            self.title = self.title.replace("ö", "o")
-            self.title = self.title.replace("ü", "u")
-            self.title = self.title.replace("ş", "s")
-            slug = slugify(self.title)
+            slug = defaultfilters.slugify(unidecode(self.title))
             slug_exists = True
             counter = 1
             self.slug = slug
@@ -127,16 +119,16 @@ class Slider(models.Model):
     )
 
     title = models.CharField(max_length=40, null=True, blank=False, verbose_name="Başlık")
-    title_color = models.CharField(max_length=40, verbose_name="Başlık Rengi", null=True, blank=False)
+    title_color = models.CharField(max_length=40, verbose_name="Başlık Rengi", null=True, blank=True)
     subtitle = models.CharField(max_length=40, null=True, blank=True, verbose_name="Alt Başlık")
     subtitle_color = models.CharField(max_length=40, verbose_name="Alt Başlık Rengi", null=True, blank=True)
-    button = models.CharField(max_length=40, null=True, blank=False, verbose_name="Button Yazısı")
-    button_color = models.CharField(max_length=40, verbose_name="Buton Rengi", null=True, blank=False)
+    button = models.CharField(max_length=40, null=True, blank=True, verbose_name="Button Yazısı")
+    button_color = models.CharField(max_length=40, verbose_name="Buton Rengi", null=True, blank=True)
     button_link = models.CharField(max_length=300, verbose_name="Gideceği Adres", null=True, blank=True)
     image = models.ImageField(blank=False, upload_to='img/slider/', null=True, verbose_name="Resim",
                               help_text="1071px x 593px")
     type = models.CharField(choices=TYPE, max_length=30, verbose_name="Slider Tipi", null=True, default="Bilgi")
-    content = RichTextUploadingField(verbose_name="İçerik", null=True, blank=True)
+    content = CKEditor5Field('İçerik', config_name='extends', null=True)
     is_publish = models.BooleanField(default=True, verbose_name="Yayınlansın", null=True)
     slug = AutoSlugField(populate_from="title", unique=True, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, verbose_name="Oluşturulma Tarihi")
@@ -148,7 +140,7 @@ class Slider(models.Model):
         ordering = ['id']
 
     def __str__(self):
-        return f"{self.title}"
+        return f"{str(self.id)}"
 
     def image_tag(self):
         return mark_safe('<img src="{}" height="50"/>'.format(self.image.url))
@@ -162,12 +154,8 @@ class Slider(models.Model):
             return None
 
     def save(self, *args, **kwargs):
-        if not self.id and not self.slug:
-            self.title = self.title.replace("ı", "i")
-            self.title = self.title.replace("ö", "o")
-            self.title = self.title.replace("ü", "u")
-            self.title = self.title.replace("ş", "s")
-            slug = slugify(self.title)
+        if not self.id and not self.slug and self.title != '':
+            slug = defaultfilters.slugify(unidecode(self.title))
             slug_exists = True
             counter = 1
             self.slug = slug
@@ -204,11 +192,7 @@ class MostSearchingKeyword(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.id and not self.slug:
-            self.keyword = self.keyword.replace("ı", "i")
-            self.keyword = self.keyword.replace("ö", "o")
-            self.keyword = self.keyword.replace("ü", "u")
-            self.keyword = self.keyword.replace("ş", "s")
-            slug = slugify(self.keyword)
+            slug = defaultfilters.slugify(unidecode(self.title))
             slug_exists = True
             counter = 1
             self.slug = slug
@@ -241,12 +225,12 @@ class SSS(models.Model):
 
 
 class Contracts(models.Model):
-    delivery = RichTextUploadingField(verbose_name="Teslimat Koşulları", null=True, blank=True)
-    membership = RichTextUploadingField(verbose_name="Üyelik Sözleşmesi", null=True, blank=True)
-    term_of_use = RichTextUploadingField(verbose_name="Site Kullanım Şartları", null=True, blank=True)
-    security = RichTextUploadingField(verbose_name="Gizlilik Politikası", null=True, blank=True)
-    kvkk = RichTextUploadingField(verbose_name="KVKK Aydınlatma Politası", null=True, blank=True)
-    cookie = RichTextUploadingField(verbose_name="Cookies", null=True, blank=True)
+    delivery = CKEditor5Field('Teslimat Koşulları', config_name='extends', null=True, blank=True)
+    membership = CKEditor5Field('Üyelik Sözleşmesi', config_name='extends', null=True, blank=True)
+    term_of_use = CKEditor5Field('Site Kullanım Şartları', config_name='extends', null=True, blank=True)
+    security = CKEditor5Field('Gizlilik Politikası', config_name='extends', null=True, blank=True)
+    kvkk = CKEditor5Field('KVKK Aydınlatma Politası', config_name='extends', null=True, blank=True)
+    cookie = CKEditor5Field('Cookies', config_name='extends', null=True, blank=True)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

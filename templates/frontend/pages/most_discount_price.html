@@ -1,0 +1,107 @@
+{% extends 'frontend/layout.html' %}
+{% load static %}
+
+{% block title %}<title>Yeni Ürünler</title>{% endblock %}
+
+{% block store %}
+    <hr>
+    <div class="container container-240">
+        <div class="e-product">
+            <ul class="breadcrumb v4">
+                <li><a href="{% url 'mainpage' %}">Anasayfa</a></li>
+                <li class="active">Yeni Ürünler</li>
+            </ul>
+            <div class="pd-banner">
+                <a href="{% url 'new_product' %}" class="image-bd effect_img2"><img
+                        src="{% static 'img/banner/most_discount.jpg' %}" alt="" class="img-reponsive"></a>
+            </div>
+            <div class="pd-top">
+                <h1 class="title">Yeni Ürünler</h1>
+            </div>
+
+            <div class="product-collection-grid product-grid spc1">
+                <div class="row">
+                    {% for p in page_obj %}
+                        <div class="col-xs-6 col-sm-4 col-md-4 col-lg-3 product-item">
+                            <div class="pd-bd product-inner">
+                                <div class="product-img">
+                                    <a href="{{ p.get_url }}"><img src="{{ p.get_image }}" alt="" class="img-reponsive"></a>
+                                </div>
+                                <div class="product-info">
+                                    <div class="element-list element-list-middle">
+                                        <p class="product-cate">{{ p.category }}</p>
+                                        <h3 class="product-title"><a href="{{ p.get_url }}">{{ p.title }}</a></h3>
+                                        <div class="product-bottom">
+                                            <div class="product-price">
+                                                {% if p.is_discountprice == True %}
+                                                    <span class="red">{{ p.discountprice }} TL</span>
+                                                    <span class="old">{{ p.price }} TL</span>
+                                                {% else %}
+                                                    <span>{{ p.price }} TL</span>
+                                                {% endif %}
+                                            </div>
+                                            <a href="{{ p.get_url }}" class="btn-icon btn-view">
+                                                <span class="icon-bg icon-view"></span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="product-button-group"
+                                         style="display: flex; justify-content: center;align-items: center;">
+                                        <a href="{{ p.get_url }}" class="btn btn-gradient">Ürünü
+                                            Gör
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="pd-middle space-v1">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}"><i
+                                class="fa fa-chevron-left"
+                                aria-hidden="true"></i></a></li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link"><i class="fa fa-chevron-left"
+                                                                                  aria-hidden="true"></i></span></li>
+                    {% endif %}
+
+                    {% if page_obj.number|add:'-4' > 1 %}
+                        <li class="page-item"><a class="page-link"
+                                                 href="?page={{ page_obj.number|add:'-2' }}">&hellip;</a>
+                        </li>
+                    {% endif %}
+
+                    {% for i in page_obj.paginator.page_range %}
+                        {% if page_obj.number == i %}
+                            <li class="active page-item"><span class="page-link">{{ i }} <span
+                                    class="sr-only">(current)</span></span></li>
+                        {% elif i > page_obj.number|add:'-5' and i < page_obj.number|add:'5' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.paginator.num_pages > page_obj.number|add:'4' %}
+                        <li class="page-item"><a class="page-link"
+                                                 href="?page={{ page_obj.number|add:'5' }}">&hellip;</a>
+                        </li>
+                    {% endif %}
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}"><i
+                                class="fa fa-chevron-right"
+                                aria-hidden="true"></i></a></li>
+                    {% else %}
+                        <li class="disabled page-item"><span class="page-link"><i class="fa fa-chevron-right"
+                                                                                  aria-hidden="true"></i></span></li>
+                    {% endif %}
+
+                </ul>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

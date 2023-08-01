@@ -25,7 +25,7 @@
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header">
                                                     <button class="accordion-button collapsed" type="button"
-                                                            data-bs-toggle="collapse" data-bs-target="#faq-1">
+                                                            data-bs-toggle="collapse" data-bs-target="#faq-{{ s.id }}">
                                                     <span class="text">
                                                         <span class="emoji-inline">
                                                             <i class="fa fa-{{ s.icon }}"></i>
@@ -57,7 +57,7 @@
                                                     </span>
                                                     </button>
                                                 </h2>
-                                                <div id="faq-1" class="accordion-collapse collapse">
+                                                <div id="faq-{{ s.id }}" class="accordion-collapse collapse">
                                                     <div class="accordion-body">
                                                         {{ s.answer }}
                                                     </div>

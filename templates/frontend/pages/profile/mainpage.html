@@ -1,7 +1,7 @@
 {% extends 'frontend/layout.html' %}
 {% load static %}
 
-
+{% block title %}<title>{{ request.user.get_full_name }} - Hesabım</title>{% endblock %}
 {% block profile %}
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
     <div class="container container-240 page-container profile mt-20">

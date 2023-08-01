@@ -1,7 +1,7 @@
 {% extends 'frontend/layout.html' %}
 {% load static %}
 
-
+{% block title %}<title>{{ request.user.get_full_name }} - Değerlendirmelerim</title>{% endblock %}
 {% block profile %}
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
     <link rel="stylesheet" href="{% static 'css/venobox.min.css' %}">

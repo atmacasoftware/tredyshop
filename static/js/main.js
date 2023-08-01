@@ -13,6 +13,14 @@ jQuery(document).ready(function ($) {
     });
     // close quickview
 
+    var loader = document.getElementById("preloader");
+    window.addEventListener("load", function () {
+        setTimeout(function () {
+            loader.style.display = "none";
+        }, 1000);
+    })
+
+
     $(".quickview-close").on("click", function () {
         $('.quickview-wrapper').hide();
         $('.quickview-wrapper').removeClass('open');
@@ -147,9 +155,9 @@ jQuery(document).ready(function ($) {
         var maxQuantity = parseInt($('.js-number').attr('max'))
         // If is not undefined
 
-        if (quantity < maxQuantity){
+        if (quantity < maxQuantity) {
             $('.js-number').val(quantity + 1);
-        }else{
+        } else {
             $('.js-number').val(maxQuantity);
         }
 
@@ -170,7 +178,7 @@ jQuery(document).ready(function ($) {
 
             $('.js-number').val(quantity - 1);
 
-            if ($('.js-number').val() < 1){
+            if ($('.js-number').val() < 1) {
                 $('.js-number').val(1)
             }
         }

@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
@@ -7,6 +8,9 @@ from product.models import *
 from django.contrib import messages
 from django.core import serializers
 from django.http import JsonResponse
+from django.shortcuts import render
+
+from product.read_xml import modaymissaveXML2db, updateModaymisSaveXML2db
 
 
 # Create your views here.
@@ -119,6 +123,7 @@ def products_detail(request, product_slug):
             query += variant.title + ' Size:' + str(variant.size.code) + ' Color:' + str(variant.color)
         else:
             variants = Variants.objects.filter(product_id=product.id)
+            print(variants)
             colors = Variants.objects.filter(product_id=product.id, size_id=variants[0].size_id)
             sizes = Variants.objects.raw('SELECT * FROM product_variants WHERE product_id=%s GROUP BY size_id',
                                          [product.id])
@@ -205,3 +210,18 @@ def ajax_stockalarm(request):
         data = {'notify': 'error'}
 
     return JsonResponse({'data': data})
+
+@login_required(login_url="/yonetim-paneli/")
+def modaymis_product_load(request):
+    if request.user.is_superuser == True:
+        if 'upload' in request.POST:
+            modaymissaveXML2db()
+            messages.success(request, 'Veriler yüklendi!')
+            return redirect("modaymis_product_load")
+        if 'update' in request.POST:
+            updateModaymisSaveXML2db()
+            messages.success(request, 'Veriler güncelledi!')
+            return redirect("modaymis_product_load")
+    else:
+        return redirect("mainpage")
+    return render(request, "backend/pages/load_modaymis.html")

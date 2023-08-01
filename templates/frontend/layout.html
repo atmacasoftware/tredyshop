@@ -6,7 +6,15 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta name="copyright" content="Copyright 2023 tredyshop.com">
     {% block title %}<title></title>{% endblock %}
+    {% block seodescription %}
+        <meta name="description" content="">{% endblock %}
+    {% block seokeyword %}
+        <meta name="keywords" content="">{% endblock %}
+    {% block canonical %}
+        <link rel="canonical" href="">{% endblock %}
+    <meta name="yandex-verification" content="8ce085c46d937d94"/>
     <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/slick.css' %}">
     <link rel="stylesheet" href="{% static 'css/slick-theme.css' %}">
@@ -16,6 +24,8 @@
 </head>
 
 <body>
+
+{% include 'frontend/partials/__preloader.html' %}
 
 {% include 'frontend/partials/_navbar.html' %}
 
@@ -43,8 +53,13 @@
         {% endblock %}
         {% block information %}
         {% endblock %}
+        {% block page_error %}
+        {% endblock %}
     </div>
 </div>
+
+
+
 {% include 'frontend/partials/__feature.html' %}
 {% include 'frontend/partials/_footer.html' %}
 

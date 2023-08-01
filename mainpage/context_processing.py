@@ -9,8 +9,9 @@ from product.models import ReviewRating
 def categories(request):
     maincategories = MainCategory.objects.all()
     subcategories = SubCategory.objects.all()
+    subbottomcategories = SubBottomCategory.objects.all()
 
-    return dict(maincategories=maincategories, subcategories=subcategories)
+    return dict(maincategories=maincategories, subcategories=subcategories,subbottomcategories=subbottomcategories)
 
 
 def setting(request):

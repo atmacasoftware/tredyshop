@@ -14,16 +14,29 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path, include
 from django.conf import settings
 from django.views.generic import RedirectView
 from django.views.static import serve
 from django.contrib.auth import views as auth_views
 
+from product.sitemaps import ProductSitemap
+from categorymodel.sitemaps import MaincategorySitemap, SubbottomcategorySitemap, SubcategorySitemap
+
+sitemaps = {
+    'product': ProductSitemap,
+    'category': MaincategorySitemap,
+    'subcategory': SubcategorySitemap,
+    'subbottomcategory': SubbottomcategorySitemap,
+}
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('waiting/', include('waitingdeploy.urls')),
+    path('admin/', include('admin_honeypot.urls')),
+    path('yonetim-paneli/', admin.site.urls),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}),
     path('', include('product.urls')),
+    path('', include('categorymodel.urls')),
     path('', include('mainpage.urls')),
     path('', include('store.urls')),
     path('', include('customer.urls')),
@@ -48,6 +61,14 @@ urlpatterns = [
          name="password_reset_complete"),
 
     path('ckeditor/', include('ckeditor_uploader.urls')),
+    path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck_editor_5_upload_file"),
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
 ]
+
+admin.site.site_title = 'Tredy Shop Yönetimi'
+admin.site.site_header = 'Tredy Shop Yönetimi Paneli'
+admin.site.index_title = 'Tredy Shop Yönetimi Paneline Hoş Geldiniz'
+
+handler404 = 'mainpage.views.error_404_view'
+handler500 = 'mainpage.views.error_500_view'

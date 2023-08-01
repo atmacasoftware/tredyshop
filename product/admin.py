@@ -32,9 +32,10 @@ class ReviewImageInline(admin.TabularInline):
     model = ReviewRatingImages
     extra = 1
 
+
 class VariantsAdmin(admin.ModelAdmin):
-    list_display = ['title', 'product', 'color', 'size', 'price', 'is_discountprice', 'discountprice', 'quantity',
-                    'image_tag']
+    list_display = ['title', 'product', 'sku', 'color', 'size', 'price', 'trendyol_price', 'hepsiburada_price',
+                    'pttavm_price', 'is_discountprice', 'discountprice', 'quantity']
 
 
 class ProductVariantsInline(admin.TabularInline):
@@ -50,17 +51,22 @@ class ImagesAdmin(admin.ModelAdmin):
 
 
 class ProductAdmin(ImportExportModelAdmin):
-    list_display = ['stock_code', 'title', 'category', 'subcategory', 'brand', 'price', 'amount', 'status', 'image_tag']
-    readonly_fields = ('image_tag',)
+    list_display = ['id', 'xml_id', 'stock_code', 'barcode', 'title', 'category', 'subcategory', 'subbottomcategory',
+                    'brand', 'price', 'trendyol_price', 'hepsiburada_price', 'pttavm_price', 'amount', 'status']
+
     list_filter = ['status']
     inlines = [ProductImageInline, ProductVariantsInline, ProductDescriptionInline, ProductSpecificationInline,
                ProductKeywordInline]
+    list_per_page = 3000
+    search_fields = ['title', 'id', 'xml_id', 'stock_code', 'barcode']
     resource_class = ProductResource
+
 
 class BrandAdmin(ImportExportModelAdmin):
     list_display = ['title', 'is_active']
     list_filter = ['is_active']
     resource_class = BrandResource
+
 
 class ReviewRatingAdmin(admin.ModelAdmin):
     list_display = ['product', 'user', 'rating', 'created_at']
@@ -70,11 +76,14 @@ class ReviewRatingAdmin(admin.ModelAdmin):
 class QuestionAdmin(admin.ModelAdmin):
     list_display = ['user', 'product', 'ip', 'status', 'created_at']
 
+
 class StockAlarmAdmin(admin.ModelAdmin):
     list_display = ['user', 'product', 'ip', 'is_active', 'created_at']
 
+
 class ColorAdmin(ImportExportModelAdmin):
     list_display = ['name', 'code', 'color_tag']
+    list_per_page = 1000
     resource_class = ColorResource
 
 
@@ -92,5 +101,5 @@ admin.site.register(Favorite)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Color, ColorAdmin)
 admin.site.register(Size, SizeAdmin)
-admin.site.register(Variants, VariantsAdmin)
 admin.site.register(StockAlarm, StockAlarmAdmin)
+admin.site.register(Variants, VariantsAdmin)

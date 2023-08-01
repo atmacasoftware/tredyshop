@@ -2,6 +2,8 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.safestring import mark_safe
 from django.urls import reverse
+from django.template import defaultfilters
+from unidecode import unidecode
 # Create your models here.
 
 class MainCategory(models.Model):
@@ -31,16 +33,15 @@ class MainCategory(models.Model):
     def get_url(self):
         return reverse('product_by_category', args=[self.slug])
 
+    def get_absolute_url(self):
+        return reverse('first_category', args=[self.slug])
+
     def product_count(self):
         return self.main_category.count()
 
     def save(self, *args, **kwargs):
         if not self.id and not self.slug:
-            self.title = self.title.replace("ı", "i")
-            self.title = self.title.replace("ö", "o")
-            self.title = self.title.replace("ü", "u")
-            self.title = self.title.replace("ş", "s")
-            slug = slugify(self.title)
+            slug = defaultfilters.slugify(unidecode(self.title))
             slug_exists = True
             counter = 1
             self.slug = slug
@@ -58,7 +59,7 @@ class MainCategory(models.Model):
 
 class SubCategory(models.Model):
     maincategory = models.ForeignKey(MainCategory, on_delete=models.CASCADE, null=True, blank=False,
-                                     verbose_name="Ana Kategori")
+                                     verbose_name="Ana Kategori", related_name='subcategories')
     title = models.CharField(max_length=255, verbose_name="Kategori Adı")
     keyword = models.CharField(max_length=255, null=True)
     description = models.CharField(max_length=255, null=True)
@@ -83,16 +84,16 @@ class SubCategory(models.Model):
     def get_url(self):
         return reverse('product_by_subcategory', args=[self.maincategory.slug,self.slug])
 
+    def get_absolute_url(self):
+        return reverse('second_category', args=[self.slug])
+
     def product_count(self):
         return self.sub_category.count()
 
     def save(self, *args, **kwargs):
+
         if not self.id and not self.slug:
-            self.title = self.title.replace("ı", "i")
-            self.title = self.title.replace("ö", "o")
-            self.title = self.title.replace("ü", "u")
-            self.title = self.title.replace("ş", "s")
-            slug = slugify(self.title)
+            slug = defaultfilters.slugify(unidecode(self.title))
             slug_exists = True
             counter = 1
             self.slug = slug
@@ -112,7 +113,7 @@ class SubBottomCategory(models.Model):
     maincategory = models.ForeignKey(MainCategory, on_delete=models.CASCADE, null=True, blank=False,
                                      verbose_name="Ana Kategori")
     subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, null=True, blank=False,
-                                     verbose_name="Alt Kategori")
+                                     verbose_name="Alt Kategori", related_name='subbottomcategories')
     title = models.CharField(max_length=255, verbose_name="Kategori Adı")
     keyword = models.CharField(max_length=255, null=True)
     description = models.CharField(max_length=255, null=True)
@@ -137,16 +138,15 @@ class SubBottomCategory(models.Model):
     def get_url(self):
         return reverse('product_by_subbottomcategory', args=[self.maincategory.slug,self.subcategory.slug,self.slug])
 
+    def get_absolute_url(self):
+        return reverse('third_category', args=[self.slug])
+
     def product_count(self):
         return self.subbottom_category.count()
 
     def save(self, *args, **kwargs):
         if not self.id and not self.slug:
-            self.title = self.title.replace("ı", "i")
-            self.title = self.title.replace("ö", "o")
-            self.title = self.title.replace("ü", "u")
-            self.title = self.title.replace("ş", "s")
-            slug = slugify(self.title)
+            slug = defaultfilters.slugify(unidecode(self.title))
             slug_exists = True
             counter = 1
             self.slug = slug

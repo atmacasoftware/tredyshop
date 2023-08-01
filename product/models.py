@@ -3,11 +3,12 @@ from ckeditor.fields import RichTextField
 from django.db import models
 from django.db.models import Avg, Count
 from django.utils.safestring import mark_safe
-from django.template.defaultfilters import slugify
 from django.urls import reverse
 from categorymodel.models import MainCategory, SubCategory, SubBottomCategory
 from user_accounts.models import User
-
+from django_ckeditor_5.fields import CKEditor5Field
+from unidecode import unidecode
+from django.template import defaultfilters
 
 # Create your models here.
 
@@ -22,7 +23,7 @@ class Brand(models.Model):
     updated_at = models.DateTimeField(auto_now=True, null=True)
 
     class Meta:
-        verbose_name = "2) Markalar"
+        verbose_name = "2) Marka"
         verbose_name_plural = "2) Markalar"
 
     def __str__(self):
@@ -47,11 +48,7 @@ class Brand(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.id and not self.slug:
-            self.title = self.title.replace("ı", "i")
-            self.title = self.title.replace("ö", "o")
-            self.title = self.title.replace("ü", "u")
-            self.title = self.title.replace("ş", "s")
-            slug = slugify(self.title)
+            slug = defaultfilters.slugify(unidecode(self.title))
             slug_exists = True
             counter = 1
             self.slug = slug
@@ -75,6 +72,9 @@ class Product(models.Model):
         ("Yok", "Yok"),
     )
 
+
+    xml_id = models.CharField(max_length=100, null=True, blank=True, verbose_name="XML ID")
+    dropshipping = models.CharField(verbose_name="Platform", null=True, blank=True, max_length=255)
     category = models.ForeignKey(MainCategory, on_delete=models.CASCADE, null=True, blank=False,
                                  verbose_name="1. Düzey Kategori", related_name="main_category")
     subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, null=True, blank=False,
@@ -85,14 +85,20 @@ class Product(models.Model):
                               related_name="brands")
     title = models.CharField(max_length=50, verbose_name="Başlık")
     description = models.CharField(max_length=255, verbose_name="Açıklama")
+    keywords = models.CharField(max_length=500, verbose_name="Anahtar Kelime", null=True)
+    image_url = models.CharField(max_length=500, verbose_name="Resim Link", null=True)
     image = models.ImageField(blank=True, upload_to="img/product/", verbose_name="Kapak Resmi")
     price = models.DecimalField(verbose_name="Fiyat", decimal_places=2, max_digits=20)
+    trendyol_price = models.DecimalField(verbose_name="Trendyol Fiyatı", decimal_places=2, max_digits=20, null=True)
+    hepsiburada_price = models.DecimalField(verbose_name="Hepsiburada Fiyatı", decimal_places=2, max_digits=20, null=True)
+    pttavm_price = models.DecimalField(verbose_name="PttAvm Fiyatı", decimal_places=2, max_digits=20, null=True)
     discountprice = models.DecimalField(verbose_name="İndirimli Fiyat", decimal_places=2, max_digits=20, null=True,
                                         blank=True)
     is_discountprice = models.BooleanField(default=False, verbose_name="İndirimli Yayınla", null=True, blank=True)
     amount = models.IntegerField(verbose_name="Miktar")
     stock_code = models.CharField(verbose_name="Stok Kodu", null=True, blank=False, max_length=50)
-    detail = RichTextUploadingField(verbose_name="Detay")
+    barcode = models.CharField(verbose_name="Barkod", null=True, blank=True, max_length=100)
+    detail = CKEditor5Field('Detay', config_name='extends', null=True)
     variant = models.CharField(choices=TYPE, max_length=20, blank=True, default="Yok", null=True, verbose_name="Tip")
     is_publish = models.BooleanField(default=True, verbose_name="Yayında mı?", null=True)
     sell_count = models.BigIntegerField(default=0, verbose_name="Toplam Satış Sayısı", null=True, blank=True)
@@ -105,12 +111,14 @@ class Product(models.Model):
         return self.title
 
     class Meta:
-        verbose_name = "1) Ürünler"
+        verbose_name = "1) Ürün"
         verbose_name_plural = "1) Ürünler"
 
     def get_image(self):
         if self.image:
             return self.image.url
+        elif self.image_url:
+            return self.image_url
         else:
             return None
 
@@ -122,10 +130,10 @@ class Product(models.Model):
     def get_url(self):
         return reverse('products_detail', args=[self.slug])
 
-    def image_tag(self):
-        return mark_safe('<img src="{}" height="50"/>'.format(self.image.url))
+    def get_absolute_url(self):
+        return reverse('products_detail', args=[self.slug])
 
-    image_tag.short_description = 'Kapak'
+
 
     def favouriteStatus(self, request):
         favourite = self.favorite_product.filter(product=self, customer=request.user)
@@ -228,11 +236,7 @@ class Product(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.id and not self.slug:
-            self.title = self.title.replace("ı", "i")
-            self.title = self.title.replace("ö", "o")
-            self.title = self.title.replace("ü", "u")
-            self.title = self.title.replace("ş", "s")
-            slug = slugify(self.title)
+            slug = defaultfilters.slugify(unidecode(self.title))
             slug_exists = True
             counter = 1
             self.slug = slug
@@ -251,6 +255,7 @@ class Product(models.Model):
 class Images(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     title = models.CharField(max_length=50, blank=True, verbose_name="Başlık")
+    image_url = models.CharField(max_length=500, verbose_name="Resim Link", null=True)
     image = models.ImageField(blank=True, upload_to="img/product/", verbose_name="Resim")
 
     def __str__(self):
@@ -263,6 +268,8 @@ class Images(models.Model):
     def get_image(self):
         if self.image:
             return self.image.url
+        elif self.image_url:
+            return self.image_url
         else:
             return None
 
@@ -282,29 +289,35 @@ class Color(models.Model):
 
 
     class Meta:
-        verbose_name = "Renkler"
-        verbose_name_plural = "Renkler"
+        verbose_name = "9.1) Renk"
+        verbose_name_plural = "9.1) Renkler"
 
 class Size(models.Model):
     name = models.CharField(max_length=20, verbose_name="Boyut")
     code = models.CharField(max_length=10, blank=True, null=True, verbose_name="Boyut Kodu")
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     class Meta:
-        verbose_name = "Boyut/Kapasite"
-        verbose_name_plural = "Boyut/Kapasite"
+        verbose_name = "9.2) Boyut/Kapasite"
+        verbose_name_plural = "9.2) Boyut/Kapasite"
 
 
 class Variants(models.Model):
     title = models.CharField(max_length=200, blank=True, null=True, verbose_name="Başlık")
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Ürün")
+    sku = models.CharField(max_length=255, verbose_name="Kombinasyon SKU", null=True, blank=True)
+    gtin = models.CharField(max_length=255, verbose_name="Gtin", null=True, blank=True)
     color = models.ForeignKey(Color, on_delete=models.CASCADE, verbose_name="Renk", blank=True, null=True)
     size = models.ForeignKey(Size, on_delete=models.CASCADE, verbose_name="Boyut", null=True, blank=True)
     image_id = models.IntegerField(blank=True, null=True, default=0)
     quantity = models.IntegerField(default=1, verbose_name="Miktar")
     price = models.FloatField(default=0, verbose_name="Fiyat")
+    trendyol_price = models.DecimalField(verbose_name="Trendyol Fiyatı", decimal_places=2, max_digits=20, null=True, blank=True)
+    hepsiburada_price = models.DecimalField(verbose_name="Hepsiburada Fiyatı", decimal_places=2, max_digits=20,
+                                            null=True, blank=True)
+    pttavm_price = models.DecimalField(verbose_name="PttAvm Fiyatı", decimal_places=2, max_digits=20, null=True, blank=True)
     discountprice = models.DecimalField(verbose_name="İndirimli Fiyat", decimal_places=2, max_digits=20, null=True,
                                         blank=True)
     is_discountprice = models.BooleanField(default=False, verbose_name="İndirimli Yayınla", null=True, blank=True)

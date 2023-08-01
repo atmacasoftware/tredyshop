@@ -1,11 +1,9 @@
 from django.db.models import Q, Count
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-
 from customer.models import Subscription
 from mainpage.models import *
 from product.models import Product, Brand, ReviewRating
-from orders.models import OrderProduct
 from categorymodel.models import *
 
 
@@ -16,17 +14,24 @@ def index(request):
     sliders = Slider.objects.filter(is_publish=True)
     flash_deals = []
     all_product = Product.objects.all()
-    aaa = Product.objects.all().order_by("-sell_count")
-    new_release = all_product.order_by("-create_at")
+    new_release = all_product.order_by("-create_at")[:20]
     most_seller = all_product.order_by("-sell_count").first()
     most_seller2 = all_product.order_by("-sell_count")[1:2]
     most_seller3 = all_product.order_by("-sell_count")[2:3]
     most_seller4 = all_product.order_by("-sell_count")[3:4]
-
     reviewrating = ReviewRating.objects.all()
     liked_product = Product.objects.all().filter(reviewrating__rating__gte=4, reviewrating__rating__lte=6)[:3]
+    if liked_product.exists():
+        liked_product = Product.objects.all().filter(reviewrating__rating__gte=4, reviewrating__rating__lte=6)[:3]
+    else:
+        liked_product = Product.objects.all().order_by("?")[:3]
     most_count = Product.objects.filter(reviewrating__in=reviewrating).annotate(rating_count=Count('id')).order_by(
         '-rating_count')[:3]
+    if most_count.exists():
+        most_count = Product.objects.filter(reviewrating__in=reviewrating).annotate(rating_count=Count('id')).order_by(
+            '-rating_count')[:3]
+    else:
+        most_count = Product.objects.all().order_by('?')[:3]
     most_selling = Product.objects.all().order_by("-sell_count")[:3]
 
     brands = Brand.objects.all()
@@ -39,7 +44,7 @@ def index(request):
     context.update({
         'sliders': sliders,
         'new_release': new_release,
-        'flash_deals': flash_deals,
+        'flash_deals': flash_deals[:12],
         'most_seller': most_seller,
         'most_seller2': most_seller2,
         'most_seller3': most_seller3,
@@ -115,7 +120,7 @@ def slider_info(request, slider_slug):
     context = {}
     slider = Slider.objects.get(slug=slider_slug)
     context.update({
-        'slider':slider,
+        'slider': slider,
     })
     return render(request, 'frontend/pages/slider_info.html', context)
 
@@ -124,54 +129,60 @@ def sss(request):
     context = {}
     faq = SSS.objects.all()
     context.update({
-        'faq':faq,
+        'faq': faq,
     })
     return render(request, 'frontend/information/faq.html', context)
+
 
 def delivery_conditional(request):
     context = {}
     contracts = Contracts.objects.all().last()
     context.update({
-        'contracts':contracts
+        'contracts': contracts
     })
 
     return render(request, 'frontend/information/delivery_conditional.html', context)
+
 
 def membership_contract(request):
     context = {}
     contracts = Contracts.objects.all().last()
     context.update({
-        'contracts':contracts
+        'contracts': contracts
     })
 
     return render(request, 'frontend/information/membership_contract.html', context)
+
 
 def terms_of_use(request):
     context = {}
     contracts = Contracts.objects.all().last()
     context.update({
-        'contracts':contracts
+        'contracts': contracts
     })
 
     return render(request, 'frontend/information/terms_of_use.html', context)
+
 
 def security_policy(request):
     context = {}
     contracts = Contracts.objects.all().last()
     context.update({
-        'contracts':contracts
+        'contracts': contracts
     })
 
-    return render(request, 'frontend/information/terms_of_use.html', context)
+    return render(request, 'frontend/information/security_policy.html', context)
+
 
 def kvkk(request):
     context = {}
     contracts = Contracts.objects.all().last()
     context.update({
-        'contracts':contracts
+        'contracts': contracts
     })
 
-    return render(request, 'frontend/information/terms_of_use.html', context)
+    return render(request, 'frontend/information/kvkk.html', context)
+
 
 def cookies(request):
     context = {}
@@ -179,10 +190,11 @@ def cookies(request):
     cookie = Cookies.objects.filter(is_active=True)
     context.update({
         'contracts': contracts,
-        'cookie':cookie
+        'cookie': cookie
     })
 
     return render(request, 'frontend/information/cookies.html', context)
+
 
 def subscription(request):
     if 'subscriptionBtn' in request.POST:
@@ -194,3 +206,11 @@ def subscription(request):
             else:
                 Subscription.objects.create(email=email, ip=ip)
             return redirect(request.META.get('HTTP_REFERER'))
+
+
+def error_404_view(request, exception):
+    return render(request, 'frontend/partials/404.html', status=404)
+
+
+def error_500_view(request):
+    return render(request, 'frontend/partials/500.html', status=500)
