@@ -1,0 +1,184 @@
+{% extends 'backend/adminpage/layout.html' %}
+{% load static %}
+{% load mathfilters %}
+
+{% block title %}<title>Alınan Faturalar</title>{% endblock %}
+
+{% block faturalar %}
+
+
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Alınan Faturalar</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'mainpage' %}">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Alınan Faturalar</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center flex-row mb-5">
+                                <div class="export">
+                                    <a href="{% url 'alinan_faturalar_export_excel' %}" class="btn btn-warning">
+                                        <i class="fas fa-download"></i>
+                                        Excel
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Alınan Faturalar</h3>
+
+                                    <div class="card-tools">
+                                        <div class="input-group input-group-sm" style="width: 250px;">
+                                            <input type="text" name="table_search" id="search"
+                                                   onkeyup="searchFunction();"
+                                                   class="form-control float-right"
+                                                   placeholder="Arama">
+
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-default">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.card-header -->
+                                <div class="card-body table-responsive p-0">
+                                    <table class="table table-hover text-nowrap" id="paymentTable">
+                                        <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Yıl</th>
+                                            <th>Ay</th>
+                                            <th>KDV Hariç Tutar (TL)</th>
+                                            <th>KDV Oranı</th>
+                                            <th>Toplam Tutar</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for fatura in faturalar %}
+                                            <tr>
+                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{ fatura.get_year_display }}</td>
+                                                <td>{{ fatura.get_month_display }}</td>
+                                                <td>{{ fatura.price }}</td>
+                                                <td>{{ fatura.tax_rate }}</td>
+                                                <td>{{ fatura.price|mul:fatura.tax_rate|div:100|add:fatura.price|floatformat:2 }}</td>
+                                                <td>
+
+                                                    <a href="{% url 'update_alinan_fatura' fatura.id %}"
+                                                       target="_blank"
+                                                       class="btn btn-sm btn-success">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+
+                                                    <button type="button" class="btn btn-sm btn-danger"
+                                                            data-toggle="modal"
+                                                            data-target="#modal-delete-{{ fatura.id }}">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                    <div class="modal fade" id="modal-delete-{{ fatura.id }}">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h4 class="modal-title">Silmek istediğinize emin
+                                                                        misiniz?</h4>
+                                                                    <button type="button" class="close"
+                                                                            data-dismiss="modal"
+                                                                            aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <h5 class="text-bold">Silinecek fatura:</h5>
+                                                                    <p>No: {{ forloop.counter }}</p>
+                                                                </div>
+                                                                <div class="modal-footer justify-content-between">
+                                                                    <button type="button" class="btn btn-default"
+                                                                            data-dismiss="modal">
+                                                                        Kapat
+                                                                    </button>
+                                                                    <a href="{% url 'delete_alinan_fatura' fatura.id %}"
+                                                                       class="btn btn-danger">Sil</a>
+                                                                </div>
+                                                            </div>
+                                                            <!-- /.modal-content -->
+                                                        </div>
+                                                        <!-- /.modal-dialog -->
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr>
+                                                <td colspan="8">
+                                                    <span
+                                                            style="display: block; text-align: center;padding-top: 10px; padding-bottom: 10px;">Herhangi bir veri bulunmamaktadır.</span>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <span id="no-data"
+                                          style="display: block; text-align: center;padding-top: 10px; padding-bottom: 10px;"></span>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function searchFunction() {
+            let input, filter, table, tr, td, j;
+            input = document.getElementById("search");
+            filter = input.value.toLowerCase();
+            table = document.getElementById("paymentTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (j = 0; j < tr.length; j++) {
+                td = tr[j].getElementsByTagName("td");
+                msg = document.getElementById("no-data");
+
+                if (td.length > 0) {
+                    if (td[0].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[1].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[2].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[3].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[4].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[5].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[6].innerHTML.toLocaleLowerCase().indexOf(filter) > -1) {
+                        tr[j].style.display = ""
+                        msg.innerHTML = ""
+                    } else {
+                        tr[j].style.display = "none"
+                    }
+                }
+
+                if (td.length == 0) {
+                    msg.innerHTML = "Aramanızla eşleşen kayıt bulunamadı."
+                }
+
+            }
+        }
+    </script>
+
+{% endblock %}

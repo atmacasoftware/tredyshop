@@ -1,0 +1,241 @@
+{% load static %}
+<aside class="main-sidebar sidebar-light-danger elevation-4">
+    <!-- Brand Logo -->
+    <a href="{% url 'admin_mainpage' %}" class="brand-link">
+        <img src="{% static 'img/logo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+             style="opacity: .8;">
+        <span class="brand-text font-weight-light">Tredy Shop</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                <div style="width: 35px; height: 35px; border-radius: 50%; background: orange; display: flex; justify-content: center; align-items: center">
+                    <span style="color: #fff;font-weight: bold;">{{ request.user.first_name|slice:1 }}{{ request.user.last_name|slice:1 }}</span>
+                </div>
+            </div>
+            <div class="info">
+                <a href="#" class="d-block">{{ request.user.get_full_name }}</a>
+            </div>
+        </div>
+
+        <!-- SidebarSearch Form -->
+        <div class="form-inline">
+            <div class="input-group" data-widget="sidebar-search">
+                <input class="form-control form-control-sidebar" type="search" placeholder="Menüde Ara"
+                       aria-label="Search">
+                <div class="input-group-append">
+                    <button class="btn btn-sidebar">
+                        <i class="fas fa-search fa-fw"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <!-- Add icons to the links using the .nav-icon class
+                     with font-awesome or any other icon font library -->
+                <li class="nav-item">
+                    <a href="{% url 'admin_mainpage' %}"
+                       class="nav-link {% if request.path == '/yonetim/' %}active{% endif %}">
+                        <i class="nav-icon fa fa-home"></i>
+                        <p>
+                            Anasayfa
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'admin_product' %}"
+                       class="nav-link {% if request.path == '/yonetim/urunler/' %}active{% endif %}">
+                        <i class="nav-icon fa fa-box"></i>
+                        <p>
+                            Ürünler
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item {% if request.path == '/yonetim/xml-yonetimi/tahtakale/veri-yukle-guncelle/' or request.path == '/yonetim/xml-yonetimi/haydigiy/veri-yukle-guncelle/' %}menu-open{% endif %}">
+                    <a href="#"
+                       class="nav-link {% if request.path == '/yonetim/xml-yonetimi/tahtakale/veri-yukle-guncelle/' or request.path == '/yonetim/xml-yonetimi/haydigiy/veri-yukle-guncelle/' %}active{% endif %}">
+                        <i class="nav-icon fas fa-copy"></i>
+                        <p>
+                            XML Yönetimi
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'tahtakale_product' %}"
+                               class="nav-link {% if request.path == '/yonetim/xml-yonetimi/tahtakale/veri-yukle-guncelle/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tahtakale</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'haydigiy_product' %}"
+                               class="nav-link {% if request.path == '/yonetim/xml-yonetimi/haydigiy/veri-yukle-guncelle/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Haydi Giy/Modaymış</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-header">ENTEGRASYON</li>
+
+                <li class="nav-item {% if '/trendyol/' in request.path %}menu-open{% endif %}">
+                    <a href="#" class="nav-link {% if '/trendyol/' in request.path %}active{% endif %}">
+                        <i class="nav-icon fa fa-shopping-cart"></i>
+                        <p>
+                            Trendyol
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'trendyol_add_product' %}"
+                               class="nav-link {% if '/trendyol/' in request.path %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Ürün Girişi</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="pages/mailbox/compose.html" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Özellik Güncelleme</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="pages/mailbox/read-mail.html" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Stok & Fiyat Güncelleme</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="pages/mailbox/read-mail.html" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Bilgi Güncelleme</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="pages/mailbox/read-mail.html" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Ürün Silme</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="pages/mailbox/read-mail.html" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Ürün Arşivleme</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="pages/mailbox/read-mail.html" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Arşivden Kaldırma</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="pages/mailbox/read-mail.html" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Kilid Kaldırma</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-header">MUHASEBE</li>
+                <li class="nav-item {% if '/kesilen-faturalar/' in request.path %}menu-open{% endif %}">
+                    <a href="#"
+                       class="nav-link {% if '/kesilen-faturalar/' in request.path %}active{% endif %}">
+                        <i class="nav-icon fa-solid fa-money-bill"></i>
+                        <p>
+                            Kesilen Faturalar
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'kesilen_fatura_ekle' %}"
+                               class="nav-link {% if request.path == '/yonetim/kesilen-faturalar/fatura-ekle/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Fatura Ekle</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'kesilen_faturalar' %}"
+                               class="nav-link {% if request.path == '/yonetim/kesilen-faturalar/tum-faturalar/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Faturalar</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item {% if '/alinan-faturalar/' in request.path %}menu-open{% endif %}">
+                    <a href="#"
+                       class="nav-link {% if '/alinan-faturalar/' in request.path %}active{% endif %}">
+                        <i class="nav-icon fa-solid fa-money-bill-wave"></i>
+                        <p>
+                            Alınan Faturalar
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'alinan_fatura_ekle' %}"
+                               class="nav-link {% if request.path == '/yonetim/alinan-faturalar/fatura-ekle/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Fatura Ekle</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'alinan_faturalar' %}"
+                               class="nav-link {% if request.path == '/yonetim/alinan-faturalar/tum-faturalar/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Faturalar</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item {% if request.path == '/yonetim/hesap-bilgilerim/' or request.path == '/yonetim/sifre-degistir/' %}menu-open{% endif %}">
+                    <a href="#"
+                       class="nav-link {% if request.path == '/yonetim/hesap-bilgilerim/' or request.path == '/yonetim/sifre-degistir/' %}active{% endif %}">
+                        <i class="nav-icon fa-solid fa-gear"></i>
+                        <p>
+                            Ayarlar
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'user_info' %}"
+                               class="nav-link {% if request.path == '/yonetim/hesap-bilgilerim/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Hesap Bilgilerim</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'admin_change_password' %}"
+                               class="nav-link {% if request.path == '/yonetim/sifre-degistir/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Şifre Değiştir</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'logout' %}"
+                               class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Çıkış Yap</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>

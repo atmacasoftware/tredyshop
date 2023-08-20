@@ -1,10 +1,16 @@
-from django.db.models import Q, Count
+from django.db.models import Q, Count, Min, Max
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.template.loader import render_to_string
+import decimal
 from customer.models import Subscription
 from mainpage.models import *
-from product.models import Product, Brand, ReviewRating
+from product.models import Product, Brand, ReviewRating, Images
 from categorymodel.models import *
+from product.read_xml import tahtakaleSaveXML2db, updateTahtakaleSaveXML2db, customPrice
+from store.views import listToString
+from urllib.request import urlopen
+import xml.etree.ElementTree as ET
 
 
 # Create your views here.
@@ -14,7 +20,36 @@ def index(request):
     sliders = Slider.objects.filter(is_publish=True)
     flash_deals = []
     all_product = Product.objects.all()
-    new_release = all_product.order_by("-create_at")[:20]
+    new_release = []
+    moda = all_product.filter(category_id=1).order_by("-create_at")[:16]
+    kozmetik = all_product.filter(category_id=2).order_by("-create_at")[:16]
+    ev = all_product.filter(category_id=3).order_by("-create_at")[:16]
+    telefon = all_product.filter(category_id=4).order_by("-create_at")[:16]
+    spor = all_product.filter(category_id=5).order_by("-create_at")[:16]
+    hirdavat = all_product.filter(category_id=6).order_by("-create_at")[:16]
+    evcil = all_product.filter(category_id=7).order_by("-create_at")[:16]
+
+    for m in moda:
+        new_release.append(m)
+
+    for k in kozmetik:
+        new_release.append(k)
+
+    for e in ev:
+        new_release.append(e)
+
+    for t in telefon:
+        new_release.append(t)
+
+    for s in spor:
+        new_release.append(s)
+
+    for h in hirdavat:
+        new_release.append(h)
+
+    for e in evcil:
+        new_release.append(e)
+
     most_seller = all_product.order_by("-sell_count").first()
     most_seller2 = all_product.order_by("-sell_count")[1:2]
     most_seller3 = all_product.order_by("-sell_count")[2:3]
@@ -40,6 +75,7 @@ def index(request):
         if product.is_discountprice == True:
             if 100 - ((product.discountprice * 100) / product.price) >= 0:
                 flash_deals.append(product)
+
 
     context.update({
         'sliders': sliders,
@@ -71,19 +107,29 @@ def ajax_search(request):
         else:
             MostSearchingKeyword.objects.create(keyword=series, ip=ip)
 
-    products = Product.objects.filter(title__icontains=series)
+    products = Product.objects.filter(title__icontains=series)[:15]
 
     if len(products) > 0:
         data = []
         for r in products:
-            item = {
-                'id': r.id,
-                'title': r.title,
-                'slug': r.slug,
-                'image': r.image.url,
-                'get_url': r.get_url(),
-            }
-            data.append(item)
+            if r.image:
+                item = {
+                    'id': r.id,
+                    'title': r.title,
+                    'slug': r.slug,
+                    'image': r.image.url,
+                    'get_url': r.get_url(),
+                }
+                data.append(item)
+            else:
+                item = {
+                    'id': r.id,
+                    'title': r.title,
+                    'slug': r.slug,
+                    'image': r.image_url,
+                    'get_url': r.get_url(),
+                }
+                data.append(item)
         res = data
     else:
         res = "no-data"
@@ -97,30 +143,97 @@ def search(request):
     categories = MainCategory.objects.all()
     brands = Brand.objects.all()
 
+    category_type = "search"
+
+    minMaxPrice = Product.objects.filter().aggregate(
+        Min('discountprice'),
+        Max('discountprice'))
+
     context.update({
         'keyword': keyword,
-        'categories': categories
+        'categories': categories,
+        'category_type': category_type
     })
 
     if keyword:
         products = Product.objects.filter(Q(title__icontains=keyword) | Q(category__title__icontains=keyword) | Q(
             subcategory__title__icontains=keyword) | Q(brand__title__icontains=keyword))
+
+        minMaxPrice = products.aggregate(
+            Min('price'),
+            Max('price'))
+
         product_count = products.count()
 
         context.update({
             'products': products,
             'product_count': product_count,
             'brands': brands,
+            'minMaxPrice': minMaxPrice,
         })
 
-    return render(request, 'frontend/pages/result_search.html', context)
+    return render(request, 'frontend/pages/store.html', context)
+
+
+def search_product_filter(request):
+    keyword = request.GET['keyword']
+    minPrice = request.GET['minPrice']
+    maxPrice = request.GET['maxPrice']
+
+    minPrice = decimal.Decimal(minPrice.replace(',', '.'))
+    maxPrice = decimal.Decimal(maxPrice.replace(',', '.'))
+
+    arrangement = request.GET.getlist('arrangement[]')
+    arrangement = listToString(arrangement)
+
+    order_type = '?'
+
+    if arrangement == '1':
+        order_type = '?'
+    elif arrangement == '2':
+        order_type = '-sell_count'
+    elif arrangement == '3':
+        order_type = 'price'
+    elif arrangement == '4':
+        order_type = '-price'
+    elif arrangement == '5':
+        order_type = '-create_at'
+    elif arrangement == '5':
+        order_type = 'create_at'
+
+    data = []
+
+    if keyword:
+        data = Product.objects.filter(Q(title__icontains=keyword) | Q(category__title__icontains=keyword) | Q(
+            subcategory__title__icontains=keyword) | Q(brand__title__icontains=keyword), price__gte=minPrice,
+                                      price__lte=maxPrice).order_by(order_type)
+
+    t = render_to_string('frontend/partials/ajax/product-list.html', {'data': data})
+    return JsonResponse({'data': t})
 
 
 def slider_info(request, slider_slug):
     context = {}
     slider = Slider.objects.get(slug=slider_slug)
+    reviewrating = ReviewRating.objects.all()
+    liked_product = Product.objects.all().filter(reviewrating__rating__gte=4, reviewrating__rating__lte=6)[:3]
+    if liked_product.exists():
+        liked_product = Product.objects.all().filter(reviewrating__rating__gte=4, reviewrating__rating__lte=6)[:3]
+    else:
+        liked_product = Product.objects.all().order_by("?")[:3]
+    most_count = Product.objects.filter(reviewrating__in=reviewrating).annotate(rating_count=Count('id')).order_by(
+        '-rating_count')[:3]
+    if most_count.exists():
+        most_count = Product.objects.filter(reviewrating__in=reviewrating).annotate(rating_count=Count('id')).order_by(
+            '-rating_count')[:3]
+    else:
+        most_count = Product.objects.all().order_by('?')[:3]
+    most_selling = Product.objects.all().order_by("-sell_count")[:3]
     context.update({
         'slider': slider,
+        'liked_product': liked_product,
+        'most_count': most_count,
+        'most_selling': most_selling
     })
     return render(request, 'frontend/pages/slider_info.html', context)
 

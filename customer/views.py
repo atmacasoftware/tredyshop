@@ -159,7 +159,8 @@ def profile_mainpage(request):
             user.last_name = last_name
             user.email = email
             user.mobile = mobile
-            user.birthday = birthday
+            if birthday:
+                user.birthday = birthday
             if gender == "1":
                 user.gender = False
             else:
@@ -326,6 +327,7 @@ def order_detail(request, order_number):
         context = {}
         order = Order.objects.get(user=request.user, order_number=order_number)
         orderproducts = OrderProduct.objects.filter(order=order)
+        orderproduct_count = orderproducts.count()
         if order.paymenttype == 'Banka/Kredi Kartı':
             cardnumber_first = order.cardnumber[:4]
             cardnumber_last = order.cardnumber[15:20]
@@ -333,6 +335,7 @@ def order_detail(request, order_number):
         context.update({
             'order':order,
             'orderproducts':orderproducts,
+            'orderproduct_count':orderproduct_count,
         })
         return render(request, 'frontend/pages/profile/order_detail.html', context)
     except:

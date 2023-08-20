@@ -1,7 +1,7 @@
 const emailInput = document.getElementById("email");
 
 $(document).ready(function () {
-    $(".warning").css("display", 'none')
+    $(".warning").hide()
     emailInput.addEventListener('change', e => {
         const email = e.target.value
 
@@ -14,11 +14,11 @@ $(document).ready(function () {
             },
             success: function (data) {
                 if (data.is_taken) {
-                    $(".warning").css("display", 'flex')
+                    $(".warning").show()
                     $("#register_btn").attr('disabled', 'disabled');
                 } else {
                     $("#register_btn").removeAttr('disabled', 'disabled')
-                    $(".warning").css("display", 'none')
+                    $(".warning").hide()
                 }
             },
             error: function (error) {

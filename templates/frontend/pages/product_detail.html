@@ -147,15 +147,15 @@
                                         {% csrf_token %}
                                         {% for rs in sizes %}
                                             <div class="size">
-                                                <input type="radio" value="{{ rs.size.id }}"
+                                                <input type="radio" value="{{ rs.size__id }}"
                                                         {% if variant.id == rs.id %} checked {% endif %}
-                                                       class="variation__input"
+                                                       class="variation__input variation__input__size"
                                                        name="size"
-                                                       id="size-{{ rs.size.id }}">
-                                                <label for="size-{{ rs.size.id }}" class="variation__label">
+                                                       id="size-{{ rs.size__id }}">
+                                                <label for="size-{{ rs.size__id }}" class="variation__label">
                                                     <div class="variation__detail">
                                                         <div class="variation_price">
-                                                            <b>{{ rs.size }}</b>
+                                                            <b>{{ rs.size__name }}</b>
                                                         </div>
                                                     </div>
                                                 </label>
@@ -171,21 +171,15 @@
                                         <div id="appendColor">
                                             {% for rs in colors %}
                                                 <div class="color">
-                                                    <input type="radio" class="variation__input"
+                                                    <input type="radio" class="variation__input variation__input__color"
                                                             {% if variant.id == rs.id %} checked {% endif %}
-                                                           name="variantid"
+                                                           name="variantid" title="{{ rs.color.name }}"
                                                            id="{{ rs.id }}" value="{{ rs.id }}"
                                                            onchange="this.form.submit();">
-                                                    <label for="{{ rs.id }}" class="variation__label">
-                                                <span class="variation__img">
-                                                    <img src="{{ rs.image }}" alt="">
-                                                </span>
+                                                    <label for="{{ rs.id }}" class="variation__label" title="{{ rs.color.name }}">
                                                         <div class="variation__detail">
                                                             <div class="variation_color"
                                                                  style="background: {{ rs.color.code }}"></div>
-                                                            <div class="variation_price">
-                                                                <b>{{ rs.price }} TL</b>
-                                                            </div>
                                                         </div>
                                                     </label>
                                                 </div>
@@ -198,7 +192,6 @@
                                 <script>
                                     $(document).on('change', '#post-form', function (e) {
                                         e.preventDefault();
-                                        console.log($('input[name=size]:checked').val())
                                         $.ajax({
                                             type: 'POST',
                                             url: '{% url 'ajaxcolor' %}',
@@ -210,8 +203,6 @@
                                             },
                                             data_type: 'html',
                                             success: function (data) {
-                                                console.log('success')
-                                                console.log(data)
                                                 $('#appendColor').html(data.rendered_table);
                                             },
                                             error: function (data) {
@@ -226,13 +217,9 @@
                                     {% for v in product.get_variations %}
                                         {% if v.color != None %}
                                             <div class="color">
-
                                                 <input type="radio" class="variation__input" name="color"
-                                                       id="color-{{ v.id }}">
-                                                <label for="color-{{ v.id }}" class="variation__label">
-                                                <span class="variation__img">
-                                                    <img src="{{ v.image }}" alt="">
-                                                </span>
+                                                       id="color-{{ v.id }}" title="{{ rs.color.name }}">
+                                                <label for="color-{{ v.id }}" class="variation__label" title="{{ rs.color.name }}">
                                                     <div class="variation__detail">
                                                         <div class="variation_color"
                                                              style="background: {{ v.color.code }}"></div>

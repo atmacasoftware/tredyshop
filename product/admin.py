@@ -52,12 +52,13 @@ class ImagesAdmin(admin.ModelAdmin):
 
 class ProductAdmin(ImportExportModelAdmin):
     list_display = ['id', 'xml_id', 'stock_code', 'barcode', 'title', 'category', 'subcategory', 'subbottomcategory',
-                    'brand', 'price', 'trendyol_price', 'hepsiburada_price', 'pttavm_price', 'amount', 'status']
+                    'brand', 'price', 'trendyol_price', 'hepsiburada_price', 'pttavm_price', 'amount', 'status',
+                    'create_at']
 
     list_filter = ['status']
     inlines = [ProductImageInline, ProductVariantsInline, ProductDescriptionInline, ProductSpecificationInline,
                ProductKeywordInline]
-    list_per_page = 3000
+    list_per_page = 5000
     search_fields = ['title', 'id', 'xml_id', 'stock_code', 'barcode']
     resource_class = ProductResource
 

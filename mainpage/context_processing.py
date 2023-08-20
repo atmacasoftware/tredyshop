@@ -7,7 +7,7 @@ from product.models import ReviewRating
 
 
 def categories(request):
-    maincategories = MainCategory.objects.all()
+    maincategories = MainCategory.objects.all().exclude(id=12)
     subcategories = SubCategory.objects.all()
     subbottomcategories = SubBottomCategory.objects.all()
 

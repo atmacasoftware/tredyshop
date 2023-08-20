@@ -65,6 +65,7 @@
                                                             <input class="form-check-input"
                                                                    {% if request.user.gender == False %}checked=""{% endif %}
                                                                    type="radio"
+                                                                    value="1"
                                                                    name="gender" id="gender-male">
                                                             <label class="form-check-label" for="gender-male">
                                                                 Erkek
@@ -77,6 +78,7 @@
                                                             <input class="form-check-input" type="radio"
                                                                    {% if request.user.gender == True %}checked=""{% endif %}
                                                                    name="gender"
+                                                                value="2"
                                                                    id="gender-female">
                                                             <label class="form-check-label" for="gender-female">
                                                                 Kadın

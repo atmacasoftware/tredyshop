@@ -4,6 +4,7 @@ from mainpage.views import *
 urlpatterns = [
     path('', index, name="mainpage"),
     path('searching/', ajax_search, name="ajax_search"),
+    path('filter/searching/', search_product_filter, name="search_product_filter"),
     path('arama/', search, name="search"),
     path('bilgi-duyuru/<str:slider_slug>', slider_info, name="slider_info"),
     path('sikca-sorulan-sorular', sss, name="faq"),

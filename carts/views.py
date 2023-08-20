@@ -8,7 +8,7 @@ from customer.forms import AddressForm
 from customer.models import CustomerAddress, Bonuses, Coupon
 from mainpage.models import Setting
 from carts.models import Cart, CartItem
-from orders.models import Order, OrderProduct
+from orders.models import Order, OrderProduct, BankInfo
 from product.models import *
 
 
@@ -295,7 +295,7 @@ def cart(request, total=0, general_total=0, quantity=0, cart_items=None):
                     if coupon_exist == True:
                         general_total = float(total) + float(setting.shipping_price) - float(coupon.coupon_price)
                     else:
-                        general_total = total + setting.shipping_price
+                        general_total = float(total) + float(setting.shipping_price)
                 else:
                     if coupon_exist == True:
                         general_total = float(total) + float(setting.shipping_price) - float(coupon.coupon_price)
@@ -362,6 +362,9 @@ def checkout(request, total=0, cart_items=None):
     context = {}
     address = None
     grand_total = 0
+
+    bankaccounts = BankInfo.objects.all()
+
     coupon = None
     coupon_exist = Coupon.objects.filter(user=request.user, is_active=True).exists()
     try:
@@ -456,13 +459,21 @@ def checkout(request, total=0, cart_items=None):
     if 'paymentBtn' in request.POST:
         select_address = request.POST.get('selectedAddress')
         order_total = request.POST.get('order_total')
+        delivery_price = request.POST.get('delivery_price')
         approved_contract = request.POST.get('approved_contract')
         approved_status = None
         payment_type = request.POST.get('payment_type')
         ip = request.META.get('REMOTE_ADDR')
         used_coupon = request.POST.get('used_coupon', None)
+        preliminary_form = request.POST.get("preliminary_form")
+        distance_selling_form = request.POST.get("distance_selling_form")
         cardholder = None
         cardnumber = None
+
+        if select_address == '' or select_address == None:
+            messages.warning(request,
+                             'Adres seçimi yapılması gerekmektedir.')
+            return redirect('checkout')
 
         if approved_contract == 'approved':
             approved_status = True
@@ -479,9 +490,9 @@ def checkout(request, total=0, cart_items=None):
                 return redirect('checkout')
 
         data = Order.objects.create(user=request.user, address_id=select_address,
-                                    order_total=float(order_total.replace(',', '.')), cardholder=cardholder,
+                                    order_total=float(order_total.replace(',', '.')), cardholder=cardholder, delivery_price=delivery_price,
                                     cardnumber=cardnumber, is_ordered=True, approved_contract=approved_status, ip=ip,
-                                    paymenttype=payment_type)
+                                    paymenttype=payment_type, preliminary_information_form=preliminary_form,distance_selling_contract=distance_selling_form)
 
         if used_coupon !='':
             used_coupon = float(used_coupon.replace(',', '.'))
@@ -556,7 +567,7 @@ def checkout(request, total=0, cart_items=None):
         return redirect('completed_checkout', data.order_number)
 
     context.update({'address': address, 'add_form': add_form, 'all_address': all_address, 'cart_items': cart_items,
-                    'total': total, 'grand_total': grand_total, 'coupon': coupon})
+                    'total': total, 'grand_total': grand_total, 'coupon': coupon, 'bankaccounts':bankaccounts})
     return render(request, 'frontend/pages/checkout.html', context)
 
 

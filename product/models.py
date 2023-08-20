@@ -64,6 +64,8 @@ class Brand(models.Model):
         super(Brand, self).save(*args, **kwargs)
 
 
+
+
 class Product(models.Model):
     TYPE = (
         ("Renk-Boyut", "Renk-Boyut"),
@@ -83,7 +85,7 @@ class Product(models.Model):
                                     verbose_name="3. Düzey Kategori", related_name="subbottom_category")
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Marka",
                               related_name="brands")
-    title = models.CharField(max_length=50, verbose_name="Başlık")
+    title = models.CharField(max_length=255, verbose_name="Başlık")
     description = models.CharField(max_length=255, verbose_name="Açıklama")
     keywords = models.CharField(max_length=500, verbose_name="Anahtar Kelime", null=True)
     image_url = models.CharField(max_length=500, verbose_name="Resim Link", null=True)

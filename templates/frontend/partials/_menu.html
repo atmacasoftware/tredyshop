@@ -1,5 +1,4 @@
 {% load static %}
-{% load static %}
 {% if request.path == '/' %}
     <div class="navbar-vertical">
         <button class="navbar-toggles"><span>Kategoriler</span></button>
@@ -8,26 +7,41 @@
     <div class="vertical-wrapper">
         <ul class="vertical-group">
             {% for mc in maincategories %}
-                <li class="vertical-item level1 vertical-drop"><a href="{{ mc.get_url }}">{{ mc.title }}</a>
-                    <div class="menu-level-1 dropdown-menu vertical-menu v2 tvbg pd2 style1">
-                        <ul class="level1">
-                            {% for sc in subcategories %}
-                                {% if sc.maincategory.id == mc.id %}
-                                    <li class="level2 col-md-4">
-                                        <a href="{{ sc.get_url }}">{{ sc.title }}</a>
-                                        <ul class="menu-level-2">
-                                            {% for sbc in subbottomcategories %}
-                                                {% if sbc.subcategory.id == sc.id %}
-                                                    <li class="level3"><a href="{{ sbc.get_url }}"
-                                                                          title="">{{ sbc.title }}</a></li>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </ul>
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
-                    </div>
+                <li class="vertical-item level1 vertical-drop"><a
+                        href="{{ mc.get_url }}">{{ mc.title }}</a>
+                    {% if mc.exist_subbottomcategories == "True" %}
+                        <div class="menu-level-1 dropdown-menu vertical-menu v2 tvbg pd2 style1">
+                            <ul class="level1">
+                                {% for sc in subcategories %}
+                                    {% if sc.maincategory.id == mc.id %}
+                                        <li class="level2 col-md-3">
+                                            <a href="{{ sc.get_url }}">{{ sc.title }}</a>
+                                            <ul class="menu-level-2">
+                                                {% for sbc in subbottomcategories %}
+                                                    {% if sbc.subcategory.id == sc.id %}
+                                                        <li class="level3"><a href="{{ sbc.get_url }}"
+                                                                              title="">{{ sbc.title }}</a></li>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% else %}
+                        <div class="menu-level-1 dropdown-menu vertical-menu v2 tvbg pd2 style1 no-bottom">
+                            <ul class="level1">
+                                {% for sc in subcategories %}
+                                    {% if sc.maincategory.id == mc.id %}
+                                        <li class="level2">
+                                            <a href="{{ sc.get_url }}">{{ sc.title }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ul>
@@ -40,26 +54,41 @@
     <div class="vertical-wrapper">
         <ul class="vertical-group">
             {% for mc in maincategories %}
-                <li class="vertical-item level1 vertical-drop"><a href="{{ mc.get_url }}">{{ mc.title }}</a>
-                    <div class="menu-level-1 dropdown-menu vertical-menu v2 tvbg pd2 style1">
-                        <ul class="level1">
-                            {% for sc in subcategories %}
-                                {% if sc.maincategory.id == mc.id %}
-                                    <li class="level2 col-md-4">
-                                        <a href="{{ sc.get_url }}">{{ sc.title }}</a>
-                                        <ul class="menu-level-2">
-                                            {% for sbc in subbottomcategories %}
-                                                {% if sbc.subcategory.id == sc.id %}
-                                                    <li class="level3"><a href="{{ sbc.get_url }}"
-                                                                          title="">{{ sbc.title }}</a></li>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </ul>
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
-                    </div>
+                <li class="vertical-item level1 vertical-drop"><a
+                        href="{{ mc.get_url }}">{{ mc.title }}</a>
+                    {% if mc.exist_subbottomcategories == "True" %}
+                        <div class="menu-level-1 dropdown-menu vertical-menu v2 tvbg pd2 style1">
+                            <ul class="level1">
+                                {% for sc in subcategories %}
+                                    {% if sc.maincategory.id == mc.id %}
+                                        <li class="level2 col-md-3">
+                                            <a href="{{ sc.get_url }}">{{ sc.title }}</a>
+                                            <ul class="menu-level-2">
+                                                {% for sbc in subbottomcategories %}
+                                                    {% if sbc.subcategory.id == sc.id %}
+                                                        <li class="level3"><a href="{{ sbc.get_url }}"
+                                                                              title="">{{ sbc.title }}</a></li>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% else %}
+                        <div class="menu-level-1 dropdown-menu vertical-menu v2 tvbg pd2 style1 no-bottom">
+                            <ul class="level1">
+                                {% for sc in subcategories %}
+                                    {% if sc.maincategory.id == mc.id %}
+                                        <li class="level2">
+                                            <a href="{{ sc.get_url }}">{{ sc.title }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ul>

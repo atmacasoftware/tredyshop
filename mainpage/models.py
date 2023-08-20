@@ -22,6 +22,8 @@ class Setting(models.Model):
     phone = models.CharField(blank=True, null=True, max_length=15, verbose_name="Telefon Numarası")
     fax = models.CharField(blank=True, max_length=15, verbose_name="Fax")
     email = models.CharField(blank=True, max_length=255, verbose_name="Email")
+    vkn = models.CharField(blank=True, max_length=50, verbose_name="Vergi Kimlik Numarası")
+    mersis = models.CharField(blank=True, max_length=100, verbose_name="Mersis Numarası")
     smtpserver = models.CharField(max_length=50, verbose_name="Smtp Server", blank=True)
     smtpemail = models.CharField(max_length=50, verbose_name="Smtp Email", blank=True)
     smtppassword = models.CharField(max_length=50, verbose_name="Smtp Şifre", blank=True)
@@ -192,7 +194,7 @@ class MostSearchingKeyword(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.id and not self.slug:
-            slug = defaultfilters.slugify(unidecode(self.title))
+            slug = defaultfilters.slugify(unidecode(self.keyword))
             slug_exists = True
             counter = 1
             self.slug = slug

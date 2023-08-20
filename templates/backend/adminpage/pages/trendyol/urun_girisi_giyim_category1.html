@@ -1,0 +1,44 @@
+{% extends 'backend/adminpage/layout.html' %}
+{% load static %}
+
+{% block title %}<title>Giyim Ürün Girişi</title>{% endblock %}
+
+{% block trendyol %}
+
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Giyim Ürün Girişi</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'mainpage' %}">Anasayfa</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'trendyol_add_product' %}">Ürün Girişi</a></li>
+                        <li class="breadcrumb-item active">Giyim Ürün Girişi</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                {% for c in categories %}
+                    <div class="col-md-2 col-sm-3 col-6">
+                        <div class="info-box bg-info">
+                            <div class="info-box-content">
+                                <a href="{% url 'trendyol_add_product_giyim_send_trendyol' c.id %}" class="info-box-text text-white">{{ c.title }}</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+
+
+{% endblock %}

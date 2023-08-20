@@ -20,16 +20,13 @@
                             <div class="e-slide v2 js-slider-3items">
                                 {% for ms in sliders %}
                                     <div class="e-slide-img">
-                                        <a href="{% url 'slider_info' ms.slug %}"><img src="{{ ms.get_image }}" alt=""></a>
+                                        <a href="{% if ms.type == 'Bilgi' or ms.type == 'Duyuru' %}{% url 'slider_info' ms.slug %}{% elif ms.type == 'Ürün' %}{{ ms.button_link }}{% endif %}"><img src="{{ ms.get_image }}" alt=""></a>
                                         <div class="slide-content v2">
                                             {% if ms.subtitle != None %}
                                                 <p class="cate v2">{{ ms.subtitle }}</p>
                                             {% endif %}
                                             {% if ms.button != None %}
-                                                <a href="
-
-
-                                                        {% if ms.type == 'Bilgi' or ms.type == 'Duyuru' %}{% url 'slider_info' ms.slug %}{% endif %}"
+                                                <a href="{% if ms.type == 'Bilgi' or ms.type == 'Duyuru' %}{% url 'slider_info' ms.slug %}{% elif ms.type == 'Ürün' %}{{ ms.button_link }}{% endif %}"
                                                    class="slide-btn e-yl-gradient">{{ ms.button }}<i
                                                         class="ion-ios-arrow-forward"></i></a>
                                             {% endif %}
@@ -444,5 +441,6 @@
             </div>
         </div>
     </section>
+
 
 {% endblock %}

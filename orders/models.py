@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 from django.db import models
-
+from django_ckeditor_5.fields import CKEditor5Field
 from customer.models import CustomerAddress
 from product.models import Product, Variants
 from user_accounts.models import User
@@ -29,14 +29,22 @@ class Order(models.Model):
     order_number = models.CharField(max_length=20, verbose_name="Sipariş Numarası", blank=True, null=True)
     address = models.ForeignKey(CustomerAddress, on_delete=models.SET_NULL, blank=False, null=True, verbose_name="Adres")
     order_total = models.FloatField(verbose_name="Sipariş Toplamı")
-    paymenttype = models.CharField(choices=PAYMENT_TYPE, max_length=30, null=True)
-    cardholder = models.CharField(max_length=255, blank=False, null=True, verbose_name="Kart Sahibi")
-    cardnumber = models.CharField(max_length=20, blank=False, null=True, verbose_name="Kart Numarası")
+    delivery_name = models.CharField(max_length=255, verbose_name="Kargo Şirketi", null=True, blank=True)
+    delivery_price = models.CharField(max_length=100, verbose_name="Kargo Ücreti", null=True, blank=True)
+    delivery_track = models.CharField(max_length=255, verbose_name="Takip Kodu", null=True, blank=True)
+    track_link = models.CharField(max_length=500, verbose_name="Takip Linki", null=True, blank=True)
+    paymenttype = models.CharField(choices=PAYMENT_TYPE, max_length=30, null=True, verbose_name="Ödeme Tipi")
+    cardholder = models.CharField(max_length=255, blank=True, null=True, verbose_name="Kart Sahibi")
+    cardnumber = models.CharField(max_length=20, blank=True, null=True, verbose_name="Kart Numarası")
     status = models.CharField(max_length=50, choices=STATUS, null=True, default="Yeni", verbose_name="Sipariş Durumu")
     used_coupon = models.FloatField(verbose_name="Kullanılan Kupon" ,blank=True, null=True)
+    bill = models.FileField(upload_to='documents/bill/', null=True, verbose_name="Fatura Yükle")
+    preliminary_information_form = CKEditor5Field('Ön Bilgilendirme Formu', config_name='extends', null=True, blank=True)
+    distance_selling_contract = CKEditor5Field('Mesafeli Satış Sözleşmesi', config_name='extends', null=True, blank=True)
+    approved_contracts = models.BooleanField(default=False)
     ip = models.CharField(max_length=50, blank=False, verbose_name="İp Adresi")
     is_ordered = models.BooleanField(default=False, verbose_name="Sipariş Verildi Mi?")
-    bonuses = models.FloatField(verbose_name="Verdiği Bonu", blank=True, null=True)
+    bonuses = models.FloatField(verbose_name="Verdiği Bonus", blank=True, null=True)
     approved_contract = models.BooleanField(default=False, verbose_name="Sözleşme Onayı")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
@@ -47,9 +55,14 @@ class Order(models.Model):
     class Meta:
         verbose_name = "1. Siparişler"
         verbose_name_plural = "1. Siparişler"
+        ordering = ['-created_at']
 
     def delivered_time(self):
         return self.created_at + timedelta(days=1)
+
+    def get_bill(self):
+        if self.bill:
+            return self.bill.url
 
 class OrderProduct(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name="Sipariş")
@@ -71,15 +84,19 @@ class OrderProduct(models.Model):
         verbose_name = "2. Ürün Siparişleri"
         verbose_name_plural = "2. Ürün Siparişleri"
 
+
 class BankInfo(models.Model):
     name = models.CharField(max_length=255, verbose_name="Banka Adı", null=True, blank=False)
+    branch = models.CharField(max_length=255, verbose_name="Banka Şubesi", null=True, blank=False)
     image = models.ImageField(blank=True, upload_to="img/order/bank/", verbose_name="Banka Logusu")
-    ıban = models.CharField(max_length=20, verbose_name="IBAN", null=True, blank=False)
+    iban = models.CharField(max_length=20, verbose_name="IBAN", null=True, blank=False)
+    account_no = models.CharField(max_length=155, verbose_name="Hesap Numarası", null=True, blank=False)
+    account_holder = models.CharField(max_length=100, verbose_name="Hesap Sahibi", null=True, blank=False)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
 
     def __str__(self):
-        return str(self.product.title)
+        return str(self.name)
 
     class Meta:
         verbose_name = "3. Banka Bilgileri"

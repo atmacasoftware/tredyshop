@@ -34,6 +34,7 @@ sitemaps = {
 urlpatterns = [
     path('admin/', include('admin_honeypot.urls')),
     path('yonetim-paneli/', admin.site.urls),
+    path('yonetim/', include('adminpage.urls')),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}),
     path('', include('product.urls')),
     path('', include('categorymodel.urls')),
@@ -42,6 +43,7 @@ urlpatterns = [
     path('', include('customer.urls')),
     path('', include('carts.urls')),
     path('', include('orders.urls')),
+    path('', include('trendyol.urls')),
 
     path('accounts/', include('allauth.urls')),
 

@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     'carts',
     'mathfilters',
     'orders',
+    'trendyol',
+    'adminpage',
 
     'django_ckeditor_5',
 
@@ -63,7 +65,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
 
     'admin_honeypot',
-    'xml.etree.ElementTree',
 ]
 
 MIDDLEWARE = [
@@ -80,6 +81,7 @@ MIDDLEWARE = [
 SESSION_EXPIRE_SECONDS = 18000
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
 SESSION_TIMEOUT_REDIRECT = '/'
+
 
 ROOT_URLCONF = 'ecommerce.urls'
 
@@ -172,6 +174,8 @@ else:
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
+
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -395,6 +399,5 @@ CKEDITOR_5_CONFIGS = {
         },
     },
 }
-
 
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 102400

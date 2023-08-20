@@ -33,7 +33,8 @@
         <div class="container container-240">
             <div class="row flex">
                 <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6 v-center header-logo">
-                    <a href="{% url 'mainpage' %}"><img src="{% static 'img/logo.png' %}" alt="" class="img-reponsive"></a>
+                    <a href="{% url 'mainpage' %}"><img src="{% static 'img/logo_webp.webp' %}" alt=""
+                                                        class="img-reponsive"></a>
                 </div>
                 <div class="col-lg-7 col-md-7 v-center header-search hidden-xs hidden-sm">
                     <form method="get" class="searchform ajax-search" role="search" action="{% url 'search' %}"
@@ -46,7 +47,7 @@
                         </ul>
                         <span class="input-group-btn">
                                           <button class="button_search" type="submit"><i
-                                                  class="ion-ios-search-strong"></i></button>
+                                                  class="fa fa-search"></i></button>
                                 </span>
                     </form>
                     <div class="tags">
@@ -59,10 +60,9 @@
                 <div class="col-lg-3  col-md-3 col-sm-6 col-xs-6 v-center header-sub">
                     <div class="right-panel">
                         <div class="header-sub-element hidden-xs hidden-sm">
-                            <a href="https://wa.me/08503098552" target="_blank" class="header_whatsapp">
+                            <a href="https://wa.me/{{ setting.whatsapp }}" target="_blank" class="header_whatsapp">
                                 <div class="sub-left">
-                                    <img src="{% static 'img/whatsapp_help.png' %}" alt="Whatsapp"
-                                         style="height: 45px;width: auto;">
+                                    <i class="fa fa-4x fa-whatsapp" style="color: #25D366;"></i>
                                 </div>
                                 <div class="sub-right">
                                     <span>Whatsapp Destek</span>
@@ -74,7 +74,7 @@
                             <div class="account-dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                    aria-haspopup="true" aria-expanded="false">
-                                    <img src="{% static 'img/icon-user.png' %}" alt="">
+                                    <i class="fa-regular fa-2x fa-user"></i>
                                 </a>
                                 <div class="dropdown-menu dropdown-account">
                                     {% if request.user.is_authenticated %}
@@ -109,10 +109,12 @@
                                     {% endif %}
                                 </div>
                             </div>
-                            <a href="{% url 'wishlist' %}"><img src="{% static 'img/icon-heart.png' %}" alt=""></a>
+                            <a href="{% url 'wishlist' %}">
+                                <i class="fa-regular fa-2x fa-heart"></i>
+                            </a>
                             <div class="cart">
                                 <a href="{% url 'cart' %}" class="dropdown-toggle" id="label5">
-                                    <img src="{% static 'img/icon-cart.png' %}" alt="">
+                                    <i class="fa-solid fa-2x fa-bag-shopping" style="color: #D31027;"></i>
                                     <span class="count cart-count">{{ cart_count }}</span>
                                 </a>
 
@@ -139,10 +141,12 @@
                                 <ul class="nav navbar-nav js-menubar">
                                     <li class="level1 active hassub"><a href="{% url 'new_product' %}">Yeni Ürünler<span
                                             class="h-ribbon h-pos e-red">HOT</span></a></li>
-                                    <li class="level1 active hassub"><a href="{% url 'most_sell_product' %}">En Çok Satılan<span
-                                            class="h-ribbon h-pos e-skyblue">MOST</span></a></li>
-                                    <li class="level1 dropdown hassub"><a href="{% url 'most_discount_product' %}">Süper Fırsatlar<span
-                                            class="h-ribbon h-pos e-green">sale</span></a>
+                                    <li class="level1 active hassub"><a href="{% url 'most_sell_product' %}">En Çok
+                                        Satılan<span
+                                                class="h-ribbon h-pos e-skyblue">MOST</span></a></li>
+                                    <li class="level1 dropdown hassub"><a href="{% url 'most_discount_product' %}">Süper
+                                        Fırsatlar<span
+                                                class="h-ribbon h-pos e-green">sale</span></a>
                                     </li>
                                     <li class="level1 active dropdown">
                                         <a href="#">Blog</a>

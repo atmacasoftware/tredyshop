@@ -1,4 +1,5 @@
 let pswrd = document.getElementById('new_password');
+let repswrd = document.getElementById('re_password');
 let showBtn = document.getElementById('showPassword');
 let lowerCase = document.getElementById("validation_lower");
 let upperCase = document.getElementById("validation_upper");
@@ -37,11 +38,23 @@ function checkPassword(data) {
         minLenght.classList.remove('isvalid')
     }
 
-
 }
 
 
 document.getElementById("changePasswordForm").addEventListener('change', function () {
+
+    repswrd.addEventListener('change', function () {
+        if (pswrd.value == repswrd.value) {
+            checkPass.classList.add('isvalid')
+            checkPass.innerHTML = 'Şifreler eşleşiyor'
+
+        } else {
+            checkPass.classList.remove('isvalid')
+            checkPass.innerHTML = 'Şifreler eşleşmiyor'
+            submitBtn.setAttribute('disabled', true)
+        }
+    })
+
     if (lowerCase.classList.contains('isvalid') && upperCase.classList.contains('isvalid') && digit.classList.contains('isvalid') && minLenght.classList.contains('isvalid')) {
         submitBtn.removeAttribute('disabled')
     }else{

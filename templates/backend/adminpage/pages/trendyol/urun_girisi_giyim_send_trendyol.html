@@ -1,0 +1,44 @@
+{% extends 'backend/adminpage/layout.html' %}
+{% load static %}
+
+{% block title %}<title>{{ category.title }}</title>{% endblock %}
+
+{% block trendyol %}
+
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">{{ category.title }}</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'mainpage' %}">Anasayfa</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'trendyol_add_product' %}">Ürün Girişi</a></li>
+                        <li class="breadcrumb-item active">{{ category.title }}</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-2 col-sm-3 col-6">
+                        <div class="info-box bg-purple">
+                            <div class="info-box-content">
+                                <form action="" method="post">
+                                    <button class="btn btn-light" name="sendTrendyol" type="submit">Gönder</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </section>
+
+
+
+{% endblock %}

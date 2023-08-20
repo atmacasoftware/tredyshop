@@ -3,15 +3,9 @@
         <input type="radio" class="variation__input" {% if variant.id == rs.id %} checked {% endif %} name="variantid"
                id="{{ rs.id }}" value="{{ rs.id }}" onchange="this.form.submit();">
         <label for="{{ rs.id }}" class="variation__label">
-                                                <span class="variation__img">
-                                                    <img src="{{ rs.image }}" alt="">
-                                                </span>
             <div class="variation__detail">
                 <div class="variation_color"
                      style="background: {{ rs.color.code }}"></div>
-                <div class="variation_price">
-                    <b>{{ rs.price }} TL</b>
-                </div>
             </div>
         </label>
     </div>

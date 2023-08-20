@@ -21,5 +21,13 @@ class OrderProductAdmin(ImportExportModelAdmin):
     resource_class = OrderProductResource
 
 
+class BankInfoAdmin(ImportExportModelAdmin):
+    list_display = ['name', 'branch', 'iban', 'account_no', 'account_holder', 'created_at', 'updated_at']
+    list_filter = ['name']
+    search_fields = ('name', 'iban', 'account_no',)
+    resource_class = BankInfoResource
+
+
 admin.site.register(Order, OrderAdmin)
 admin.site.register(OrderProduct, OrderProductAdmin)
+admin.site.register(BankInfo, BankInfoAdmin)

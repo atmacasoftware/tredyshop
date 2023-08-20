@@ -1,13 +1,21 @@
 import decimal
-import html.parser
 import os
 import xml.etree.ElementTree as ET
 from urllib.request import urlopen
 from unidecode import unidecode
-from categorymodel.models import SubCategory, SubBottomCategory
+from categorymodel.models import SubCategory, SubBottomCategory, MainCategory
 from ecommerce.settings import BASE_DIR
 from product.models import Product, ProductKeywords, Images, Color, Size, Variants
-from decimal import Decimal
+
+
+def customPrice(starter, finish, price):
+    while finish < 10000:
+        if float(price) >= starter and float(price) < finish:
+            price = finish - 0.10
+            return decimal.Decimal(price)
+
+        starter += 10
+        finish += 10
 
 
 def modaymissaveXML2db():
@@ -41,22 +49,33 @@ def modaymissaveXML2db():
             if Product.objects.filter(stock_code=sku).count() < 1:
                 if float(price) < 50.00:
                     tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.60)
+                    tredyshop_price = customPrice(0, 10, tredyshop_price)
                     pttavm_price = tredyshop_price
                 if float(price) >= 50.00 and float(price) < 100.00:
                     tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.40)
+                    tredyshop_price = customPrice(0, 10, tredyshop_price)
                     pttavm_price = tredyshop_price
+                    pttavm_price = customPrice(0, 10, pttavm_price)
                 if float(price) >= 100.00 and float(price) < 150.00:
                     tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.30)
+                    tredyshop_price = customPrice(0, 10, tredyshop_price)
                     pttavm_price = tredyshop_price + decimal.Decimal(20.00)
+                    pttavm_price = customPrice(0, 10, pttavm_price)
                 if float(price) >= 150.00 and float(price) < 200.00:
                     tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.25)
+                    tredyshop_price = customPrice(0, 10, tredyshop_price)
                     pttavm_price = tredyshop_price + decimal.Decimal(20.00)
+                    pttavm_price = customPrice(0, 10, pttavm_price)
                 if float(price) >= 200.00:
                     tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.15)
+                    tredyshop_price = customPrice(0, 10, tredyshop_price)
                     pttavm_price = tredyshop_price + decimal.Decimal(20.00)
+                    pttavm_price = customPrice(0, 10, pttavm_price)
 
                 trendyol_price = tredyshop_price + decimal.Decimal(25.00)
+                trendyol_price = customPrice(0, 10, trendyol_price)
                 hepsiburada_price = tredyshop_price + decimal.Decimal(25.00)
+                hepsiburada_price = customPrice(0, 10, hepsiburada_price)
 
                 if manufacturer == 'Diğer':
                     manufacturer = 8
@@ -195,13 +214,13 @@ def modaymissaveXML2db():
 
 def updateModaymisSaveXML2db():
     with urlopen('https://www.modaymis.com/1.xml') as f:
-        file_path = os.path.join(BASE_DIR, 'modaymis.xml')
         modaymis = ET.parse(f)
         modaymis_products = modaymis.findall("Product")
 
         for product in modaymis_products:
             sku = product.get("Sku")
             name = product.get("Name").split("-")[0]
+            price = product.get("Price").replace(",", ".")
             description = product.get("FullDescription")
             stok = product.get("StockQuantity")
             beden = None
@@ -212,22 +231,43 @@ def updateModaymisSaveXML2db():
 
             if Product.objects.filter(stock_code=sku).exists():
                 exist_product = Product.objects.filter(stock_code=sku).last()
-                price = exist_product.price
+                tredyshop_price = None
                 pttavm_price = None
+                trendyol_price = None
                 if float(price) < 50.00:
-                    pttavm_price = price
+                    tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.60)
+                    tredyshop_price = customPrice(0, 10, tredyshop_price)
+                    pttavm_price = tredyshop_price
+                    trendyol_price = tredyshop_price + decimal.Decimal(18.00)
+                    trendyol_price = customPrice(0, 10, trendyol_price)
                 if float(price) >= 50.00 and float(price) < 100.00:
-                    pttavm_price = price
+                    tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.40)
+                    tredyshop_price = customPrice(0, 10, tredyshop_price)
+                    pttavm_price = tredyshop_price
+                    trendyol_price = tredyshop_price + decimal.Decimal(18.00)
+                    trendyol_price = customPrice(0, 10, trendyol_price)
                 if float(price) >= 100.00 and float(price) < 150.00:
-                    pttavm_price = price + decimal.Decimal(20.00)
+                    tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.30)
+                    tredyshop_price = customPrice(0, 10, tredyshop_price)
+                    pttavm_price = tredyshop_price + decimal.Decimal(20.00)
+                    trendyol_price = tredyshop_price + decimal.Decimal(25.00)
+                    trendyol_price = customPrice(0, 10, trendyol_price)
                 if float(price) >= 150.00 and float(price) < 200.00:
-                    pttavm_price = price + decimal.Decimal(20.00)
+                    tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.25)
+                    tredyshop_price = customPrice(0, 10, tredyshop_price)
+                    pttavm_price = tredyshop_price + decimal.Decimal(20.00)
+                    trendyol_price = tredyshop_price + decimal.Decimal(25.00)
+                    trendyol_price = customPrice(0, 10, trendyol_price)
                 if float(price) >= 200.00:
-                    pttavm_price = price + decimal.Decimal(20.00)
+                    tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.15)
+                    tredyshop_price = customPrice(0, 10, tredyshop_price)
+                    pttavm_price = tredyshop_price + decimal.Decimal(20.00)
+                    trendyol_price = tredyshop_price + decimal.Decimal(25.00)
+                    trendyol_price = customPrice(0, 10, trendyol_price)
 
-                trendyol_price = price + decimal.Decimal(25.00)
-                hepsiburada_price = price + decimal.Decimal(25.00)
-
+                hepsiburada_price = tredyshop_price + decimal.Decimal(35.00)
+                hepsiburada_price = customPrice(0, 10, hepsiburada_price)
+                exist_product.price = tredyshop_price
                 exist_product.trendyol_price = trendyol_price
                 exist_product.hepsiburada_price = hepsiburada_price
                 exist_product.pttavm_price = pttavm_price
@@ -290,6 +330,593 @@ def updateModaymisSaveXML2db():
                                                                              hepsiburada_price=hepsiburada_price,
                                                                              size_id=beden_id, color_id=renk_id,
                                                                              gtin=combination_gtin,
-                                                                             quantity=combination_stock, title=name, is_publish=True, price=price)
+                                                                             quantity=combination_stock, title=name,
+                                                                             is_publish=True, price=price)
                                     except:
                                         pass
+
+
+def tahtakaleSaveXML2db():
+    with urlopen('https://www.tahtakaletoptanticaret.com/export.xml') as f:
+        tahtakale = ET.parse(f)
+        tahtakale_products = tahtakale.findall("channel")
+        counter = 0
+        for product in tahtakale_products:
+            for item in product.iter("item"):
+                title = None
+                description = None
+                id = None
+                barcode = None
+                quantity = 0
+                kapak = None
+                price = 0
+                hepsiburada_price = None
+                trendyol_price = None
+                pttavm_price = None
+                model_number = None
+                publish_status = True
+                category1_no = None
+                category1_id = None
+                category2_no = None
+                category2_id = None
+                category3_id = None
+                images = []
+                existing = False
+                for p in item:
+                    for id in p.iter("id"):
+                        id = f"TK-{id.text}"
+                    if Product.objects.filter(xml_id=id).count() < 1:
+                        existing = False
+                        for t in p.iter("title"):
+                            title = t.text
+                        for d in p.iter("description"):
+                            description = d.text
+                        for b in p.iter("brand"):
+                            brand = b.text
+                        for b in p.iter("barcode"):
+                            barcode = b.text
+                        for i in p.iter("image_link"):
+                            kapak = i.text
+                        for q in p.iter("quantity"):
+                            quantity = q.text
+                        for p in p.iter("price"):
+                            price = decimal.Decimal(p.text.replace(",", "."))
+
+                            if price != None:
+                                pttavm_price = None
+                                trendyol_price = None
+                                if float(price) < 50.00:
+                                    tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.60)
+                                    tredyshop_price = customPrice(0, 10, tredyshop_price)
+                                    pttavm_price = tredyshop_price
+                                    trendyol_price = tredyshop_price + decimal.Decimal(18.00)
+                                    trendyol_price = customPrice(0, 10, trendyol_price)
+                                if float(price) >= 50.00 and float(price) < 100.00:
+                                    tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.40)
+                                    pttavm_price = tredyshop_price
+                                    trendyol_price = tredyshop_price + decimal.Decimal(18.00)
+                                    trendyol_price = customPrice(0, 10, trendyol_price)
+                                if float(price) >= 100.00 and float(price) < 150.00:
+                                    tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.30)
+                                    tredyshop_price = customPrice(0, 10, tredyshop_price)
+                                    pttavm_price = price + decimal.Decimal(20.00)
+                                    trendyol_price = price + decimal.Decimal(25.00)
+                                    trendyol_price = customPrice(0, 10, trendyol_price)
+                                if float(price) >= 150.00 and float(price) < 200.00:
+                                    tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.25)
+                                    tredyshop_price = customPrice(0, 10, tredyshop_price)
+                                    pttavm_price = price + decimal.Decimal(20.00)
+                                    trendyol_price = price + decimal.Decimal(25.00)
+                                    trendyol_price = customPrice(0, 10, trendyol_price)
+                                if float(price) >= 200.00:
+                                    tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.15)
+                                    tredyshop_price = customPrice(0, 10, tredyshop_price)
+                                    pttavm_price = tredyshop_price + decimal.Decimal(20.00)
+                                    trendyol_price = price + decimal.Decimal(25.00)
+                                    trendyol_price = customPrice(0, 10, trendyol_price)
+                                hepsiburada_price = tredyshop_price + decimal.Decimal(35.00)
+                                hepsiburada_price = customPrice(0, 10, hepsiburada_price)
+                        for pt in p.iter("product_type"):
+                            product_type = pt.text
+                            category1 = product_type.split(" &gt; ")[0]
+                            category2 = None
+                            try:
+                                category2 = product_type.split(" &gt; ")[1]
+                            except:
+                                category2 = None
+                            try:
+                                category3 = product_type.split(" &gt; ")[2]
+                            except:
+                                category3 = None
+                            if category1 == "Kozmetik &amp; Kişisel Bakım":
+                                category1_no = "2"
+                            if category1 == "Ev ve Yaşam":
+                                category1_no = "3"
+                            if category1 == "Hırdavat Malzemeleri":
+                                category1_no = "6"
+                            if category1 == "Evcil Hayvan Ürünleri":
+                                category1_no = "7"
+                            if category1 == "Hediyelik Eşya Ürünleri":
+                                category1_no = "8"
+                            if category1 == "Kişisel Güvenlik Ürünleri" or category1 == "Oto Aksesuar Ürünleri" or category1 == "Outdoor Ürünleri" or category1 == "Özel Ürünler" or category1 == "Tv Shop Ürünleri":
+                                category1_no = "-1"
+                            if category1 == "Oyuncak &amp; Kırtasiye":
+                                category1_no = "11"
+                            if category1 == "Parti &amp; Organizasyon":
+                                category1_no = "9"
+                            if category1 == "Promosyon Ürünleri":
+                                category1_no = "10"
+                            if category1 == "Spor ve Sağlık Ürünleri":
+                                category1_no = "5"
+                            if category1 == "Telefon - Tablet Aksesuar":
+                                category1_no = "4"
+                            if category1 == "Takı ve Aksesuar Ürünleri":
+                                category1_no = "1"
+                            if category2 == "Anneler İçin Hediye":
+                                category2_no = "54"
+                            if category2 == "Araç İçi Organizerler":
+                                category2_no = "74"
+                            if category2 == "Araç İçİ Telefon Ve Tablet Tutucular":
+                                category2_no = "75"
+                            if category2 == "Aydınlatma Ürünleri":
+                                category2_no = "18"
+                            if category2 == "Babalar İçin Hediyeler":
+                                category2_no = "55"
+                            if category2 == "Bahçe Aletleri":
+                                category2_no = "49"
+                            if category2 == "Banyo Ürünleri":
+                                category2_no = "16"
+                            if category2 == "Çocuklar İçin Hediyeler":
+                                category2_no = "56"
+                            if category2 == "Dekoratif Biblolar":
+                                category2_no = "24"
+                            if category2 == "Diğer Parti Malzemeleri":
+                                category2_no = "66"
+                            if category2 == "Elektronik Malzeme":
+                                category2_no = "76"
+                            if category2 == "Ev Aksesuarları":
+                                category2_no = "19"
+                            if category2 == "Ev Düzenleyici Organizerler":
+                                category2_no = "21"
+                            if category2 == "Ev Tekstili":
+                                category2_no = "17"
+                            if category2 == "Folyo Ve Parti Balonları":
+                                category2_no = "65"
+                            if category2 == "Giyim Ürünleri":
+                                category2_no = "6"
+                            if category2 == "Hırdavat Askılık":
+                                category2_no = "47"
+                            if category2 == "Hırdavat Askılık":
+                                category2_no = "47"
+                            if category2 == "İlginç Tv Shop Ürünleri":
+                                category2_no = "77"
+                            if category2 == "Kamp El Aletleri":
+                                category2_no = "78"
+                            if category2 == "Kedi Bakım Ürünleri":
+                                category2_no = "51"
+                            if category2 == "Köpek Bakım Ürünleri":
+                                category2_no = "52"
+                            if category2 == "Kırtasiye Malzemeleri":
+                                category2_no = "41"
+                            if category2 == "Kırtasiye Malzemeleri":
+                                category2_no = "41"
+                            if category2 == "Kişisel Bakım Ürünleri":
+                                if category3 == "El ve Ayak Bakım Ürünleri":
+                                    category2_no = "14"
+                                if category3 == "Cilt Bakım Aletleri":
+                                    category2_no = "30"
+                                if category3 == "Cilt Masaj Aletleri":
+                                    category2_no = "31"
+                                if category3 == "Hacamat Malzemeleri":
+                                    category2_no = "32"
+                                if category3 == "Isınmatik Vücut Sobası":
+                                    category2_no = "33"
+                            if category2 == "Kişisel Güvenlik Ürünleri":
+                                category2_no = "79"
+                            if category2 == "Kolye Küpe Bijuteri":
+                                category2_no = "6"
+                                category3_id = 71
+                            if category2 == "Kupa Bardak":
+                                category2_no = "68"
+                            if category2 == "Kuş, Hamster Ve Diğer Petler":
+                                category2_no = "53"
+                            if category2 == "Lamba ve Fener":
+                                category2_no = "80"
+                            if category2 == "Masaj Aletleri":
+                                category2_no = "31"
+                            if category2 == "Metal Dekoratif Levhalar":
+                                category2_no = "23"
+                            if category2 == "Mutfak Ürünleri":
+                                category2_no = "15"
+                            if category2 == "Orijinal Telefon Aksesuarları":
+                                category2_no = "29"
+                            if category2 == "Oto Elektronik":
+                                category2_no = "81"
+                            if category2 == "None":
+                                category2_no = "81"
+                            if category2 == "Oto Temizlik Ürünleri":
+                                category2_no = "83"
+                            if category2 == "Özel Gün Hediyeleri":
+                                category2_no = "57"
+                            if category2 == "Parti Gözlükleri":
+                                category2_no = "57"
+                            if category2 == "Parti Gözlükleri":
+                                category2_no = "61"
+                            if category2 == "Parti Kostümleri":
+                                category2_no = "62"
+                            if category2 == "Parti Organizasyon":
+                                category2_no = "59"
+                            if category2 == "Parti Organizasyon Ürünleri":
+                                category2_no = "58"
+                            if category2 == "Pilates Malzemeleri":
+                                category2_no = "43"
+                            if category2 == "Pratik Ev Aletleri":
+                                category2_no = "20"
+                            if category2 == "Pratik Mutfak Aletleri":
+                                category2_no = "15"
+                            if category2 == "Promosyon Fikirleri":
+                                category2_no = "73"
+                            if category2 == "Promosyon Fikirleri":
+                                category2_no = "73"
+                            if category2 == "Saat" or category2 == "Saat Bileklik Aksesuar":
+                                category1_no = "1"
+                                category2_no = "6"
+                                category3_id = 72
+                            if category2 == "Sağlık Bakım Kozmetik" or category2 == "Spor Ürünleri":
+                                category2_no = "45"
+                            if category2 == "Şaka Malzemeleri":
+                                category2_no = "64"
+                            if category2 == "Telefon Tutucular":
+                                category2_no = "28"
+                            if category2 == "Temizlik Aletleri":
+                                category2_no = "84"
+                            if category2 == "Tv Shop Oto":
+                                category2_no = "77"
+                            if category2 == "Yapay Çiçek":
+                                category2_no = "22"
+                            for mc in MainCategory.objects.all():
+                                if category1_no == mc.category_no:
+                                    if category1_no == "11":
+                                        category1_id = 12
+                                    category1_id = mc.id
+                            for sc in SubCategory.objects.all():
+                                if category2_no == sc.category_no:
+                                    category2_id = sc.id
+                            if category2_id == None:
+                                category2_id = 82
+                        for mn in p.iter("model_number"):
+                            model_number = mn.text
+                        for a in p.iter("availability"):
+                            availability = a.text
+                            if availability == 'in stock':
+                                publish_status = True
+                            else:
+                                publish_status = False
+                        for ai in p.iter("additional_image_link1"):
+                            image1 = ai.text
+                            if image1:
+                                images.append(image1)
+                        for ai in p.iter("additional_image_link2"):
+                            image2 = ai.text
+                            if image2:
+                                images.append(image2)
+                        for ai in p.iter("additional_image_link3"):
+                            image3 = ai.text
+                            if image3:
+                                images.append(image3)
+                        for ai in p.iter("additional_image_link4"):
+                            image4 = ai.text
+                            if image4:
+                                images.append(image4)
+                    else:
+                        existing = True
+
+                if existing == False:
+                    data = Product.objects.create(price=tredyshop_price, amount=quantity, category_id=category1_id,
+                                                  subcategory_id=category2_id, subbottomcategory_id=category3_id,
+                                                  dropshipping="Tahtakale", xml_id=id, barcode=barcode,
+                                                  stock_code=model_number, is_publish=publish_status,
+                                                  trendyol_price=trendyol_price, hepsiburada_price=hepsiburada_price,
+                                                  pttavm_price=pttavm_price, title=title, description=title,
+                                                  detail=description, image_url=kapak, brand_id=8
+                                                  )
+                    slugtitle = title.lower().replace("ı", "i").replace(" ", "-").replace("ü", "u").replace("ö",
+                                                                                                            "o").replace(
+                        "İ", "i").replace("I", "i").replace("/", "-"
+                                                                 "").replace("ş", "s").replace(".", "-").replace("ğ",
+                                                                                                                 "g")
+                    data.slug = str(slugtitle) + str(counter)
+                    data.save()
+                    counter += 1
+                    for image in images:
+                        Images.objects.create(product=data, image_url=image, title=title)
+                    keywords = title.split(" ")
+                    for k in keywords:
+                        product_keyword = ProductKeywords.objects.create(product=data, keyword=k)
+                        product_keyword.save()
+
+
+def updateTahtakaleSaveXML2db():
+    with urlopen('https://www.tahtakaletoptanticaret.com/export.xml') as f:
+        tahtakale = ET.parse(f)
+        tahtakale_products = tahtakale.findall("channel")
+        counter = 0
+        for product in tahtakale_products:
+            for item in product.iter("item"):
+                title = None
+                description = None
+                id = None
+                barcode = None
+                quantity = 0
+                kapak = None
+                price = 0
+                hepsiburada_price = None
+                trendyol_price = None
+                pttavm_price = None
+                model_number = None
+                publish_status = True
+                category1_no = None
+                category1_id = None
+                category2_no = None
+                category2_id = None
+                category3_id = None
+                existing = False
+
+                for p in item:
+                    for id in p.iter("id"):
+                        id = f"TK-{id.text}"
+                    if Product.objects.filter(xml_id=id).exists():
+                        try:
+                            product = Product.objects.get(xml_id=id)
+                            for t in p.iter("title"):
+                                title = t.text
+                                product.title = title
+                            for d in p.iter("description"):
+                                description = d.text
+                                product.description = description
+                            for b in p.iter("barcode"):
+                                barcode = b.text
+                                product.barcode = barcode
+                            for i in p.iter("image_link"):
+                                kapak = i.text
+                                product.image_url = kapak
+                            for q in p.iter("quantity"):
+                                quantity = q.text
+                                product.amount = quantity
+                            for p in p.iter("price"):
+                                price = decimal.Decimal(p.text.replace(",", "."))
+                                if price != None:
+                                    pttavm_price = None
+                                    trendyol_price = None
+                                    if float(price) < 50.00:
+                                        tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.60)
+                                        tredyshop_price = customPrice(0, 10, tredyshop_price)
+                                        pttavm_price = tredyshop_price
+                                        trendyol_price = tredyshop_price + decimal.Decimal(15.00)
+                                        trendyol_price = customPrice(0, 10, trendyol_price)
+                                    if float(price) >= 50.00 and float(price) < 100.00:
+                                        tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.40)
+                                        tredyshop_price = customPrice(0, 10, tredyshop_price)
+                                        pttavm_price = tredyshop_price
+                                        trendyol_price = tredyshop_price + decimal.Decimal(18.00)
+                                        trendyol_price = customPrice(0, 10, trendyol_price)
+                                    if float(price) >= 100.00 and float(price) < 150.00:
+                                        tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.30)
+                                        tredyshop_price = customPrice(0, 10, tredyshop_price)
+                                        pttavm_price = tredyshop_price + decimal.Decimal(20.00)
+                                        trendyol_price = tredyshop_price + decimal.Decimal(25.00)
+                                    if float(price) >= 150.00 and float(price) < 200.00:
+                                        tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.25)
+                                        tredyshop_price = customPrice(0, 10, tredyshop_price)
+                                        pttavm_price = tredyshop_price + decimal.Decimal(20.00)
+                                        trendyol_price = tredyshop_price + decimal.Decimal(25.00)
+                                    if float(price) >= 200.00:
+                                        tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.15)
+                                        tredyshop_price = customPrice(0, 10, tredyshop_price)
+                                        pttavm_price = tredyshop_price + decimal.Decimal(20.00)
+                                        trendyol_price = tredyshop_price + decimal.Decimal(25.00)
+                                        trendyol_price = customPrice(0, 10, trendyol_price)
+                                    hepsiburada_price = tredyshop_price + decimal.Decimal(35.00)
+                                    hepsiburada_price = customPrice(0,10, hepsiburada_price)
+                                    product.price = tredyshop_price
+                                    product.hepsiburada_price = hepsiburada_price
+                                    product.trendyol_price = trendyol_price
+                                    product.pttavm_price = pttavm_price
+                            for pt in p.iter("product_type"):
+                                product_type = pt.text
+                                category1 = product_type.split(" &gt; ")[0]
+                                category2 = None
+                                try:
+                                    category2 = product_type.split(" &gt; ")[1]
+                                except:
+                                    category2 = None
+                                try:
+                                    category3 = product_type.split(" &gt; ")[2]
+                                except:
+                                    category3 = None
+                                if category1 == "Kozmetik &amp; Kişisel Bakım":
+                                    category1_no = "2"
+                                if category1 == "Ev ve Yaşam":
+                                    category1_no = "3"
+                                if category1 == "Hırdavat Malzemeleri":
+                                    category1_no = "6"
+                                if category1 == "Evcil Hayvan Ürünleri":
+                                    category1_no = "7"
+                                if category1 == "Hediyelik Eşya Ürünleri":
+                                    category1_no = "8"
+                                if category1 == "Kişisel Güvenlik Ürünleri" or category1 == "Oto Aksesuar Ürünleri" or category1 == "Outdoor Ürünleri" or category1 == "Özel Ürünler" or category1 == "Tv Shop Ürünleri":
+                                    category1_no = "-1"
+                                if category1 == "Oyuncak &amp; Kırtasiye":
+                                    category1_no = "11"
+                                if category1 == "Parti &amp; Organizasyon":
+                                    category1_no = "9"
+                                if category1 == "Promosyon Ürünleri":
+                                    category1_no = "10"
+                                if category1 == "Spor ve Sağlık Ürünleri":
+                                    category1_no = "5"
+                                if category1 == "Telefon - Tablet Aksesuar":
+                                    category1_no = "4"
+                                if category1 == "Takı ve Aksesuar Ürünleri":
+                                    category1_no = "1"
+                                if category2 == "Anneler İçin Hediye":
+                                    category2_no = "54"
+                                if category2 == "Araç İçi Organizerler":
+                                    category2_no = "74"
+                                if category2 == "Araç İçİ Telefon Ve Tablet Tutucular":
+                                    category2_no = "75"
+                                if category2 == "Aydınlatma Ürünleri":
+                                    category2_no = "18"
+                                if category2 == "Babalar İçin Hediyeler":
+                                    category2_no = "55"
+                                if category2 == "Bahçe Aletleri":
+                                    category2_no = "49"
+                                if category2 == "Banyo Ürünleri":
+                                    category2_no = "16"
+                                if category2 == "Çocuklar İçin Hediyeler":
+                                    category2_no = "56"
+                                if category2 == "Dekoratif Biblolar":
+                                    category2_no = "24"
+                                if category2 == "Diğer Parti Malzemeleri":
+                                    category2_no = "66"
+                                if category2 == "Elektronik Malzeme":
+                                    category2_no = "76"
+                                if category2 == "Ev Aksesuarları":
+                                    category2_no = "19"
+                                if category2 == "Ev Düzenleyici Organizerler":
+                                    category2_no = "21"
+                                if category2 == "Ev Tekstili":
+                                    category2_no = "17"
+                                if category2 == "Folyo Ve Parti Balonları":
+                                    category2_no = "65"
+                                if category2 == "Giyim Ürünleri":
+                                    category2_no = "6"
+                                if category2 == "Hırdavat Askılık":
+                                    category2_no = "47"
+                                if category2 == "Hırdavat Askılık":
+                                    category2_no = "47"
+                                if category2 == "İlginç Tv Shop Ürünleri":
+                                    category2_no = "77"
+                                if category2 == "Kamp El Aletleri":
+                                    category2_no = "78"
+                                if category2 == "Kedi Bakım Ürünleri":
+                                    category2_no = "51"
+                                if category2 == "Köpek Bakım Ürünleri":
+                                    category2_no = "52"
+                                if category2 == "Kırtasiye Malzemeleri":
+                                    category2_no = "41"
+                                if category2 == "Kırtasiye Malzemeleri":
+                                    category2_no = "41"
+                                if category2 == "Kişisel Bakım Ürünleri":
+                                    if category3 == "El ve Ayak Bakım Ürünleri":
+                                        category2_no = "14"
+                                    if category3 == "Cilt Bakım Aletleri":
+                                        category2_no = "30"
+                                    if category3 == "Cilt Masaj Aletleri":
+                                        category2_no = "31"
+                                    if category3 == "Hacamat Malzemeleri":
+                                        category2_no = "32"
+                                    if category3 == "Isınmatik Vücut Sobası":
+                                        category2_no = "33"
+                                if category2 == "Kişisel Güvenlik Ürünleri":
+                                    category2_no = "79"
+                                if category2 == "Kolye Küpe Bijuteri":
+                                    category2_no = "6"
+                                    category3_id = 71
+                                if category2 == "Kupa Bardak":
+                                    category2_no = "68"
+                                if category2 == "Kuş, Hamster Ve Diğer Petler":
+                                    category2_no = "53"
+                                if category2 == "Lamba ve Fener":
+                                    category2_no = "80"
+                                if category2 == "Masaj Aletleri":
+                                    category2_no = "31"
+                                if category2 == "Metal Dekoratif Levhalar":
+                                    category2_no = "23"
+                                if category2 == "Mutfak Ürünleri":
+                                    category2_no = "15"
+                                if category2 == "Orijinal Telefon Aksesuarları":
+                                    category2_no = "29"
+                                if category2 == "Oto Elektronik":
+                                    category2_no = "81"
+                                if category2 == "None":
+                                    category2_no = "81"
+                                if category2 == "Oto Temizlik Ürünleri":
+                                    category2_no = "83"
+                                if category2 == "Özel Gün Hediyeleri":
+                                    category2_no = "57"
+                                if category2 == "Parti Gözlükleri":
+                                    category2_no = "57"
+                                if category2 == "Parti Gözlükleri":
+                                    category2_no = "61"
+                                if category2 == "Parti Kostümleri":
+                                    category2_no = "62"
+                                if category2 == "Parti Organizasyon":
+                                    category2_no = "59"
+                                if category2 == "Parti Organizasyon Ürünleri":
+                                    category2_no = "58"
+                                if category2 == "Pilates Malzemeleri":
+                                    category2_no = "43"
+                                if category2 == "Pratik Ev Aletleri":
+                                    category2_no = "20"
+                                if category2 == "Pratik Mutfak Aletleri":
+                                    category2_no = "15"
+                                if category2 == "Promosyon Fikirleri":
+                                    category2_no = "73"
+                                if category2 == "Promosyon Fikirleri":
+                                    category2_no = "73"
+                                if category2 == "Saat" or category2 == "Saat Bileklik Aksesuar":
+                                    category1_no = "1"
+                                    category2_no = "6"
+                                    category3_id = 72
+                                if category2 == "Sağlık Bakım Kozmetik" or category2 == "Spor Ürünleri":
+                                    category2_no = "45"
+                                if category2 == "Şaka Malzemeleri":
+                                    category2_no = "64"
+                                if category2 == "Telefon Tutucular":
+                                    category2_no = "28"
+                                if category2 == "Temizlik Aletleri":
+                                    category2_no = "84"
+                                if category2 == "Tv Shop Oto":
+                                    category2_no = "77"
+                                if category2 == "Yapay Çiçek":
+                                    category2_no = "22"
+                                for mc in MainCategory.objects.all():
+                                    if category1_no == mc.category_no:
+                                        if category1_no == "11":
+                                            category1_id = 12
+                                        category1_id = mc.id
+                                for sc in SubCategory.objects.all():
+                                    if category2_no == sc.category_no:
+                                        category2_id = sc.id
+                                if category2_id == None:
+                                    category2_id = 82
+                            for mn in p.iter("model_number"):
+                                model_number = mn.text
+                            for a in p.iter("availability"):
+                                availability = a.text
+                                if availability == 'in stock':
+                                    publish_status = True
+                                else:
+                                    publish_status = False
+                            product.category_id = category1_id
+                            product.subcategory_id = category2_id
+                            product.subbottomcategory_id = category3_id
+                            product.save()
+                            for ai in p.iter("additional_image_link1"):
+                                image1 = ai.text
+                                if image1:
+                                    Images.objects.update(product=product, image_url=image1, title=title)
+                            for ai in p.iter("additional_image_link2"):
+                                image2 = ai.text
+                                if image2:
+                                    Images.objects.update(product=product, image_url=image2, title=title)
+                            for ai in p.iter("additional_image_link3"):
+                                image3 = ai.text
+                                if image3:
+                                    Images.objects.update(product=product, image_url=image3, title=title)
+                            for ai in p.iter("additional_image_link4"):
+                                image4 = ai.text
+                                if image4:
+                                    Images.objects.update(product=product, image_url=image4, title=title)
+                        except:
+                            print(id, "Birden Fazla Mevcut")

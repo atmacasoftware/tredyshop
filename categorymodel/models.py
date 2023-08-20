@@ -12,6 +12,7 @@ class MainCategory(models.Model):
     description = models.CharField(max_length=255, null=True)
     image = models.ImageField(blank=True, upload_to='img/category/', null=True)
     order = models.IntegerField(verbose_name="Sırası", null=True, blank=False)
+    category_no = models.CharField(verbose_name="Kategori Numarası", null=True, blank=True, max_length=50)
     is_active = models.BooleanField(default=True, verbose_name="Yayınlansın mı?")
     slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
@@ -39,6 +40,13 @@ class MainCategory(models.Model):
     def product_count(self):
         return self.main_category.count()
 
+    def exist_subbottomcategories(self):
+        c = self.maincategories.filter(maincategory_id=self.id)
+        if c.exists():
+            return "True"
+        else:
+            return "False"
+
     def save(self, *args, **kwargs):
         if not self.id and not self.slug:
             slug = defaultfilters.slugify(unidecode(self.title))
@@ -64,6 +72,7 @@ class SubCategory(models.Model):
     keyword = models.CharField(max_length=255, null=True)
     description = models.CharField(max_length=255, null=True)
     image = models.ImageField(blank=True, upload_to='img/category/', null=True)
+    category_no = models.CharField(verbose_name="Kategori Numarası", null=True, blank=True, max_length=50)
     is_active = models.BooleanField(default=True, verbose_name="Yayınlansın mı?")
     slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
@@ -72,6 +81,7 @@ class SubCategory(models.Model):
     class Meta:
         verbose_name = "2) 2. Düzey Kategori"
         verbose_name_plural = "2) 2. Düzey Kategori"
+        ordering = ["-created_at"]
 
     def __str__(self):
         return f"{self.title}"
@@ -111,13 +121,14 @@ class SubCategory(models.Model):
 
 class SubBottomCategory(models.Model):
     maincategory = models.ForeignKey(MainCategory, on_delete=models.CASCADE, null=True, blank=False,
-                                     verbose_name="Ana Kategori")
+                                     verbose_name="Ana Kategori", related_name="maincategories")
     subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, null=True, blank=False,
                                      verbose_name="Alt Kategori", related_name='subbottomcategories')
     title = models.CharField(max_length=255, verbose_name="Kategori Adı")
     keyword = models.CharField(max_length=255, null=True)
     description = models.CharField(max_length=255, null=True)
     image = models.ImageField(blank=True, upload_to='img/category/', null=True)
+    category_no = models.CharField(verbose_name="Kategori Numarası", null=True, blank=True, max_length=50)
     is_active = models.BooleanField(default=True, verbose_name="Yayınlansın mı?")
     slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
@@ -160,3 +171,5 @@ class SubBottomCategory(models.Model):
                     self.slug = slug
                     break
         super(SubBottomCategory, self).save(*args, **kwargs)
+
+

@@ -5,6 +5,7 @@
 
 {% block checkout %}
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/orders.css' %}">
     <hr>
     <div class="main-content space1">
         <div class="container container-240">
@@ -64,8 +65,8 @@
                             {% endif %}
                         </div>
                         <div class="payment_completed__button">
-                            <a href="{% url 'order_page' %}" class="cart-btn btn-viewcart">Siparişlerime Git</a>
-                            <a href="{% url 'mainpage' %}" class="cart-btn e-checkout btn-gradient">Alışverişe Devam
+                            <a href="{% url 'order_page' %}" class="cart-btn btn-viewcart btn-ordering">Siparişlerime Git</a>
+                            <a href="{% url 'mainpage' %}" class="cart-btn e-checkout btn-gradient btn-continue">Alışverişe Devam
                                 Et</a>
                         </div>
                     </div>

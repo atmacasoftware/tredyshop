@@ -37,9 +37,13 @@
                         <ul class="footer-block-content">
                             <li><a href="{% url 'profile_mainpage' %}">Hesabım</a></li>
                             <li><a href="#">Sipariş Takibi</a></li>
-                            <li><a href="#">Returns/Exchange</a></li>
-                            <li><a href="#">Sıkça Sorulan Sorular</a></li>
-                            <li><a href="#">Müşteri Destek</a></li>
+                            <li><a href="{% url 'delivery_conditional' %}">Teslimat Koşulları</a></li>
+                            <li><a href="{% url 'faq' %}">Sıkça Sorulan Sorular</a></li>
+                            <li><a href="{% url 'membership_contract' %}">Üyelik Sözleşmesi</a></li>
+                            <li><a href="{% url 'security_policy' %}">Gizlilik Politiası</a></li>
+                            <li><a href="{% url 'terms_of_use' %}">Site Kullanım Şartları</a></li>
+                            <li><a href="{% url 'kvkk' %}">KVKK Aydınlatma Metni</a></li>
+                            <li><a href="{% url 'cookies' %}">Çerezler</a></li>
                         </ul>
                     </div>
                 </div>

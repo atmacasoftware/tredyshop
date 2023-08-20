@@ -1,5 +1,15 @@
 jQuery(document).ready(function ($) {
     "use strict";
+
+    window.addEventListener('load', function () {
+        let categoryBox = document.querySelector(".vertical-wrapper")
+        let categoryV8 = document.querySelectorAll(".no-bottom")
+        for (let i = 0; i < categoryV8.length; i++) {
+            $(categoryV8[i]).css("minHeight", categoryBox.offsetHeight)
+        }
+    })
+
+
     // Ajax search
     $('.ajax-search input[type="text"]').on('blur', function () {
         $('.list-product-search').removeClass('active');
