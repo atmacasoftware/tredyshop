@@ -1,7 +1,7 @@
 {% extends 'backend/adminpage/layout.html' %}
 {% load static %}
 
-{% block title %}<title>Fatura - Güncelle</title>{% endblock %}
+{% block title %}<title>Trendyol Hesap Bilgileri</title>{% endblock %}
 
 {% block faturalar %}
     <style>
@@ -15,13 +15,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Fatura - Güncelle</h1>
+                    <h1 class="m-0">Trendyol Hesap Bilgileri</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{% url 'mainpage' %}">Anasayfa</a></li>
-                        <li class="breadcrumb-item"><a href="{% url 'alinan_faturalar' %}">Faturalar</a></li>
-                        <li class="breadcrumb-item active">Fatura - Güncelle</li>
+                        <li class="breadcrumb-item active">Trendyol Hesap Bilgileri</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -38,7 +37,7 @@
                             <form action="" method="post" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 {{ form.as_p }}
-                                <input type="submit" class="btn btn-primary" value="Güncelle">
+                                <input type="submit" class="btn btn-primary" value="Ekle/Güncelle">
                             </form>
                         </div>
                     </div>

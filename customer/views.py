@@ -32,6 +32,7 @@ def login(request):
             if request.method == 'POST':
                 email = request.POST.get('email')
                 password = request.POST.get('password')
+                remember_me = request.POST.get('remember_me')
                 user_obj = User.objects.filter(email=email)
                 if not user_obj.exists():
                     messages.error(request, 'Bu kullanıcı mevcut değil.')
@@ -50,6 +51,8 @@ def login(request):
                         except:
                             pass
                         auth_login(request, user_obj)
+                        if not remember_me:
+                            request.session.set_expiry(18000)
                         messages.success(request,
                                          f'Hoşgeldin {request.user.get_full_name()}. Alışveriş keyfini çıkarın.')
                         return redirect('mainpage')

@@ -67,6 +67,7 @@
                                             <th>Ay</th>
                                             <th>KDV Hariç Tutar (TL)</th>
                                             <th>KDV Oranı</th>
+                                            <th>KDV Tutarı (TL)</th>
                                             <th>Toplam Tutar</th>
                                             <th></th>
                                         </tr>
@@ -79,6 +80,7 @@
                                                 <td>{{ fatura.get_month_display }}</td>
                                                 <td>{{ fatura.price }}</td>
                                                 <td>{{ fatura.tax_rate }}</td>
+                                                <td>{{ fatura.price|mul:fatura.tax_rate|div:100|floatformat:2 }}</td>
                                                 <td>{{ fatura.price|mul:fatura.tax_rate|div:100|add:fatura.price|floatformat:2 }}</td>
                                                 <td>
 

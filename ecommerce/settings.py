@@ -58,6 +58,8 @@ INSTALLED_APPS = [
 
     'django_ckeditor_5',
 
+    'corsheaders',
+
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -71,6 +73,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django_session_timeout.middleware.SessionTimeoutMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -78,12 +81,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-SESSION_EXPIRE_SECONDS = 18000
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
 SESSION_TIMEOUT_REDIRECT = '/'
 
-
 ROOT_URLCONF = 'ecommerce.urls'
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOWED_ORIGINS = [
+    "https://tredyshop.com",
+    "https://www.tredyshop.com",
+]
 
 TEMPLATES = [
     {
@@ -174,7 +181,6 @@ else:
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
-
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

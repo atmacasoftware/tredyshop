@@ -77,8 +77,6 @@ def modaymissaveXML2db():
                 hepsiburada_price = tredyshop_price + decimal.Decimal(25.00)
                 hepsiburada_price = customPrice(0, 10, hepsiburada_price)
 
-                if manufacturer == 'Diğer':
-                    manufacturer = 8
 
                 for p in product.iter("Categories"):
                     for c in p.iter('Category'):
@@ -97,7 +95,7 @@ def modaymissaveXML2db():
                 data = Product.objects.create(xml_id=id, category_id=1, subcategory_id=sub_category_id, stock_code=sku,
                                               barcode=modelcode, title=name,
                                               description=name,
-                                              brand_id=manufacturer, price=tredyshop_price,
+                                              brand_id=9, price=tredyshop_price,
                                               trendyol_price=tredyshop_price,
                                               hepsiburada_price=hepsiburada_price, pttavm_price=pttavm_price,
                                               amount=stok,
@@ -111,7 +109,7 @@ def modaymissaveXML2db():
                                                   stock_code=sku,
                                                   description=name,
                                                   barcode=modelcode, title=name,
-                                                  brand_id=manufacturer, price=tredyshop_price, amount=stok,
+                                                  brand_id=9, price=tredyshop_price, amount=stok,
                                                   detail=description,
                                                   dropshipping="Modaymış",
                                                   status=True)
@@ -273,6 +271,7 @@ def updateModaymisSaveXML2db():
                 exist_product.pttavm_price = pttavm_price
                 exist_product.amount = stok
                 exist_product.detail = description
+                exist_product.brand.id = 9
                 exist_product.save()
 
                 size = None

@@ -64,7 +64,7 @@ class ProductAdmin(ImportExportModelAdmin):
 
 
 class BrandAdmin(ImportExportModelAdmin):
-    list_display = ['title', 'is_active']
+    list_display = ['id','title', 'is_active']
     list_filter = ['is_active']
     resource_class = BrandResource
 

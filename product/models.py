@@ -103,6 +103,7 @@ class Product(models.Model):
     detail = CKEditor5Field('Detay', config_name='extends', null=True)
     variant = models.CharField(choices=TYPE, max_length=20, blank=True, default="Yok", null=True, verbose_name="Tip")
     is_publish = models.BooleanField(default=True, verbose_name="Yayında mı?", null=True)
+    is_publish_trendyol = models.BooleanField(default=False, verbose_name="Trendyolda Yayında Mı?", null=True)
     sell_count = models.BigIntegerField(default=0, verbose_name="Toplam Satış Sayısı", null=True, blank=True)
     slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
     status = models.BooleanField(default=True)

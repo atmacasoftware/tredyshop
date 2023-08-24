@@ -104,6 +104,13 @@ section .contentBx .formBx .inputBx input[type='submit']:hover {
     background: #f53677;
 }
 
+section .contentBx .formBx .remember{
+    margin-bottom: 10px;
+    color: #607d8b;
+    font-weight: 400;
+    font-size: 14px;
+}
+
 @media (max-width: 768px) {
     section .imgBx {
         position: absolute;

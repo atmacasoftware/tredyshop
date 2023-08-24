@@ -49,6 +49,15 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{% url 'kategoriler_seviye1' %}"
+                       class="nav-link {% if '/kategoriler/' in request.path %}active{% endif %}">
+                        <i class="nav-icon fa-solid fa-table-list"></i>
+                        <p>
+                            Kategoriler
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{% url 'admin_product' %}"
                        class="nav-link {% if request.path == '/yonetim/urunler/' %}active{% endif %}">
                         <i class="nav-icon fa fa-box"></i>
@@ -96,8 +105,15 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
+                            <a href="{% url 'trendyol_hesap_bilgileri_ekle' %}"
+                               class="nav-link {% if '/trendyol/hesap-bilgileri/' in request.path %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Hesap Bilgileri</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{% url 'trendyol_add_product' %}"
-                               class="nav-link {% if '/trendyol/' in request.path %}active{% endif %}">
+                               class="nav-link {% if '/trendyol/urun-giris/' in request.path %}active{% endif %}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Ürün Girişi</p>
                             </a>
@@ -109,7 +125,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/mailbox/read-mail.html" class="nav-link">
+                            <a href="{% url 'trendyol_update_price_stok' %}" class="nav-link">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Stok & Fiyat Güncelleme</p>
                             </a>

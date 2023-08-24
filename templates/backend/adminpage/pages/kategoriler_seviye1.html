@@ -1,0 +1,347 @@
+{% extends 'backend/adminpage/layout.html' %}
+{% load static %}
+
+{% block title %}<title>1. Seviye Kategoriler</title>{% endblock %}
+
+{% block category %}
+    <link rel="stylesheet" href="{% static 'adminpage/css/category.css' %}">
+
+    <div class="waiting">
+        <div class="spinner-border text-danger" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <h4>Lütfen Bekleyiniz...</h4>
+    </div>
+
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">1. Seviye Kategoriler</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'mainpage' %}">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">1. Seviye Kategoriler</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><b>1. Seviye Kategori Ekle</b></h3>
+                        </div>
+                        <div class="card-body">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <button type="submit" class="btn btn-primary btn-block" name="addBtn">Ekle</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><b>Tüm 1. Seviye Kategoriler</b></h3>
+                            <div class="card-tools">
+                                <div class="input-group input-group-sm" style="width: 150px;">
+                                    <input type="text" name="table_search" onkeyup="searchFunction();" id="search"
+                                           class="form-control float-right"
+                                           placeholder="Arama">
+
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-default">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0"
+                             style="min-height: 500px;height: auto;max-height: 750px;">
+                            <table class="table table-head-fixed text-nowrap" id="categoryTable">
+                                <thead>
+                                <tr>
+                                    <th class="select-row" style="text-align: start; vertical-align: middle"></th>
+                                    <th style="text-align: start; vertical-align: middle">ID</th>
+                                    <th style="text-align: start; vertical-align: middle">Kategori Adı</th>
+                                    <th style="text-align: start; vertical-align: middle">Kategori Sırası</th>
+                                    <th style="text-align: start; vertical-align: middle">Kategori Numarası</th>
+                                    <th style="text-align: start; vertical-align: middle">Alt Kategorileri</th>
+                                    <th style="text-align: start; vertical-align: middle">Alt Kategori Ekle</th>
+                                    <th style="text-align: start; vertical-align: middle">Oluşturulma Tarihi</th>
+                                    <th style="text-align: start; vertical-align: middle">Güncellenme Tarihi</th>
+                                    <th style="text-align: start; vertical-align: middle"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for mc in category %}
+                                    <tr>
+                                        <td class="select-row" style="text-align: start; vertical-align: middle">
+                                            <input type="checkbox" name="select_category" value="{{ mc.id }}"
+                                                   data-filter="seviye1-category" class="select-checkbox">
+                                        </td>
+                                        <td style="text-align: start; vertical-align: middle"><b><a
+                                                href="{% url 'kategoriler_seviye1_guncelle' mc.id %}"
+                                                class="text-danger">{{ mc.id }}</a></b></td>
+                                        <td style="text-align: start; vertical-align: middle"><b><a
+                                                href="{% url 'kategoriler_seviye1_guncelle' mc.id %}">{{ mc.title }}</a></b>
+                                        </td>
+                                        <td style="text-align: start; vertical-align: middle">{{ mc.order }}
+                                        <td style="text-align: start; vertical-align: middle">{{ mc.category_no }}
+                                        </td>
+                                        <td style="text-align: start; vertical-align: middle">
+                                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                                    data-target="#modal-show-{{ mc.id }}">
+                                                Gör
+                                            </button>
+                                            <div class="modal fade" id="modal-show-{{ mc.id }}">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Alt Kategoriler</h4>
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <ul>
+                                                                {% for msc in subcategory %}
+                                                                    {% if mc.id == msc.maincategory.id %}
+                                                                        <li>
+                                                                            <a href="{% url 'kategoriler_seviye2' mc.slug %}">{{ msc.title }}</a>
+                                                                        </li>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </ul>
+                                                        </div>
+                                                        <div class="modal-footer justify-content-between">
+                                                            <button type="button" class="btn btn-default"
+                                                                    data-dismiss="modal">
+                                                                Kapat
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /.modal-content -->
+                                                </div>
+                                                <!-- /.modal-dialog -->
+                                            </div>
+                                        </td>
+                                        <td style="text-align: start; vertical-align: middle"><a
+                                                href="{% url 'kategoriler_seviye2' mc.slug %}"
+                                                class="btn btn-success">Ekle</a>
+                                        </td>
+                                        <td style="text-align: start; vertical-align: middle">{{ mc.created_at }}</td>
+                                        <td style="text-align: start; vertical-align: middle">{{ mc.updated_at }}</td>
+                                        <td style="text-align: start; vertical-align: middle">
+
+                                            <button type="button" class="btn btn-default bg-danger" data-toggle="modal"
+                                                    data-target="#model-delete-{{ mc.id }}">
+                                                Sil
+                                            </button>
+                                            <div class="modal fade" id="model-delete-{{ mc.id }}">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Silmek istediğinize emin
+                                                                misiniz?</h4>
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <h5 class="text-bold">Silinecek kategori:</h5>
+                                                            <p>{{ mc.name }}</p>
+                                                            <p>**Ana kategori silmeniz durumunda kategoriye <br> bağlı
+                                                                alt
+                                                                kategorilerde
+                                                                silinecektir.</p>
+                                                        </div>
+                                                        <div class="modal-footer justify-content-between">
+                                                            <button type="button" class="btn btn-default"
+                                                                    data-dismiss="modal">
+                                                                Kapat
+                                                            </button>
+                                                            <a href="{% url 'kategoriler_seviye1_sil' mc.id %}"
+                                                               class="btn btn-danger">Sil</a>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /.modal-content -->
+                                                </div>
+                                                <!-- /.modal-dialog -->
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <span id="no-data"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <a href="{% url 'kategoriler_seviye1_export_excel' %}" class="btn btn-success">Excel İndir</a>
+                            <a href="{% url 'kategoriler_seviye1_export_pdf' %}" class="btn btn-primary">PDF İndir <span class="right badge badge-danger">Test</span></a>
+                            <button class="btn btn-warning" id="selectRow">Seç</button>
+                            <button class="btn btn-warning" id="deleteRow" data-toggle="modal"
+                                    data-target="#modal-select-delete">Seçilileri Sil
+                            </button>
+                            <button class="btn btn-default" id="cancelRow">İptal Et</button>
+                            <button class="btn btn-danger" data-toggle="modal"
+                                    data-target="#modal-all-delete">Tümünü Sil
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="modal-all-delete">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Emin misin?</h4>
+                                <button type="button" class="close" data-dismiss="modal"
+                                        aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                Tümünü silmek istediğine emin misin?
+                                *Tüm alt kategorilerde silinecektir.
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                                <a href="{% url 'kategoriler_seviye1_hepsini_sil' %}" class="btn btn-danger"
+                                   data-dismiss="modal">
+                                    Sil
+                                </a>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+                <div class="modal fade" id="modal-select-delete">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Emin misin?</h4>
+                                <button type="button" class="close" data-dismiss="modal"
+                                        aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Seçili kategoriler silinecektir.</p>
+                                <p>*Secili kategorilere bağlı alt kategorilerde silinecektir.</p>
+                            </div>
+                            <div class="modal-footer justify-content-between">
+                                <button id="deleteNow" class="btn btn-danger"
+                                        data-dismiss="modal">
+                                    Sil
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <script>
+        function searchFunction() {
+            let input, filter, table, tr, td, j;
+            input = document.getElementById("search");
+            filter = input.value.toLowerCase();
+            table = document.getElementById("categoryTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (j = 0; j < tr.length; j++) {
+                td = tr[j].getElementsByTagName("td");
+                msg = document.getElementById("no-data");
+
+                if (td.length > 0) {
+                    if (td[0].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[1].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[2].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[3].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[4].innerHTML.toLocaleLowerCase().indexOf(filter) > -1) {
+                        tr[j].style.display = ""
+                        msg.innerHTML = ""
+                    } else {
+                        tr[j].style.display = "none"
+                    }
+                }
+
+                if (td.length == 0) {
+                    msg.innerHTML = "Aramanızla eşleşen kayıt bulunamadı."
+                }
+
+            }
+        }
+
+        $(document).ready(function () {
+            $(".waiting").hide()
+            $("#deleteRow").hide();
+            $("#cancelRow").hide()
+            $("#selectRow").on('click', function () {
+                $("#cancelRow").show()
+                $(".select-row").css('display', 'block')
+                $("#selectRow").hide()
+                $("#deleteRow").show();
+                $("#cancelRow").on('click', function () {
+                    $("#selectRow").show();
+                    $("#cancelRow").hide();
+                    $("#deleteRow").hide();
+                    $(".select-row").css('display', 'none')
+                })
+            })
+        });
+
+        $("#deleteRow").on('click', function () {
+            var _filterObj = {};
+            $(".select-checkbox").each(function (index, ele) {
+                var _filterVal = $(this).val();
+                var _filterKey = $(this).data('filter');
+                _filterObj[_filterKey] = Array.from(document.querySelectorAll('input[data-filter=' + _filterKey + ']:checked')).map(function (el) {
+                    return el.value;
+                });
+            });
+            $("#deleteNow").on('click', function () {
+                console.log(_filterObj)
+                $.ajax({
+                    url: `/yonetim/kategoriler/secili-kategori-sil/`,
+                    data: _filterObj,
+                    dataType: 'json',
+                    beforeSend: function () {
+                        $(".waiting").show()
+                    },
+                    success: function (data) {
+                        $(".waiting").hide()
+                        location.reload();
+                    }
+                });
+            });
+        })
+
+
+    </script>
+
+
+{% endblock %}

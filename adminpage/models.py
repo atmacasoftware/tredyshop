@@ -2,6 +2,29 @@ from django.db import models
 
 # Create your models here.
 
+class Trendyol(models.Model):
+    companyname = models.CharField(max_length=255, verbose_name="Firma Adı", null=True, blank=True)
+    kep = models.CharField(max_length=255, verbose_name="KEP Adresi", null=True, blank=True)
+    apikey = models.CharField(max_length=255, verbose_name="Api Key", null=True, blank=True)
+    apisecret = models.CharField(max_length=255, verbose_name="Api Secret", null=True, blank=True)
+    saticiid = models.BigIntegerField(verbose_name="Satıcı ID (Cari ID)", null=True, blank=True)
+    token = models.CharField(max_length=255, verbose_name="Token", null=True, blank=True)
+    sevkiyatadresid_1 = models.BigIntegerField(null=True, blank=True, verbose_name="Sevkiyat Adres ID 1")
+    sevkiyatadresid_2 = models.BigIntegerField(null=True, blank=True, verbose_name="Sevkiyat Adres ID 2")
+    sevkiyatadresid_3 = models.BigIntegerField(null=True, blank=True, verbose_name="Sevkiyat Adres ID 3")
+    sevkiyatadresid_4 = models.BigIntegerField(null=True, blank=True, verbose_name="Sevkiyat Adres ID 4")
+    sevkiyatadresid_5 = models.BigIntegerField(null=True, blank=True, verbose_name="Sevkiyat Adres ID 5")
+    iadeadresid_1 = models.BigIntegerField(null=True, blank=True, verbose_name="İade Adres ID 1")
+    iadeadresid_2 = models.BigIntegerField(null=True, blank=True, verbose_name="İade Adres ID 2")
+    iadeadresid_3 = models.BigIntegerField(null=True, blank=True, verbose_name="İade Adres ID 3")
+    iadeadresid_4 = models.BigIntegerField(null=True, blank=True, verbose_name="İade Adres ID 4")
+    iadeadresid_5 = models.BigIntegerField(null=True, blank=True, verbose_name="İade Adres ID 5")
+    class Meta:
+        verbose_name = "1) Trendyol Hesap Bilgileri"
+        verbose_name_plural = "1) Trendyol Hesap Bilgileri"
+
+
+
 class IssuedInvoices(models.Model):
 
     YEAR = (
