@@ -2,14 +2,16 @@ import json
 
 from django.contrib.auth import login as auth_login, authenticate
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 
-from adminpage.custom import exportExcel, exportPdf
+from adminpage.custom import exportExcel, exportPdf, readNotification, createNotification, notReadNotification
 from adminpage.forms import *
 from categorymodel.models import SubCategory, SubBottomCategory, MainCategory
+from customer.models import CustomerAddress, Coupon
 from ecommerce import settings
-from product.models import Product, Variants, Images
+from product.models import Product, Variants, Images, Color
 from product.read_xml import modaymissaveXML2db, updateModaymisSaveXML2db, updateTahtakaleSaveXML2db, \
     tahtakaleSaveXML2db
 # Create your views here.
@@ -95,7 +97,119 @@ def change_password(request):
 
 @login_required(login_url="/yonetim/giris-yap/")
 def mainpage(request):
-    return render(request, 'backend/adminpage/pages/mainpage.html')
+    context = {}
+    navbar_notify = readNotification()
+    navbar_notify_count = notReadNotification()
+
+    context.update({
+        'navbar_notify': navbar_notify,
+        'navbar_notify_count': navbar_notify_count
+    })
+    return render(request, 'backend/adminpage/pages/mainpage.html', context)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def notification(request):
+    context = {}
+    navbar_notify = readNotification()
+    navbar_notify_count = notReadNotification()
+
+    notify = Notification.objects.all()
+
+    p = Paginator(notify, 20)
+    page = request.GET.get('page')
+    notifies = p.get_page(page)
+
+    context.update({
+        'notify': notify,
+        'navbar_notify': navbar_notify,
+        'navbar_notify_count': navbar_notify_count,
+        'notifies': notifies,
+    })
+    return render(request, 'backend/adminpage/pages/bildirimler.html', context)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def kullanicilar(request):
+    context = {}
+    navbar_notify = readNotification()
+    navbar_notify_count = notReadNotification()
+
+    user = User.objects.all()
+
+    p = Paginator(user, 50)
+    page = request.GET.get('page')
+    users = p.get_page(page)
+
+    context.update({
+        'navbar_notify': navbar_notify,
+        'navbar_notify_count': navbar_notify_count,
+        'users': users,
+    })
+    return render(request, 'backend/adminpage/pages/kullanicilar.html', context)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def kullanici_goruntule(request, id):
+    context = {}
+    navbar_notify = readNotification()
+    navbar_notify_count = notReadNotification()
+    address = None
+    coupons = None
+    user = User.objects.get(id=id)
+
+    if user.is_staff or user.is_customer:
+        address = CustomerAddress.objects.filter(user=user)
+        coupons = Coupon.objects.filter(user=user)
+
+
+    context.update({
+        'user': user,
+        'navbar_notify': navbar_notify,
+        'navbar_notify_count':navbar_notify_count,
+        'address':address,
+        'coupons':coupons
+    })
+    return render(request, 'backend/adminpage/pages/kullanici_goruntule.html', context)
+
+@login_required(login_url="/yonetim/giris-yap/")
+def kullanici_sil(request, id):
+    user = User.objects.get(id=id)
+    user.delete()
+    messages.success(request, 'Kullanıcı silindi.')
+    return redirect('kullanicilar')
+
+@login_required(login_url="/yonetim/giris-yap/")
+def read_notification(request, id):
+    context = {}
+    navbar_notify = readNotification()
+    navbar_notify_count = notReadNotification()
+
+    notify = Notification.objects.get(id=id)
+    notify.is_read = True
+    notify.save()
+
+    context.update({
+        'notify': notify,
+        'navbar_notify': navbar_notify,
+        'navbar_notify_count': navbar_notify_count,
+    })
+    return render(request, 'backend/adminpage/pages/bildirimler_oku.html', context)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def sil_notification(request, id):
+    Notification.objects.filter(id=id).delete()
+    return redirect('notification')
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def secili_sil_notification(request):
+    select_id = request.GET.getlist('select-notify[]')
+
+    Notification.objects.filter(id__in=select_id).delete()
+    data = 'success'
+    return JsonResponse(data=data, safe=False)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -333,6 +447,7 @@ def kategoriler_seviye3_guncelle(request, main_slug, sub_slug, id):
 
     return render(request, 'backend/adminpage/pages/kategoriler_seviye3_guncelle.html', context)
 
+
 def kategoriler_seviye3_export_excel(request, slug):
     columns = ['ID', 'En Üst Kategorisi', 'Üst Kategorisi', 'Başlık', 'Oluşturulma Tarihi']
 
@@ -350,6 +465,7 @@ def kategoriler_seviye3_hepsi_export_excel(request):
                                                        'created_at')
     return exportExcel('tüm-alt-kategorileri', 'Kategoriler', columns=columns, rows=rows)
 
+
 @login_required(login_url="/yonetim/giris-yap/")
 def kategoriler_seviye3_sil(request, main_slug, sub_slug, id):
     context = {}
@@ -357,6 +473,7 @@ def kategoriler_seviye3_sil(request, main_slug, sub_slug, id):
     category.delete()
     messages.success(request, 'Kategori silindi.')
     return redirect("kategoriler_seviye3", main_slug, sub_slug)
+
 
 @login_required(login_url="/yonetim/giris-yap/")
 def kategoriler_seviye3_hepsini_sil(request, main_slug, sub_slug):
@@ -406,6 +523,8 @@ def tahtakale_product_load(request):
 def tahtakale_product_update(request):
     try:
         updateTahtakaleSaveXML2db()
+        createNotification(type="2", title="Tahtakale ürünlerinin güncellemesi yapıldı.",
+                           detail="Tahtakale ürünlerinin güncellemesi yapıldı.")
         messages.success(request, 'Veriler güncelledi!')
         return redirect("tahtakale_product")
     except:
@@ -431,6 +550,8 @@ def haydigiy_product_load(request):
 def haydigiy_product_update(request):
     try:
         tahtakaleSaveXML2db()
+        createNotification(type="2", title="Modaymış ürünlerinin güncellemesi yapıldı.",
+                           detail="Modaymış ürünlerinin güncellemesi yapıldı.")
         messages.success(request, 'Veriler güncelledi!')
         return redirect("haydigiy_product")
     except:
@@ -484,14 +605,15 @@ def trendyol_add_product_giyim_category1(request, category_no):
 def productSendTrendyol(request, product_data):
     trendyol = Trendyol.objects.all().last()
     api_key = trendyol.apikey
-    trendyol_api_url = f"https://api.trendyol.com/sapigw/suppliers/{trendyol.saticiid}/v2/products"
+    trendyol_api_url = "https://api.trendyol.com/sapigw/suppliers/{}/v2/products".format(trendyol.saticiid)
     headers = {
         "Authorization": "Basic " + trendyol.token,
         "User-Agent": f"{trendyol.saticiid} - SelfIntegration",
         "Content-Type": "application/json",
     }
-    response = requests.request('POST', trendyol_api_url, headers=headers,
-                                data=json.dumps(product_data).encode('utf-8'))
+    response = requests.post(trendyol_api_url, headers=headers,
+                             data=json.dumps(product_data, ensure_ascii=False).encode('utf-8'),
+                             auth=(trendyol.apikey, trendyol.apisecret))
 
     return response
 
@@ -595,107 +717,122 @@ def trendyol_add_product_giyim_send_trendyol(request, id):
         ##Calling Product
         products = callingProduct(category, product_title)
 
-        for a in product_attributes['categoryAttributes']:
-            attributes.append(a)
+        if trendyol_category:
+            for a in product_attributes['categoryAttributes']:
+                attributes.append(a)
+            for p in products:
+                product_variants = Variants.objects.filter(product=p)
+                title = p.title
+                detail = p.detail
 
-        for p in products:
-            product_variants = Variants.objects.filter(product=p)
-            if product_variants.count() > 0:
-                product_images = Images.objects.filter(product=p)
-                images = []
-                for i in product_images:
-                    images.append(
-                        {'url': i.image_url}
-                    )
+                if product_variants.count() > 0:
+                    product_images = Images.objects.filter(product=p)
+                    images = []
+                    if product_images.count() > 8:
+                        product_images = product_images[:8]
+                    for i in product_images:
+                        images.append(
+                            {'url': i.image_url}
+                        )
 
-                for v in product_variants:
-                    attribute_id = None
-                    beden = None
-                    for a in attributes:
-                        if a['attribute']['name'] == 'Beden':
-                            attribute_id = a['attribute']['id']
-                            for s in a['attributeValues']:
-                                if v.size.name == s['name']:
-                                    beden = s['id']
+                    for v in product_variants:
+                        v_title = v.title
 
-                    if beden != None:
-                        if v.color is not None:
-                            data_attributes = [
-                                {
-                                    "attributeId": 338,
-                                    "attributeValueId": beden
-                                },
-                                {
-                                    "attributeId": 343,
-                                    "attributeValueId": 4295
-                                },
-                                {
-                                    "attributeId": 346,
-                                    "attributeValueId": 4293
-                                },
-                                {
-                                    "attributeId": 47,
-                                    "customAttributeValue": str(v.color.name)
-                                },
-                            ]
-                        else:
-                            data_attributes = [
-                                {
-                                    "attributeId": 338,
-                                    "attributeValueId": beden
-                                },
-                                {
-                                    "attributeId": 343,
-                                    "attributeValueId": 4295
-                                },
-                                {
-                                    "attributeId": 346,
-                                    "attributeValueId": 4293
-                                },
+                        color_id = v.color_id
+                        color_name = None
+                        if color_id:
+                            color = Color.objects.get(id=color_id)
+                            color_name = color.name
 
-                            ]
-                    if beden == None:
-                        if v.color is not None:
-                            data_attributes = [
-                                {
-                                    "attributeId": 343,
-                                    "attributeValueId": 4295
-                                },
-                                {
-                                    "attributeId": 346,
-                                    "attributeValueId": 4293
-                                },
-                                {
-                                    "attributeId": 47,
-                                    "customAttributeValue": str(v.color.name)
-                                },
-                            ]
-                        else:
-                            data_attributes = [
-                                {
-                                    "attributeId": 343,
-                                    "attributeValueId": 4295
-                                },
-                                {
-                                    "attributeId": 346,
-                                    "attributeValueId": 4293
-                                },
-                            ]
-                    items.append(
-                        trendyolProductData(barcode=v.gtin, title=v.title, model_code=p.stock_code, brandid=996771,
-                                            categoryid=trendyol_category, quantity=v.quantity, stock_code=v.sku, desi=1,
-                                            list_price=p.trendyol_price, sale_price=p.trendyol_price, cargoid=10,
-                                            description=p.detail, vatRate=10, shipmentid=trendyol.sevkiyatadresid_1,
-                                            returningid=trendyol.iadeadresid_2, delivery_duration=4, images=images,
-                                            data_attributes=data_attributes))
+                        attribute_id = None
+                        beden = None
+                        for a in attributes:
+                            if a['attribute']['name'] == 'Beden':
+                                attribute_id = a['attribute']['id']
+                                for s in a['attributeValues']:
+                                    if v.size.name == s['name']:
+                                        beden = s['id']
 
-        product_data = items
-        response = productSendTrendyol(request, product_data)
-        if response.status_code == 200:
-            messages.success(request, "Ürünler başarıyla Trendyola aktarılmıştır.")
-        else:
-            messages.error(request, f'Error Code:{response.status_code} - {response.json()}')
-        return redirect('trendyol_add_product_giyim_send_trendyol', id)
+                        if beden != None:
+                            if v.color is not None:
+                                data_attributes = [
+                                    {
+                                        "attributeId": 338,
+                                        "attributeValueId": beden
+                                    },
+                                    {
+                                        "attributeId": 343,
+                                        "attributeValueId": 4295
+                                    },
+                                    {
+                                        "attributeId": 346,
+                                        "attributeValueId": 4293
+                                    },
+                                    {
+                                        "attributeId": 47,
+                                        "customAttributeValue": str(color_name).upper()
+                                    },
+                                ]
+                            else:
+                                data_attributes = [
+                                    {
+                                        "attributeId": 338,
+                                        "attributeValueId": beden
+                                    },
+                                    {
+                                        "attributeId": 343,
+                                        "attributeValueId": 4295
+                                    },
+                                    {
+                                        "attributeId": 346,
+                                        "attributeValueId": 4293
+                                    },
+
+                                ]
+                        if beden == None:
+                            if v.color is not None:
+                                data_attributes = [
+                                    {
+                                        "attributeId": 343,
+                                        "attributeValueId": 4295
+                                    },
+                                    {
+                                        "attributeId": 346,
+                                        "attributeValueId": 4293
+                                    },
+                                    {
+                                        "attributeId": 47,
+                                        "customAttributeValue": str(color_name).upper()
+                                    },
+                                ]
+                            else:
+                                data_attributes = [
+                                    {
+                                        "attributeId": 343,
+                                        "attributeValueId": 4295
+                                    },
+                                    {
+                                        "attributeId": 346,
+                                        "attributeValueId": 4293
+                                    },
+                                ]
+                        items.append(
+                            trendyolProductData(barcode=v.gtin, title=v_title, model_code=p.stock_code, brandid=996771,
+                                                categoryid=trendyol_category, quantity=v.quantity, stock_code=v.sku,
+                                                desi=1,
+                                                list_price=p.trendyol_price, sale_price=p.trendyol_price, cargoid=10,
+                                                description=detail, vatRate=10, shipmentid=trendyol.sevkiyatadresid_1,
+                                                returningid=trendyol.iadeadresid_2, delivery_duration=4, images=images,
+                                                data_attributes=data_attributes))
+
+                    product_data = items
+                    response = productSendTrendyol(request, product_data)
+
+                    if response.status_code == 200:
+                        messages.success(request, "Ürünler başarıyla Trendyola aktarılmıştır.")
+                    else:
+                        messages.error(request, f'Error Code:{response.status_code} - {response.json()}')
+                    return redirect('trendyol_add_product_giyim_send_trendyol', id)
     return render(request, 'backend/adminpage/pages/trendyol/urun_girisi_giyim_send_trendyol.html', context)
 
 

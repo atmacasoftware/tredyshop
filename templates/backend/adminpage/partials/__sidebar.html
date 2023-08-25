@@ -93,6 +93,16 @@
                     </ul>
                 </li>
 
+                <li class="nav-item">
+                    <a href="{% url 'kullanicilar' %}"
+                       class="nav-link {% if request.path == '/yonetim/kullanicilar/' %}active{% endif %}">
+                        <i class="nav-icon fa-solid fa-users"></i>
+                        <p>
+                            Kullanıcılar
+                        </p>
+                    </a>
+                </li>
+
                 <li class="nav-header">ENTEGRASYON</li>
 
                 <li class="nav-item {% if '/trendyol/' in request.path %}menu-open{% endif %}">

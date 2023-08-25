@@ -1,5 +1,8 @@
 from django.db import models
 
+from user_accounts.models import User
+
+
 # Create your models here.
 
 class Trendyol(models.Model):
@@ -113,3 +116,54 @@ class InvoicesReceived(models.Model):
         verbose_name = "3) Alınan Faturalar"
         verbose_name_plural = "3) Alınan Faturalar"
         ordering = ['created_at']
+
+
+class Notification(models.Model):
+    TYPE = (
+        ("1","1"),
+        ("2","2"),
+        ("3","3"),
+        ("4","4"),
+        ("5","5"),
+        ("6","6"),
+        ("7","7"),
+    )
+
+    # 1: Ürünler pazaryerlerine yüklendi.
+    # 2: XML güncellemesi yapıldı.
+    # 3: Pazaryeri stok-fiyat güncellemesi yapıldı.
+    # 4: Yeni sipariş alındı.
+    # 5: Ürün sorusu soruldu.
+    # 6: Ürün iade talebi geldi.
+    # 7: Ürün yorumu yapıldı.
+
+    noti_type = models.CharField(choices=TYPE, max_length=20, verbose_name="Bildirim Tipi")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Kullanıcı", related_name="noti_user")
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Müşteri", related_name="noti_customer")
+    title = models.CharField(max_length=255, verbose_name="Bildirim Başlığı", null=True, blank=False)
+    detail = models.TextField(max_length=1000, verbose_name="Bildirim İçeriği", null=True, blank=True)
+    is_read = models.BooleanField(default=False, verbose_name="Okundu mu?")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
+
+    class Meta:
+        verbose_name = "4) Bildirimler"
+        verbose_name_plural = "4) Bildirimler"
+        ordering = ['created_at']
+
+    def passing_time(self):
+        from datetime import datetime, timezone
+        import math
+        now = datetime.now(timezone.utc)
+        pass_time = now - self.created_at
+        passing = None
+
+        if pass_time.days > 0 and pass_time.days < 31:
+            passing = f"{pass_time.days} g."
+
+        elif pass_time.days < 1:
+            if pass_time.seconds / 60 < 60:
+                passing = f"{math.floor(pass_time.seconds / 60)} d."
+            elif pass_time.seconds / 60 > 59:
+                passing = f"{math.floor(pass_time.seconds / 3600)} s."
+        return passing

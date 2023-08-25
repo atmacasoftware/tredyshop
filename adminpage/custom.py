@@ -7,6 +7,7 @@ from datetime import timedelta, datetime, date
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 
+from adminpage.models import Notification
 from ecommerce import settings
 
 
@@ -40,3 +41,18 @@ def exportPdf(template_name, context_dict={}):
     if not pdf.err:
         return HttpResponse(result.getvalue(), content_type='application/pdf')
     return None
+
+
+def notReadNotification():
+    notify = Notification.objects.filter(is_read=False).count()
+    return notify
+
+def readNotification():
+    notify = Notification.objects.filter(is_read=False)
+    return notify
+
+def createNotification(type, title, detail):
+    notify = Notification.objects.create(noti_type=type, title=title, detail=detail)
+    notify.save()
+    response = 'Create Notify'
+    return response
