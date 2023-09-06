@@ -24,49 +24,16 @@
                                 <span>Toplam Ücret: {{ order.order_total|floatformat:2 }} TL</span>
                                 <span></span>
                             </div>
-                            {% if order.paymenttype == 'Banka/Kredi Kartı' %}
-                                <div class="payment__info">
-                                    <div class="payment__info_cardholder">
-                                        <span>Kart Sahibi: {{ order.cardholder }}</span>
-                                    </div>
-                                    <div class="payment__info_cardnumber">
-                                        <span>Kart Numarası: {{ cardnumber_first }} **** **** {{ cardnumber_last }}</span>
-                                    </div>
-                                </div>
-                            {% else %}
-                                <div class="payment__info">
-                                    <p>Sipariş oluşturuldu. Ödeme yöntemi olarak Havale/EFT yöntemini seçtiniz.
-                                        Siparişinizin hazırlanması ve kargolanması için 5 gün içerisinde ödemeyi
-                                        yapmanız gerekmektedir.</p>
-                                    <p>İşlemlerin daha hızlı yapılabilmesi için ödemeyi yaptıktan sonra <a
-                                            href="https://wa.me/08503098552" target="_blank">08503098552</a> whatsapp
-                                        destek hattına dekontu gönderebilirsiniz.</p>
-                                </div>
-                                <div class="warning mt-20" style="display: flex; justify-content: start; align-items: start;flex-direction: row; height: auto;">
-                                    <span><i class="fa fa-check-circle" aria-hidden="true"></i></span>
-                                    <div class="text">
-                                        <p>Sipariş oluşturuldu. Ödeme yöntemi olarak Havale/EFT yöntemini seçtiniz.
-                                            Siparişinizin hazırlanması ve kargolanması için 5 gün içerisinde ödemeyi
-                                            yapmanız gerekmektedir.</p>
-                                        <p>İşlemlerin daha hızlı yapılabilmesi için ödemeyi yaptıktan sonra <a
-                                                href="https://wa.me/08503098552" target="_blank">08503098552</a>
-                                            whatsapp
-                                            destek hattına dekontu gönderebilirsiniz.</p>
-                                    </div>
-
-                                </div>
-                                <div class="warning mt-20">
-                                    <span><i class="fa fa-exclamation-circle" aria-hidden="true"></i></span>
-                                    <p>
-                                        Ödeme yaparken açıklama kısmına sipariş numaranızı yazmayı unutmayınız. Keyifli
-                                        alışverişler dileriz.
-                                    </p>
-                                </div>
-                            {% endif %}
+                            <div class="total__price">
+                                <span>Ödeme Yöntemi: Banka/Kredi Kartı</span>
+                                <span></span>
+                            </div>
                         </div>
                         <div class="payment_completed__button">
-                            <a href="{% url 'order_page' %}" class="cart-btn btn-viewcart btn-ordering">Siparişlerime Git</a>
-                            <a href="{% url 'mainpage' %}" class="cart-btn e-checkout btn-gradient btn-continue">Alışverişe Devam
+                            <a href="{% url 'order_page' %}" class="cart-btn btn-viewcart btn-ordering">Siparişlerime
+                                Git</a>
+                            <a href="{% url 'mainpage' %}" class="cart-btn e-checkout btn-gradient btn-continue">Alışverişe
+                                Devam
                                 Et</a>
                         </div>
                     </div>

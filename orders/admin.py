@@ -29,5 +29,8 @@ class BankInfoAdmin(ImportExportModelAdmin):
 
 
 admin.site.register(Order, OrderAdmin)
+admin.site.register(PreOrder)
+admin.site.register(ExtraditionRequest)
+admin.site.register(ExtraditionRequestProduct)
 admin.site.register(OrderProduct, OrderProductAdmin)
 admin.site.register(BankInfo, BankInfoAdmin)

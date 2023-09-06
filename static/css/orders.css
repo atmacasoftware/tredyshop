@@ -276,13 +276,56 @@ table {
     outline: none;
 }
 
-.btn-ordering:hover {
-    background: #D31027!important;
-    background: -webkit-linear-gradient(to right, #EA384D, #D31027)!important;
-    background: linear-gradient(to right, #EA384D, #D31027)!important;
+
+.failed-card{
+    height: 500px;
+    margin-bottom: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.btn-continue:hover{
-    background: white !important;
-    color: #666;
+.failed-card .card-body{
+    width: 75%;
+    height: 500px;
+    background: #dc3545;;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
+
+.failed-card .card-body i{
+    color: #fff;
+    margin-bottom: 50px;
+}
+
+.failed-card .card-body h3{
+    color: #fff;
+}
+
+.warning-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.warning-body p{
+    color: #fff;
+    margin-top: 20px;
+}
+
+.warning-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    margin-top: 75px;
+}
+
+.warning-button a{
+    margin: 10px;
+}
+

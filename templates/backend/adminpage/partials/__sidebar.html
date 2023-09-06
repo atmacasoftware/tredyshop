@@ -66,6 +66,33 @@
                         </p>
                     </a>
                 </li>
+                <li class="nav-item {% if '/yonetim/siparis-yonetimi/' in request.path %}menu-open{% endif %}">
+                    <a href="#"
+                       class="nav-link {% if '/yonetim/siparis-yonetimi/' in request.path %}active{% endif %}">
+                        <i class="nav-icon fa-solid fa-boxes-stacked"></i>
+                        <p>
+                            Sipariş Yönetimi
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'admin_orders' %}"
+                               class="nav-link {% if request.path == '/yonetim/siparis-yonetimi/siparisler/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Siparişler</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'admin_iptal_talepleri' %}"
+                               class="nav-link {% if request.path == '/yonetim/siparis-yonetimi/iptal-talepleri/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>İptal Talepleri</p>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
                 <li class="nav-item {% if request.path == '/yonetim/xml-yonetimi/tahtakale/veri-yukle-guncelle/' or request.path == '/yonetim/xml-yonetimi/haydigiy/veri-yukle-guncelle/' %}menu-open{% endif %}">
                     <a href="#"
                        class="nav-link {% if request.path == '/yonetim/xml-yonetimi/tahtakale/veri-yukle-guncelle/' or request.path == '/yonetim/xml-yonetimi/haydigiy/veri-yukle-guncelle/' %}active{% endif %}">
@@ -95,14 +122,33 @@
 
                 <li class="nav-item">
                     <a href="{% url 'kullanicilar' %}"
-                       class="nav-link {% if request.path == '/yonetim/kullanicilar/' %}active{% endif %}">
+                       class="nav-link {% if '/yonetim/kullanicilar/' in request.path %}active{% endif %}">
                         <i class="nav-icon fa-solid fa-users"></i>
                         <p>
                             Kullanıcılar
                         </p>
                     </a>
                 </li>
+                <li class="nav-item {% if '/yonetim/sayfalar/' in request.path %}menu-open{% endif %}">
+                    <a href="#"
+                       class="nav-link {% if '/yonetim/sayfalar/' in request.path %}active{% endif %}">
+                        <i class="nav-icon fas fa-pager"></i>
+                        <p>
+                            Sayfalar
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'admin_aboutus' %}"
+                               class="nav-link {% if request.path == '/yonetim/sayfalar/hakkimizda/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Hakkımızda</p>
+                            </a>
+                        </li>
 
+                    </ul>
+                </li>
                 <li class="nav-header">ENTEGRASYON</li>
 
                 <li class="nav-item {% if '/trendyol/' in request.path %}menu-open{% endif %}">

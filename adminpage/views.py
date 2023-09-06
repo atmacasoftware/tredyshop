@@ -11,6 +11,7 @@ from adminpage.forms import *
 from categorymodel.models import SubCategory, SubBottomCategory, MainCategory
 from customer.models import CustomerAddress, Coupon
 from ecommerce import settings
+from orders.models import Order, ExtraditionRequest, ExtraditionRequestProduct, OrderProduct
 from product.models import Product, Variants, Images, Color
 from product.read_xml import modaymissaveXML2db, updateModaymisSaveXML2db, updateTahtakaleSaveXML2db, \
     tahtakaleSaveXML2db
@@ -162,15 +163,15 @@ def kullanici_goruntule(request, id):
         address = CustomerAddress.objects.filter(user=user)
         coupons = Coupon.objects.filter(user=user)
 
-
     context.update({
         'user': user,
         'navbar_notify': navbar_notify,
-        'navbar_notify_count':navbar_notify_count,
-        'address':address,
-        'coupons':coupons
+        'navbar_notify_count': navbar_notify_count,
+        'address': address,
+        'coupons': coupons
     })
     return render(request, 'backend/adminpage/pages/kullanici_goruntule.html', context)
+
 
 @login_required(login_url="/yonetim/giris-yap/")
 def kullanici_sil(request, id):
@@ -178,6 +179,7 @@ def kullanici_sil(request, id):
     user.delete()
     messages.success(request, 'Kullanıcı silindi.')
     return redirect('kullanicilar')
+
 
 @login_required(login_url="/yonetim/giris-yap/")
 def read_notification(request, id):
@@ -210,6 +212,38 @@ def secili_sil_notification(request):
     Notification.objects.filter(id__in=select_id).delete()
     data = 'success'
     return JsonResponse(data=data, safe=False)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def admin_aboutus(request):
+    context = {}
+    form = AboutUsForm(data=request.POST or None, files=request.FILES or None)
+    navbar_notify = readNotification()
+    navbar_notify_count = notReadNotification()
+    context.update({
+        'form': form,
+        'navbar_notify': navbar_notify,
+        'navbar_notify_count': navbar_notify_count
+    })
+
+    aboutus = Hakkimizda.objects.all()
+    if aboutus.count() > 0:
+        form = AboutUsForm(instance=aboutus.last(), data=request.POST or None, files=request.FILES or None)
+        context.update({'form': form})
+
+    categories_count = MainCategory.objects.all().count()
+    product_count = Product.objects.all().count()
+
+    if 'addBtn' in request.POST:
+        if form.is_valid():
+            data = form.save(commit=False)
+            data.category_count = categories_count
+            data.product_count = product_count
+            data.save()
+            messages.success(request, 'Hakkımızda sayfası bilgiler eklendi.')
+            return redirect("admin_aboutus")
+
+    return render(request, 'backend/adminpage/pages/aboutus.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -503,6 +537,109 @@ def kategoriler3_secilileri_sil(request):
 def products(request):
     return render(request, 'backend/adminpage/pages/products.html')
 
+@login_required(login_url="/yonetim/giris-yap/")
+def orders(request):
+    context = {}
+    order = Order.objects.all()
+    navbar_notify = readNotification()
+    navbar_notify_count = notReadNotification()
+
+    p = Paginator(order, 20)
+    page = request.GET.get('page')
+    orders = p.get_page(page)
+
+    context.update({
+        'navbar_notify':navbar_notify,
+        'navbar_notify_count':navbar_notify_count,
+        'orders':orders,
+    })
+
+    return render(request, 'backend/adminpage/pages/orders.html', context)
+
+@login_required(login_url="/yonetim/giris-yap/")
+def order_detail(request, order_number):
+    context = {}
+    navbar_notify = readNotification()
+    navbar_notify_count = notReadNotification()
+
+    order = Order.objects.get(order_number=order_number)
+
+    form = OrderForm(instance=order, data=request.POST or None, files=request.FILES or None)
+
+    context.update({
+        'navbar_notify': navbar_notify,
+        'navbar_notify_count': navbar_notify_count,
+        'order': order,
+        'form':form,
+    })
+
+    if 'editOrder' in request.POST:
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Sipariş güncellendi.')
+            return redirect('admin_order_detail', order_number)
+
+    return render(request, 'backend/adminpage/pages/order_detail.html', context)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def order_delete(request, order_number):
+    order = Order.objects.get(order_number=order_number)
+    order.delete()
+    messages.success(request, 'Sipariş silindi.')
+    return redirect('admin_orders')
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def iptal_talepleri(request):
+    context = {}
+    extradition = ExtraditionRequest.objects.all()
+    navbar_notify = readNotification()
+    navbar_notify_count = notReadNotification()
+
+    p = Paginator(extradition, 20)
+    page = request.GET.get('page')
+    extraditions = p.get_page(page)
+
+    context.update({
+        'navbar_notify':navbar_notify,
+        'navbar_notify_count':navbar_notify_count,
+        'extraditions':extraditions,
+    })
+
+    return render(request, 'backend/adminpage/pages/iptal_talepleri.html', context)
+
+@login_required(login_url="/yonetim/giris-yap/")
+def iptal_talepleri_detay(request, order_number):
+    context = {}
+    extradition = ExtraditionRequest.objects.get(order__order_number=order_number)
+    navbar_notify = readNotification()
+    navbar_notify_count = notReadNotification()
+
+    extraditionproduct = ExtraditionRequestProduct.objects.filter(extraditionrequest=extradition)
+    orderproduct = OrderProduct.objects.filter(order=extradition.order)
+    form = ExtraditionRequestResultForm(data=request.POST, files=request.FILES)
+    if ExtraditionRequestResult.objects.filter(extraditionrequest=extradition).exists():
+        form = ExtraditionRequestResultForm(instance=ExtraditionRequestResult.objects.filter(extraditionrequest=extradition).last(),data=request.POST, files=request.FILES)
+
+    if 'updateBtn' in request.POST:
+        if form.is_valid():
+            data = form.save(commit=False)
+            data.extraditionrequest = extradition
+            data.save()
+            messages.success(request, 'İade talebi güncellendi.')
+            return redirect('iptal_talepleri_detay', order_number)
+
+    context.update({
+        'navbar_notify':navbar_notify,
+        'navbar_notify_count':navbar_notify_count,
+        'extradition':extradition,
+        'extraditionproduct':extraditionproduct,
+        'orderproduct':orderproduct,
+        'form': form,
+    })
+
+    return render(request, 'backend/adminpage/pages/iptal_talepleri_detay.html', context)
 
 @login_required(login_url="/yonetim/giris-yap/")
 def tahtakale_product(request):
@@ -730,6 +867,8 @@ def trendyol_add_product_giyim_send_trendyol(request, id):
                     images = []
                     if product_images.count() > 8:
                         product_images = product_images[:8]
+                    else:
+                        product_images = product_images
                     for i in product_images:
                         images.append(
                             {'url': i.image_url}
@@ -827,7 +966,6 @@ def trendyol_add_product_giyim_send_trendyol(request, id):
 
                     product_data = items
                     response = productSendTrendyol(request, product_data)
-
                     if response.status_code == 200:
                         messages.success(request, "Ürünler başarıyla Trendyola aktarılmıştır.")
                     else:

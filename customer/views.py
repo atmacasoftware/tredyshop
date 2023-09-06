@@ -12,11 +12,12 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import EmailMessage
 
+from adminpage.models import Notification
 from carts.models import Cart, CartItem
 from customer.forms import *
 from customer.models import CustomerAddress
 from ecommerce.settings import EMAIL_HOST_USER
-from orders.models import Order, OrderProduct
+from orders.models import Order, OrderProduct, ExtraditionRequestProduct
 from user_accounts.models import User
 from product.models import Favorite, ReviewRating
 
@@ -102,8 +103,12 @@ def register(request):
                         to_email = email
                         send_email = EmailMessage(mail_subject, message, to=[to_email])
                         send_email.send()
-                    except:
+                    except Exception as e:
                         pass
+
+                    notify = Notification.objects.create(noti_type="8", customer=user,
+                                                         title="Yeni müşteri kaydı yapıldı.",
+                                                         detail="Yeni müşteri kaydı yapıldı.")
                     messages.success(request,
                                      'Tebrikler üyeliğiniz başarıyla oluşturuldu. E-Posta adresinize gelen link üzerinden üyeliğinizi aktif edebilirsiniz. Spam klasörünü kontrol etmeyi unutmayınız. Keyifli alışverişler dileriz.')
                     return redirect('login')
@@ -319,10 +324,11 @@ def order_page(request):
     orders = Order.objects.filter(user=request.user)
     orders_count = Order.objects.filter(user=request.user).count()
     context.update({
-        'orders':orders,
-        'orders_count':orders_count
+        'orders': orders,
+        'orders_count': orders_count
     })
     return render(request, 'frontend/pages/profile/orders.html', context)
+
 
 @login_required(login_url="/giris-yap")
 def order_detail(request, order_number):
@@ -331,18 +337,32 @@ def order_detail(request, order_number):
         order = Order.objects.get(user=request.user, order_number=order_number)
         orderproducts = OrderProduct.objects.filter(order=order)
         orderproduct_count = orderproducts.count()
-        if order.paymenttype == 'Banka/Kredi Kartı':
-            cardnumber_first = order.cardnumber[:4]
-            cardnumber_last = order.cardnumber[15:20]
-            context.update({'cardnumber_first': cardnumber_first, 'cardnumber_last': cardnumber_last})
+        extraditionrequest_exists = ExtraditionRequest.objects.filter(user=request.user, order=order).exists()
         context.update({
-            'order':order,
-            'orderproducts':orderproducts,
-            'orderproduct_count':orderproduct_count,
+            'order': order,
+            'orderproducts': orderproducts,
+            'orderproduct_count': orderproduct_count,
+            'extraditionrequest_exists':extraditionrequest_exists,
         })
+
+        if 'addExtraditionRequest' in request.POST:
+            extradition_type = request.POST.get('extraditiontype')
+            product_list = request.POST.getlist('products')
+            description = request.POST.get('description')
+
+            extraditionrequest = ExtraditionRequest.objects.create(extradition_type=extradition_type,
+                                                                   description=description, user=request.user, order=order)
+
+            for p in product_list:
+                extraditionrequest_product = ExtraditionRequestProduct.objects.create(
+                    extraditionrequest=extraditionrequest, product_id=p, user=request.user)
+
+            return redirect('order_detail', order_number)
+
         return render(request, 'frontend/pages/profile/order_detail.html', context)
     except:
         return redirect('order_page')
+
 
 @login_required(login_url="/giris-yap")
 def coupon_page(request):
@@ -351,7 +371,7 @@ def coupon_page(request):
     coupon_count = Coupon.objects.filter(user=request.user).count()
 
     context.update({
-        'coupons':coupons,
-        'coupon_count':coupon_count,
+        'coupons': coupons,
+        'coupon_count': coupon_count,
     })
     return render(request, 'frontend/pages/profile/coupons.html', context)

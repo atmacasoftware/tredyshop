@@ -2,12 +2,31 @@ from datetime import timedelta
 
 from django.db import models
 from django_ckeditor_5.fields import CKEditor5Field
+
+from carts.models import Cart
 from customer.models import CustomerAddress
 from product.models import Product, Variants
 from user_accounts.models import User
 
 
 # Create your models here.
+
+class PreOrder(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    delivery_address = models.ForeignKey(CustomerAddress, on_delete=models.CASCADE, null=True)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, null=True)
+    coupon = models.FloatField(null=True, blank=True)
+    bonuses = models.FloatField(verbose_name="Verdiği Bonus", blank=True, null=True)
+    cart_total = models.FloatField(null=True, blank=True)
+    approved_contract = models.BooleanField(default=False, verbose_name="Sözleşme Onayı")
+    delivery_price = models.CharField(max_length=100, verbose_name="Kargo Ücreti", null=True, blank=True)
+    preliminary_information_form = CKEditor5Field('Ön Bilgilendirme Formu', config_name='extends', null=True,
+                                                  blank=True)
+    distance_selling_contract = CKEditor5Field('Mesafeli Satış Sözleşmesi', config_name='extends', null=True,
+                                               blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
+
 
 class Order(models.Model):
 
@@ -17,7 +36,8 @@ class Order(models.Model):
         ('Hazırlanıyor', 'Hazırlanıyor'),
         ('Kargolandı', 'Kargolandı'),
         ('Tamamlandı', 'Tamamlandı'),
-        ('İptal Edildi', 'İptal Edildi')
+        ('İptal Edildi', 'İptal Edildi'),
+        ('Ödeme Yapılmadı', 'Ödeme Yapılmadı'),
     )
 
     PAYMENT_TYPE = (
@@ -37,11 +57,10 @@ class Order(models.Model):
     cardholder = models.CharField(max_length=255, blank=True, null=True, verbose_name="Kart Sahibi")
     cardnumber = models.CharField(max_length=20, blank=True, null=True, verbose_name="Kart Numarası")
     status = models.CharField(max_length=50, choices=STATUS, null=True, default="Yeni", verbose_name="Sipariş Durumu")
-    used_coupon = models.FloatField(verbose_name="Kullanılan Kupon" ,blank=True, null=True)
+    used_coupon = models.FloatField(verbose_name="Kullanılan Kupon", blank=True, null=True)
     bill = models.FileField(upload_to='documents/bill/', null=True, verbose_name="Fatura Yükle")
     preliminary_information_form = CKEditor5Field('Ön Bilgilendirme Formu', config_name='extends', null=True, blank=True)
     distance_selling_contract = CKEditor5Field('Mesafeli Satış Sözleşmesi', config_name='extends', null=True, blank=True)
-    approved_contracts = models.BooleanField(default=False)
     ip = models.CharField(max_length=50, blank=False, verbose_name="İp Adresi")
     is_ordered = models.BooleanField(default=False, verbose_name="Sipariş Verildi Mi?")
     bonuses = models.FloatField(verbose_name="Verdiği Bonus", blank=True, null=True)
@@ -102,3 +121,46 @@ class BankInfo(models.Model):
         verbose_name = "3. Banka Bilgileri"
         verbose_name_plural = "3. Banka Bilgileri"
 
+
+class ExtraditionRequest(models.Model):
+
+    TYPE = (
+        ("Arızalı geldi","Arızalı geldi"),
+        ("Hasarlı geldi","Hasarlı geldi"),
+        ("Farklı ürün geldi","Farklı ürün geldi"),
+        ("Bedeni bana uygun değil","Bedeni bana uygun değil"),
+        ("Almaktan vazgeçtim","Almaktan vazgeçtim"),
+        ("Hatalı sipariş geldi","Hatalı sipariş geldi"),
+        ("Diğer","Diğer"),
+    )
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Müşteri")
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name="Sipariş", null=True)
+    extradition_type = models.CharField(choices=TYPE, max_length=255, verbose_name="İade Nedeni", null=True)
+    description = models.TextField(verbose_name="Açıklama", help_text="İade talebeinizin daha hızlı sonuçlanması için açıklama yazabilirsiniz.")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi", null=True)
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi", null=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+
+class ExtraditionRequestProduct(models.Model):
+    extraditionrequest = models.ForeignKey(ExtraditionRequest, on_delete=models.CASCADE, verbose_name="Sipariş", null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Müşteri", null=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=False, verbose_name="Ürün")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi", null=True)
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi",null=True)
+
+
+class ExtraditionRequestResult(models.Model):
+    TYPE = (
+        ("Kabul Edili", "Kabul Edili"),
+        ("Red", "Red"),
+    )
+
+    extraditionrequest = models.ForeignKey(ExtraditionRequest, on_delete=models.CASCADE, verbose_name="Sipariş", null=True)
+    typ = models.CharField(choices=TYPE, max_length=255, verbose_name="İade Sonucu", null=True)
+    description = models.TextField(verbose_name="Açıklama", max_length=2000, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi", null=True)
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi", null=True)

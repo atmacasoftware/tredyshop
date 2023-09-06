@@ -1,5 +1,6 @@
 from django import forms
 from customer.models import *
+from orders.models import ExtraditionRequest
 
 
 class AddressForm(forms.ModelForm):
@@ -33,5 +34,20 @@ class AddressForm(forms.ModelForm):
         for field_name, field in self.fields.items():
             if field.widget.attrs.get('class'):
                 field.widget.attrs['class'] += 'form-control'
+            else:
+                field.widget.attrs['class'] = 'form-control'
+
+
+class ExtraditionRequestForm(forms.ModelForm):
+    class Meta:
+        model = ExtraditionRequest
+        fields = '__all__'
+        exclude = ['user','created_at', 'updated_at']
+
+    def __init__(self, *args, **kwargs):
+        super(ExtraditionRequestForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field.widget.attrs.get('class'):
+                field.widget.attrs['class'] += ' form-control'
             else:
                 field.widget.attrs['class'] = 'form-control'

@@ -1,5 +1,7 @@
 from django.db import models
+from django_ckeditor_5.fields import CKEditor5Field
 
+from categorymodel.models import MainCategory
 from user_accounts.models import User
 
 
@@ -127,6 +129,7 @@ class Notification(models.Model):
         ("5","5"),
         ("6","6"),
         ("7","7"),
+        ("8","8"),
     )
 
     # 1: Ürünler pazaryerlerine yüklendi.
@@ -136,6 +139,7 @@ class Notification(models.Model):
     # 5: Ürün sorusu soruldu.
     # 6: Ürün iade talebi geldi.
     # 7: Ürün yorumu yapıldı.
+    # 8: Yeni müşteri kaydı.
 
     noti_type = models.CharField(choices=TYPE, max_length=20, verbose_name="Bildirim Tipi")
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Kullanıcı", related_name="noti_user")
@@ -167,3 +171,19 @@ class Notification(models.Model):
             elif pass_time.seconds / 60 > 59:
                 passing = f"{math.floor(pass_time.seconds / 3600)} s."
         return passing
+
+
+class Hakkimizda(models.Model):
+    title = models.CharField(max_length=255, verbose_name="Başlık", null=True)
+    company_info = models.TextField(max_length=5000, verbose_name="Şirket Hakkında", null=True)
+    foundation_year = models.CharField(max_length=100, verbose_name="Kuruluş Yılı")
+    mission = CKEditor5Field('Misyon', config_name='extends', null=True)
+    vision = CKEditor5Field('Vizyon', config_name='extends', null=True)
+    category_count = models.BigIntegerField(verbose_name="Kategori Sayısı", null=True)
+    categories = models.CharField(max_length=500, verbose_name="Kategoriler", null=True)
+    product_count = models.BigIntegerField(verbose_name="Ürün Sayısı", null=True)
+    trendyol_url = models.CharField(max_length=255,verbose_name="Trendyol Mağaza Adresi", null=True)
+    hepsiburada_url = models.CharField(max_length=255,verbose_name="Hepsiburada Mağaza Adresi", null=True)
+    pttavm_url = models.CharField(max_length=255,verbose_name="PTTAvm Mağaza Adresi", null=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")

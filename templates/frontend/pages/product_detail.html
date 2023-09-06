@@ -36,14 +36,14 @@
                                 {% if variant.image_id > 0 %}
                                     <a href="#" class="hover-images effect"><img src="{{ variant.image }}"
                                                                                  alt="photo"
-                                                                                 class="img-reponsive"></a>
+                                                                                 class="img-reponsive" style="height: 600px;object-fit: contain"></a>
                                 {% else %}
                                     <a href="#" class="hover-images effect"><img src="{{ product.get_image }}"
                                                                                  alt="photo"
-                                                                                 class="img-reponsive"></a>
+                                                                                 class="img-reponsive" style="height: 600px;object-fit: contain"></a>
                                     {% for i in product_images %}
                                         <a href="#" class="hover-images effect"><img src="{{ i.get_image }}" alt="photo"
-                                                                                     class="img-reponsive"></a>
+                                                                                     class="img-reponsive" style="height: 600px;object-fit: contain"></a>
                                     {% endfor %}
                                 {% endif %}
                             </div>
@@ -176,7 +176,8 @@
                                                            name="variantid" title="{{ rs.color.name }}"
                                                            id="{{ rs.id }}" value="{{ rs.id }}"
                                                            onchange="this.form.submit();">
-                                                    <label for="{{ rs.id }}" class="variation__label" title="{{ rs.color.name }}">
+                                                    <label for="{{ rs.id }}" class="variation__label"
+                                                           title="{{ rs.color.name }}">
                                                         <div class="variation__detail">
                                                             <div class="variation_color"
                                                                  style="background: {{ rs.color.code }}"></div>
@@ -219,7 +220,8 @@
                                             <div class="color">
                                                 <input type="radio" class="variation__input" name="color"
                                                        id="color-{{ v.id }}" title="{{ rs.color.name }}">
-                                                <label for="color-{{ v.id }}" class="variation__label" title="{{ rs.color.name }}">
+                                                <label for="color-{{ v.id }}" class="variation__label"
+                                                       title="{{ rs.color.name }}">
                                                     <div class="variation__detail">
                                                         <div class="variation_color"
                                                              style="background: {{ v.color.code }}"></div>
@@ -259,7 +261,9 @@
                                     {% if variant.quantity > 0 %}
                                         <div class="e-btn cart-qtt btn-gradient">
                                             <div class="e-quantity">
-                                                <input type="number" step="1" min="1" max="{% if variant.quantity > 0 %}{{ variant.quantity }}{% else %}{{ product.amount }}{% endif %}"
+                                                <input type="number" step="1" min="1" max="
+
+                                                        {% if variant.quantity > 0 %}{{ variant.quantity }}{% else %}{{ product.amount }}{% endif %}"
                                                        id="quantity" disabled
                                                        name="quantity" value="1"
                                                        title="Qty" class="qty input-text js-number" size="4">
@@ -276,7 +280,9 @@
                                             <a href="#" id="waitingCard" class="btn-add-cart">Sepete Eklendi </a>
                                         </div>
                                     {% else %}
-                                        <button id="stockAlarm" class="btn btn-primary" {% if stock_alarm.is_active == True %}disabled="disabled"{% endif %} style="margin-right: 10px;">
+                                        <button id="stockAlarm" class="btn btn-primary"
+                                                {% if stock_alarm.is_active == True %}disabled="disabled"{% endif %}
+                                                style="margin-right: 10px;">
                                             <i class="fa fa-bell"></i>
                                             <span>Gelince Haber Ver</span>
                                         </button>
@@ -286,6 +292,8 @@
                                         <div class="e-btn cart-qtt btn-gradient">
                                             <div class="e-quantity">
                                                 <input type="number" step="1" min="1" max="
+
+
                                                         {% if variant.quantity > 0 %}{{ variant.quantity }}{% else %}{{ product.amount }}{% endif %}"
                                                        id="quantity" disabled
                                                        name="quantity" value="1"
@@ -303,7 +311,9 @@
                                             <a href="#" id="waitingCard" class="btn-add-cart">Sepete Eklendi</a>
                                         </div>
                                     {% else %}
-                                        <button id="stockAlarm" class="btn btn-primary" {% if stock_alarm.is_active == True %}disabled="disabled"{% endif %} style="margin-right: 10px;">
+                                        <button id="stockAlarm" class="btn btn-primary"
+                                                {% if stock_alarm.is_active == True %}disabled="disabled"{% endif %}
+                                                style="margin-right: 10px;">
                                             <i class="fa fa-bell"></i>
                                             <span>Gelince Haber Ver</span>
                                         </button>
@@ -339,6 +349,9 @@
                             Açıklaması</a></li>
                         <li class=""><a data-toggle="tab" href="#product-feature" aria-expanded="false">Ürün
                             Özellikleri</a>
+                        </li>
+                        <li class=""><a data-toggle="tab" href="#payment-options" aria-expanded="false">Taksit
+                            Seçenekleri</a>
                         </li>
                         <li class=""><a data-toggle="tab" href="#product-comments" aria-expanded="false">Ürün
                             Yorumları ({{ product.countReview }})</a></li>
@@ -403,6 +416,83 @@
                             </div>
 
 
+                        </div>
+                        <div id="payment-options" class="tab-pane fade">
+                            <style>
+                                #paytr_taksit_tablosu {
+                                    clear: both;
+                                    font-size: 12px;
+                                    max-width: 1200px;
+                                    text-align: center;
+                                    font-family: Arial, sans-serif;
+                                }
+
+                                #paytr_taksit_tablosu::before {
+                                    display: table;
+                                    content: " ";
+                                }
+
+                                #paytr_taksit_tablosu::after {
+                                    content: "";
+                                    clear: both;
+                                    display: table;
+                                }
+
+                                .taksit-tablosu-wrapper {
+                                    margin: 5px;
+                                    width: 280px;
+                                    padding: 12px;
+                                    cursor: default;
+                                    text-align: center;
+                                    display: inline-block;
+                                    border: 1px solid #e1e1e1;
+                                }
+
+                                .taksit-logo img {
+                                    max-height: 28px;
+                                    padding-bottom: 10px;
+                                }
+
+                                .taksit-tutari-text {
+                                    float: left;
+                                    width: 126px;
+                                    color: #a2a2a2;
+                                    margin-bottom: 5px;
+                                }
+
+                                .taksit-tutar-wrapper {
+                                    display: inline-block;
+                                    background-color: #f7f7f7;
+                                }
+
+                                .taksit-tutar-wrapper:hover {
+                                    background-color: #e8e8e8;
+                                }
+
+                                .taksit-tutari {
+                                    float: left;
+                                    width: 126px;
+                                    padding: 6px 0;
+                                    color: #474747;
+                                    border: 2px solid #ffffff;
+                                }
+
+                                .taksit-tutari-bold {
+                                    font-weight: bold;
+                                }
+
+                                @media all and (max-width: 600px) {
+                                    .taksit-tablosu-wrapper {
+                                        margin: 5px 0;
+                                    }
+                                }
+                            </style>
+                            <div id="paytr_taksit_tablosu"></div>
+                            {% if product.is_discoutprice %}
+                                <script src="https://www.paytr.com/odeme/taksit-tablosu/v2?token=97d66de340d447484202bc6b5405dcd0cc826f765e2b53f1f21986f784ba23ee&merchant_id=379607&amount={{ product.discountprice }}&taksit=0&tumu=0"></script>
+                            {% else %}
+                                <script src="https://www.paytr.com/odeme/taksit-tablosu/v2?token=97d66de340d447484202bc6b5405dcd0cc826f765e2b53f1f21986f784ba23ee&merchant_id=379607&amount={{ product.price }}&taksit=0&tumu=0"></script>
+                            {% endif %}
                         </div>
                         <div id="product-comments" class="tab-pane fade">
                             <div class="page-container product">

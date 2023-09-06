@@ -45,7 +45,6 @@ $(document).ready(function () {
         }
     })
 
-    console.log(billType.value)
 
     if (billType.value != '') {
         if (billType.value == "Bireysel") {

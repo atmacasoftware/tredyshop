@@ -15,4 +15,5 @@ urlpatterns = [
     path('kvkk-aydinlatma-metni', kvkk, name="kvkk"),
     path('cerez-politikasi', cookies, name="cookies"),
     path('bulten-abone-ol', subscription, name="subscription"),
+    path('hakkimizda', aboutus, name="aboutus"),
 ]

@@ -1,6 +1,7 @@
 from django import forms
 from adminpage.models import *
 from categorymodel.models import *
+from orders.models import Order, ExtraditionRequestResult
 
 
 class MainCategoryForm(forms.ModelForm):
@@ -134,6 +135,51 @@ class TrendyolUpdateForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(TrendyolUpdateForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field.widget.attrs.get('class'):
+                field.widget.attrs['class'] += ' form-control'
+            else:
+                field.widget.attrs['class'] = 'form-control'
+
+
+class AboutUsForm(forms.ModelForm):
+    class Meta:
+        model = Hakkimizda
+        fields = '__all__'
+        exclude = ['category_count','product_count','created_at', 'updated_at']
+
+    def __init__(self, *args, **kwargs):
+        super(AboutUsForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field.widget.attrs.get('class'):
+                field.widget.attrs['class'] += ' form-control'
+            else:
+                field.widget.attrs['class'] = 'form-control'
+
+
+class OrderForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = '__all__'
+        exclude = ['created_at', 'updated_at']
+
+    def __init__(self, *args, **kwargs):
+        super(OrderForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field.widget.attrs.get('class'):
+                field.widget.attrs['class'] += ' form-control'
+            else:
+                field.widget.attrs['class'] = 'form-control'
+
+
+class ExtraditionRequestResultForm(forms.ModelForm):
+    class Meta:
+        model = ExtraditionRequestResult
+        fields = '__all__'
+        exclude = ['extraditionrequest','created_at', 'updated_at']
+
+    def __init__(self, *args, **kwargs):
+        super(ExtraditionRequestResultForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             if field.widget.attrs.get('class'):
                 field.widget.attrs['class'] += ' form-control'

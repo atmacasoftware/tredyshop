@@ -23,7 +23,7 @@
 <h5 style="margin-top: 20px;">3. ALICI BİLGİLERİ(Bundan sonra ALICI olarak anılacaktır.)</h5>
 <p style="margin-top: 10px;"><b>Teslim edilecek
     kişi:</b> {{ address.first_name }} {{ address.last_name }}</p>
-<p><b>Teslimat Adresi:</b> {{ address.address }} {{ address.county }}/{{ address.city }}</p>
+<p><b>Teslimat Adresi:</b> {{ address.address }} {{ address.neighbourhood }}/{{ address.county }}/{{ address.city }}</p>
 <p><b>Telefon:</b> {{ address.mobile }}</p>
 <p><b>E-Posta:</b> {{ request.user.email }}</p>
 
@@ -73,7 +73,7 @@
 <p style="margin-top: 30px;"><b>Ödeme Şekli ve Planı:</b>
     {% if order.paymenttype %}{{ order.paymenttype }}{% else %}Kredi Kartı{% endif %}</p>
 <p style="margin-top: 30px;"><b>Teslimat
-    Adresi:</b> {{ address.address }} {{ address.county }}/{{ address.city }}</p>
+    Adresi:</b> {{ address.address }} {{ address.neighbourhood }}/{{ address.county }}/{{ address.city }}</p>
 <p style="margin-top: 10px;"><b>Fatura
     Adresi:</b> {{ address.address }} {{ address.county }}/{{ address.city }}</p>
 <p style="margin-top: 10px;"><b>Sipariş Tarihi:</b> {% now "SHORT_DATETIME_FORMAT" %}</p>

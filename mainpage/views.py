@@ -3,6 +3,8 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 import decimal
+
+from adminpage.models import Hakkimizda
 from customer.models import Subscription
 from mainpage.models import *
 from product.models import Product, Brand, ReviewRating, Images
@@ -320,6 +322,13 @@ def subscription(request):
                 Subscription.objects.create(email=email, ip=ip)
             return redirect(request.META.get('HTTP_REFERER'))
 
+
+def aboutus(request):
+    context = {}
+    about = Hakkimizda.objects.all().last()
+    context.update({'about':about})
+
+    return render(request, 'frontend/pages/aboutus.html', context)
 
 def error_404_view(request, exception):
     return render(request, 'frontend/partials/404.html', status=404)

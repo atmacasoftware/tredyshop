@@ -6839,7 +6839,9 @@ div.form-check input.form-check-input {
     cursor: pointer;
     width: 20px;
     height: 20px;
-    background-color: transparent
+    background-color: transparent;
+    position: relative;
+    top: 5px;
 }
 
 div.form-check input.form-check-input:checked {
@@ -12946,4 +12948,9 @@ div.page-container.profile div.page-section.reviews div.reviews__pagination {
     .offcanvas{
         display: none!important;
     }
+}
+
+.extraditionRequestForm h4, .extraditionRequestForm span{
+    margin-left: 20px;
+    margin-bottom: 10px;
 }

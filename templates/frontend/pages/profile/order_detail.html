@@ -50,12 +50,16 @@
                                                         <div class="order-item__ctrls">
                                                             <div class="ctrls">
                                                                 {% if order.bill %}
-                                                                    <a href="{{ order.get_bill }}" download class="btn btn-primary"><i
+                                                                    <a href="{{ order.get_bill }}" download
+                                                                       class="btn btn-primary"><i
                                                                             class="fa fa-file"></i> &nbsp;Faturayı
                                                                         Görüntüle</a>
                                                                 {% else %}
                                                                     <span class="btn btn-warning">Fatura Bekleniyor</span>
                                                                 {% endif %}
+                                                                <button class="btn btn-ordering" data-toggle="modal"
+                                                                        data-target="#extraditionRequest">İade Talebi
+                                                                </button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -185,7 +189,7 @@
                                                                                                     </a>
                                                                                                 </div>
                                                                                                 <div class="item-info__name">
-                                                                                                    <a href="product.html">
+                                                                                                    <a href="{% url 'products_detail' product.product.slug %}">
                                                                                                         {{ product.product.title }}, {{ product.color }}, {{ product.size }}
                                                                                                     </a>
                                                                                                 </div>
@@ -264,24 +268,7 @@
                                                                                 {{ order.paymenttype }}
                                                                             </span>
                                                                         </div>
-                                                                        {% if order.paymenttype == 'Banka/Kredi Kartı' %}
-                                                                            <div class="info-line">
-                                                                                <span class="info-line__label">
-                                                                                    Kart Sahibi
-                                                                                </span>
-                                                                                <span class="info-line__value">
-                                                                                {{ order.cardholder }}
-                                                                                </span>
-                                                                            </div>
-                                                                            <div class="info-line">
-                                                                                <span class="info-line__label">
-                                                                                    Kart Numarası
-                                                                                </span>
-                                                                                <span class="info-line__value">
-                                                                                {{ order.cardnumber_first }} **** **** {{ order.cardnumber_last }}
-                                                                                </span>
-                                                                            </div>
-                                                                        {% endif %}
+
                                                                         <div class="info-line">
                                                                             <span class="info-line__label">
                                                                                 Parça Sayısı
@@ -352,7 +339,8 @@
                                                                         </div>
 
                                                                     </div>
-                                                                    <div class="order-item-summary__body" style="height: 300px; overflow: auto;">
+                                                                    <div class="order-item-summary__body"
+                                                                         style="height: 300px; overflow: auto;">
                                                                         {{ order.preliminary_information_form|safe }}
                                                                     </div>
                                                                 </div>
@@ -368,7 +356,8 @@
                                                                         </div>
 
                                                                     </div>
-                                                                    <div class="order-item-summary__body" style="height: 300px; overflow: auto;">
+                                                                    <div class="order-item-summary__body"
+                                                                         style="height: 300px; overflow: auto;">
                                                                         {{ order.distance_selling_contract|safe }}
                                                                     </div>
                                                                 </div>
@@ -383,6 +372,123 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade confirm-actions" tabindex="-1" role="dialog"
+         id="extraditionRequest">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        İade Talebi Formu
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <form class="form address-form" method="POST" id="ExtraditionRequest" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="extraditionRequestForm">
+                                <h4>İade Edilecek Ürünler</h4>
+                                {% for product in orderproducts %}
+                                    <div class="col-lg-12" id="field-{{ product.product.id }}">
+                                        <div class="form-group mb-20">
+                                            <div class="form-field" style="border: none;">
+                                                <label for="product-{{ product.product.id }}"
+                                                       class="form-control-label">
+                                                    <input type="checkbox" required name="products"
+                                                           id="product-{{ product.product.id }}"
+                                                           value="{{ product.product.id }}">
+                                                    <img src="{{ product.product.get_image }}" alt=""
+                                                         style="height: 50px;">
+                                                    {{ product.product.title }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                <h4>İade Nedeni</h4>
+                                <div class="col-lg-12" id="field-type">
+                                    <div class="form-group mb-20">
+                                        <div class="form-field"
+                                             style="display:flex; flex-direction: column; justify-content: start; border: none;">
+                                            <label for="type-1"
+                                                   class="form-control-label">
+                                                <input type="radio" required name="extraditiontype" id="type-1"
+                                                       value="Arızalı geldi">
+                                                Arızalı geldi
+                                            </label>
+                                            <label for="type-2"
+                                                   class="form-control-label">
+                                                <input type="radio" required name="extraditiontype" id="type-2"
+                                                       value="Hasarlı geldi">
+                                                Hasarlı geldi
+                                            </label>
+                                            <label for="type-3"
+                                                   class="form-control-label">
+                                                <input type="radio" required name="extraditiontype" id="type-3"
+                                                       value="Farklı ürün geldi">
+                                                Farklı ürün geldi
+                                            </label>
+                                            <label for="type-4"
+                                                   class="form-control-label">
+                                                <input type="radio" required name="extraditiontype" id="type-4"
+                                                       value="Bedeni bana uygun değil">
+                                                Bedeni bana uygun değil
+                                            </label>
+                                            <label for="type-5"
+                                                   class="form-control-label">
+                                                <input type="radio" required name="extraditiontype" id="type-5"
+                                                       value="Almaktan vazgeçtim">
+                                                Almaktan vazgeçtim
+                                            </label>
+                                            <label for="type-6"
+                                                   class="form-control-label">
+                                                <input type="radio" required name="extraditiontype" id="type-6"
+                                                       value="Hatalı sipariş geldi">
+                                                Hatalı sipariş geldi
+                                            </label>
+                                            <label for="type-7"
+                                                   class="form-control-label">
+                                                <input type="radio" required name="extraditiontype" id="type-7"
+                                                       value="Diğer">
+                                                Diğer
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h4>Açıklama</h4>
+                                <span>İade talebeinizin daha hızlı sonuçlanması için açıklama yazabilirsiniz.</span>
+                                <div class="col-lg-12" id="field-description">
+                                    <div class="form-group mb-20">
+                                        <div class="form-field"
+                                             style="display:flex; flex-direction: column; justify-content: start;">
+                                            <textarea name="description" id="" cols="6" rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h4>Fotoğraf</h4>
+                                <span>1 adet fotoğraf yükleyiniz.</span>
+                                <div class="col-lg-12" id="field-description">
+                                    <div class="form-group mb-20">
+                                        <div class="form-field"
+                                             style="display:flex; flex-direction: column; justify-content: start;">
+                                            <input type="file" name="extraditionimage" accept="image/jpeg, image/png">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex lr">
+                            <button type="submit" class="btn btn-submit btn-gradient"
+                                    id="ExtraditionRequestBtn"
+                                    name="addExtraditionRequest">
+                                Talep Oluştur
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

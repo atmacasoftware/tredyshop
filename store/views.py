@@ -316,8 +316,9 @@ def most_discount_product(request):
     allproducts = Product.objects.all()
 
     for p in allproducts:
-        if 100 - ((p.discountprice * 100) / p.price) > 30:
-            product.append(p)
+        if p.is_discountprice == True:
+            if 100 - ((p.discountprice * 100) / p.price) > 30:
+                product.append(p)
 
     page_number = 20
 

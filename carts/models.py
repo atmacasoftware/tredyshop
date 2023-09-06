@@ -1,4 +1,6 @@
 from django.db import models
+
+from customer.models import CustomerAddress
 from product.models import *
 # Create your models here.
 

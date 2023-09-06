@@ -57,7 +57,7 @@
 
 <h5 style="margin-top: 30px;"><b>4. SATICI BİLGİLERİ</b></h5>
 <p><b>Ünvanı: </b>{{ setting.company }}</p>
-<p><b>Adres: </b>{{ setting.address }}</p>
+<p><b>Adres: </b>{{ setting.address }} {{ address.neighbourhood }}/{{ address.county }}/{{ address.city }}</p>
 <p><b>Telefon: </b>{{ setting.phone }}</p>
 <p><b>Faks: </b>{{ setting.faks }}</p>
 <p><b>Eposta: </b>{{ setting.email }}</p>
@@ -65,7 +65,7 @@
 
 <h5 style="margin-top: 30px;"><b>5. ALICI BİLGİLERİ</b></h5>
 <p><b>Teslim edilecek kişi:</b> {{ address.first_name }} {{ address.last_name }}</p>
-<p><b>Teslimat Adresi: </b>{{ address.address }} {{ address.county }}/{{ address.city }}</p>
+<p><b>Teslimat Adresi: </b>{{ address.address }} {{ address.neighbourhood }}/{{ address.county }}/{{ address.city }}</p>
 <p><b>Telefon: </b>{{ address.mobile }}</p>
 <p><b>Eposta: </b>{{ request.user.email }}</p>
 
