@@ -64,11 +64,16 @@ urlpatterns = [
          name='kategoriler3_secilileri_sil'),
     path('kategoriler/secili-kategori-sil/', kategoriler_secilileri_sil, name='kategoriler_secilileri_sil'),
     path('urunler/', products, name='admin_product'),
+    path('urunler/sil/json/', ajax_select_delete_product, name='ajax_select_delete_product'),
+    path('urunler/sil/', all_delete_product, name='all_delete_product'),
+    path('urunler/urun_id=<int:id>/', product_detail, name='product_detail'),
+    path('urunler/kampanyali-urunlar/', kampanyali_urunler, name='kampanyali_urunler'),
     path('siparis-yonetimi/siparisler/', orders, name='admin_orders'),
     path('siparis-yonetimi/siparisler/siparis_no=<str:order_number>/', order_detail, name='admin_order_detail'),
     path('siparis-yonetimi/siparisler/sil/siparis_no=<str:order_number>/', order_delete, name='admin_order_delete'),
     path('siparis-yonetimi/iptal-talepleri/', iptal_talepleri, name='admin_iptal_talepleri'),
-    path('siparis-yonetimi/iptal-talepleri/siparis_no=<str:order_number>/', iptal_talepleri_detay, name='admin_iptal_talepleri_detay'),
+    path('siparis-yonetimi/iade-talepleri/', iade_talepleri, name='iade_talepleri'),
+    path('siparis-yonetimi/iade-talepleri/siparis_no=<str:order_number>/<int:product_id>/', iade_talepleri_detay, name='iade_talepleri_detay'),
 
     path('xml-yonetimi/tahtakale/veri-yukle-guncelle/', tahtakale_product, name="tahtakale_product"),
     path('xml-yonetimi/tahtakale/veri-yukle/', tahtakale_product_load, name="tahtakale_product_load"),
@@ -76,6 +81,8 @@ urlpatterns = [
     path('xml-yonetimi/haydigiy/veri-yukle-guncelle/', haydigiy_product, name="haydigiy_product"),
     path('xml-yonetimi/haydigiy/veri-yukle/', haydigiy_product_load, name="haydigiy_product_load"),
     path('xml-yonetimi/haydigiy/veri-guncelle/', haydigiy_product_update, name="haydigiy_product_update"),
+    path('xml-yonetimi/haydigiy/aktif-olmayan-urunler/', haydigiy_find_not_active_product_page, name="haydigiy_find_not_active_product_page"),
+    path('xml-yonetimi/haydigiy/aktif-olmayan-urunleri-bul/', haydigiy_find_not_active_product, name="haydigiy_find_not_active_product"),
 
     # trendyol
     path('trendyol/hesap-bilgileri/', trendyol_hesap_bilgileri_ekle, name="trendyol_hesap_bilgileri_ekle"),
@@ -86,6 +93,13 @@ urlpatterns = [
     path('trendyol/urun-giris/giyim/kategori_id=<int:id>/trendyol/urun-gonder/',
          trendyol_add_product_giyim_send_trendyol, name="trendyol_add_product_giyim_send_trendyol"),
     path('trendyol/stok-fiyat-guncelleme/', trendyol_update_price_stok, name="trendyol_update_price_stok"),
+    path('trendyol/bilgi-guncelleme/', trendyol_update_product, name="trendyol_update_product"),
+    path('trendyol/urun-silme/', trendyol_delete_product, name="trendyol_delete_product"),
+    path('trendyol/urunler/', trendyol_products, name="trendyol_products"),
+    path('trendyol/servis-istekleri/', trendyol_batch_request, name="trendyol_batch_request"),
+    path('trendyol/servis-istekleri/goruntule/<str:batch_request>/', trendyol_batch_request_detail, name="trendyol_batch_request_detail"),
+    path('trendyol/servis-istekleri/sil/<int:id>/', trendyol_batch_request_delete, name="trendyol_batch_request_delete"),
+    path('trendyol/servis-istekleri/tumuunu-sil/', trendyol_batch_request_delete_all, name="trendyol_batch_request_delete_all"),
 
     # muhasebe
     path('kesilen-faturalar/fatura-ekle/', kesilen_fatura_ekle, name="kesilen_fatura_ekle"),

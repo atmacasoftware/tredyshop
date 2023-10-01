@@ -4,7 +4,7 @@
 {% for p in most_count %}
     <div class="cate-item">
         <div class="product-img">
-            <a href="{{ p.get_url }}"><img src="{{ p.get_image }}" alt="" class="img-reponsive"></a>
+            <a href="{{ p.get_url }}"><img src="{{ p.image_url1 }}" alt="" class="img-reponsive"></a>
         </div>
         <div class="product-info">
             <h3 class="product-title"><a href="{{ p.get_url }}">{{ p.title }}</a></h3>

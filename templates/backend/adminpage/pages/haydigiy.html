@@ -28,7 +28,7 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-3 col-6">
+                <div class="col-lg-6 col-12">
                     <!-- small box -->
                     <div class="small-box bg-info">
                         <div class="inner" style="height: 100px;">
@@ -42,7 +42,7 @@
                                     class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
-                <div class="col-lg-3 col-6">
+                <div class="col-lg-6 col-12">
                     <!-- small box -->
                     <div class="small-box bg-warning">
                         <div class="inner" style="height: 100px;">
@@ -56,6 +56,7 @@
                                     class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
@@ -63,11 +64,12 @@
     <script>
         var haydiGiyAdd = document.getElementById("addHaydiGiyBtn");
         var haydiGiyUpdate = document.getElementById("updateHaydiGiyBtn");
+
         var dataloader = document.getElementById("dataloader");
         //console.log(btn);
         setInterval(function () {
             haydiGiyUpdate.click();
-        }, 1000 * 60 * 60);
+        }, 1000 * 60 * 30);
 
         haydiGiyUpdate.addEventListener("click", function () {
             dataloader.style.display = "flex";
@@ -76,12 +78,13 @@
             })
         })
 
-        addHaydiGiyBtn.addEventListener("click", function () {
+        haydiGiyAdd.addEventListener("click", function () {
             dataloader.style.display = "flex";
             window.addEventListener("load", function () {
                 dataloader.style.display = "none";
             })
         })
+
 
     </script>
 

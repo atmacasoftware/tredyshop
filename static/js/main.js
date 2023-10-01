@@ -9,7 +9,6 @@ jQuery(document).ready(function ($) {
         }
     })
 
-
     // Ajax search
     $('.ajax-search input[type="text"]').on('blur', function () {
         $('.list-product-search').removeClass('active');
@@ -22,14 +21,6 @@ jQuery(document).ready(function ($) {
         }
     });
     // close quickview
-
-    var loader = document.getElementById("preloader");
-    window.addEventListener("load", function () {
-        setTimeout(function () {
-            loader.style.display = "none";
-        }, 1000);
-    })
-
 
     $(".quickview-close").on("click", function () {
         $('.quickview-wrapper').hide();
@@ -332,332 +323,34 @@ jQuery(document).ready(function ($) {
             }
         }
     });
-    $('.js-owl-team').owlCarousel({
-        margin: 30,
-        autoplay: false,
-        autoplayTimeout: 3000,
+    $('.js-owl-most').owlCarousel({
         loop: true,
-        dots: false,
+        margin: 10,
+        responsiveClass: true,
         nav: true,
+        dots: false,
         navText: ["<span class='fa fa-angle-left'></span>", "<span class='fa fa-angle-right'></span>"],
         responsive: {
             0: {
-                items: 1
+                items: 1,
+                nav: true
             },
-            480: {
-                items: 2
+            600: {
+                items: 3,
+                nav: false
             },
-            1024: {
-                items: 3
-            },
-            1200: {
+            1000: {
                 items: 4,
-                margin: 40
-            }
-        }
-    });
-    $('.js-owl-cate2').owlCarousel({
-        margin: 30,
-        autoplay: false,
-        autoplayTimeout: 3000,
-        loop: true,
-        dots: true,
-        nav: false,
-        responsive: {
-            0: {
-                items: 1
-            },
-            480: {
-                items: 2
-            },
-            1024: {
-                items: 3
-            },
-            1200: {
-                items: 3
-            },
-            1600: {
-                items: 3,
-                margin: 40
+                nav: true,
+                loop: false
             }
         }
     });
 
 
-    // owl brand
-    $('.js-owl-brand').owlCarousel({
-        margin: 30,
-        autoplay: false,
-        autoplayTimeout: 3000,
-        loop: true,
-        dots: false,
-        nav: true,
-        navText: ["<span class='fa fa-angle-left'></span>", "<span class='fa fa-angle-right'></span>"],
-        responsive: {
-            0: {
-                items: 1
-            },
-            480: {
-                items: 3
-            },
-            1024: {
-                items: 5
-            },
-            1200: {
-                items: 7
-            }
-        }
-    });
-    $('.js-owl-brand2').owlCarousel({
-        margin: 30,
-        autoplay: false,
-        autoplayTimeout: 3000,
-        loop: true,
-        dots: false,
-        nav: true,
-        navText: ["<span class='fa fa-angle-left'></span>", "<span class='fa fa-angle-right'></span>"],
-        responsive: {
-            0: {
-                items: 1
-            },
-            480: {
-                items: 3
-            },
-            1024: {
-                items: 4
-            },
-            1200: {
-                items: 6
-            }
-        }
-    });
-    $(".js-owl-brand2 .owl-nav > div").on("click", function () {
-        $(this).addClass('active').siblings().removeClass('active');
-    });
-    // product carousel
-    $('.js-owl-product').owlCarousel({
-        margin: 30,
-        autoplay: true,
-        autoplayTimeout: 3000,
-        loop: true,
-        dots: false,
-        nav: true,
-        navText: ["<span class='fa fa-angle-left'></span>", "<span class='fa fa-angle-right'></span>"],
-        responsive: {
-            0: {
-                items: 1
-            },
-            480: {
-                items: 2
-            },
-            1024: {
-                items: 2
-            },
-            1200: {
-                items: 3
-            }
-        }
-    });
-    $('.js-owl-product2').owlCarousel({
-
-        margin: 30,
-        autoplay: false,
-        autoplayTimeout: 3000,
-        loop: true,
-        dots: false,
-        nav: true,
-        navText: ["<span class='fa fa-angle-left'></span>", "<span class='fa fa-angle-right'></span>"],
-        responsive: {
-            0: {
-                items: 1
-            },
-            480: {
-                items: 2
-            },
-            1200: {
-                items: 3
-            },
-            1600: {
-                items: 3,
-                margin: 40
-            }
-        }
-    });
-    $(".js-owl-product2 .owl-nav > div").on("click", function () {
-        $(this).addClass('active').siblings().removeClass('active');
-    });
-    $('.js-owl-blog').owlCarousel({
-
-        margin: 30,
-        autoplay: false,
-        autoplayTimeout: 3000,
-        loop: true,
-        dots: true,
-        nav: true,
-        navText: ["<span class='fa fa-angle-left'></span>", "<span class='fa fa-angle-right'></span>"],
-        responsive: {
-            0: {
-                items: 1
-            },
-            480: {
-                items: 2
-            },
-            1200: {
-                items: 3
-            },
-            1600: {
-                items: 3,
-                margin: 40
-            }
-        }
-    });
-    $(".js-owl-blog .owl-nav > div").on("click", function () {
-        $(this).addClass('active').siblings().removeClass('active');
-    });
     $(".js-quickview-slide  .slick-arrow").on("click", function () {
         $(this).addClass('active');
     });
-    $('.js-owl-post').owlCarousel({
-        nav: true,
-        navText: ["<span class='fa fa-angle-left'></span>", "<span class='fa fa-angle-right'></span>"],
-        items: 1,
-        dots: false
-    });
-    $('.js-owl-quote').owlCarousel({
-        nav: false,
-        items: 1,
-        dots: true,
-        singleItem: true,
-    });
-    $('.js-oneitem').owlCarousel({
-        nav: false,
-        items: 1,
-        dots: true,
-        singleItem: true,
-    });
-    $('.js-oneitem2').owlCarousel({
-        nav: false,
-        items: 1,
-        singleItem: true,
-        dots: true,
-    });
-    // Instagram carousel
-    $('.js-owl-instagram').owlCarousel({
-        margin: 0,
-        autoplay: true,
-        autoplayTimeout: 3000,
-        loop: true,
-        nav: false,
-        navText: ["", ""],
-        dots: false,
-        responsive: {
-            0: {
-                items: 1
-            },
-            480: {
-                items: 2
-            },
-            1000: {
-                items: 5
-            }
-        }
-    });
-
-    $('.js-multiple-row2').slick({
-        dots: true,
-        arrows: false,
-        slidesPerRow: 4,
-        rows: 2,
-        responsive: [{
-            breakpoint: 1025,
-            settings: {
-                slidesPerRow: 3,
-            }
-        },
-            {
-                breakpoint: 813,
-                settings: {
-                    slidesPerRow: 2,
-                }
-            },
-            {
-                breakpoint: 480,
-                settings: {
-                    arrows: true,
-                    prevArrow: '<span class="prev"><i class="fa fa-angle-left" aria-hidden="true"></i></span>',
-                    nextArrow: '<span class="next"><i class="fa fa-angle-right" aria-hidden="true"></i></span>',
-                    infinite: true,
-                    dots: false,
-                    slidesPerRow: 1,
-                    rows: 1,
-                }
-            }
-        ]
-    });
-
-    $('.js-multiple-row').slick({
-        dots: true,
-        arrows: false,
-        slidesPerRow: 3,
-        rows: 2,
-        responsive: [{
-            breakpoint: 1025,
-            settings: {
-                slidesPerRow: 3,
-            }
-        },
-            {
-                breakpoint: 813,
-                settings: {
-                    slidesPerRow: 2,
-                }
-            },
-            {
-                breakpoint: 480,
-                settings: {
-                    arrows: true,
-                    prevArrow: '<span class="prev"><i class="fa fa-angle-left" aria-hidden="true"></i></span>',
-                    nextArrow: '<span class="next"><i class="fa fa-angle-right" aria-hidden="true"></i></span>',
-                    infinite: true,
-                    dots: false,
-                    slidesPerRow: 1,
-                    rows: 1,
-                }
-            }
-        ]
-    });
-    $('.js-multiple-row3').slick({
-        dots: true,
-        arrows: false,
-        slidesPerRow: 2,
-        rows: 2,
-        responsive: [{
-            breakpoint: 1025,
-            settings: {
-                slidesPerRow: 2,
-            }
-        },
-            {
-                breakpoint: 813,
-                settings: {
-                    slidesPerRow: 1,
-                }
-            },
-            {
-                breakpoint: 480,
-                settings: {
-                    arrows: true,
-                    prevArrow: '<span class="prev"><i class="fa fa-angle-left" aria-hidden="true"></i></span>',
-                    nextArrow: '<span class="next"><i class="fa fa-angle-right" aria-hidden="true"></i></span>',
-                    infinite: true,
-                    dots: false,
-                    slidesPerRow: 1,
-                    rows: 1,
-                }
-            }
-        ]
-    });
-
 
     // js slick one item homepage 3
 
@@ -732,22 +425,6 @@ jQuery(document).ready(function ($) {
     });
     //  Show more
 
-    // slider home 3 and home 2
-    $('.js-slider-3items').slick({
-        autoplay: false,
-        infinite: false,
-        arrows: false,
-        dots: true
-    });
-    // js blogpost
-    $('.js-single-post').slick({
-        autoplay: false,
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        infinite: true,
-        arrows: false,
-        dots: true
-    });
     // js quickview
     $('.js-quickview-slide').slick({
         autoplay: false,

@@ -1,0 +1,58 @@
+{% extends 'backend/adminpage/layout.html' %}
+{% load static %}
+
+{% block title %}<title>Trendyol Hesap Yönetimi - Ürün Silme</title>{% endblock %}
+
+{% block trendyol %}
+
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Trendyol Hesap Yönetimi - Ürün Silme</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'mainpage' %}">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Ürün Silme</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-2 col-sm-12 col-12">
+                    <div class="info-box bg-danger">
+                        <div class="info-box-content">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <button type="submit" name="deleteBtn" class="info-box-text btn text-white" id="updateDeleteBtn" style="background: none; outline: none;height: 100%;">Ürün Sil</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        var trendyolDelete = document.getElementById("updateDeleteBtn");
+        var dataloader = document.getElementById("dataloader");
+        //console.log(btn);
+        setInterval(function () {
+            trendyolDelete.click();
+        }, 1000 * 60 * 60);
+
+        trendyolDelete.addEventListener("click", function () {
+            dataloader.style.display = "flex";
+            window.addEventListener("load", function () {
+                dataloader.style.display = "none";
+            })
+        })
+    </script>
+
+{% endblock %}

@@ -3,13 +3,13 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 import decimal
-
+import requests
 from adminpage.models import Hakkimizda
 from customer.models import Subscription
 from mainpage.models import *
-from product.models import Product, Brand, ReviewRating, Images
+from product.models import Brand, ReviewRating, ApiProduct
 from categorymodel.models import *
-from product.read_xml import tahtakaleSaveXML2db, updateTahtakaleSaveXML2db, customPrice
+from product.read_xml import tahtakaleSaveXML2db, updateTahtakaleSaveXML2db, customPrice, notActiveModaymisProduct
 from store.views import listToString
 from urllib.request import urlopen
 import xml.etree.ElementTree as ET
@@ -21,76 +21,13 @@ def index(request):
     context = {}
     sliders = Slider.objects.filter(is_publish=True)
     flash_deals = []
-    all_product = Product.objects.all()
     new_release = []
-    moda = all_product.filter(category_id=1).order_by("-create_at")[:16]
-    kozmetik = all_product.filter(category_id=2).order_by("-create_at")[:16]
-    ev = all_product.filter(category_id=3).order_by("-create_at")[:16]
-    telefon = all_product.filter(category_id=4).order_by("-create_at")[:16]
-    spor = all_product.filter(category_id=5).order_by("-create_at")[:16]
-    hirdavat = all_product.filter(category_id=6).order_by("-create_at")[:16]
-    evcil = all_product.filter(category_id=7).order_by("-create_at")[:16]
 
-    for m in moda:
-        new_release.append(m)
-
-    for k in kozmetik:
-        new_release.append(k)
-
-    for e in ev:
-        new_release.append(e)
-
-    for t in telefon:
-        new_release.append(t)
-
-    for s in spor:
-        new_release.append(s)
-
-    for h in hirdavat:
-        new_release.append(h)
-
-    for e in evcil:
-        new_release.append(e)
-
-    most_seller = all_product.order_by("-sell_count").first()
-    most_seller2 = all_product.order_by("-sell_count")[1:2]
-    most_seller3 = all_product.order_by("-sell_count")[2:3]
-    most_seller4 = all_product.order_by("-sell_count")[3:4]
-    reviewrating = ReviewRating.objects.all()
-    liked_product = Product.objects.all().filter(reviewrating__rating__gte=4, reviewrating__rating__lte=6)[:3]
-    if liked_product.exists():
-        liked_product = Product.objects.all().filter(reviewrating__rating__gte=4, reviewrating__rating__lte=6)[:3]
-    else:
-        liked_product = Product.objects.all().order_by("?")[:3]
-    most_count = Product.objects.filter(reviewrating__in=reviewrating).annotate(rating_count=Count('id')).order_by(
-        '-rating_count')[:3]
-    if most_count.exists():
-        most_count = Product.objects.filter(reviewrating__in=reviewrating).annotate(rating_count=Count('id')).order_by(
-            '-rating_count')[:3]
-    else:
-        most_count = Product.objects.all().order_by('?')[:3]
-    most_selling = Product.objects.all().order_by("-sell_count")[:3]
-
-    brands = Brand.objects.all()
-
-    for product in all_product:
-        if product.is_discountprice == True:
-            if 100 - ((product.discountprice * 100) / product.price) >= 0:
-                flash_deals.append(product)
 
 
     context.update({
         'sliders': sliders,
-        'new_release': new_release,
-        'flash_deals': flash_deals[:12],
-        'most_seller': most_seller,
-        'most_seller2': most_seller2,
-        'most_seller3': most_seller3,
-        'most_seller4': most_seller4,
-        'brands': brands,
-        'liked_product': liked_product,
-        'most_count': most_count,
-        'most_selling': most_selling,
+
     })
     return render(request, 'frontend/pages/mainpage.html', context)
 
@@ -109,7 +46,7 @@ def ajax_search(request):
         else:
             MostSearchingKeyword.objects.create(keyword=series, ip=ip)
 
-    products = Product.objects.filter(title__icontains=series)[:15]
+    products = ApiProduct.objects.filter(title__icontains=series)[:15]
 
     if len(products) > 0:
         data = []
@@ -147,7 +84,7 @@ def search(request):
 
     category_type = "search"
 
-    minMaxPrice = Product.objects.filter().aggregate(
+    minMaxPrice = ApiProduct.objects.filter().aggregate(
         Min('discountprice'),
         Max('discountprice'))
 
@@ -158,7 +95,7 @@ def search(request):
     })
 
     if keyword:
-        products = Product.objects.filter(Q(title__icontains=keyword) | Q(category__title__icontains=keyword) | Q(
+        products = ApiProduct.objects.filter(Q(title__icontains=keyword) | Q(category__title__icontains=keyword) | Q(
             subcategory__title__icontains=keyword) | Q(brand__title__icontains=keyword))
 
         minMaxPrice = products.aggregate(
@@ -206,7 +143,7 @@ def search_product_filter(request):
     data = []
 
     if keyword:
-        data = Product.objects.filter(Q(title__icontains=keyword) | Q(category__title__icontains=keyword) | Q(
+        data = ApiProduct.objects.filter(Q(title__icontains=keyword) | Q(category__title__icontains=keyword) | Q(
             subcategory__title__icontains=keyword) | Q(brand__title__icontains=keyword), price__gte=minPrice,
                                       price__lte=maxPrice).order_by(order_type)
 
@@ -218,19 +155,19 @@ def slider_info(request, slider_slug):
     context = {}
     slider = Slider.objects.get(slug=slider_slug)
     reviewrating = ReviewRating.objects.all()
-    liked_product = Product.objects.all().filter(reviewrating__rating__gte=4, reviewrating__rating__lte=6)[:3]
+    liked_product = ApiProduct.objects.all().filter(reviewrating__rating__gte=4, reviewrating__rating__lte=6)[:3]
     if liked_product.exists():
-        liked_product = Product.objects.all().filter(reviewrating__rating__gte=4, reviewrating__rating__lte=6)[:3]
+        liked_product = ApiProduct.objects.all().filter(reviewrating__rating__gte=4, reviewrating__rating__lte=6)[:3]
     else:
-        liked_product = Product.objects.all().order_by("?")[:3]
-    most_count = Product.objects.filter(reviewrating__in=reviewrating).annotate(rating_count=Count('id')).order_by(
+        liked_product = ApiProduct.objects.all().order_by("?")[:3]
+    most_count = ApiProduct.objects.filter(reviewrating__in=reviewrating).annotate(rating_count=Count('id')).order_by(
         '-rating_count')[:3]
     if most_count.exists():
-        most_count = Product.objects.filter(reviewrating__in=reviewrating).annotate(rating_count=Count('id')).order_by(
+        most_count = ApiProduct.objects.filter(reviewrating__in=reviewrating).annotate(rating_count=Count('id')).order_by(
             '-rating_count')[:3]
     else:
-        most_count = Product.objects.all().order_by('?')[:3]
-    most_selling = Product.objects.all().order_by("-sell_count")[:3]
+        most_count = ApiProduct.objects.all().order_by('?')[:3]
+    most_selling = ApiProduct.objects.all().order_by("-sell_count")[:3]
     context.update({
         'slider': slider,
         'liked_product': liked_product,

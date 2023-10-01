@@ -8,26 +8,70 @@
             </div>
             <h1>Süper Fırsatlar</h1>
         </div>
-        <div class="owl-carousel owl-theme owl-cate js-owl-cate2">
-            {% for p in flash_deals %}
-                <div class="product-countd pd-bd product-inner">
-                    <div class="product-item-countd">
-                        <div class="product-head product-img">
-                            <a href="{{ p.get_url }}"><img src="{{ p.get_image }}" alt="" class="flash-deals-image"></a>
-                            <div class="ribbon-price v3 red"><span>- {{ p.discountRate }}% </span></div>
-                        </div>
-                        <div class="product-info">
-                            <p class="product-cate text-center">{{ p.category }}</p>
-                            <div class="product-price thin-price v3">
-                                <span class="red">{{ p.discountprice }}</span>
-                                <span class="old">{{ p.price }}</span>
-                            </div>
-                            <h3 class="product-title text-center v2"><a href="{{ p.get_url }}">{{ p.title }}</a></h3>
 
+        <div class="flash_deals_skeleton">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="product-countd pd-bd product-inner">
+                        <div class="product-item-countd">
+                            <div class="product-head product-img">
+                                <span class="skeleton-box" style="height: 365px;width: 75%;"></span>
+                                <div class="ribbon-price v3 red"><span>- % </span></div>
+                            </div>
+                            <div class="product-info">
+                                <p class="product-cate text-center"><span class="skeleton-box"
+                                                                          style="width: 40px;"></span></p>
+                                <div class="product-price thin-price v3">
+                                </div>
+                                <h3 class="product-title text-center v2"><span class="skeleton-box"
+                                                                               style="width: 100px;"></span>
+                                </h3>
+                            </div>
                         </div>
                     </div>
                 </div>
-            {% endfor %}
+                <div class="col-lg-4">
+                    <div class="product-countd pd-bd product-inner">
+                        <div class="product-item-countd">
+                            <div class="product-head product-img">
+                                <span class="skeleton-box" style="height: 365px;width: 75%;"></span>
+                                <div class="ribbon-price v3 red"><span>- % </span></div>
+                            </div>
+                            <div class="product-info">
+                                <p class="product-cate text-center"><span class="skeleton-box"
+                                                                          style="width: 40px;"></span></p>
+                                <div class="product-price thin-price v3">
+                                </div>
+                                <h3 class="product-title text-center v2"><span class="skeleton-box"
+                                                                               style="width: 100px;"></span>
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="product-countd pd-bd product-inner">
+                        <div class="product-item-countd">
+                            <div class="product-head product-img">
+                                <span class="skeleton-box" style="height: 365px;width: 75%;"></span>
+                                <div class="ribbon-price v3 red"><span>- % </span></div>
+                            </div>
+                            <div class="product-info">
+                                <p class="product-cate text-center"><span class="skeleton-box"
+                                                                          style="width: 40px;"></span></p>
+                                <div class="product-price thin-price v3">
+                                </div>
+                                <h3 class="product-title text-center v2"><span class="skeleton-box"
+                                                                               style="width: 100px;"></span>
+                                </h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="owl-carousel owl-theme owl-cate js-owl-cate2 owl-loaded owl-drag">
+
         </div>
     </div>
 </div>

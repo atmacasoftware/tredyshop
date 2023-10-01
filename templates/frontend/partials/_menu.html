@@ -6,7 +6,8 @@
 
     <div class="vertical-wrapper">
         <ul class="vertical-group">
-            {% for mc in maincategories %}
+            {% for mc in subcategories %}
+                {% if mc.maincategory.id == 1 %}
                 <li class="vertical-item level1 vertical-drop"><a
                         href="{{ mc.get_url }}">{{ mc.title }}</a>
                     {% if mc.exist_subbottomcategories == "True" %}
@@ -43,6 +44,7 @@
                         </div>
                     {% endif %}
                 </li>
+                {% endif %}
             {% endfor %}
         </ul>
     </div>

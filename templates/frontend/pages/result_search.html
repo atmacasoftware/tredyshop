@@ -4,7 +4,7 @@
 
 {% block store %}
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
-    <hr>
+
     <div class="container container-240 shop-collection catleft">
         <ul class="breadcrumb">
             <li><a href="{% url 'mainpage' %}">Anasayfa</a></li>
@@ -22,9 +22,11 @@
                     <ul class="wiget-content v3">
                         <li class="active"><a href="{{ category_s.get_url }}">Tüm Kategoriler</a>
                             <ul class="wiget-content v4">
-                                {% for sc in categories %}
-                                    <li><a href="{{ sc.get_url }}">{{ sc.title }} <span
-                                            class="number">({{ sc.product_count }})</span></a></li>
+                                {% for sc in subcategories %}
+                                    {% if sc.maincategory.id == 1 %}
+                                        <li><a href="{{ sc.get_url }}">{{ sc.title }} <span
+                                                class="number">({{ sc.product_count }})</span></a></li>
+                                    {% endif %}
                                 {% endfor %}
                             </ul>
                         </li>

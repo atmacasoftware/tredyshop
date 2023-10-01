@@ -29,400 +29,543 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                {% if category.title == 'Ceket-Mont-Kaban' %}
-                    <div class="col-md-3 col-sm-4 col-6">
-                        <div class="info-box bg-purple">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Ceket" name="category_title">
-                                    <input type="hidden" value="Ceket" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Ceket Yükle
-                                    </button>
-                                </form>
+                <div class="col-lg-4">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="row">
+                                {% if category.title == 'Ceket-Mont-Kaban' %}
+                                <div class="col-md-4 col-sm-12 col-12">
+                                    <div class="info-box bg-purple">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Ceket" name="category_title">
+                                                <input type="hidden" value="Ceket" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Ceket Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12 col-12">
+                                    <div class="info-box bg-success">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Mont" name="category_title">
+                                                <input type="hidden" value="Mont" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Mont Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12 col-12">
+                                    <div class="info-box bg-warning">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Kaban" name="category_title">
+                                                <input type="hidden" value="Kaban" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Kaban Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif category.title == 'Atlet-Büstiyer' %}
+                                <div class="col-md-6 col-sm-12 col-12">
+                                    <div class="info-box bg-warning">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Atlet" name="category_title">
+                                                <input type="hidden" value="Atlet" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Atlet Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-12 col-12">
+                                    <div class="info-box bg-info">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Büstiyer" name="category_title">
+                                                <input type="hidden" value="Büstiyer" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Büstiyer Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif category.title == 'Bluz-Body-Triko' %}
+                                <div class="col-md-4 col-sm-12 col-12">
+                                    <div class="info-box bg-info">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Bluz" name="category_title">
+                                                <input type="hidden" value="Bluz" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Bluz Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12 col-12">
+                                    <div class="info-box bg-orange">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Body" name="category_title">
+                                                <input type="hidden" value="Body" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Body Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12 col-12">
+                                    <div class="info-box bg-danger">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Triko" name="category_title">
+                                                <input type="hidden" value="Triko" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Triko Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif category.title == 'Abiye' %}
+                                <div class="col-md-12 col-sm-12 col-12">
+                                    <div class="info-box bg-warning">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Abiye & Mezuniyet Elbisesi"
+                                                       name="category_title">
+                                                <input type="hidden" value="Abiye" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Abiye Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif category.title == 'Babet-Sandelet-Terlik' %}
+                                <div class="col-md-4 col-sm-4 col-6">
+                                    <div class="info-box bg-warning">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Babet" name="category_title">
+                                                <input type="hidden" value="Babet" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Babet Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-6">
+                                    <div class="info-box bg-info">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Sandalet" name="category_title">
+                                                <input type="hidden" value="Sandalet" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Sandalet Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-6">
+                                    <div class="info-box bg-purple">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Terlik" name="category_title">
+                                                <input type="hidden" value="Terlik" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Terlik Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif category.title == 'Günlük Ayakkabı' %}
+                                <div class="col-md-12 col-sm-12 col-12">
+                                    <div class="info-box bg-warning">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Casual Ayakkabı" name="category_title">
+                                                <input type="hidden" value="Günlük Ayakkabı" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Günlük Ayakkabı Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif category.title == 'Topuklu Ayakkabı' %}
+                                <div class="col-md-12 col-sm-12 col-12">
+                                    <div class="info-box bg-warning">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Klasik Topuklu Ayakkabı"
+                                                       name="category_title">
+                                                <input type="hidden" value="Topuklu Ayakkabı" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Topuklu Ayakkabı Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif category.title == 'Şapka-Bandana' %}
+                                <div class="col-md-6 col-sm-6 col-12">
+                                    <div class="info-box bg-warning">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Şapka" name="category_title">
+                                                <input type="hidden" value="Şapka" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Şapka Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-12">
+                                    <div class="info-box bg-danger">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Bandana" name="category_title">
+                                                <input type="hidden" value="Bandana" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Bandana Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif category.title == 'Çanta' %}
+                                <div class="col-md-6 col-sm-12 col-12">
+                                    <div class="info-box bg-warning">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Sırt Çantası" name="category_title">
+                                                <input type="hidden" value="Sırt Çantası" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Sırt Çantası Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-12 col-12">
+                                    <div class="info-box bg-success">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Omuz Çantası" name="category_title">
+                                                <input type="hidden" value="Omuz Çantası" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Omuz Çantası Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif category.title == 'Gözlük' %}
+                                <div class="col-md-12 col-sm-12 col-12">
+                                    <div class="info-box bg-warning">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Güneş Gözlüğü" name="category_title">
+                                                <input type="hidden" value="Gözlük" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Gözlük Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif category.title == 'Atkı-Bere-Şal' %}
+                                <div class="col-md-4 col-sm-12 col-12">
+                                    <div class="info-box bg-warning">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Atkı" name="category_title">
+                                                <input type="hidden" value="Atkı" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Atkı Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12 col-12">
+                                    <div class="info-box bg-danger">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Bere" name="category_title">
+                                                <input type="hidden" value="Bere" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Bere Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-12 col-12">
+                                    <div class="info-box bg-info">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Şal" name="category_title">
+                                                <input type="hidden" value="Şal" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Şal Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif category.title == 'Sütyen Takımları' %}
+                                <div class="col-md-12 col-sm-12 col-12">
+                                    <div class="info-box bg-warning">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Sütyen" name="category_title">
+                                                <input type="hidden" value="Sütyen" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Sütyen Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif category.title == 'Kimono' %}
+                                <div class="col-md-12 col-sm-12 col-12">
+                                    <div class="info-box bg-warning">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Kimono&Kaftan" name="category_title">
+                                                <input type="hidden" value="Kimono" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Kimono Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif category.title == 'Yağmurluk' %}
+                                <div class="col-md-12 col-sm-12 col-12">
+                                    <div class="info-box bg-warning">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Yağmurluk&Rüzgarlık" name="category_title">
+                                                <input type="hidden" value="Kimono" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Yağmurluk Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif category.title == 'Sweat' %}
+                                <div class="col-md-12 col-sm-12 col-12">
+                                    <div class="info-box bg-warning">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Sweatshirt" name="category_title">
+                                                <input type="hidden" value="Sweat" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Sweatshirt Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif category.title == 'Kot Pantolon' or category.title == 'Pantolon' %}
+                                <div class="col-md-12 col-sm-12 col-12">
+                                    <div class="info-box bg-warning">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Pantolon" name="category_title">
+                                                <input type="hidden" value="Pantolon" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Pantolon Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif category.title == 'Tişort' or category.title == 'Tişört' or category.title == 'T-Shirt' %}
+                                <div class="col-md-12 col-sm-12 col-12">
+                                    <div class="info-box bg-warning">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="T-Shirt" name="category_title">
+                                                <input type="hidden" value="Tişört" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    T-Shirt Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elif category.title == 'Abiye' %}
+                                <div class="col-md-12 col-sm-12 col-12">
+                                    <div class="info-box bg-warning">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="Abiye & Mezuniyet Elbisesi" name="category_title">
+                                                <input type="hidden" value="Abiye" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    Abiye & Mezuniyet Elbisesi Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="col-md-12 col-sm-12 col-12">
+                                    <div class="info-box bg-purple">
+                                        <div class="info-box-content">
+                                            <form action="" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="{{ category.title }}" name="category_title">
+                                                <input type="hidden" value="{{ category.title }}" name="product_title">
+                                                <button class="btn btn-light" name="sendTrendyol" type="submit"
+                                                        style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
+                                                    {{ category.title }} Yükle
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3 col-sm-4 col-6">
-                        <div class="info-box bg-success">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Mont" name="category_title">
-                                    <input type="hidden" value="Mont" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Mont Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-4 col-6">
-                        <div class="info-box bg-warning">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Kaban" name="category_title">
-                                    <input type="hidden" value="Kaban" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Kaban Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                {% elif category.title == 'Atlet-Büstiyer' %}
-                    <div class="col-md-3 col-sm-4 col-6">
-                        <div class="info-box bg-warning">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Atlet" name="category_title">
-                                    <input type="hidden" value="Atlet" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Atlet Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-4 col-6">
-                        <div class="info-box bg-info">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Büstiyer" name="category_title">
-                                    <input type="hidden" value="Büstiyer" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Büstiyer Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                {% elif category.title == 'Bluz-Body-Triko' %}
-                    <div class="col-md-3 col-sm-4 col-6">
-                        <div class="info-box bg-info">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Bluz" name="category_title">
-                                    <input type="hidden" value="Bluz" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Bluz Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-4 col-6">
-                        <div class="info-box bg-orange">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Body" name="category_title">
-                                    <input type="hidden" value="Body" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Body Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-4 col-6">
-                        <div class="info-box bg-danger">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Triko" name="category_title">
-                                    <input type="hidden" value="Triko" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Triko Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                {% elif category.title == 'Abiye' %}
-                    <div class="col-md-3 col-sm-4 col-6">
-                        <div class="info-box bg-warning">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Abiye & Mezuniyet Elbisesi" name="category_title">
-                                    <input type="hidden" value="Abiye" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Abiye Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                {% elif category.title == 'Babet-Sandelet-Terlik' %}
-                    <div class="col-md-3 col-sm-4 col-6">
-                        <div class="info-box bg-warning">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Babet" name="category_title">
-                                    <input type="hidden" value="Babet" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Babet Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-4 col-6">
-                        <div class="info-box bg-info">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Sandalet" name="category_title">
-                                    <input type="hidden" value="Sandalet" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Sandalet Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-sm-4 col-6">
-                        <div class="info-box bg-purple">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Terlik" name="category_title">
-                                    <input type="hidden" value="Terlik" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Terlik Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                {% elif category.title == 'Günlük Ayakkabı' %}
-                    <div class="col-md-4 col-sm-6 col-12">
-                        <div class="info-box bg-warning">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Casual Ayakkabı" name="category_title">
-                                    <input type="hidden" value="Günlük Ayakkabı" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Günlük Ayakkabı Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                {% elif category.title == 'Topuklu Ayakkabı' %}
-                    <div class="col-md-4 col-sm-6 col-12">
-                        <div class="info-box bg-warning">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Klasik Topuklu Ayakkabı" name="category_title">
-                                    <input type="hidden" value="Topuklu Ayakkabı" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Topuklu Ayakkabı Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                {% elif category.title == 'Şapka-Bandana' %}
-                    <div class="col-md-4 col-sm-6 col-12">
-                        <div class="info-box bg-warning">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Şapka" name="category_title">
-                                    <input type="hidden" value="Şapka" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Şapka Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-6 col-12">
-                        <div class="info-box bg-danger">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Bandana" name="category_title">
-                                    <input type="hidden" value="Bandana" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Bandana Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                {% elif category.title == 'Çanta' %}
-                    <div class="col-md-4 col-sm-6 col-12">
-                        <div class="info-box bg-warning">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Sırt Çantası" name="category_title">
-                                    <input type="hidden" value="Sırt Çantası" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Sırt Çantası Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-6 col-12">
-                        <div class="info-box bg-success">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Omuz Çantası" name="category_title">
-                                    <input type="hidden" value="Omuz Çantası" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Omuz Çantası Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                {% elif category.title == 'Gözlük' %}
-                    <div class="col-md-4 col-sm-6 col-12">
-                        <div class="info-box bg-warning">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Güneş Gözlüğü" name="category_title">
-                                    <input type="hidden" value="Gözlük" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Gözlük Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                {% elif category.title == 'Atkı-Bere-Şal' %}
-                    <div class="col-md-4 col-sm-6 col-12">
-                        <div class="info-box bg-warning">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Atkı" name="category_title">
-                                    <input type="hidden" value="Atkı" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Atkı Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-6 col-12">
-                        <div class="info-box bg-danger">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Bere" name="category_title">
-                                    <input type="hidden" value="Bere" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Bere Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-sm-6 col-12">
-                        <div class="info-box bg-info">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Şal" name="category_title">
-                                    <input type="hidden" value="Şal" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Şal Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                {% elif category.title == 'Sütyen Takımları' %}
-                    <div class="col-md-4 col-sm-6 col-12">
-                        <div class="info-box bg-warning">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="Sütyen" name="category_title">
-                                    <input type="hidden" value="Sütyen" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        Sütyen Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                {% elif category.title == 'Tişort' or category.title == 'Tişört' or category.title == 'T-Shirt' %}
-                    <div class="col-md-4 col-sm-6 col-12">
-                        <div class="info-box bg-warning">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="T-Shirt" name="category_title">
-                                    <input type="hidden" value="Tişört" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        T-Shirt Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                {% else %}
-                    <div class="col-md-2 col-sm-4 col-6">
-                        <div class="info-box bg-purple">
-                            <div class="info-box-content">
-                                <form action="" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="{{ category.title }}" name="category_title">
-                                    <input type="hidden" value="{{ category.title }}" name="product_title">
-                                    <button class="btn btn-light" name="sendTrendyol" type="submit"
-                                            style="outline: none; background: none;width: 100%; height: 100%; border: none;color: #fff;font-weight: bold; font-size: 1.5rem">
-                                        {{ category.title }} Yükle
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
 
+                </div>
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Log Kayıtları</h3>
+
+
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap" id="userTable">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Log Tipi</th>
+                                    <th>Batch Request ID</th>
+                                    <th>Oluşturulma Tarihi</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for r in log_record %}
+                                    <tr>
+                                        <td>{{ r.id }}</td>
+                                        <td>{{ r.get_log_type_display }}</td>
+                                        <td>{{ r.batch_id }}</td>
+                                        <td>{{ r.create_at }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div id="no-data"
+                                 style="width: 100%; text-align: center; margin-top: 5px; margin-bottom: 5px;"></div>
+                        </div>
+                        <div class="card-footer p-0">
+                            <div class="mailbox-controls">
+                                <div class="float-right">
+                                    {{ users.number }} / {{ users.paginator.num_pages }}
+                                    <div class="btn-group">
+                                        {% if users.has_previous %}
+                                            <a href="?page={{ users.previous_page_number }}"
+                                               class="btn btn-default btn-sm">
+                                                <i class="fas fa-chevron-left"></i>
+                                            </a>
+                                        {% endif %}
+                                        {% if users.has_next %}
+                                            <a href="?page={{ users.next_page_number }}"
+                                               class="btn btn-default btn-sm">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
-
 
 {% endblock %}

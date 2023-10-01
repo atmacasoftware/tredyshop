@@ -1,0 +1,44 @@
+{% for p in data %}
+    <tr>
+        <td><a href="{% url 'product_detail' p.id %}">{{ p.id }}</a></td>
+        <td>
+            <div class="product__info">
+                <div class="product__image">
+                    <img src="{{ p.image_url1 }}" alt="">
+                </div>
+                <div class="product__title">
+                    <p><b><a href="{% url 'products_detail' p.slug %}">{{ p.title }}</a></b>
+                    </p>
+                    <span>Stok Kodu: {{ p.stock_code }}</span>
+                </div>
+            </div>
+        </td>
+        <td>{{ p.barcode }}</td>
+        <td>{{ p.model_code }}</td>
+        <td>{{ p.dropshipping }}</td>
+        <td>{% if p.subbottomcategory.title %}{{ p.subbottomcategory.title }}{% else %}
+            -{% endif %}</td>
+        <td>{{ p.brand.title }}</td>
+        <td>{% if p.color.name %}{{ p.color.name }}{% else %}-{% endif %}</td>
+        <td>{% if p.size.name %}{{ p.size.name }}{% else %}-{% endif %}</td>
+        <td>{{ p.price }}</td>
+        <td>{% if p.discountprice %}{{ p.discountprice }}{% else %}-{% endif %}</td>
+        <td>{{ p.quantity }}</td>
+        <td>{% if p.is_publish %}Evet{% else %}Hayır{% endif %}</td>
+        <td>
+            <a href="{% url 'product_detail' p.id %}" class="btn btn-danger btn-sm">Detaya Git</a>
+            <div class="dropdown">
+                <button class="btn btn-sm mt-2 btn-secondary dropdown-toggle" type="button"
+                        data-toggle="dropdown"
+                        aria-expanded="false">
+                    İşlemler
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">Action</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+            </div>
+        </td>
+    </tr>
+{% endfor %}

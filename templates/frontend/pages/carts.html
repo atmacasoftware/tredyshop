@@ -95,14 +95,16 @@
                                                 <a href="{% url 'remove_cart' cart_item.product.id cart_item.id %}"
                                                    class="btn-del"><i class="fa-solid fa-xmark"></i></a>
                                                 <div class="product-img">
-                                                    <img src="{{ cart_item.product.get_image }}" alt="Futurelife">
+                                                    <img src="{{ cart_item.product.image_url1 }}" alt="product_image">
                                                 </div>
                                                 <div class="product-info">
                                                     <a href="{{ cart_item.product.get_url }}"
                                                        title="">{{ cart_item.product.title }}</a>
-                                                    {% if cart_item.variant != None %}
-                                                        <span style="display: block">-{{ cart_item.variant.color }}</span>
-                                                        <span style="display: block">-{{ cart_item.variant.size }}</span>
+                                                    {% if cart_item.product.color != None %}
+                                                        <span style="display: block">Renk: {{ cart_item.product.color }}</span>
+                                                    {% endif %}
+                                                    {% if cart_item.product.size != None %}
+                                                        <span style="display: block">Beden:{{ cart_item.product.size }}</span>
                                                     {% endif %}
                                                 </div>
                                             </td>
@@ -110,7 +112,8 @@
                                             <td class="bcart-quantity single-product-detail">
                                                 <div class="single-product-info">
                                                     <div class="e-quantity">
-                                                        <input type="number" step="1" min="1" max="999" name="quantity"
+                                                        <input type="number" step="1" min="1"
+                                                               max="{{ cart_item.product.quantity }}" name="quantity"
                                                                value="{{ cart_item.quantity }}" disabled="disabled"
                                                                title="Qty"
                                                                class="qty input-text js-number"
@@ -128,12 +131,7 @@
                                                 </div>
                                             </td>
                                             <td class="total-price">
-                                                {% if cart_item.product.variant != 'Yok' %}
-                                                    <p class="price">{{ cart_item.variant.price|mul:cart_item.quantity|floatformat:2 }}
-                                                        TL</p>
-                                                {% else %}
-                                                    <p class="price">{{ cart_item.sub_total|floatformat:2 }} TL</p>
-                                                {% endif %}
+                                                <p class="price">{{ cart_item.sub_total|floatformat:2 }} TL</p>
                                             </td>
                                         </tr>
                                     {% empty %}
@@ -292,10 +290,16 @@
                         </div>
 
                         <div class="cart-total-bottom v2" style="margin-top: 30px;">
-                            <input type="hidden" value="{% url 'checkout' %}" id="checkoutUrl">
-                            <a href="{% url 'submitCheckout' %}" id="paymentBtn"
-                               class="btn-gradient btn-checkout btn-co-order">Onayla ve Ödeme Yap
-                            </a>
+                            {% if cartitem_count == 0 %}
+                                <a href="{% url 'product_by_category' 'giyim' %}"
+                                   class="btn-gradient btn-checkout btn-co-order">Alışverişe Başla
+                                </a>
+                            {% else %}
+                                <input type="hidden" value="{% url 'checkout' %}" id="checkoutUrl">
+                                <a href="{% url 'submitCheckout' %}" id="paymentBtn"
+                                   class="btn-gradient btn-checkout btn-co-order">Onayla ve Ödeme Yap
+                                </a>
+                            {% endif %}
                         </div>
                     </div>
                 </form>
@@ -415,6 +419,37 @@
                             </li>
                         {% endfor %}
                     </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade confirm-actions" tabindex="-1" role="dialog"
+         id="preliminaryInformationForm">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Ön Bilgilendirme Formu
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    {% include 'frontend/information/preliminary_information_form.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade confirm-actions" tabindex="-1" role="dialog"
+         id="distanceSellingContract">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Mesafeli Satış Sözleşmesi
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    {% include 'frontend/information/distance_selling_contract.html' %}
                 </div>
             </div>
         </div>

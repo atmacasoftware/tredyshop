@@ -20,7 +20,7 @@
 
 {% block store %}
     <link rel="stylesheet" href="{% static 'css/product_filter.css' %}">
-    <hr>
+
     <div class="container container-240 shop-collection catleft">
         <ul class="breadcrumb">
             <li><a href="{% url 'mainpage' %}">Anasayfa</a></li>
@@ -79,9 +79,11 @@
                             <li class="active"><a href="{{ c.get_url }}">{{ c.title }}
                                 Kategorileri</a>
                                 <ul class="wiget-content v4">
-                                    {% for c in maincategories %}
-                                        <li><a href="{{ c.get_url }}">{{ c.title }} <span
-                                                class="number">({{ c.product_count }})</span></a></li>
+                                    {% for sc in subcategories %}
+                                        {% if sc.maincategory.id == 1 %}
+                                            <li><a href="{{ sc.get_url }}">{{ sc.title }} <span
+                                                    class="number">({{ sc.product_count }})</span></a></li>
+                                        {% endif %}
                                     {% endfor %}
                                 </ul>
                             </li>
@@ -216,7 +218,7 @@
                                         <div class="product-img">
                                             <a href="{% url 'products_detail' product.slug %}"
                                                style="display: flex; justify-content: center; align-items: center"><img
-                                                    src="{{ product.get_image }}" alt="" class="img-reponsive"
+                                                    src="{{ product.image_url1 }}" alt="" class="img-reponsive"
                                                     style="width: auto;!important;"></a>
                                         </div>
                                         <div class="product-info">
@@ -280,7 +282,7 @@
                                     data-bottomcategory="{{ subbottomcategory_slug }}" data-brands="{{ brands_slug }}"
                                     id="loadMore" filter-color="" filter-sizer=""
                                     filter-minprice="{{ minMaxPrice.price__min }}"
-                                    filter-maxprice="{{ minMaxPrice.price__max }}">Daha Fazla Gör
+                                    filter-maxprice="{{ minMaxPrice.price__max }}" filter-arrangement="">Daha Fazla Gör
                             </button>
                         </div>
                     {% endif %}

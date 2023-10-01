@@ -12,7 +12,7 @@
 {% block product %}
     <link rel="stylesheet" href="{% static 'css/reviews.css' %}">
     <link rel="stylesheet" href="{% static 'css/venobox.min.css' %}">
-    <hr>
+
     <div class="container container-240 page-container product">
         <div class="single-product-detail product-bundle product-aff">
             <ul class="breadcrumb">
@@ -33,42 +33,27 @@
 
                         <div class="product-images">
                             <div class="main-img js-product-slider">
-                                {% if variant.image_id > 0 %}
-                                    <a href="#" class="hover-images effect"><img src="{{ variant.image }}"
-                                                                                 alt="photo"
-                                                                                 class="img-reponsive" style="height: 600px;object-fit: contain"></a>
-                                {% else %}
-                                    <a href="#" class="hover-images effect"><img src="{{ product.get_image }}"
-                                                                                 alt="photo"
-                                                                                 class="img-reponsive" style="height: 600px;object-fit: contain"></a>
-                                    {% for i in product_images %}
-                                        <a href="#" class="hover-images effect"><img src="{{ i.get_image }}" alt="photo"
-                                                                                     class="img-reponsive" style="height: 600px;object-fit: contain"></a>
-                                    {% endfor %}
-                                {% endif %}
+                                {% for i in image_urls %}
+                                    {% if i != None %}
+                                        <a href="#" class="hover-images effect"><img src="{{ i }}"
+                                                                                     alt="photo"
+                                                                                     class="img-reponsive"
+                                                                                     style="height: 600px;object-fit: contain"></a>
+                                    {% endif %}
+                                {% endfor %}
                             </div>
                         </div>
                         <div class="multiple-img-list-ver2 js-click-product">
-                            {% if variant.image_id > 0 %}
-                                <div class="product-col">
-                                    <div class="img active">
-                                        <img src="{{ variant.image }}" alt="photo" class="img-reponsive">
-                                    </div>
-                                </div>
-                            {% else %}
-                                <div class="product-col">
-                                    <div class="img active">
-                                        <img src="{{ product.get_image }}" alt="photo" class="img-reponsive">
-                                    </div>
-                                </div>
-                                {% for i in product_images %}
-                                    <div class="product-col">
+                            {% for i in image_urls %}
+                                {% if i != None %}
+                                    <div class="product-col {% if forloop.first %}slick-current{% endif %}">
                                         <div class="img active">
-                                            <img src="{{ i.get_image }}" alt="photo" class="img-reponsive">
+                                            <img src="{{ i }}" alt="photo" class="img-reponsive">
                                         </div>
                                     </div>
-                                {% endfor %}
-                            {% endif %}
+                                {% endif %}
+                            {% endfor %}
+
                         </div>
                     </div>
 
@@ -92,36 +77,19 @@
                             <h3 class="product-title"><a href="{{ product.get_url }}">
                                 {% if variant.title %}{{ variant.title }}{% else %}
                                     {{ product.title }}{% endif %}</a></h3>
-                            {% if variant.price > 0 %}
-                                <div class="product-price">
-                                    {% if variant.is_discountprice == True %}
-                                        <span style="text-decoration-line: line-through; color: red; font-size: 1.8rem">{{ variant.price }} TL</span>
-                                        &nbsp; <span>{{ variant.discountprice }} TL</span>{% else %}{{ variant.price }}
-                                        TL{% endif %}
-                                </div>
-                            {% else %}
-                                <div class="product-price">
-                                    {% if product.is_discountprice == True %}
-                                        <span style="text-decoration-line: line-through; color: red; font-size: 1.8rem">{{ product.price }} TL</span>
-                                        &nbsp; <span>{{ product.discountprice }} TL</span>{% else %}{{ product.price }}
-                                        TL{% endif %}
-                                </div>
-                            {% endif %}
+                            <div class="product-price">
+                                {% if product.is_discountprice == True %}
+                                    <span style="text-decoration-line: line-through; color: red; font-size: 1.8rem">{{ product.price }} TL</span>
+                                    &nbsp; <span>{{ product.discountprice }} TL</span>{% else %}{{ product.price }}
+                                    TL{% endif %}
+                            </div>
                             <div class="availability">
                                 <p class="product-inventory"><label>Stok Durumu
                                     : </label><span>
-                                    {% if variant.price > 0 %}
-                                        {% if variant.quantity > 0 %}
-                                            Stokta
-                                        {% else %}
-                                            <span style="color: red;">Stokta Yok</span>
-                                        {% endif %}
+                                    {% if product.quantity > 0 %}
+                                        Stokta
                                     {% else %}
-                                        {% if product.amount > 0 %}
-                                            Stokta
-                                        {% else %}
-                                            <span style="color: red;">Stokta Yok</span>
-                                        {% endif %}
+                                        <span style="color: red;">Stokta Yok</span>
                                     {% endif %}
                                 </span></p>
                             </div>
@@ -139,186 +107,55 @@
                                     {% endfor %}
                                 </ul>
                             </div>
-                            <input type="hidden" value="{{ variant.id }}" id="generalVariantId">
-                            {% if product.variant == 'Renk-Boyut' %}
-                                <h5>Boyut</h5>
+                            <div class="product-color">
+                                <label>Renk:</label>
+                                <span>{{ product.color }}</span>
+                            </div>
+                            <div class="product-size">
+                                <label>Beden:</label>
                                 <div class="size-group" id="size">
-                                    <form method="POST" id="post-form">
-                                        {% csrf_token %}
-                                        {% for rs in sizes %}
-                                            <div class="size">
-                                                <input type="radio" value="{{ rs.size__id }}"
-                                                        {% if variant.id == rs.id %} checked {% endif %}
-                                                       class="variation__input variation__input__size"
-                                                       name="size"
-                                                       id="size-{{ rs.size__id }}">
-                                                <label for="size-{{ rs.size__id }}" class="variation__label">
-                                                    <div class="variation__detail">
-                                                        <div class="variation_price">
-                                                            <b>{{ rs.size__name }}</b>
-                                                        </div>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                        {% endfor %}
-                                    </form>
 
-                                </div>
-                                <h5>Renk</h5>
-                                <div class="size-group">
-                                    <form method="POST" action="" id="post-color">
-                                        {% csrf_token %}
-                                        <div id="appendColor">
-                                            {% for rs in colors %}
-                                                <div class="color">
-                                                    <input type="radio" class="variation__input variation__input__color"
-                                                            {% if variant.id == rs.id %} checked {% endif %}
-                                                           name="variantid" title="{{ rs.color.name }}"
-                                                           id="{{ rs.id }}" value="{{ rs.id }}"
-                                                           onchange="this.form.submit();">
-                                                    <label for="{{ rs.id }}" class="variation__label"
-                                                           title="{{ rs.color.name }}">
-                                                        <div class="variation__detail">
-                                                            <div class="variation_color"
-                                                                 style="background: {{ rs.color.code }}"></div>
-                                                        </div>
-                                                    </label>
-                                                </div>
-                                            {% endfor %}
+                                    <div class="size active">
+                                        {{ product.size }}
+                                    </div>
+                                    {% for size in same_products %}
+                                        <div class="size">
+                                            <a href="{% url 'products_detail' size.slug %}">{{ size.size }}</a>
                                         </div>
-                                    </form>
-                                </div>
-
-
-                                <script>
-                                    $(document).on('change', '#post-form', function (e) {
-                                        e.preventDefault();
-                                        $.ajax({
-                                            type: 'POST',
-                                            url: '{% url 'ajaxcolor' %}',
-                                            data: {
-                                                productId: {{ product.id }},
-                                                size: $('input[name=size]:checked').val(),
-                                                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                                                action: 'post'
-                                            },
-                                            data_type: 'html',
-                                            success: function (data) {
-                                                $('#appendColor').html(data.rendered_table);
-                                            },
-                                            error: function (data) {
-                                                alert(data);
-                                            }
-                                        })
-                                    })
-                                </script>
-                            {% elif product.get_variations.type == 'Renk' %}
-                                <h5>Renk</h5>
-                                <div class="color-group">
-                                    {% for v in product.get_variations %}
-                                        {% if v.color != None %}
-                                            <div class="color">
-                                                <input type="radio" class="variation__input" name="color"
-                                                       id="color-{{ v.id }}" title="{{ rs.color.name }}">
-                                                <label for="color-{{ v.id }}" class="variation__label"
-                                                       title="{{ rs.color.name }}">
-                                                    <div class="variation__detail">
-                                                        <div class="variation_color"
-                                                             style="background: {{ v.color.code }}"></div>
-                                                        <div class="variation_price">
-                                                            <b>{{ v.price }} TL</b>
-                                                        </div>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                        {% endif %}
                                     {% endfor %}
 
                                 </div>
-                            {% elif product.get_variations.type == 'Boyut' %}
-                                <h5>Boyut</h5>
-                                <div class="size-group">
-                                    {% for v in product.get_variations %}
-                                        {% if v.size != None %}
-                                            <div class="size">
-                                                <input type="radio" value="" class="variation__input" name="size"
-                                                       id="size-{{ v.id }}">
-                                                <label for="size-{{ v.id }}" class="variation__label">
-                                                    <div class="variation__detail">
-                                                        <div class="variation_price">
-                                                            <b>{{ v.size }}</b>
-                                                        </div>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                        {% endif %}
-                                    {% endfor %}
+                            </div>
 
-                                </div>
-                            {% endif %}
                             <div class="single-product-button-group">
-                                {% if variant.price > 0 %}
-                                    {% if variant.quantity > 0 %}
-                                        <div class="e-btn cart-qtt btn-gradient">
-                                            <div class="e-quantity">
-                                                <input type="number" step="1" min="1" max="
-
-                                                        {% if variant.quantity > 0 %}{{ variant.quantity }}{% else %}{{ product.amount }}{% endif %}"
-                                                       id="quantity" disabled
-                                                       name="quantity" value="1"
-                                                       title="Qty" class="qty input-text js-number" size="4">
-                                                <div class="tc pa">
-                                                    <a class="js-plus quantity-right-plus"><i
-                                                            class="fa fa-caret-up"></i></a>
-                                                    <a class="js-minus quantity-left-minus"><i
-                                                            class="fa fa-caret-down"></i></a>
-                                                </div>
+                                {% if product.quantity > 0 %}
+                                    <div class="e-btn cart-qtt btn-gradient">
+                                        <div class="e-quantity">
+                                            <input type="number" step="1" min="1" max="{{ product.quantity }}"
+                                                   id="quantity" disabled
+                                                   name="quantity" value="1"
+                                                   title="Qty" class="qty input-text js-number" size="4">
+                                            <div class="tc pa">
+                                                <a class="js-plus quantity-right-plus"><i
+                                                        class="fa fa-caret-up"></i></a>
+                                                <a class="js-minus quantity-left-minus"><i
+                                                        class="fa fa-caret-down"></i></a>
                                             </div>
-
-                                            <a href="#" id="addingCard" class="btn-add-cart">Sepete Ekle <span
-                                                    class="icon-bg icon-cart v2"></span></a>
-                                            <a href="#" id="waitingCard" class="btn-add-cart">Sepete Eklendi </a>
                                         </div>
-                                    {% else %}
-                                        <button id="stockAlarm" class="btn btn-primary"
-                                                {% if stock_alarm.is_active == True %}disabled="disabled"{% endif %}
-                                                style="margin-right: 10px;">
-                                            <i class="fa fa-bell"></i>
-                                            <span>Gelince Haber Ver</span>
-                                        </button>
-                                    {% endif %}
+
+                                        <a href="#" id="addingCard" class="btn-add-cart">Sepete Ekle <span
+                                                class="icon-bg icon-cart v2"></span></a>
+                                        <a href="#" id="waitingCard" class="btn-add-cart">Sepete Eklendi</a>
+                                    </div>
                                 {% else %}
-                                    {% if product.amount > 0 %}
-                                        <div class="e-btn cart-qtt btn-gradient">
-                                            <div class="e-quantity">
-                                                <input type="number" step="1" min="1" max="
-
-
-                                                        {% if variant.quantity > 0 %}{{ variant.quantity }}{% else %}{{ product.amount }}{% endif %}"
-                                                       id="quantity" disabled
-                                                       name="quantity" value="1"
-                                                       title="Qty" class="qty input-text js-number" size="4">
-                                                <div class="tc pa">
-                                                    <a class="js-plus quantity-right-plus"><i
-                                                            class="fa fa-caret-up"></i></a>
-                                                    <a class="js-minus quantity-left-minus"><i
-                                                            class="fa fa-caret-down"></i></a>
-                                                </div>
-                                            </div>
-
-                                            <a href="#" id="addingCard" class="btn-add-cart">Sepete Ekle <span
-                                                    class="icon-bg icon-cart v2"></span></a>
-                                            <a href="#" id="waitingCard" class="btn-add-cart">Sepete Eklendi</a>
-                                        </div>
-                                    {% else %}
-                                        <button id="stockAlarm" class="btn btn-primary"
-                                                {% if stock_alarm.is_active == True %}disabled="disabled"{% endif %}
-                                                style="margin-right: 10px;">
-                                            <i class="fa fa-bell"></i>
-                                            <span>Gelince Haber Ver</span>
-                                        </button>
-                                    {% endif %}
+                                    <button id="stockAlarm" class="btn btn-primary"
+                                            {% if stock_alarm.is_active == True %}disabled="disabled"{% endif %}
+                                            style="margin-right: 10px;">
+                                        <i class="fa fa-bell"></i>
+                                        <span>Gelince Haber Ver</span>
+                                    </button>
                                 {% endif %}
+
 
                                 <a href="#" id="addingFavourite" class="e-btn btn-icon">
                                     <i class="fa fa-heart"
@@ -328,14 +165,6 @@
                                    class="e-btn btn-icon">
                                     <span class="icon-bg icon-compare"></span>
                                 </a>
-                            </div>
-
-                            <div class="product-tags">
-                                <label>Anahtar Kelimeler :</label>
-                                {% for k in product_keywords %}
-                                    <a href="#">{{ k.keyword }}{% if product_keywords_count != forloop.counter %}
-                                        ,{% endif %}</a>
-                                {% endfor %}
                             </div>
                         </div>
 

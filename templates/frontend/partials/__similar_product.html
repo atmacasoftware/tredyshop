@@ -10,7 +10,7 @@
             <div class="product-item">
                 <div class="pd-bd product-inner">
                     <div class="product-img">
-                        <a href="{{ p.get_url }}" style="display: flex; justify-content: center; align-items: center"><img src="{{ p.get_image }}" alt=""
+                        <a href="{{ p.get_url }}" style="display: flex; justify-content: center; align-items: center"><img src="{{ p.image_url1 }}" alt=""
                                          class="img-reponsive"></a>
                     </div>
                     <div class="product-info">
@@ -28,17 +28,12 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="product-button-group">
-                            <a href="#" class="btn-icon">
-                                <span class="icon-bg icon-cart"></span>
-                            </a>
-                            <a href="#" class="btn-icon">
-                                <span class="icon-bg icon-wishlist"></span>
-                            </a>
-                            <a href="#" class="btn-icon">
-                                <span class="icon-bg icon-compare"></span>
-                            </a>
-                        </div>
+                        <div class="product-button-group"
+                                                 style="display: flex; justify-content: center;align-items: center;">
+                                                <a href="{{ product.get_url }}" class="btn btn-gradient">Ürünü
+                                                    Gör
+                                                </a>
+                                            </div>
                     </div>
                 </div>
             </div>

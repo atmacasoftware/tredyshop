@@ -57,14 +57,32 @@
                         </p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{% url 'admin_product' %}"
-                       class="nav-link {% if request.path == '/yonetim/urunler/' %}active{% endif %}">
+                <li class="nav-item {% if '/yonetim/urunler/' in request.path %}menu-open{% endif %}">
+                    <a href="#"
+                       class="nav-link {% if '/yonetim/urunler/' in request.path %}active{% endif %}">
                         <i class="nav-icon fa fa-box"></i>
                         <p>
-                            Ürünler
+                            Ürün Yönetimi
+                            <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'admin_product' %}"
+                               class="nav-link {% if '/yonetim/urunler/' in request.path %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Tüm Ürünler</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'kampanyali_urunler' %}"
+                               class="nav-link {% if request.path == '/yonetim/urunler/kampanyali-urunler/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Kampanyalı Ürünler</p>
+                            </a>
+                        </li>
+
+                    </ul>
                 </li>
                 <li class="nav-item {% if '/yonetim/siparis-yonetimi/' in request.path %}menu-open{% endif %}">
                     <a href="#"
@@ -90,7 +108,13 @@
                                 <p>İptal Talepleri</p>
                             </a>
                         </li>
-
+                        <li class="nav-item">
+                            <a href="{% url 'iade_talepleri' %}"
+                               class="nav-link {% if request.path == '/yonetim/siparis-yonetimi/iade-talepleri/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>İade Talepleri</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li class="nav-item {% if request.path == '/yonetim/xml-yonetimi/tahtakale/veri-yukle-guncelle/' or request.path == '/yonetim/xml-yonetimi/haydigiy/veri-yukle-guncelle/' %}menu-open{% endif %}">
@@ -115,6 +139,13 @@
                                class="nav-link {% if request.path == '/yonetim/xml-yonetimi/haydigiy/veri-yukle-guncelle/' %}active{% endif %}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Haydi Giy/Modaymış</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'haydigiy_find_not_active_product_page' %}"
+                               class="nav-link {% if request.path == '/yonetim/xml-yonetimi/haydigiy/aktif-olmayan-urunler/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Aktif Olmayanlar</p>
                             </a>
                         </li>
                     </ul>
@@ -175,45 +206,38 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/mailbox/compose.html" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Özellik Güncelleme</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'trendyol_update_price_stok' %}" class="nav-link">
+                            <a href="{% url 'trendyol_update_price_stok' %}"
+                               class="nav-link {% if '/trendyol/stok-fiyat-guncelleme/' in request.path %}active{% endif %}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Stok & Fiyat Güncelleme</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/mailbox/read-mail.html" class="nav-link">
+                            <a href="{% url 'trendyol_update_product' %}"
+                               class="nav-link {% if '/trendyol/bilgi-guncelleme/' in request.path %}active{% endif %}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Bilgi Güncelleme</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/mailbox/read-mail.html" class="nav-link">
+                            <a href="{% url 'trendyol_delete_product' %}"
+                               class="nav-link {% if '/trendyol/urun-silme/' in request.path %}active{% endif %}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Ürün Silme</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/mailbox/read-mail.html" class="nav-link">
+                            <a href="{% url 'trendyol_products' %}"
+                               class="nav-link {% if '/trendyol/urunler/' in request.path %}active{% endif %}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Ürün Arşivleme</p>
+                                <p>Ürünler</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/mailbox/read-mail.html" class="nav-link">
+                            <a href="{% url 'trendyol_batch_request' %}"
+                               class="nav-link {% if '/trendyol/servis-istekleri/' in request.path %}active{% endif %}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Arşivden Kaldırma</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="pages/mailbox/read-mail.html" class="nav-link">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Kilid Kaldırma</p>
+                                <p>İstek Cevapları</p>
                             </a>
                         </li>
                     </ul>

@@ -15,7 +15,7 @@ class OrderAdmin(ImportExportModelAdmin):
 
 
 class OrderProductAdmin(ImportExportModelAdmin):
-    list_display = ['order', 'user', 'product', 'variation', 'color', 'size', 'quantity', 'product_price', 'ordered',
+    list_display = ['order', 'user', 'product', 'color', 'size', 'quantity', 'product_price', 'ordered',
                     'created_at']
     list_filter = ['ordered']
     resource_class = OrderProductResource
@@ -31,6 +31,6 @@ class BankInfoAdmin(ImportExportModelAdmin):
 admin.site.register(Order, OrderAdmin)
 admin.site.register(PreOrder)
 admin.site.register(ExtraditionRequest)
-admin.site.register(ExtraditionRequestProduct)
 admin.site.register(OrderProduct, OrderProductAdmin)
 admin.site.register(BankInfo, BankInfoAdmin)
+admin.site.register(CancellationRequest)

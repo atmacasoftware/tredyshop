@@ -16,7 +16,9 @@ urlpatterns = [
     path('degerlendirmelerim', reviews, name="reviews"),
     path('siparislerim', order_page, name="order_page"),
     path('siparislerim/siparis_takip/siparis_no=<str:order_number>', order_detail, name="order_detail"),
+    path('siparislerim/siparis-iptal/siparis_no=<str:order_number>/<int:product_id>/', cancellig_order_product, name="cancellig_order_product"),
     path('kuponlarim', coupon_page, name="coupon_page"),
+    path('sorularim', question_page, name="question_page"),
 
     path('ajax/load-counties/', load_counties, name='load_counties'),
 ]

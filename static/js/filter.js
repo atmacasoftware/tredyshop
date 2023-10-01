@@ -114,7 +114,6 @@ $(document).ready(function () {
         var _bottmcategory = $(this).attr("data-bottomcategory");
         var _brands = $(this).attr("data-brands");
 
-        console.log($("#loadMore").attr("filter-arrangement"))
 
         $.ajax({
             url: '/load-more-product/',

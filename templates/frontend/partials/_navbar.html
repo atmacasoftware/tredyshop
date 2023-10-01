@@ -20,18 +20,20 @@
                     <ul class="level1">
                         <li class="level2"><a href="{% url 'new_product' %}">Yeni Ürünler</a></li>
                         <li class="level2"><a href="{% url 'most_sell_product' %}">En Çok Satılan</a></li>
-                        {% for mc in maincategories %}
+                        {% for mc in subcategories %}
+                            {% if mc.maincategory.id == 1 %}
                             <li class="level2">
                                 <a href="{{ mc.get_url }}">{{ mc.title }}</a>
                                 <ul class="menu-level-2">
-                                    {% for sc in subcategories %}
-                                        {% if sc.maincategory.id == mc.id %}
+                                    {% for sc in subbottomcategories %}
+                                        {% if sc.subcategory.id == mc.id %}
                                             <li class="level3"><a href="{{ sc.get_url }}" title="">{{ sc.title }}</a>
                                             </li>
                                         {% endif %}
                                     {% endfor %}
                                 </ul>
                             </li>
+                            {% endif %}
                         {% endfor %}
                     </ul>
                     <div class="clearfix"></div>

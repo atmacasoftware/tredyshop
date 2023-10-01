@@ -1,11 +1,11 @@
 import decimal
-import os
 import xml.etree.ElementTree as ET
 from urllib.request import urlopen
 from unidecode import unidecode
 from categorymodel.models import SubCategory, SubBottomCategory, MainCategory
-from ecommerce.settings import BASE_DIR
-from product.models import Product, ProductKeywords, Images, Color, Size, Variants
+from product.models import Color, Size, ApiProduct
+from django.contrib import messages
+
 
 
 def customPrice(starter, finish, price):
@@ -20,14 +20,13 @@ def customPrice(starter, finish, price):
 
 def modaymissaveXML2db():
     with urlopen('https://www.modaymis.com/1.xml') as f:
-        file_path = os.path.join(BASE_DIR, 'modaymis.xml')
         modaymis = ET.parse(f)
         modaymis_products = modaymis.findall("Product")
         for product in modaymis_products:
             id = product.get("Id")
             modelcode = product.get("ModelCode")
             sku = product.get("Sku")
-            name = product.get("Name").split("-")[0]
+            name = product.get("Name").split("-")[0].rstrip()
             keywords = name.split(" ")
             manufacturer = product.get("Manufacturer")
             description = product.get("FullDescription")
@@ -46,265 +45,331 @@ def modaymissaveXML2db():
             combination_stock_array = []
             beden_quantity = {}
 
-            if Product.objects.filter(stock_code=sku).count() < 1:
-                if float(price) < 50.00:
-                    tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.60)
-                    tredyshop_price = customPrice(0, 10, tredyshop_price)
-                    pttavm_price = tredyshop_price
-                if float(price) >= 50.00 and float(price) < 100.00:
-                    tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.40)
-                    tredyshop_price = customPrice(0, 10, tredyshop_price)
-                    pttavm_price = tredyshop_price
-                    pttavm_price = customPrice(0, 10, pttavm_price)
-                if float(price) >= 100.00 and float(price) < 150.00:
-                    tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.30)
-                    tredyshop_price = customPrice(0, 10, tredyshop_price)
-                    pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                    pttavm_price = customPrice(0, 10, pttavm_price)
-                if float(price) >= 150.00 and float(price) < 200.00:
-                    tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.25)
-                    tredyshop_price = customPrice(0, 10, tredyshop_price)
-                    pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                    pttavm_price = customPrice(0, 10, pttavm_price)
-                if float(price) >= 200.00:
-                    tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.15)
-                    tredyshop_price = customPrice(0, 10, tredyshop_price)
-                    pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                    pttavm_price = customPrice(0, 10, pttavm_price)
+            for p in product.iter("Combinations"):
+                for c in p.iter("Combination"):
+                    combination_stock = c.get("StockQuantity")
+                    combination_sku = c.get("Sku")
+                    combination_gtin = c.get("Gtin")
+                    combination_stock_array.append(combination_stock)
 
-                trendyol_price = tredyshop_price + decimal.Decimal(25.00)
-                trendyol_price = customPrice(0, 10, trendyol_price)
-                hepsiburada_price = tredyshop_price + decimal.Decimal(25.00)
-                hepsiburada_price = customPrice(0, 10, hepsiburada_price)
+                    if ApiProduct.objects.filter(barcode=combination_gtin).count() < 1:
+                        if float(price) < 50.00:
+                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(90)
+                            tredyshop_price = customPrice(0, 10, tredyshop_price)
+                            pttavm_price = tredyshop_price
+                            trendyol_price = tredyshop_price
+                        if float(price) >= 50.00 and float(price) < 100.00:
+                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(115)
+                            tredyshop_price = customPrice(0, 10, tredyshop_price)
+                            pttavm_price = tredyshop_price
+                            trendyol_price = tredyshop_price
+                        if float(price) >= 100.00 and float(price) < 150.00:
+                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(130)
+                            tredyshop_price = customPrice(0, 10, tredyshop_price)
+                            pttavm_price = tredyshop_price
+                            trendyol_price = tredyshop_price
+                        if float(price) >= 150.00 and float(price) < 200.00:
+                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(120)
+                            tredyshop_price = customPrice(0, 10, tredyshop_price)
+                            pttavm_price = tredyshop_price
+                            trendyol_price = tredyshop_price + decimal.Decimal(45)
+                            trendyol_price = customPrice(0, 10, trendyol_price)
+                        if float(price) >= 200.00 and float(price) < 300.00:
+                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(140)
+                            tredyshop_price = customPrice(0, 10, tredyshop_price)
+                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
+                            trendyol_price = tredyshop_price + decimal.Decimal(75)
+                            trendyol_price = customPrice(0, 10, trendyol_price)
+                        if float(price) >= 300.00 and float(price) < 400.00:
+                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(145)
+                            tredyshop_price = customPrice(0, 10, tredyshop_price)
+                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
+                            trendyol_price = tredyshop_price + decimal.Decimal(95)
+                            trendyol_price = customPrice(0, 10, trendyol_price)
+                        if float(price) >= 400.00 and float(price) < 500.00:
+                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(140)
+                            tredyshop_price = customPrice(0, 10, tredyshop_price)
+                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
+                            trendyol_price = tredyshop_price + decimal.Decimal(130)
+                            trendyol_price = customPrice(0, 10, trendyol_price)
+                        if float(price) >= 500.00 and float(price) < 600.00:
+                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(150)
+                            tredyshop_price = customPrice(0, 10, tredyshop_price)
+                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
+                            trendyol_price = tredyshop_price + decimal.Decimal(175)
+                            trendyol_price = customPrice(0, 10, trendyol_price)
+                        if float(price) >= 600.00 and float(price) < 700.00:
+                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(170)
+                            tredyshop_price = customPrice(0, 10, tredyshop_price)
+                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
+                            trendyol_price = tredyshop_price + decimal.Decimal(195)
+                            trendyol_price = customPrice(0, 10, trendyol_price)
+                        if float(price) >= 700.00:
+                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(190)
+                            tredyshop_price = customPrice(0, 10, tredyshop_price)
+                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
+                            trendyol_price = tredyshop_price + decimal.Decimal(260)
+                            trendyol_price = customPrice(0, 10, trendyol_price)
 
+                        hepsiburada_price = tredyshop_price + decimal.Decimal(25.00)
+                        hepsiburada_price = customPrice(0, 10, hepsiburada_price)
 
-                for p in product.iter("Categories"):
-                    for c in p.iter('Category'):
-                        sub_category = unidecode(c.get("Path").split(">>")[0].capitalize(), 'utf-8')
-                        bottom_category = unidecode(c.get("Path").split(">>")[1], 'utf-8')
-                        break;
-                for sc in SubCategory.objects.all():
-                    if sub_category.lower().replace(" ", "").replace("ı", "i").replace("ö", "o").replace("ü",
-                                                                                                         "u").replace(
-                        "İ",
-                        "I").replace(
-                        "ş", "s") == sc.title.lower().replace(
-                        " ", "").replace("ı", "i").replace("ö", "o").replace("ü", "u").replace("İ", "I").replace("ş",
-                                                                                                                 "s"):
-                        sub_category_id = sc.id
-                data = Product.objects.create(xml_id=id, category_id=1, subcategory_id=sub_category_id, stock_code=sku,
-                                              barcode=modelcode, title=name,
-                                              description=name,
-                                              brand_id=9, price=tredyshop_price,
-                                              trendyol_price=tredyshop_price,
-                                              hepsiburada_price=hepsiburada_price, pttavm_price=pttavm_price,
-                                              amount=stok,
-                                              dropshipping="Modaymış",
-                                              detail=description,
-                                              status=True)
-                data.save()
-                if Product.objects.filter(stock_code=sku).count() > 1:
-                    Product.objects.all().filter(stock_code=sku).delete()
-                    data = Product.objects.create(xml_id=id, category_id=1, subcategory_id=sub_category_id,
-                                                  stock_code=sku,
-                                                  description=name,
-                                                  barcode=modelcode, title=name,
-                                                  brand_id=9, price=tredyshop_price, amount=stok,
-                                                  detail=description,
-                                                  dropshipping="Modaymış",
-                                                  status=True)
-                    data.save()
-                for k in keywords:
-                    product_keyword = ProductKeywords.objects.create(product=data, keyword=k)
-                    product_keyword.save()
-                for p in product.iter('Pictures'):
-                    for i in p.iter("Picture"):
-                        image = i.get("Path")
-                        kapak = image
-                        break;
-                    for i in p.iter("Picture"):
-                        images = i.get("Path")
-                        image_data = Images.objects.create(product=data, image_url=images, title=name)
-                        image_data.save()
-                data.image_url = kapak
-                data.save()
-                size = None
-                size_array = []
-                beden_id = None
-                renk_id = None
-                for p in product.iter("Specifications"):
-                    for s in p.iter("Specification"):
-                        if s.get("Name") == 'Kategori':
-                            bottom_category = unidecode(s.get("Value"), 'utf-8')
-                            if bottom_category == 'Pijama Takimi':
-                                bottom_category = 'Pijama'
-                            if bottom_category == 'Sortlu Takim':
-                                bottom_category = 'Eşofman Takımı'
-                            if bottom_category == 'Atlet':
-                                bottom_category = 'Atlet-Bustiyer'
-                            if bottom_category == 'Babet-Sandalet':
-                                bottom_category = 'Babet-Sandalet-Terlik'
-                            if bottom_category == 'Terlik-Panduf':
-                                bottom_category = 'Babet-Sandalet-Terlik'
-                            if bottom_category == 'Ceket-Mont':
-                                bottom_category = 'Ceket-Mont-Kaban'
-                            if bottom_category == 'Bustiyer':
-                                bottom_category = 'Atlet-Büstiyer'
-                            if bottom_category == 'Babet-Sandalet':
-                                bottom_category = 'Babet-Sandalet-Terlik'
-                        if s.get("Name") == 'Renk':
-                            renk = s.get("Value")
-                        if s.get("Name") == 'Beden Seçiniz':
-                            size = s.get("Value")
-                            size_array.append(size)
-                for c in Color.objects.all():
-                    if renk is not None:
-                        if renk.replace(" ", "").replace("İ", "I").replace("ı", "i").replace("ö", "o").replace("ü",
-                                                                                                               "u") == c.name.replace(
-                            " ", "").replace("İ", "I").replace("ı", "i").replace("ö", "o").replace("ü", "u"):
-                            renk_id = c.id
-                for p in product.iter("Combinations"):
-                    for c in p.iter("Combination"):
-                        combination_stock = c.get("StockQuantity")
-                        combination_sku = c.get("Sku")
-                        combination_gtin = c.get("Gtin")
-                        combination_stock_array.append(combination_stock)
                         for a in c.iter("Attributes"):
                             for ac in a.iter("Attribute"):
                                 combination_attribute_name = ac.get("Name")
                                 combination_attribute_value = ac.get("Value")
                                 if combination_attribute_name == 'Beden':
                                     beden = combination_attribute_value
+                        beden_id = None
                         for s in Size.objects.all():
                             if beden is not None:
                                 if beden.replace(" ", "").replace(",", ".") == s.name.replace(" ", "").replace(",",
                                                                                                                "."):
                                     beden_id = s.id
-                                    variants = Variants.objects.create(product=data, title=name, size_id=beden_id,
-                                                                       color_id=renk_id,
-                                                                       sku=combination_sku,
-                                                                       gtin=combination_gtin,
-                                                                       quantity=combination_stock, price=price,
-                                                                       trendyol_price=trendyol_price,
-                                                                       hepsiburada_price=hepsiburada_price,
-                                                                       pttavm_price=pttavm_price,
-                                                                       is_publish=True)
-                                    variants.save()
-                for sb in SubBottomCategory.objects.all():
-                    if bottom_category.lower().replace(" ", "").replace("ı", "i").replace("ö", "o").replace("ü",
-                                                                                                            "u").replace(
-                        "ş", "s").replace("İ", "I") == sb.title.lower().replace(" ", "").replace("ı", "i").replace("ö",
-                                                                                                                   "o").replace(
-                        "ü", "u").replace("ş", "s").replace("İ", "I"):
-                        bottom_category_id = sb.id
 
-                if beden is not None and renk is None:
-                    data.variant = 'Boyut'
-                elif beden is None and renk is not None:
-                    data.variant = 'Renk'
-                elif beden is not None and renk is not None:
-                    data.variant = 'Renk-Boyut'
-                else:
-                    data.variant = 'Yok'
-                data.subbottomcategory_id = bottom_category_id
-                data.save()
+                        for p in product.iter("Categories"):
+                            for c in p.iter('Category'):
+                                sub_category = unidecode(c.get("Path").split(">>")[0].capitalize(), 'utf-8')
+                                bottom_category = unidecode(c.get("Path").split(">>")[1], 'utf-8')
+                                break;
+                        for sc in SubCategory.objects.all():
+                            if sub_category.lower().replace(" ", "").replace("ı", "i").replace("ö", "o").replace("ü",
+                                                                                                                 "u").replace(
+                                "İ",
+                                "I").replace(
+                                "ş", "s") == sc.title.lower().replace(
+                                " ", "").replace("ı", "i").replace("ö", "o").replace("ü", "u").replace("İ",
+                                                                                                       "I").replace("ş",
+                                                                                                                    "s"):
+                                sub_category_id = sc.id
+                        for p in product.iter("Specifications"):
+                            for s in p.iter("Specification"):
+                                if s.get("Name") == 'Kategori':
+                                    bottom_category = unidecode(s.get("Value"), 'utf-8')
+                                    if bottom_category == 'Pijama Takimi':
+                                        bottom_category = 'Pijama'
+                                    if bottom_category == 'Sortlu Takim':
+                                        bottom_category = 'Eşofman Takımı'
+                                    if bottom_category == 'Atlet':
+                                        bottom_category = 'Atlet-Bustiyer'
+                                    if bottom_category == 'Babet-Sandalet':
+                                        bottom_category = 'Babet-Sandalet-Terlik'
+                                    if bottom_category == 'Terlik-Panduf':
+                                        bottom_category = 'Babet-Sandalet-Terlik'
+                                    if bottom_category == 'Ceket-Mont':
+                                        bottom_category = 'Ceket-Mont-Kaban'
+                                    if bottom_category == 'Bustiyer':
+                                        bottom_category = 'Atlet-Büstiyer'
+                                    if bottom_category == 'Babet-Sandalet':
+                                        bottom_category = 'Babet-Sandalet-Terlik'
+                                if s.get("Name") == 'Renk':
+                                    renk = s.get("Value")
+                                if s.get("Name") == 'Beden Seçiniz':
+                                    size = s.get("Value")
+                        for c in Color.objects.all():
+                            if renk is not None:
+                                if renk.replace(" ", "").replace("İ", "I").replace("ı", "i").replace("ö", "o").replace(
+                                        "ü",
+                                        "u") == c.name.replace(
+                                    " ", "").replace("İ", "I").replace("ı", "i").replace("ö", "o").replace("ü", "u"):
+                                    renk_id = c.id
+
+                        data = ApiProduct.objects.create(xml_id=id, category_id=1, dropshipping="Modaymış" ,subcategory_id=sub_category_id,
+                                                         barcode=combination_gtin, model_code=sku,
+                                                         stock_code=combination_sku,
+                                                         brand_id=9, title=name, description=name,
+                                                         price=tredyshop_price,
+                                                         trendyol_price=trendyol_price,
+                                                         hepsiburada_price=hepsiburada_price, pttavm_price=pttavm_price,
+                                                         quantity=combination_stock, detail=description,
+                                                         status=True, color_id=renk_id, size_id=beden_id, age_group="Yetişkin")
+                        data.save()
+
+                        for sb in SubBottomCategory.objects.all():
+                            if bottom_category.lower().replace(" ", "").replace("ı", "i").replace("ö", "o").replace("ü",
+                                                                                                                    "u").replace(
+                                "ş", "s").replace("İ", "I") == sb.title.lower().replace(" ", "").replace("ı",
+                                                                                                         "i").replace(
+                                "ö",
+                                "o").replace(
+                                "ü", "u").replace("ş", "s").replace("İ", "I"):
+                                bottom_category_id = sb.id
+                        data.subbottomcategory_id = bottom_category_id
+                        data.save()
+
+                        image_list = []
+                        for p in product.iter('Pictures'):
+                            for i in p.iter("Picture"):
+                                image_list.append(i.get("Path"))
 
 
-def updateModaymisSaveXML2db():
+                        if len(image_list) > 0 and len(image_list) <= 1:
+                            data.image_url1 = image_list[0]
+
+                        if len(image_list) > 1 and len(image_list) <= 2:
+                            data.image_url1 = image_list[0]
+                            data.image_url2 = image_list[1]
+
+                        if len(image_list) > 2 and len(image_list) <= 3:
+                            data.image_url1 = image_list[0]
+                            data.image_url2 = image_list[1]
+                            data.image_url3 = image_list[2]
+
+                        if len(image_list) > 3 and len(image_list) <= 4:
+                            data.image_url1 = image_list[0]
+                            data.image_url2 = image_list[1]
+                            data.image_url3 = image_list[2]
+                            data.image_url4 = image_list[3]
+
+                        if len(image_list) > 4 and len(image_list) <= 5:
+                            data.image_url1 = image_list[0]
+                            data.image_url2 = image_list[1]
+                            data.image_url3 = image_list[2]
+                            data.image_url4 = image_list[3]
+                            data.image_url5 = image_list[4]
+
+                        if len(image_list) > 5 and len(image_list) <= 6:
+                            data.image_url1 = image_list[0]
+                            data.image_url2 = image_list[1]
+                            data.image_url3 = image_list[2]
+                            data.image_url4 = image_list[3]
+                            data.image_url5 = image_list[4]
+                            data.image_url6 = image_list[5]
+
+                        if len(image_list) > 6 and len(image_list) <=7:
+                            data.image_url1 = image_list[0]
+                            data.image_url2 = image_list[1]
+                            data.image_url3 = image_list[2]
+                            data.image_url4 = image_list[3]
+                            data.image_url5 = image_list[4]
+                            data.image_url6 = image_list[5]
+                            data.image_url7 = image_list[6]
+
+                        if len(image_list) > 7:
+                            data.image_url1 = image_list[0]
+                            data.image_url2 = image_list[1]
+                            data.image_url3 = image_list[2]
+                            data.image_url4 = image_list[3]
+                            data.image_url5 = image_list[4]
+                            data.image_url6 = image_list[5]
+                            data.image_url7 = image_list[6]
+                            data.image_url8 = image_list[7]
+                        data.save()
+
+
+def updateModaymisSaveXML2db(request):
     with urlopen('https://www.modaymis.com/1.xml') as f:
         modaymis = ET.parse(f)
         modaymis_products = modaymis.findall("Product")
-
         for product in modaymis_products:
-            sku = product.get("Sku")
-            name = product.get("Name").split("-")[0]
+            name = product.get("Name").split("-")[0].rstrip()
             price = product.get("Price").replace(",", ".")
             description = product.get("FullDescription")
-            stok = product.get("StockQuantity")
             beden = None
-            beden_array = []
-            combination_stock = None
             combination_stock_array = []
-            beden_quantity = {}
+            beden_id = None
+            beden_id_array = []
+            renk_id = None
 
-            if Product.objects.filter(stock_code=sku).exists():
-                exist_product = Product.objects.filter(stock_code=sku).last()
-                tredyshop_price = None
-                pttavm_price = None
-                trendyol_price = None
-                if float(price) < 50.00:
-                    tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.60)
-                    tredyshop_price = customPrice(0, 10, tredyshop_price)
-                    pttavm_price = tredyshop_price
-                    trendyol_price = tredyshop_price + decimal.Decimal(18.00)
-                    trendyol_price = customPrice(0, 10, trendyol_price)
-                if float(price) >= 50.00 and float(price) < 100.00:
-                    tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.40)
-                    tredyshop_price = customPrice(0, 10, tredyshop_price)
-                    pttavm_price = tredyshop_price
-                    trendyol_price = tredyshop_price + decimal.Decimal(18.00)
-                    trendyol_price = customPrice(0, 10, trendyol_price)
-                if float(price) >= 100.00 and float(price) < 150.00:
-                    tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.30)
-                    tredyshop_price = customPrice(0, 10, tredyshop_price)
-                    pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                    trendyol_price = tredyshop_price + decimal.Decimal(25.00)
-                    trendyol_price = customPrice(0, 10, trendyol_price)
-                if float(price) >= 150.00 and float(price) < 200.00:
-                    tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.25)
-                    tredyshop_price = customPrice(0, 10, tredyshop_price)
-                    pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                    trendyol_price = tredyshop_price + decimal.Decimal(25.00)
-                    trendyol_price = customPrice(0, 10, trendyol_price)
-                if float(price) >= 200.00:
-                    tredyshop_price = decimal.Decimal(price) * decimal.Decimal(1.15)
-                    tredyshop_price = customPrice(0, 10, tredyshop_price)
-                    pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                    trendyol_price = tredyshop_price + decimal.Decimal(25.00)
-                    trendyol_price = customPrice(0, 10, trendyol_price)
+            for p in product.iter("Combinations"):
+                for c in p.iter("Combination"):
+                    combination_stock = c.get("StockQuantity")
+                    combination_gtin = c.get("Gtin")
+                    combination_stock_array.append(combination_stock)
 
-                hepsiburada_price = tredyshop_price + decimal.Decimal(35.00)
-                hepsiburada_price = customPrice(0, 10, hepsiburada_price)
-                exist_product.price = tredyshop_price
-                exist_product.trendyol_price = trendyol_price
-                exist_product.hepsiburada_price = hepsiburada_price
-                exist_product.pttavm_price = pttavm_price
-                exist_product.amount = stok
-                exist_product.detail = description
-                exist_product.brand.id = 9
-                exist_product.save()
+                    if ApiProduct.objects.filter(barcode=combination_gtin).count() > 0:
+                        exist_product = ApiProduct.objects.get(barcode=combination_gtin)
+                        exist_product.is_publish = True
+                        exist_product.save()
+                        tredyshop_price = None
+                        pttavm_price = None
+                        trendyol_price = None
 
-                size = None
-                size_array = []
-                beden_id = None
-                beden_id_array = []
-                renk_id = None
-                for p in product.iter("Specifications"):
-                    for s in p.iter("Specification"):
-                        if s.get("Name") == 'Renk':
-                            renk = s.get("Value")
-                        if s.get("Name") == 'Beden Seçiniz':
-                            size = s.get("Value")
-                            size_array.append(size)
-                for c in Color.objects.all():
-                    if renk is not None:
-                        if renk.lower().replace(" ", "").replace("İ", "I").replace("ı", "i").replace("ö", "o").replace(
-                                "ü",
-                                "u") == c.name.lower().replace(
-                            " ", "").replace("İ", "I").replace("ı", "i").replace("ö", "o").replace("ü", "u"):
-                            renk_id = c.id
-                for p in product.iter("Combinations"):
-                    for c in p.iter("Combination"):
-                        combination_stock = c.get("StockQuantity")
-                        combination_sku = c.get("Sku")
-                        combination_gtin = c.get("Gtin")
-                        combination_stock_array.append(combination_stock)
+                        renk = exist_product.color.name
+
+                        if float(price) < 50.00:
+                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(90)
+                            tredyshop_price = customPrice(0, 10, tredyshop_price)
+                            pttavm_price = tredyshop_price
+                            trendyol_price = tredyshop_price
+                        if float(price) >= 50.00 and float(price) < 100.00:
+                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(115)
+                            tredyshop_price = customPrice(0, 10, tredyshop_price)
+                            pttavm_price = tredyshop_price
+                            trendyol_price = tredyshop_price
+                        if float(price) >= 100.00 and float(price) < 150.00:
+                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(130)
+                            tredyshop_price = customPrice(0, 10, tredyshop_price)
+                            pttavm_price = tredyshop_price
+                            trendyol_price = tredyshop_price
+                        if float(price) >= 150.00 and float(price) < 200.00:
+                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(120)
+                            tredyshop_price = customPrice(0, 10, tredyshop_price)
+                            pttavm_price = tredyshop_price
+                            trendyol_price = tredyshop_price + decimal.Decimal(45)
+                            trendyol_price = customPrice(0, 10, trendyol_price)
+                        if float(price) >= 200.00 and float(price) < 300.00:
+                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(140)
+                            tredyshop_price = customPrice(0, 10, tredyshop_price)
+                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
+                            trendyol_price = tredyshop_price + decimal.Decimal(75)
+                            trendyol_price = customPrice(0, 10, trendyol_price)
+                        if float(price) >= 300.00 and float(price) < 400.00:
+                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(145)
+                            tredyshop_price = customPrice(0, 10, tredyshop_price)
+                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
+                            trendyol_price = tredyshop_price + decimal.Decimal(95)
+                            trendyol_price = customPrice(0, 10, trendyol_price)
+                        if float(price) >= 400.00 and float(price) < 500.00:
+                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(140)
+                            tredyshop_price = customPrice(0, 10, tredyshop_price)
+                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
+                            trendyol_price = tredyshop_price + decimal.Decimal(130)
+                            trendyol_price = customPrice(0, 10, trendyol_price)
+                        if float(price) >= 500.00 and float(price) < 600.00:
+                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(150)
+                            tredyshop_price = customPrice(0, 10, tredyshop_price)
+                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
+                            trendyol_price = tredyshop_price + decimal.Decimal(175)
+                            trendyol_price = customPrice(0, 10, trendyol_price)
+                        if float(price) >= 600.00 and float(price) < 700.00:
+                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(170)
+                            tredyshop_price = customPrice(0, 10, tredyshop_price)
+                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
+                            trendyol_price = tredyshop_price + decimal.Decimal(195)
+                            trendyol_price = customPrice(0, 10, trendyol_price)
+                        if float(price) >= 700.00:
+                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(190)
+                            tredyshop_price = customPrice(0, 10, tredyshop_price)
+                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
+                            trendyol_price = tredyshop_price + decimal.Decimal(260)
+                            trendyol_price = customPrice(0, 10, trendyol_price)
+
+                        hepsiburada_price = tredyshop_price + decimal.Decimal(35.00)
+                        hepsiburada_price = customPrice(0, 10, hepsiburada_price)
+                        exist_product.price = tredyshop_price
+                        exist_product.trendyol_price = trendyol_price
+                        exist_product.hepsiburada_price = hepsiburada_price
+                        exist_product.pttavm_price = pttavm_price
+                        exist_product.quantity = combination_stock
+                        exist_product.detail = description
+                        exist_product.brand.id = 9
+                        exist_product.save()
+
                         for a in c.iter("Attributes"):
                             for ac in a.iter("Attribute"):
                                 combination_attribute_name = ac.get("Name")
                                 combination_attribute_value = ac.get("Value")
                                 if combination_attribute_name == 'Beden':
                                     beden = combination_attribute_value
+                        for c in Color.objects.all():
+                            if renk is not None:
+                                if renk.lower().replace(" ", "").replace("İ", "I").replace("ı", "i").replace("ö",
+                                                                                                             "o").replace(
+                                    "ü",
+                                    "u") == c.name.lower().replace(
+                                    " ", "").replace("İ", "I").replace("ı", "i").replace("ö", "o").replace("ü", "u"):
+                                    renk_id = c.id
                         for s in Size.objects.all():
                             if beden is not None:
                                 if beden.lower().replace(" ", "").replace(",", ".") == s.name.lower().replace(" ",
@@ -312,27 +377,39 @@ def updateModaymisSaveXML2db():
                                     ",", "."):
                                     beden_id_array.append(s.id)
                                     beden_id = s.id
-                                    try:
-                                        variations = Variants.objects.get(sku=combination_sku)
-                                        variations.pttavm_price = pttavm_price
-                                        variations.trendyol_price = trendyol_price
-                                        variations.hepsiburada_price = hepsiburada_price
-                                        variations.size_id = beden_id
-                                        variations.color_id = renk_id
-                                        variations.gtin = combination_gtin
-                                        variations.quantity = combination_stock
-                                        variations.save()
-                                    except variations.DoesNotExist:
-                                        variations = Variants.objects.create(sku=combination_sku, product=exist_product,
-                                                                             pttavm_price=pttavm_price,
-                                                                             trendyol_price=trendyol_price,
-                                                                             hepsiburada_price=hepsiburada_price,
-                                                                             size_id=beden_id, color_id=renk_id,
-                                                                             gtin=combination_gtin,
-                                                                             quantity=combination_stock, title=name,
-                                                                             is_publish=True, price=price)
-                                    except:
-                                        pass
+                        exist_product.size_id = beden_id
+                        exist_product.color_id = renk_id
+                        exist_product.save()
+
+        messages.success(request, 'Ürünler güncelledi!')
+
+
+def notActiveModaymisProduct(request):
+    with urlopen('https://www.modaymis.com/1.xml') as f:
+        modaymis = ET.parse(f)
+        modaymis_products = modaymis.findall("Product")
+        combination_gtin_list = []
+        current_product_list = []
+        all_products = ApiProduct.objects.filter(dropshipping="Modaymış")
+        for ap in all_products:
+           current_product_list.append(ap.barcode)
+        for product in modaymis_products:
+            for p in product.iter("Combinations"):
+                for c in p.iter("Combination"):
+                    combination_gtin = c.get("Gtin")
+                    combination_gtin_list.append(combination_gtin)
+
+        list_a = current_product_list
+        list_b = combination_gtin_list
+        difference = list(set(list_a) - set(list_b))
+
+        messages.success(request, f'Farklı Ürün Sayısı {len(difference)}')
+
+        for d in difference:
+            for ap in all_products:
+                if ap.barcode == d:
+                    ap.is_publish = False
+                    ap.save()
 
 
 def tahtakaleSaveXML2db():
@@ -364,7 +441,7 @@ def tahtakaleSaveXML2db():
                 for p in item:
                     for id in p.iter("id"):
                         id = f"TK-{id.text}"
-                    if Product.objects.filter(xml_id=id).count() < 1:
+                    if ApiProduct.objects.filter(xml_id=id).count() < 1:
                         existing = False
                         for t in p.iter("title"):
                             title = t.text
@@ -611,7 +688,7 @@ def tahtakaleSaveXML2db():
                         existing = True
 
                 if existing == False:
-                    data = Product.objects.create(price=tredyshop_price, amount=quantity, category_id=category1_id,
+                    data = ApiProduct.objects.create(price=tredyshop_price, amount=quantity, category_id=category1_id,
                                                   subcategory_id=category2_id, subbottomcategory_id=category3_id,
                                                   dropshipping="Tahtakale", xml_id=id, barcode=barcode,
                                                   stock_code=model_number, is_publish=publish_status,
@@ -627,12 +704,6 @@ def tahtakaleSaveXML2db():
                     data.slug = str(slugtitle) + str(counter)
                     data.save()
                     counter += 1
-                    for image in images:
-                        Images.objects.create(product=data, image_url=image, title=title)
-                    keywords = title.split(" ")
-                    for k in keywords:
-                        product_keyword = ProductKeywords.objects.create(product=data, keyword=k)
-                        product_keyword.save()
 
 
 def updateTahtakaleSaveXML2db():
@@ -664,9 +735,9 @@ def updateTahtakaleSaveXML2db():
                 for p in item:
                     for id in p.iter("id"):
                         id = f"TK-{id.text}"
-                    if Product.objects.filter(xml_id=id).exists():
+                    if ApiProduct.objects.filter(xml_id=id).exists():
                         try:
-                            product = Product.objects.get(xml_id=id)
+                            product = ApiProduct.objects.get(xml_id=id)
                             for t in p.iter("title"):
                                 title = t.text
                                 product.title = title
@@ -716,7 +787,7 @@ def updateTahtakaleSaveXML2db():
                                         trendyol_price = tredyshop_price + decimal.Decimal(25.00)
                                         trendyol_price = customPrice(0, 10, trendyol_price)
                                     hepsiburada_price = tredyshop_price + decimal.Decimal(35.00)
-                                    hepsiburada_price = customPrice(0,10, hepsiburada_price)
+                                    hepsiburada_price = customPrice(0, 10, hepsiburada_price)
                                     product.price = tredyshop_price
                                     product.hepsiburada_price = hepsiburada_price
                                     product.trendyol_price = trendyol_price
@@ -903,19 +974,15 @@ def updateTahtakaleSaveXML2db():
                             product.save()
                             for ai in p.iter("additional_image_link1"):
                                 image1 = ai.text
-                                if image1:
-                                    Images.objects.update(product=product, image_url=image1, title=title)
+
                             for ai in p.iter("additional_image_link2"):
                                 image2 = ai.text
-                                if image2:
-                                    Images.objects.update(product=product, image_url=image2, title=title)
+
                             for ai in p.iter("additional_image_link3"):
                                 image3 = ai.text
-                                if image3:
-                                    Images.objects.update(product=product, image_url=image3, title=title)
+
                             for ai in p.iter("additional_image_link4"):
                                 image4 = ai.text
-                                if image4:
-                                    Images.objects.update(product=product, image_url=image4, title=title)
+
                         except:
                             print(id, "Birden Fazla Mevcut")

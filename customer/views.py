@@ -17,9 +17,10 @@ from carts.models import Cart, CartItem
 from customer.forms import *
 from customer.models import CustomerAddress
 from ecommerce.settings import EMAIL_HOST_USER
-from orders.models import Order, OrderProduct, ExtraditionRequestProduct
+from orders.models import Order, OrderProduct, ExtraditionRequest, ExtraditionRequestResult, \
+    CancellationRequest
 from user_accounts.models import User
-from product.models import Favorite, ReviewRating
+from product.models import Favorite, ReviewRating, Question, ApiProduct
 
 
 # Create your views here.
@@ -332,36 +333,47 @@ def order_page(request):
 
 @login_required(login_url="/giris-yap")
 def order_detail(request, order_number):
-    try:
-        context = {}
-        order = Order.objects.get(user=request.user, order_number=order_number)
-        orderproducts = OrderProduct.objects.filter(order=order)
-        orderproduct_count = orderproducts.count()
-        extraditionrequest_exists = ExtraditionRequest.objects.filter(user=request.user, order=order).exists()
-        context.update({
-            'order': order,
-            'orderproducts': orderproducts,
-            'orderproduct_count': orderproduct_count,
-            'extraditionrequest_exists':extraditionrequest_exists,
-        })
 
-        if 'addExtraditionRequest' in request.POST:
-            extradition_type = request.POST.get('extraditiontype')
-            product_list = request.POST.getlist('products')
-            description = request.POST.get('description')
+    context = {}
+    order = Order.objects.get(user=request.user, order_number=order_number)
+    orderproducts = OrderProduct.objects.filter(order=order)
+    orderproduct_count = orderproducts.count()
+    extraditionrequest_exists = ExtraditionRequest.objects.filter(user=request.user, order=order).exists()
+    cancelling_request = CancellationRequest.objects.filter(user=request.user, order=order)
+    context.update({
+        'order': order,
+        'orderproducts': orderproducts,
+        'orderproduct_count': orderproduct_count,
+        'extraditionrequest_exists': extraditionrequest_exists,
+        'cancelling_request': cancelling_request,
+    })
+    if 'addExtraditionRequestBtn' in request.POST:
+        extradition_type = request.POST.get('extraditiontype')
+        desc = request.POST.get('description')
+        product_id = request.POST.get('product_id')
+        product = ApiProduct.objects.get(id=product_id)
+        orderproduct = OrderProduct.objects.get(order=order, product=product)
+        extradition = ExtraditionRequest.objects.create(order=order, user=request.user,
+                                                        extradition_type=extradition_type, description=desc,
+                                                        product=product)
+        orderproduct.is_extradation = True
+        orderproduct.save()
+        messages.success(request, 'Ürün iade talebi iletildi.')
+        return redirect('order_detail', order_number)
+    return render(request, 'frontend/pages/profile/order_detail.html', context)
 
-            extraditionrequest = ExtraditionRequest.objects.create(extradition_type=extradition_type,
-                                                                   description=description, user=request.user, order=order)
 
-            for p in product_list:
-                extraditionrequest_product = ExtraditionRequestProduct.objects.create(
-                    extraditionrequest=extraditionrequest, product_id=p, user=request.user)
 
-            return redirect('order_detail', order_number)
-
-        return render(request, 'frontend/pages/profile/order_detail.html', context)
-    except:
-        return redirect('order_page')
+@login_required(login_url="/giris-yap")
+def cancellig_order_product(request, order_number, product_id):
+    order = Order.objects.get(order_number=order_number)
+    product = ApiProduct.objects.get(id=product_id)
+    orderproduct = OrderProduct.objects.get(order=order, product=product)
+    cancelling = CancellationRequest.objects.create(order=order, user=request.user, product=product)
+    orderproduct.is_cancelling = True
+    orderproduct.save()
+    messages.success(request, 'Ürün iptal edildi.')
+    return redirect('order_detail', order_number)
 
 
 @login_required(login_url="/giris-yap")
@@ -375,3 +387,16 @@ def coupon_page(request):
         'coupon_count': coupon_count,
     })
     return render(request, 'frontend/pages/profile/coupons.html', context)
+
+
+@login_required(login_url="/giris-yap")
+def question_page(request):
+    context = {}
+    question = Question.objects.filter(user=request.user)
+    question_count = Question.objects.filter(user=request.user).count()
+
+    context.update({
+        'question': question,
+        'question_count': question_count,
+    })
+    return render(request, 'frontend/pages/profile/question.html', context)

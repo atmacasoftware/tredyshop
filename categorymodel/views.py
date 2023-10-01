@@ -24,3 +24,14 @@ class SubBottomCategoryList(APIView):
             subbottomcategory = SubCategory.objects.get(id=subcategory).subbottomcategories.all()
             subbottomcategory = {p.title:p.id for p in subbottomcategory}
         return JsonResponse(data=subbottomcategory, safe=False)
+
+
+def load_subcategories(request):
+    category_id = request.GET.get('category')
+    subcategories = SubCategory.objects.filter(maincategory_id=category_id)
+    return render(request, 'frontend/partials/ajax/load_subcategories.html', {'category': subcategories})
+
+def load_subbottomcategories(request):
+    subcategory_id = request.GET.get('subcategory')
+    subbottomcategories = SubBottomCategory.objects.filter(subcategory_id=subcategory_id)
+    return render(request, 'frontend/partials/ajax/load_subbottomcategories.html', {'category': subbottomcategories})

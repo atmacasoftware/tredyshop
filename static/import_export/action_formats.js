@@ -1,5 +1,5 @@
 (function($) {
-  $(document).ready(function() {
+  $(document).on('ready', function() {
     var $actionsSelect, $formatsElement;
     if ($('body').hasClass('grp-change-list')) {
         // using grappelli
@@ -10,7 +10,7 @@
         $actionsSelect = $('#changelist-form select[name="action"]');
         $formatsElement = $('#changelist-form select[name="file_format"]').parent();
     }
-    $actionsSelect.change(function() {
+    $actionsSelect.on('change', function() {
       if ($(this).val() === 'export_admin_action') {
         $formatsElement.show();
       } else {

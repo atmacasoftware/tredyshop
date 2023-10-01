@@ -1,0 +1,160 @@
+{% extends 'backend/adminpage/layout.html' %}
+{% load static %}
+
+{% block title %}<title>Kampanyalı Ürünler</title>{% endblock %}
+
+{% block products %}
+
+    <link rel="stylesheet" href="{% static 'adminpage/css/table.css' %}">
+
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Kampanyalı Ürünler</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'mainpage' %}">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Kampanyalı Ürünler</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header product-table-header">
+                            <div class="card-process">
+                                <div class="dropdown">
+                                    <button class="btn btn-sm mt-2 btn-secondary dropdown-toggle"
+                                            type="button"
+                                            data-toggle="dropdown" aria-expanded="false">Toplu İşlemler
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <button class="dropdown-item" id="deletingSelect">Seçilileri Sil</button>
+                                        <a class="dropdown-item" href="{% url 'all_delete_product' %}">Tümünü Sil</a>
+                                        <a class="dropdown-item" href="#">Excel İndir</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-tools">
+                                <div class="card-tools">
+                                    <div class="input-group input-group-sm" style="width: 250px;">
+                                        <form action="" method="get" class="productSearchForm">
+                                            <input type="text" name="search" id="search"
+                                                   class="form-control float-right"
+                                                   placeholder="Arama">
+
+                                            <div class="input-group-append">
+                                                <button type="submit" id="sendSearch" class="btn btn-default">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <div class="custom-control custom-checkbox">
+                                            <input class="custom-control-input custom-control-input-danger custom-control-input-outline row-checkbox"
+                                                   type="checkbox" id="selectAllRow">
+                                            <label for="selectAllRow" class="custom-control-label"></label>
+                                        </div>
+                                    </th>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Ürün Bilgisi</th>
+                                    <th scope="col">Barkod</th>
+                                    <th scope="col">Model Kodu</th>
+                                    <th scope="col">Platform</th>
+                                    <th scope="col">Kategori</th>
+                                    <th scope="col">Marka</th>
+                                    <th scope="col">Renk</th>
+                                    <th scope="col">Beden</th>
+                                    <th scope="col">Fiyat (TL)</th>
+                                    <th scope="col">İndirimli Fiyat (TL)</th>
+                                    <th scope="col">Stok</th>
+                                    <th scope="col">Satışta Mı?</th>
+                                    <th scope="col">İşlemler</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for product in products %}
+                                    <tr>
+                                        <td>
+                                            <div class="custom-control custom-checkbox">
+                                                <input class="custom-control-input custom-control-input-danger custom-control-input-outline filter-checkbox"
+                                                       type="checkbox" id="selectRowId-{{ product.id }}"
+                                                       value="{{ product.id }}" data-filter="product">
+                                                <label for="selectRowId-{{ product.id }}"
+                                                       class="custom-control-label"></label>
+                                            </div>
+                                        </td>
+                                        <td data-label="ID">{{ product.id }}</td>
+                                        <td data-label="Ürün Bilgisi">
+                                            <div class="product__info">
+                                                <div class="product__image"><img src="{{ product.image_url1 }}" alt="">
+                                                </div>
+                                                <div class="product__title"><p><b><a
+                                                        href="{% url 'products_detail' product.slug %}">{{ product.title }}</a></b>
+                                                </p><span>Stok Kodu: {{ product.stock_code }}</span></div>
+                                            </div>
+                                        </td>
+                                        <td data-label="Barkod">{{ product.barcode }}</td>
+                                        <td data-label="Model Kodu">{{ product.model_code }}</td>
+                                        <td data-label="Platform">{{ product.dropshipping }}</td>
+                                        <td data-label="Kategori">{% if product.subbottomcategory %}
+                                            {{ product.subbottomcategory.title }}{% else %}-{% endif %}</td>
+                                        <td data-label="Marka">{{ product.brand.title }}</td>
+                                        <td data-label="Renk">
+                                            {% if product.color %}{{ product.color.name }}{% else %}-{% endif %}</td>
+                                        <td data-label="Beden">
+                                            {% if product.size %}{{ product.size.name }}{% else %}-{% endif %}</td>
+                                        <td data-label="Fiyat (TL)">{{ product.price }}</td>
+                                        <td data-label="İndirimli Fiyat (TL)">
+                                            {% if product.discountprice %}{{ product.discountprice }}{% else %}
+                                                -{% endif %}</td>
+                                        <td data-label="Stok">{{ product.quantity }}</td>
+                                        <td data-label="Satışta Mı?">{% if product.is_publish %}Evet{% else %}
+                                            Hayır{% endif %}</td>
+                                        <td data-label="İşlemler">
+                                            <a href="{% url 'product_detail' product.id %}"
+                                               class="btn btn-danger btn-sm">Detaya
+                                                Git</a>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm mt-2 btn-secondary dropdown-toggle"
+                                                        type="button"
+                                                        data-toggle="dropdown" aria-expanded="false">İşlemler
+                                                </button>
+                                                <div class="dropdown-menu"><a class="dropdown-item"
+                                                                              href="#">Action</a><a
+                                                        class="dropdown-item" href="#">Another action</a><a
+                                                        class="dropdown-item" href="#">Something else here</a></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="{% static 'adminpage/js/product.js' %}"></script>
+
+
+
+{% endblock %}

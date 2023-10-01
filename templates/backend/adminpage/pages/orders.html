@@ -66,10 +66,10 @@
                                     <tr>
                                         <td><a href="{% url 'admin_order_detail' order.order_number %}">{{ order.order_number }}</a></td>
                                         <td>{{ order.user.get_full_name }}</td>
-                                        <td>{{ order.order_total }} TL</td>
-                                        <td>{{ order.delivery_name }}</td>
-                                        <td>{{ order.delivery_price }}</td>
-                                        <td>{{ order.delivery_track }}</td>
+                                        <td>{{ order.order_total|floatformat:2 }} TL</td>
+                                        <td>{% if order.delivery_name %}{{ order.delivery_name }}{% else %}Bekleniyor{% endif %}</td>
+                                        <td>{% if order.delivery_price %}{{ order.delivery_price }}{% else %}Ücretsiz{% endif %}</td>
+                                        <td>{% if order.delivery_track %}{{ order.delivery_track }}{% else %}Bekleniyor{% endif %}</td>
                                         <td>{{ order.paymenttype }}</td>
                                         <td>{% if order.bill %}Yüklendi{% else %}Yüklenmedi{% endif %}</td>
                                         <td>{{ order.status }}</td>

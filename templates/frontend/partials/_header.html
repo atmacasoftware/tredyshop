@@ -90,7 +90,7 @@
                                                 <a href="{% url 'order_page' %}"><i class="fa fa-truck"></i>Siparişlerim</a>
                                             </li>
                                             <li class="item-cart">
-                                                <a href=""><i class="fa fa-gift"></i>Kuponlarım</a>
+                                                <a href="{% url 'coupon_page' %}"><i class="fa fa-gift"></i>Kuponlarım</a>
                                             </li>
                                             <li class="item-cart">
                                                 <a href=""><i class="fa fa-life-ring"></i>Soru ve Taleplerim</a>
@@ -132,37 +132,51 @@
     </div>
     <div class="header-bottom hidden-xs hidden-sm">
         <div class="container container-240">
-            <div class="row">
-                <div class="col-lg-3 widget-verticalmenu">
-                    {% include 'frontend/partials/_menu.html' %}
-                </div>
-                <div class="col-lg-9 widget-left">
-                    <div class="flex lr">
-                        <nav class="main-menu flex align-center">
-                            <div class="collapse navbar-collapse" id="myNavbar">
-                                <ul class="nav navbar-nav js-menubar">
-                                    <li class="level1 active hassub"><a href="{% url 'new_product' %}">Yeni Ürünler<span
-                                            class="h-ribbon h-pos e-red">HOT</span></a></li>
-                                    <li class="level1 active hassub"><a href="{% url 'most_sell_product' %}">En Çok
-                                        Satılan<span
-                                                class="h-ribbon h-pos e-skyblue">MOST</span></a></li>
-                                    <li class="level1 dropdown hassub"><a href="{% url 'most_discount_product' %}">Süper
-                                        Fırsatlar<span
-                                                class="h-ribbon h-pos e-green">sale</span></a>
-                                    </li>
-                                    <li class="level1 active dropdown">
-                                        <a href="#">Blog</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </nav>
-                        <div class="header-bottom-right hidden-xs hidden-sm">
-                            <img src="{% static 'img/icon-ship.png' %}" alt="" class="img-reponsive">
-                            <span>{{ setting.free_shipping }} TL ve üzeri alışverişlerde ücretsiz kargo</span>
-                        </div>
+
+            <div class="flex lr">
+                <nav class="main-menu">
+                    <div class="collapse navbar-collapse" id="myNavbar">
+                        <ul class="nav navbar-nav js-menubar">
+                            <li class="level1 active hassub"><a href="{% url 'new_product' %}">Yeni Ürünler<span
+                                    class="h-ribbon h-pos e-red">HOT</span></a></li>
+                            <li class="level1 active hassub"><a href="{% url 'most_sell_product' %}">En Çok
+                                Satılan<span
+                                        class="h-ribbon h-pos e-skyblue">MOST</span></a></li>
+                            <li class="level1 dropdown hassub"><a href="{% url 'most_discount_product' %}">Süper
+                                Fırsatlar<span
+                                        class="h-ribbon h-pos e-green">sale</span></a>
+                            </li>
+                            <li class="level1 active dropdown">
+                                <a href="#">Blog</a>
+                            </li>
+                        </ul>
                     </div>
+                </nav>
+                <div class="header-bottom-right hidden-xs hidden-sm">
+                    <img src="{% static 'img/icon-ship.png' %}" alt="" class="img-reponsive">
+                    <span>{{ setting.free_shipping }} TL ve üzeri alışverişlerde ücretsiz kargo</span>
                 </div>
             </div>
+
         </div>
+    </div>
+    <div class="header-cate e-gradient hidden-xs hidden-sm">
+        <ul class="category-menu">
+            {% for sc in subcategories %}
+                {% if sc.maincategory.id == 1 %}
+                    <li class="menu-dropdown">
+                        <a href="{{ sc.get_url }}" class="menu-1"><img src="{{ sc.get_image }}" alt="">{{ sc.title }}
+                        </a>
+                        <ul>
+                            {% for sbc in subbottomcategories %}
+                                {% if sbc.subcategory.id == sc.id %}
+                                    <li><a href="{{ sbc.get_url }}">{{ sbc.title }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
     </div>
 </header>

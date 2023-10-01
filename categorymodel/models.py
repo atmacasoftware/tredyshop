@@ -38,7 +38,7 @@ class MainCategory(models.Model):
         return reverse('first_category', args=[self.slug])
 
     def product_count(self):
-        return self.main_category.count()
+        return self.api_main_category.count()
 
     def exist_subbottomcategories(self):
         c = self.maincategories.filter(maincategory_id=self.id)
@@ -86,6 +86,12 @@ class SubCategory(models.Model):
     def __str__(self):
         return f"{self.title}"
 
+    def get_image(self):
+        if self.image:
+            return self.image.url
+        else:
+            return None
+
     def image_tag(self):
         return mark_safe('<img src="{}" height="50"/>'.format(self.image.url))
 
@@ -98,7 +104,7 @@ class SubCategory(models.Model):
         return reverse('second_category', args=[self.slug])
 
     def product_count(self):
-        return self.sub_category.count()
+        return self.api_sub_category.count()
 
     def save(self, *args, **kwargs):
 
@@ -153,7 +159,7 @@ class SubBottomCategory(models.Model):
         return reverse('third_category', args=[self.slug])
 
     def product_count(self):
-        return self.subbottom_category.count()
+        return self.api_subbottom_category.count()
 
     def save(self, *args, **kwargs):
         if not self.id and not self.slug:

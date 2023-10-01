@@ -1,11 +1,9 @@
 from datetime import timedelta
-
 from django.db import models
-from django_ckeditor_5.fields import CKEditor5Field
-
+from ckeditor_uploader.fields import RichTextUploadingField
 from carts.models import Cart
 from customer.models import CustomerAddress
-from product.models import Product, Variants
+from product.models import *
 from user_accounts.models import User
 
 
@@ -20,9 +18,9 @@ class PreOrder(models.Model):
     cart_total = models.FloatField(null=True, blank=True)
     approved_contract = models.BooleanField(default=False, verbose_name="Sözleşme Onayı")
     delivery_price = models.CharField(max_length=100, verbose_name="Kargo Ücreti", null=True, blank=True)
-    preliminary_information_form = CKEditor5Field('Ön Bilgilendirme Formu', config_name='extends', null=True,
+    preliminary_information_form = RichTextUploadingField(verbose_name='Ön Bilgilendirme Formu', null=True,
                                                   blank=True)
-    distance_selling_contract = CKEditor5Field('Mesafeli Satış Sözleşmesi', config_name='extends', null=True,
+    distance_selling_contract = RichTextUploadingField(verbose_name='Mesafeli Satış Sözleşmesi', null=True,
                                                blank=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
@@ -59,8 +57,8 @@ class Order(models.Model):
     status = models.CharField(max_length=50, choices=STATUS, null=True, default="Yeni", verbose_name="Sipariş Durumu")
     used_coupon = models.FloatField(verbose_name="Kullanılan Kupon", blank=True, null=True)
     bill = models.FileField(upload_to='documents/bill/', null=True, verbose_name="Fatura Yükle")
-    preliminary_information_form = CKEditor5Field('Ön Bilgilendirme Formu', config_name='extends', null=True, blank=True)
-    distance_selling_contract = CKEditor5Field('Mesafeli Satış Sözleşmesi', config_name='extends', null=True, blank=True)
+    preliminary_information_form = RichTextUploadingField(verbose_name='Ön Bilgilendirme Formu', null=True, blank=True)
+    distance_selling_contract = RichTextUploadingField(verbose_name='Mesafeli Satış Sözleşmesi', null=True, blank=True)
     ip = models.CharField(max_length=50, blank=False, verbose_name="İp Adresi")
     is_ordered = models.BooleanField(default=False, verbose_name="Sipariş Verildi Mi?")
     bonuses = models.FloatField(verbose_name="Verdiği Bonus", blank=True, null=True)
@@ -86,13 +84,14 @@ class Order(models.Model):
 class OrderProduct(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name="Sipariş")
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Müşteri")
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=False, verbose_name="Ürün")
-    variation = models.ForeignKey(Variants, on_delete=models.CASCADE, verbose_name="Ürün Çeşidi", blank=True, null=True)
+    product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE, null=True, blank=False, verbose_name="Ürün")
     color = models.CharField(max_length=50, verbose_name="Renk")
     size = models.CharField(max_length=50, verbose_name="Boyut")
     quantity = models.IntegerField(verbose_name="Miktar")
     product_price = models.FloatField(verbose_name="Ürün Fiyatı")
     ordered = models.BooleanField(default=False, verbose_name="Sipariş Verildi Mi?")
+    is_cancelling = models.BooleanField(default=False, verbose_name="İptal Talebi Var Mı?")
+    is_extradation = models.BooleanField(default=False, verbose_name="İade Talebi Var Mı?")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
 
@@ -136,6 +135,7 @@ class ExtraditionRequest(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Müşteri")
     order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name="Sipariş", null=True)
+    product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE, null=True, blank=False, verbose_name="Ürün")
     extradition_type = models.CharField(choices=TYPE, max_length=255, verbose_name="İade Nedeni", null=True)
     description = models.TextField(verbose_name="Açıklama", help_text="İade talebeinizin daha hızlı sonuçlanması için açıklama yazabilirsiniz.")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi", null=True)
@@ -143,14 +143,6 @@ class ExtraditionRequest(models.Model):
 
     class Meta:
         ordering = ['-created_at']
-
-
-class ExtraditionRequestProduct(models.Model):
-    extraditionrequest = models.ForeignKey(ExtraditionRequest, on_delete=models.CASCADE, verbose_name="Sipariş", null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Müşteri", null=True)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=False, verbose_name="Ürün")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi", null=True)
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi",null=True)
 
 
 class ExtraditionRequestResult(models.Model):
@@ -164,3 +156,14 @@ class ExtraditionRequestResult(models.Model):
     description = models.TextField(verbose_name="Açıklama", max_length=2000, null=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi", null=True)
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi", null=True)
+
+
+class CancellationRequest(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name="Sipariş", null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Müşteri", null=True)
+    product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE, null=True, blank=False, verbose_name="Ürün")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi", null=True)
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi",null=True)
+
+    class Meta:
+        ordering = ['-created_at']

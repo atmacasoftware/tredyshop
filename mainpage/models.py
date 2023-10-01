@@ -2,7 +2,6 @@ from django.db import models
 from django.utils.safestring import mark_safe
 from autoslug import AutoSlugField
 from django.urls import reverse
-from product.models import Product
 from django_ckeditor_5.fields import CKEditor5Field
 from django.template import defaultfilters
 from unidecode import unidecode

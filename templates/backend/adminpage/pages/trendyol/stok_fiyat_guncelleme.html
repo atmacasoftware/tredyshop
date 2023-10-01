@@ -5,6 +5,8 @@
 
 {% block trendyol %}
 
+    {% include 'backend/adminpage/partials/__loadData.html' %}
+
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
@@ -25,13 +27,74 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-2 col-sm-12 col-12">
-                    <div class="info-box bg-success">
-                        <div class="info-box-content">
-                            <form action="" method="post">
-                                {% csrf_token %}
-                                <button type="submit" name="updateBtn" class="info-box-text btn text-white" style="background: none; outline: none;height: 100%;">Güncelle</button>
-                            </form>
+                <div class="col-lg-6">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="info-box bg-success">
+                                <div class="info-box-content">
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" name="updateBtn" class="info-box-text btn text-white"
+                                                id="updateBtn"
+                                                style="background: none; outline: none;height: 100%; width: 100%; font-size: 2rem;">Ürün Güncelle
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Log Kayıtları</h3>
+
+
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap" id="userTable">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Log Tipi</th>
+                                    <th>Batch Request ID</th>
+                                    <th>Oluşturulma Tarihi</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for r in log_records %}
+                                    <tr>
+                                        <td>{{ r.id }}</td>
+                                        <td>{{ r.get_log_type_display }}</td>
+                                        <td>{{ r.batch_id }}</td>
+                                        <td>{{ r.create_at }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div id="no-data"
+                                 style="width: 100%; text-align: center; margin-top: 5px; margin-bottom: 5px;"></div>
+                        </div>
+                        <div class="card-footer p-0">
+                            <div class="mailbox-controls">
+                                <div class="float-right">
+                                    {{ users.number }} / {{ users.paginator.num_pages }}
+                                    <div class="btn-group">
+                                        {% if users.has_previous %}
+                                            <a href="?page={{ users.previous_page_number }}"
+                                               class="btn btn-default btn-sm">
+                                                <i class="fas fa-chevron-left"></i>
+                                            </a>
+                                        {% endif %}
+                                        {% if users.has_next %}
+                                            <a href="?page={{ users.next_page_number }}"
+                                               class="btn btn-default btn-sm">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -39,6 +102,16 @@
         </div>
     </section>
 
+    <script>
+        var trendyolUpdate = document.getElementById("updateBtn");
 
+        var dataloader = document.getElementById("dataloader");
+        //console.log(btn);
+        setInterval(function () {
+            trendyolUpdate.click();
+        }, 1000 * 60 * 30);
+
+
+    </script>
 
 {% endblock %}

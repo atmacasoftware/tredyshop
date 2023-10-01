@@ -57,4 +57,5 @@ admin.site.register(TrendyolFourCategory, TrendyolFourCategoryAdmin)
 admin.site.register(TrendyolFiveCategory, TrendyolFiveCategoryAdmin)
 admin.site.register(TrendyolSixCategory, TrendyolSixCategoryAdmin)
 admin.site.register(TrendyolBrand, TrendyolBrandAdmin)
+admin.site.register(LogRecords)
 

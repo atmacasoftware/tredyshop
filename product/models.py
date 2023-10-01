@@ -9,7 +9,7 @@ from user_accounts.models import User
 from django_ckeditor_5.fields import CKEditor5Field
 from unidecode import unidecode
 from django.template import defaultfilters
-
+from datetime import datetime
 # Create your models here.
 
 class Brand(models.Model):
@@ -63,46 +63,146 @@ class Brand(models.Model):
                     break
         super(Brand, self).save(*args, **kwargs)
 
+class Color(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Renk")
+    code = models.CharField(max_length=50, blank=True, null=True, verbose_name="Renk Kodu")
+
+    def __str__(self):
+        return self.name
+
+    def color_tag(self):
+        if self.code is not None:
+            return mark_safe('<p style="background-color: {}">Renk</p>'.format(self.code))
+        else:
+            return ""
 
 
+    class Meta:
+        verbose_name = "9.1) Renk"
+        verbose_name_plural = "9.1) Renkler"
 
-class Product(models.Model):
-    TYPE = (
-        ("Renk-Boyut", "Renk-Boyut"),
-        ("Renk", "Renk"),
-        ("Boyut", "Boyut"),
-        ("Yok", "Yok"),
+class Size(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Boyut")
+    code = models.CharField(max_length=50, blank=True, null=True, verbose_name="Boyut Kodu")
+
+    def __str__(self):
+        return str(self.name)
+
+    class Meta:
+        verbose_name = "9.2) Boyut/Kapasite"
+        verbose_name_plural = "9.2) Boyut/Kapasite"
+
+
+class FabricType(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Kumaş Tipi")
+
+    def __str__(self):
+        return str(self.name)
+
+class Height(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Boy")
+
+    def __str__(self):
+        return str(self.name)
+
+class Pattern(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Kalıp")
+
+    def __str__(self):
+        return str(self.name)
+
+class ArmType(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Kol Tipi")
+
+    def __str__(self):
+        return str(self.name)
+
+class CollerType(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Yaka Tipi")
+
+    def __str__(self):
+        return str(self.name)
+
+class WeavingType(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Dokuma Tipi")
+
+    def __str__(self):
+        return str(self.name)
+
+class MaterialType(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Materyal")
+
+    def __str__(self):
+        return str(self.name)
+
+class ApiProduct(models.Model):
+
+    AGE_GROUP = (
+        ("Bebek","Bebek"),
+        ("Bebek&Çocuk","Bebek&Çocuk"),
+        ("Çocuk","Çocuk"),
+        ("Genç","Genç"),
+        ("Yetişkin","Yetişkin"),
     )
 
+    SEX = (
+        ("Erkek", "Erkek"),
+        ("Kadın/Kız", "Kadın/Kız"),
+        ("Unisex", "Unisex"),
+    )
+
+    ACVTIVE_STATUS = (
+        ("1", "Evet"),
+        ("2", "Hayır"),
+    )
 
     xml_id = models.CharField(max_length=100, null=True, blank=True, verbose_name="XML ID")
+    barcode = models.CharField(verbose_name="Barkod", null=True, unique=True, max_length=100)
+    model_code = models.CharField(verbose_name="Model Kodu", null=True, blank=True, max_length=100)
+    stock_code = models.CharField(verbose_name="Stok Kodu", null=True, blank=True, max_length=100)
     dropshipping = models.CharField(verbose_name="Platform", null=True, blank=True, max_length=255)
     category = models.ForeignKey(MainCategory, on_delete=models.CASCADE, null=True, blank=False,
-                                 verbose_name="1. Düzey Kategori", related_name="main_category")
+                                 verbose_name="1. Düzey Kategori", related_name="api_main_category")
     subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, null=True, blank=False,
-                                    verbose_name="2. Düzey Kategori", related_name="sub_category")
+                                    verbose_name="2. Düzey Kategori", related_name="api_sub_category")
     subbottomcategory = models.ForeignKey(SubBottomCategory, on_delete=models.CASCADE, null=True, blank=True,
-                                    verbose_name="3. Düzey Kategori", related_name="subbottom_category")
+                                          verbose_name="3. Düzey Kategori", related_name="api_subbottom_category")
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Marka",
-                              related_name="brands")
+                              related_name="api_brands")
+    trendyol_category_id = models.BigIntegerField(null=True, verbose_name="Trendyol Kategori Numarası", blank=True)
     title = models.CharField(max_length=255, verbose_name="Başlık")
-    description = models.CharField(max_length=255, verbose_name="Açıklama")
-    keywords = models.CharField(max_length=500, verbose_name="Anahtar Kelime", null=True)
-    image_url = models.CharField(max_length=500, verbose_name="Resim Link", null=True)
-    image = models.ImageField(blank=True, upload_to="img/product/", verbose_name="Kapak Resmi")
+    description = models.CharField(max_length=355, verbose_name="Açıklama")
+    image_url1 = models.CharField(max_length=500, verbose_name="Resim Link 1", null=True, blank=False)
+    image_url2 = models.CharField(max_length=500, verbose_name="Resim Link 2", null=True, blank=True)
+    image_url3 = models.CharField(max_length=500, verbose_name="Resim Link 3", null=True, blank=True)
+    image_url4 = models.CharField(max_length=500, verbose_name="Resim Link 4", null=True, blank=True)
+    image_url5 = models.CharField(max_length=500, verbose_name="Resim Link 5", null=True, blank=True)
+    image_url6 = models.CharField(max_length=500, verbose_name="Resim Link 6", null=True, blank=True)
+    image_url7 = models.CharField(max_length=500, verbose_name="Resim Link 7", null=True, blank=True)
+    image_url8 = models.CharField(max_length=500, verbose_name="Resim Link 8", null=True, blank=True)
+    color = models.ForeignKey(Color, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Renk")
+    size = models.ForeignKey(Size, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Boyut/Beden")
+    fabrictype = models.ForeignKey(FabricType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Kumaş Tipi")
+    height = models.ForeignKey(Height, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Boy")
+    pattern = models.ForeignKey(Pattern, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Kalıp")
+    armtype = models.ForeignKey(ArmType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Kol Tipi")
+    collartype = models.ForeignKey(CollerType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Yaka Tipi")
+    weavingtype = models.ForeignKey(WeavingType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Dokuma Tipi")
+    material = models.ForeignKey(MaterialType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Materyal")
     price = models.DecimalField(verbose_name="Fiyat", decimal_places=2, max_digits=20)
+    quantity = models.BigIntegerField(verbose_name="Miktar", null=True, default=0)
+    detail = RichTextUploadingField()
     trendyol_price = models.DecimalField(verbose_name="Trendyol Fiyatı", decimal_places=2, max_digits=20, null=True)
-    hepsiburada_price = models.DecimalField(verbose_name="Hepsiburada Fiyatı", decimal_places=2, max_digits=20, null=True)
+    hepsiburada_price = models.DecimalField(verbose_name="Hepsiburada Fiyatı", decimal_places=2, max_digits=20,
+                                            null=True)
     pttavm_price = models.DecimalField(verbose_name="PttAvm Fiyatı", decimal_places=2, max_digits=20, null=True)
     discountprice = models.DecimalField(verbose_name="İndirimli Fiyat", decimal_places=2, max_digits=20, null=True,
                                         blank=True)
     is_discountprice = models.BooleanField(default=False, verbose_name="İndirimli Yayınla", null=True, blank=True)
-    amount = models.IntegerField(verbose_name="Miktar")
-    stock_code = models.CharField(verbose_name="Stok Kodu", null=True, blank=False, max_length=50)
-    barcode = models.CharField(verbose_name="Barkod", null=True, blank=True, max_length=100)
-    detail = CKEditor5Field('Detay', config_name='extends', null=True)
-    variant = models.CharField(choices=TYPE, max_length=20, blank=True, default="Yok", null=True, verbose_name="Tip")
+    age_group = models.CharField(choices=AGE_GROUP, max_length=50, verbose_name="Yaş Grubu", null=True, blank=True)
+    sex = models.CharField(choices=SEX, max_length=50, verbose_name="Cinsiyet", null=True, blank=True)
     is_publish = models.BooleanField(default=True, verbose_name="Yayında mı?", null=True)
+    is_active = models.CharField(choices=ACVTIVE_STATUS, max_length=50, verbose_name="Mevcut mu?", null=True)
     is_publish_trendyol = models.BooleanField(default=False, verbose_name="Trendyolda Yayında Mı?", null=True)
     sell_count = models.BigIntegerField(default=0, verbose_name="Toplam Satış Sayısı", null=True, blank=True)
     slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
@@ -110,33 +210,54 @@ class Product(models.Model):
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.title
 
     class Meta:
-        verbose_name = "1) Ürün"
-        verbose_name_plural = "1) Ürünler"
+        verbose_name = '1) Ürünler'
+        verbose_name_plural = '1) Ürünler'
 
-    def get_image(self):
-        if self.image:
-            return self.image.url
-        elif self.image_url:
-            return self.image_url
-        else:
-            return None
+    def __str__(self):
+        return str(self.title)
 
-    def not_stock(self):
-        if self.amount <= 0:
-            self.is_publish = False
-            self.save()
+
+    def get_data(self):
+        category_title = "Yok"
+        size_name = "-"
+        discountprice = "-"
+        satis_durumu = "Hayır"
+        if self.subbottomcategory:
+            category_title = self.subbottomcategory.title
+
+        if self.size:
+            size_name = self.size.name
+
+        if self.discountprice:
+            discountprice = self.discountprice
+
+        if self.is_publish:
+            satis_durumu = "Evet"
+
+        return {
+            'ID': self.id,
+            'Başlık': f'<div class="product__info"><div class="product__image"><img src="{self.image_url1}" alt=""></div><div class="product__title"><p><b><a href="{self.get_url()}">{self.title}</a></b></p><span>Stok Kodu: {self.stock_code}</span></div></div>',
+            'Barkod': self.barcode,
+            'Model Kodu': self.model_code,
+            'Platform': self.dropshipping,
+            'Kategori': category_title,
+            'Marka': self.brand.title,
+            'Renk': self.color.name,
+            'Beden': size_name,
+            'Fiyat (TL)': self.price,
+            'İndirimli Fiyat (TL)': discountprice,
+            'Stok': self.quantity,
+            'Satışta Mı?': satis_durumu,
+            'İşlemler': f'<a href="/yonetim/urunler/urun_id={self.id}" class="btn btn-danger btn-sm">Detaya Git</a><div class="dropdown"><button class="btn btn-sm mt-2 btn-secondary dropdown-toggle" type="button"data-toggle="dropdown"aria-expanded="false">İşlemler</button><div class="dropdown-menu"><a class="dropdown-item" href="#">Action</a><a class="dropdown-item" href="#">Another action</a><a class="dropdown-item" href="#">Something else here</a></div></div>'
+        }
 
     def get_url(self):
         return reverse('products_detail', args=[self.slug])
 
     def get_absolute_url(self):
         return reverse('products_detail', args=[self.slug])
-
-
 
     def favouriteStatus(self, request):
         favourite = self.favorite_product.filter(product=self, customer=request.user)
@@ -223,13 +344,6 @@ class Product(models.Model):
             return dislike_count
         return 0
 
-    def get_variations(self):
-        variations = Variants.objects.all().filter(product=self)
-        if variations.count() > 0:
-            return variations
-        else:
-            return None
-
     def discountRate(self):
         if self.is_discountprice == True:
             rate = int(100 - ((self.discountprice * 100) / self.price))
@@ -245,144 +359,22 @@ class Product(models.Model):
             self.slug = slug
             while slug_exists:
                 try:
-                    slug_exits = Product.objects.get(slug=slug)
+                    slug_exits = ApiProduct.objects.get(slug=slug)
                     if slug_exits:
                         slug = self.slug + '_' + str(counter)
                         counter += 1
-                except Product.DoesNotExist:
+                except ApiProduct.DoesNotExist:
                     self.slug = slug
                     break
-        super(Product, self).save(*args, **kwargs)
-
-
-class Images(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    title = models.CharField(max_length=50, blank=True, verbose_name="Başlık")
-    image_url = models.CharField(max_length=500, verbose_name="Resim Link", null=True)
-    image = models.ImageField(blank=True, upload_to="img/product/", verbose_name="Resim")
-
-    def __str__(self):
-        return f"{str(self.id)}"
-
-    class Meta:
-        verbose_name = "Ürüne Ait Resimler"
-        verbose_name_plural = "Ürüne Ait Resimler"
-
-    def get_image(self):
-        if self.image:
-            return self.image.url
-        elif self.image_url:
-            return self.image_url
-        else:
-            return None
-
-
-class Color(models.Model):
-    name = models.CharField(max_length=20, verbose_name="Renk")
-    code = models.CharField(max_length=10, blank=True, null=True, verbose_name="Renk Kodu")
-
-    def __str__(self):
-        return self.name
-
-    def color_tag(self):
-        if self.code is not None:
-            return mark_safe('<p style="background-color: {}">Renk</p>'.format(self.code))
-        else:
-            return ""
-
-
-    class Meta:
-        verbose_name = "9.1) Renk"
-        verbose_name_plural = "9.1) Renkler"
-
-class Size(models.Model):
-    name = models.CharField(max_length=20, verbose_name="Boyut")
-    code = models.CharField(max_length=10, blank=True, null=True, verbose_name="Boyut Kodu")
-
-    def __str__(self):
-        return str(self.name)
-
-    class Meta:
-        verbose_name = "9.2) Boyut/Kapasite"
-        verbose_name_plural = "9.2) Boyut/Kapasite"
-
-
-class Variants(models.Model):
-    title = models.CharField(max_length=200, blank=True, null=True, verbose_name="Başlık")
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Ürün")
-    sku = models.CharField(max_length=255, verbose_name="Kombinasyon SKU", null=True, blank=True)
-    gtin = models.CharField(max_length=255, verbose_name="Gtin", null=True, blank=True)
-    color = models.ForeignKey(Color, on_delete=models.CASCADE, verbose_name="Renk", blank=True, null=True)
-    size = models.ForeignKey(Size, on_delete=models.CASCADE, verbose_name="Boyut", null=True, blank=True)
-    image_id = models.IntegerField(blank=True, null=True, default=0)
-    quantity = models.IntegerField(default=1, verbose_name="Miktar")
-    price = models.FloatField(default=0, verbose_name="Fiyat")
-    trendyol_price = models.DecimalField(verbose_name="Trendyol Fiyatı", decimal_places=2, max_digits=20, null=True, blank=True)
-    hepsiburada_price = models.DecimalField(verbose_name="Hepsiburada Fiyatı", decimal_places=2, max_digits=20,
-                                            null=True, blank=True)
-    pttavm_price = models.DecimalField(verbose_name="PttAvm Fiyatı", decimal_places=2, max_digits=20, null=True, blank=True)
-    discountprice = models.DecimalField(verbose_name="İndirimli Fiyat", decimal_places=2, max_digits=20, null=True,
-                                        blank=True)
-    is_discountprice = models.BooleanField(default=False, verbose_name="İndirimli Yayınla", null=True, blank=True)
-    is_publish = models.BooleanField(default=True, verbose_name="Yayında mı?", null=True)
-    sell_count = models.BigIntegerField(default=0, verbose_name="Toplam Satış Sayısı", null=True, blank=True)
-
-    def __str__(self):
-        return self.title
-
-
-    def image(self):
-        img = Images.objects.get(id=self.image_id)
-        if img.id is not None:
-            varimage = img.image.url
-        else:
-            varimage = ""
-        return varimage
-
-    def image_tag(self):
-        img = Images.objects.get(id=self.image_id)
-        if img.id is not None:
-            return mark_safe('<img src="{}" height="50"/>'.format(img.image.url))
-        else:
-            return ""
-
-class DescriptionList(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    list = models.CharField(max_length=100, blank=False, null=True, verbose_name="Açıklama")
-
-    class Meta:
-        verbose_name = "Öne Çıkan Açıklamalar"
-        verbose_name_plural = "Öne Çıkan Açıklamalar"
-
-
-class Specification(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    title = models.CharField(max_length=100, blank=True, verbose_name="Başlık")
-    description = models.CharField(max_length=100, blank=False, null=True, verbose_name="Açıklama")
-
-    class Meta:
-        verbose_name = "Ürüne Ait Özellikler"
-        verbose_name_plural = "Ürüne Ait Özellikler"
-
-
-class ProductKeywords(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    keyword = models.CharField(max_length=100, blank=False, null=True, verbose_name="Anahtar Kelime")
-
-    class Meta:
-        verbose_name = "Anahtar Kelime"
-        verbose_name_plural = "Anahtar Kelime"
-
-    def __str__(self):
-        return self.product.title
+        super(ApiProduct, self).save(*args, **kwargs)
 
 
 class ReviewRating(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     review = models.TextField(max_length=200, blank=True)
     rating = models.FloatField(blank=True)
-    ip = models.CharField(max_length=20, blank=True)
+    ip = models.CharField(max_length=50, blank=True)
     status = models.BooleanField(default=True)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -402,7 +394,7 @@ class ReviewRating(models.Model):
 
 class ReviewRatingImages(models.Model):
     review = models.ForeignKey(ReviewRating, on_delete=models.CASCADE, null=True)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
+    product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE, null=True)
     images = models.ImageField(blank=True, upload_to="img/product/comments/", verbose_name="Fotoğraf")
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -421,9 +413,9 @@ class ReviewRatingImages(models.Model):
 
 class LikeProduct(models.Model):
     customer = models.ForeignKey(User, null=True, related_name='like_product', on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.CASCADE, related_name='like_product')
+    product = models.ForeignKey(ApiProduct, null=True, blank=True, on_delete=models.CASCADE, related_name='like_product')
     comment = models.ForeignKey(ReviewRating, null=True, on_delete=models.CASCADE)
-    ip = models.CharField(max_length=20, blank=True)
+    ip = models.CharField(max_length=50, blank=True)
     status = models.BooleanField(default=True)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -447,10 +439,10 @@ class LikeProduct(models.Model):
 
 class DisLikeProduct(models.Model):
     customer = models.ForeignKey(User, null=True, related_name='dislike_product', on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.CASCADE,
+    product = models.ForeignKey(ApiProduct, null=True, blank=True, on_delete=models.CASCADE,
                                 related_name='dislike_product')
     comment = models.ForeignKey(ReviewRating, null=True, on_delete=models.CASCADE)
-    ip = models.CharField(max_length=20, blank=True)
+    ip = models.CharField(max_length=50, blank=True)
     status = models.BooleanField(default=True)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -474,9 +466,9 @@ class DisLikeProduct(models.Model):
 
 class Favorite(models.Model):
     customer = models.ForeignKey(User, null=True, related_name='favorite_product', on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.CASCADE,
+    product = models.ForeignKey(ApiProduct, null=True, blank=True, on_delete=models.CASCADE,
                                 related_name='favorite_product')
-    ip = models.CharField(max_length=20, blank=True)
+    ip = models.CharField(max_length=50, blank=True)
     status = models.BooleanField(default=True)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -490,10 +482,10 @@ class Favorite(models.Model):
 
 class Question(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Müşteri", null=True, blank=False)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Ürün", null=True, blank=False)
+    product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE, verbose_name="Ürün", null=True, blank=False)
     question = models.CharField(max_length=300, verbose_name="Soru", null=True, blank=False)
     answer = models.CharField(max_length=300, verbose_name="Cevap", null=True, blank=True)
-    ip = models.CharField(max_length=20, blank=True)
+    ip = models.CharField(max_length=50, blank=True)
     status = models.BooleanField(default=True)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -507,7 +499,7 @@ class Question(models.Model):
 
 
 class StockAlarm(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, verbose_name="Ürün")
+    product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE, null=True, verbose_name="Ürün")
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     ip = models.CharField(max_length=120, verbose_name="İp Adresi")
     is_active = models.BooleanField(default=False)

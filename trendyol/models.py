@@ -100,3 +100,19 @@ class TrendyolBrand(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
+
+class LogRecords(models.Model):
+    TYPE = (
+        ('1','Ürün Yükleme'),
+        ('2','Stok&Fiyat Güncelleme'),
+        ('3','Bilgi Güncelleme'),
+        ('4','Ürün Silme'),
+    )
+    log_type = models.CharField(choices=TYPE, max_length=50, verbose_name="Log Tipi")
+    batch_id = models.CharField(max_length=255, verbose_name="Batch Request ID", null=True)
+    create_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-create_at']

@@ -27,38 +27,24 @@ import hmac
 from django.shortcuts import render, HttpResponse
 
 
-# Create your views here.
 def add_cart(request, product_id):
     quantity = int(request.GET.get('quantity', 1))
-    data = {'is_active': 'is_active'}
-    is_active = False
+    data = None
     url = request.META.get('HTTP_REFERER')
-    variantid = request.GET.get('variantid')
-    product = Product.objects.get(id=product_id, is_publish=True)  # get the product
+    product = ApiProduct.objects.get(id=product_id, is_publish=True)
     same_product = 0
-
     if request.user.is_authenticated:
-        if product.variant != 'Yok':
-            checkvariant = CartItem.objects.filter(variant_id=variantid, user_id=request.user.id)
-            if checkvariant:
-                control = 1
-            else:
-                control = 2
+
+        checkinproduct = CartItem.objects.filter(product_id=product_id, user_id=request.user.id)
+        if checkinproduct:
+            control = 1
         else:
-            checkinproduct = CartItem.objects.filter(product_id=product_id, user_id=request.user.id)
-            if checkinproduct:
-                control = 1
-            else:
-                control = 2
+            control = 2
 
         if request.method == 'GET':
             if control == 1:
-                if product.variant == 'Yok':
-                    data = CartItem.objects.get(product_id=product_id, user_id=request.user.id)
-                    same_product = 1
-                else:
-                    data = CartItem.objects.get(product_id=product_id, variant_id=variantid, user_id=request.user.id)
-                    same_product = 1
+                data = CartItem.objects.get(product_id=product_id, user_id=request.user.id)
+                same_product = 1
                 data.quantity += quantity
                 try:
                     cart = Cart.objects.get(
@@ -78,12 +64,10 @@ def add_cart(request, product_id):
                 data = CartItem()
                 data.user = request.user
                 data.product_id = product_id
-                data.variant_id = variantid
                 data.cart = cart
                 data.quantity = quantity
                 data.save()
             return JsonResponse({'data': 'added', 'plus': '1', 'control': control, 'same_product': same_product})
-
         else:  # if there is no post
             if control == 1:
                 data = CartItem.objects.get(product_id=product_id, user_id=request.user.id)
@@ -105,91 +89,18 @@ def add_cart(request, product_id):
                 data = CartItem()
                 data.user = request.user
                 data.product_id = product_id
-                data.variant_id = variantid
                 data.quantity = 1
                 data.cart = cart
                 data.variant_id = None
                 data.save()
             return JsonResponse({'data': 'added', 'plus': '2'})
-
     else:
-        try:
-            cart = Cart.objects.get(
-                cart_id=request.user.id)
-        except Cart.DoesNotExist:
-            cart = Cart.objects.create(cart_id=request.user.id)
-
-        if product.variant != 'Yok':
-            checkvariant = CartItem.objects.filter(variant_id=variantid, cart=cart)
-            if checkvariant.count() > 0:
-                control = 1
-            else:
-                control = 2
-        else:
-            checkinproduct = CartItem.objects.filter(product_id=product_id, cart=cart)
-            if checkinproduct:
-                control = 1
-            else:
-                control = 2
-        if request.method == 'GET':
-            if control == 1:
-                if product.variant == 'Yok':
-                    data = CartItem.objects.get(product_id=product_id, cart=cart)
-                else:
-                    data = CartItem.objects.get(product_id=product_id, variant_id=variantid,
-                                                cart=cart)
-                data.quantity += quantity
-                try:
-                    cart = Cart.objects.get(
-                        cart_id=request.user.id)
-                except Cart.DoesNotExist:
-                    cart = Cart.objects.create(cart_id=request.user.id)
-                cart.save()
-                data.save()
-            else:
-                try:
-                    cart = Cart.objects.get(
-                        cart_id=request.user.id)
-                except Cart.DoesNotExist:
-                    cart = Cart.objects.create(cart_id=request.user.id)
-                cart.save()
-                data = CartItem()
-                data.product_id = product_id
-                data.variant_id = variantid
-                data.cart = cart
-                data.quantity = quantity
-                data.save()
-            return JsonResponse({'data': 'added', 'plus': '3'})
-        else:  # if there is no post
-            if control == 1:
-                data = CartItem.objects.get(product_id=product_id, cart=cart)
-                data.quantity += 1
-                try:
-                    cart = Cart.objects.get(
-                        cart_id=request.user.id)
-                except Cart.DoesNotExist:
-                    cart = Cart.objects.create(cart_id=request.user.id)
-                cart.save()
-                data.save()
-            else:
-                try:
-                    cart = Cart.objects.get(
-                        cart_id=request.user.id)
-                except Cart.DoesNotExist:
-                    cart = Cart.objects.create(cart_id=request.user.id)
-                cart.save()
-                data = CartItem()
-                data.product_id = product_id
-                data.quantity = 1
-                data.cart = cart
-                data.variant_id = None
-                data.save()
-            return JsonResponse({'data': 'added', 'plus': '4'})
+        return redirect('login')
 
 
 def remove_cart(request, product_id, cart_item_id):
     cart = Cart.objects.get(cart_id=request.user.id)
-    product = get_object_or_404(Product, id=product_id)
+    product = get_object_or_404(ApiProduct, id=product_id)
     try:
         cart_item = CartItem.objects.get(product=product, cart=cart, id=cart_item_id, user=request.user)
         cart_item.delete()
@@ -201,7 +112,7 @@ def remove_cart(request, product_id, cart_item_id):
 
 def minus_quantity(request, product_id, cart_item_id):
     cart = Cart.objects.get(cart_id=request.user.id)
-    product = get_object_or_404(Product, id=product_id)
+    product = get_object_or_404(ApiProduct, id=product_id)
     try:
         cart_item = CartItem.objects.get(product=product, cart=cart, id=cart_item_id, user=request.user)
         if cart_item.quantity > 1:
@@ -215,26 +126,17 @@ def minus_quantity(request, product_id, cart_item_id):
 
 def plus_quantity(request, product_id, cart_item_id):
     cart = Cart.objects.get(cart_id=request.user.id)
-    product = get_object_or_404(Product, id=product_id)
+    product = get_object_or_404(ApiProduct, id=product_id)
     try:
         cart_item = CartItem.objects.get(product=product, cart=cart, id=cart_item_id, user=request.user)
-        if cart_item.product.variant != 'Yok':
-            cart_item = CartItem.objects.get(product=product, cart=cart, id=cart_item_id)
-            if cart_item.quantity == cart_item.variant.quantity:
-                cart_item.quantity = cart_item.variant.quantity
-                cart_item.save()
-                messages.warning(request,
-                                 'Malasef stoklarımızda ilgili üründen daha fazla bulunmadığından artış yapılamamıştır.')
-                return redirect('cart')
-            else:
-                cart_item.quantity += 1
-                cart_item.save()
+        if cart_item.quantity == cart_item.product.quantity:
+            cart_item.quantity = cart_item.product.quantity
+            messages.warning(request,
+                             'Malasef stoklarımızda ilgili üründen daha fazla bulunmadığından artış yapılamamıştır.')
+            return redirect('cart')
         else:
-            if cart_item.quantity == cart_item.product.amount:
-                cart_item.quantity = cart_item.product.amount
-            else:
-                cart_item.quantity += 1
-                cart_item.save()
+            cart_item.quantity += 1
+            cart_item.save()
         return redirect('cart')
     except:
         pass
@@ -248,6 +150,7 @@ def cart(request, total=0, general_total=0, quantity=0, cart_items=None):
     cart = None
     coupon = None
     coupon_exist = False
+    cartitem_count = 0
 
     try:
         all_address = CustomerAddress.objects.all().filter(user=request.user, is_active="Hayır")
@@ -306,7 +209,7 @@ def cart(request, total=0, general_total=0, quantity=0, cart_items=None):
 
         if request.user.is_authenticated:
             cart_items = CartItem.objects.filter(user=request.user, is_active=True)
-
+            cartitem_count = cart_items.count()
             coupon_exist = Coupon.objects.filter(user=request.user, is_active=True).exists()
             try:
                 coupon = Coupon.objects.get(user=request.user, is_active=True)
@@ -319,52 +222,22 @@ def cart(request, total=0, general_total=0, quantity=0, cart_items=None):
         if cart_items.count() > 0:
 
             for cart_item in cart_items:
-                if cart_item.product.variant != 'Yok':
-                    variants = Variants.objects.filter(product_id=cart_item.product.id)
-                    variant = Variants.objects.get(id=variants[1].id)
-
-                    if cart_item.variant.quantity < cart_item.quantity:
-                        cart_item.quantity = cart_item.variant.quantity
-                        cart_item.save()
-
-                    if cart_item.variant.is_discountprice == True:
-                        total += (round(float(cart_item.variant.discountprice), 2) * cart_item.quantity)
-                    else:
-                        total += (round(float(cart_item.variant.price), 2) * cart_item.quantity)
-                    quantity += cart_item.quantity
-                    if total < setting.free_shipping:
-                        if coupon_exist == True:
-                            general_total = float(total) + float(setting.shipping_price) - float(coupon.coupon_price)
-                        else:
-                            general_total = float(total) + float(setting.shipping_price)
-                    else:
-                        if coupon_exist == True:
-                            general_total = float(total) - float(coupon.coupon_price)
-                        else:
-                            general_total = total
-
-                    context.update({
-                        'variant': variant,
-                        'total': total,
-                    })
-
+                if cart_item.product.is_discountprice == True:
+                    total += float(cart_item.product.discountprice) * int(cart_item.quantity)
                 else:
-                    if cart_item.product.is_discountprice == True:
-                        total += float(cart_item.product.discountprice) * int(cart_item.quantity)
-                    else:
-                        total += float(cart_item.product.price) * cart_item.quantity
-                    quantity += cart_item.quantity
+                    total += float(cart_item.product.price) * cart_item.quantity
+                quantity += cart_item.quantity
 
-                    if total < setting.free_shipping:
-                        if coupon_exist == True:
-                            general_total = float(total) + float(setting.shipping_price) - float(coupon.coupon_price)
-                        else:
-                            general_total = float(total) + float(setting.shipping_price)
+                if total < setting.free_shipping:
+                    if coupon_exist == True:
+                        general_total = float(total) + float(setting.shipping_price) - float(coupon.coupon_price)
                     else:
-                        if coupon_exist == True:
-                            general_total = float(total) + float(setting.shipping_price) - float(coupon.coupon_price)
-                        else:
-                            general_total = total
+                        general_total = float(total) + float(setting.shipping_price)
+                else:
+                    if coupon_exist == True:
+                        general_total = float(total) + float(setting.shipping_price) - float(coupon.coupon_price)
+                    else:
+                        general_total = total
 
 
     except Cart.DoesNotExist:
@@ -376,6 +249,7 @@ def cart(request, total=0, general_total=0, quantity=0, cart_items=None):
         'cart_items': cart_items,
         'general_total': general_total,
         'coupon': coupon,
+        'cartitem_count': cartitem_count
     })
 
     return render(request, 'frontend/pages/carts.html', context)
@@ -486,54 +360,26 @@ def createOrder(request, order_number, order_total, status):
     cart_items = CartItem.objects.filter(user=request.user)
 
     for item in cart_items:
-        if item.product.variant != 'Yok':
-            orderproduct = OrderProduct()
-            orderproduct.order = data
-            orderproduct.user = pre_order.user
-            orderproduct.product = item.variant.product
-            orderproduct.variation = item.variant
-            orderproduct.color = item.variant.color
-            orderproduct.size = item.variant.size
-            orderproduct.quantity = item.quantity
-            if item.variant.is_discountprice == True:
-                orderproduct.product_price = item.variant.discountprice
-            else:
-                orderproduct.product_price = item.variant.price
-            orderproduct.ordered = True
-            orderproduct.save()
-
-            variant = Variants.objects.get(id=item.variant.id)
-            product = Product.objects.get(id=item.product.id)
-            variant.quantity -= item.quantity
-            variant.sell_count += item.quantity
-            product.sell_count += item.quantity
-            product.save()
-            if variant.quantity <= 0:
-                variant.is_publish = False
-            variant.save()
-
+        orderproduct = OrderProduct()
+        orderproduct.order = data
+        orderproduct.user = pre_order.user
+        orderproduct.product = item.product
+        orderproduct.quantity = item.quantity
+        if item.product.is_discountprice == True:
+            orderproduct.product_price = item.product.discountprice
         else:
-            orderproduct = OrderProduct()
-            orderproduct.order = data
-            orderproduct.user = pre_order.user
-            orderproduct.product = item.product
-            orderproduct.quantity = item.quantity
-            if item.product.is_discountprice == True:
-                orderproduct.product_price = item.product.discountprice
-            else:
-                orderproduct.product_price = item.product.price
-            orderproduct.ordered = True
-            orderproduct.save()
+            orderproduct.product_price = item.product.price
+        orderproduct.ordered = True
+        orderproduct.save()
 
-            product = Product.objects.get(id=item.product.id)
-            product.amount -= item.quantity
-            product.sell_count += item.quantity
-            if product.amount <= 0:
-                product.is_publish = False
-            product.save()
+        product = ApiProduct.objects.get(id=item.product.id)
+        product.quantity -= item.quantity
+        product.sell_count += item.quantity
+        if product.quantity <= 0:
+            product.is_publish = False
+        product.save()
     cart = Cart.objects.get(cart_id=pre_order.user.id)
     cart.delete()
-
     return data
 
 
@@ -572,24 +418,13 @@ def checkout(request, total=0, cart_items=None):
         cart_items = CartItem.objects.filter(user=request.user, is_active=True)
         setting = Setting.objects.filter().last()
         for cart_item in cart_items:
-            if cart_item.product.variant != 'Yok':
-                variants = Variants.objects.filter(product_id=cart_item.product.id)
-                variant = Variants.objects.get(id=variants[0].id)
-                if cart_item.variant.is_discountprice:
-                    total += (float(cart_item.variant.discountprice) * cart_item.quantity)
-                else:
-                    total += (float(cart_item.variant.price) * cart_item.quantity)
-
-                context.update({
-                    'variant': variant,
-                    'total': total,
-                })
-
+            if cart_item.product.is_discountprice:
+                total += (float(cart_item.product.discountprice) * cart_item.quantity)
             else:
-                if cart_item.product.is_discountprice:
-                    total += (float(cart_item.product.discountprice) * cart_item.quantity)
-                else:
-                    total += (float(cart_item.product.price) * cart_item.quantity)
+                total += (float(cart_item.product.price) * cart_item.quantity)
+            context.update({
+                'total': total,
+            })
 
             if total < setting.free_shipping:
                 if coupon_exist == True:
@@ -660,6 +495,7 @@ def completed_checkout(request, order_number):
         })
 
     else:
+
         cart = Cart.objects.get(cart_id=request.user.id)
         pre_order = PreOrder.objects.get(cart=cart)
         cart_total = pre_order.cart_total

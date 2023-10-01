@@ -37,6 +37,7 @@ urlpatterns = [
     path('yonetim/', include('adminpage.urls')),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}),
     path('', include('product.urls')),
+    path('', include('user_accounts.urls')),
     path('', include('categorymodel.urls')),
     path('', include('mainpage.urls')),
     path('', include('store.urls')),
@@ -44,6 +45,9 @@ urlpatterns = [
     path('', include('carts.urls')),
     path('', include('orders.urls')),
     path('', include('trendyol.urls')),
+    path('', include('apis.urls')),
+    path('dj-rest-auth/', include('dj_rest_auth.urls')),
+    path('dj-rest-auth/registration/', include('dj_rest_auth.registration.urls')),
 
     path('accounts/', include('allauth.urls')),
 

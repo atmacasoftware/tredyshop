@@ -24,6 +24,8 @@ class Trendyol(models.Model):
     iadeadresid_3 = models.BigIntegerField(null=True, blank=True, verbose_name="İade Adres ID 3")
     iadeadresid_4 = models.BigIntegerField(null=True, blank=True, verbose_name="İade Adres ID 4")
     iadeadresid_5 = models.BigIntegerField(null=True, blank=True, verbose_name="İade Adres ID 5")
+    firstbarem = models.FloatField(verbose_name="Barem 1. Aralık Maksimum Değeri", null=True)
+    secondbarem = models.FloatField(verbose_name="Barem 2. Aralık Maksimum Değeri", null=True)
     class Meta:
         verbose_name = "1) Trendyol Hesap Bilgileri"
         verbose_name_plural = "1) Trendyol Hesap Bilgileri"
@@ -153,7 +155,7 @@ class Notification(models.Model):
     class Meta:
         verbose_name = "4) Bildirimler"
         verbose_name_plural = "4) Bildirimler"
-        ordering = ['created_at']
+        ordering = ['-created_at']
 
     def passing_time(self):
         from datetime import datetime, timezone
