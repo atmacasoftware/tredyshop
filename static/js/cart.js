@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    $(".waiting").hide()
     $("#approvedNote").hide();
     console.log($("textarea[name='preliminary_form']").val())
     $("#paymentBtn").on('click', function (e) {
@@ -29,10 +30,10 @@ $(document).ready(function () {
                     'csrfmiddlewaretoken': csrf_token,
                 },
                 beforeSend: function () {
-                    loader.style.display = 'flex'
+                    $(".waiting").show()
                 },
                 success: function (data) {
-                    loader.style.display = 'none'
+
                     if (data === 'success'){
                         window.location = checkout
                     }

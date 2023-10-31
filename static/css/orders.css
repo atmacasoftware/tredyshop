@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;900&display=swap');
+
 table {
     width: 100% !important;
     margin-top: 20px;
@@ -26,50 +28,14 @@ table {
 }
 
 
-#payment__accordion li {
-    list-style: none;
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 4px;
-}
-
-#payment__accordion li .accordion__title {
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 18px;
-    font-weight: 500;
-    cursor: pointer;
-    background: #D31027;
-    background: -webkit-linear-gradient(to right, #EA384D, #D31027);
-    background: linear-gradient(to right, #EA384D, #D31027);
-    border-radius: 12px;
-    color: #fff;
-}
-
-#payment__accordion li .accordion__title span {
-    font-size: 22px;
-    color: #fff;
-}
-
-#payment__accordion .accordion__title + input[type="radio"] {
-    display: none;
-}
-
-#payment__accordion .payment_content {
+.payment_content {
     padding: 0 10px;
     line-height: 26px;
-    max-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
     transition: max-height 0.5s;
 }
 
-#payment__accordion label + input[type="radio"]:checked + .payment_content {
-    max-height: max-content;
-}
 
 @media screen and (max-width: 580px) {
     .payment_content {
@@ -89,13 +55,9 @@ table {
     }
 
     .card-bounding .card-container input {
-        font-size: 16px !important;
         padding: 15px 15px 15px 15px !important;
     }
 
-    .card-bounding .card-details input {
-        font-size: 16px !important;
-    }
 }
 
 @media screen and (max-width: 1025px) {
@@ -125,12 +87,12 @@ table {
 
 .card-container {
     width: 100%;
-    padding-left: 80px;
     padding-right: 40px;
     position: relative;
     box-sizing: border-box;
     border: 1px solid #ccc;
-    margin: 0 auto 30px auto;
+    margin: 0 auto 10px auto;
+    border-radius: 10px;
 }
 
 .card-container label {
@@ -140,22 +102,24 @@ table {
 .card-container input {
     width: 100%;
     letter-spacing: 1px;
-    font-size: 30px;
-    padding: 15px 15px 15px 25px;
+    padding: 15px 15px 15px 12px;
     border: 0;
     outline: none;
     box-sizing: border-box;
+    border-radius: 10px;
 }
 
 .card-type {
     width: 80px;
-    height: 56px;
+    height: 50px;
     background: url("../img/cards.png");
     background-position: 0 -291px;
     background-repeat: no-repeat;
     position: absolute;
-    top: 3px;
+    top: 2px;
     left: 4px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 
 .card-type.mastercard {
@@ -184,12 +148,6 @@ table {
 
 }
 
-.card-valid:before {
-    content: 'X';
-    color: red;
-}
-
-
 .card-valid.active i {
     color: #42ca7c;
 }
@@ -197,6 +155,16 @@ table {
 .card-valid.active:before {
     content: '\f058';
     color: #42ca7c;
+    font-family: "Font Awesome 5 Free";
+}
+
+.card-valid.invalid i {
+    color: red;
+}
+
+.card-valid.invalid:before {
+    content: '\f057';
+    color: red;
     font-family: "Font Awesome 5 Free";
 }
 
@@ -208,7 +176,6 @@ table {
 }
 
 .card-details input {
-    font-size: 30px;
     padding: 15px;
     box-sizing: border-box;
     width: 100%;
@@ -272,12 +239,12 @@ table {
 
 .btn-ordering {
     background: white !important;
-    border: none!important;
+    border: none !important;
     outline: none;
 }
 
 
-.failed-card{
+.failed-card {
     height: 500px;
     margin-bottom: 50px;
     display: flex;
@@ -285,7 +252,7 @@ table {
     align-items: center;
 }
 
-.failed-card .card-body{
+.failed-card .card-body {
     width: 75%;
     height: 500px;
     background: #dc3545;;
@@ -296,12 +263,12 @@ table {
     justify-content: center;
 }
 
-.failed-card .card-body i{
+.failed-card .card-body i {
     color: #fff;
     margin-bottom: 50px;
 }
 
-.failed-card .card-body h3{
+.failed-card .card-body h3 {
     color: #fff;
 }
 
@@ -312,12 +279,12 @@ table {
     flex-direction: column;
 }
 
-.warning-body p{
+.warning-body p {
     color: #fff;
     margin-top: 20px;
 }
 
-.warning-button{
+.warning-button {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -325,7 +292,81 @@ table {
     margin-top: 75px;
 }
 
-.warning-button a{
+.warning-button a {
     margin: 10px;
+}
+
+.lds-ring {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.lds-ring div {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border: 8px solid #fff;
+    border-radius: 50%;
+    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: #2c2929 transparent transparent transparent;
+}
+
+.lds-ring div:nth-child(1) {
+    animation-delay: -0.45s;
+}
+
+.lds-ring div:nth-child(2) {
+    animation-delay: -0.3s;
+}
+
+.lds-ring div:nth-child(3) {
+    animation-delay: -0.15s;
+}
+
+@keyframes lds-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.installment-card table thead tr {
+    background: grey;
+    color: white;
+    font-weight: bold;
+}
+
+.installment-card table thead tr th, .installment-card table tbody tr td {
+    border: 1px solid #BEBEBE;
+    padding-left: 10px;
+}
+
+.invalid-form{
+    border: 2px solid red!important;
+    border-radius: 10px!important;
+}
+
+.cardnumber_error{
+    color: red;
+    font-family: 'Poppins', sans-serif;
+}
+
+label{
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+}
+
+input{
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    border-radius: 10px!important;
 }
 

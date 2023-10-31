@@ -1,0 +1,133 @@
+{% extends 'backend/adminpage/layout.html' %}
+{% load static %}
+
+{% block title %}<title>Güncelleme Geçmişi</title>{% endblock %}
+
+{% block users %}
+
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Güncelleme Geçmişi</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'mainpage' %}">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Güncelleme Geçmişi</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Güncelleme Geçmişi</h3>
+
+                            <div class="card-tools">
+                                <div class="input-group input-group-sm" style="width: 250px;">
+                                    <input type="text" name="table_search" id="search" onkeyup="searchFunction();"
+                                           class="form-control float-right"
+                                           placeholder="Geçmiş Arama">
+
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-default">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap" id="historyTable">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Güncelleme Tipi</th>
+                                    <th>Güncelleme Tarihi</th>
+                                    <th>İşlem</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for h in histories %}
+                                    <tr>
+                                        <td>{{ h.id }}</td>
+                                        <td>{{ h.history_type }}</td>
+                                        <td>{{ h.created_at }}</td>
+                                        <td><a href="{% url 'update_history_delete' h.id %}" class="btn btn-sm btn-danger">Sil</a></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div id="no-data"
+                                 style="width: 100%; text-align: center; margin-top: 5px; margin-bottom: 5px;"></div>
+                        </div>
+                        <div class="card-footer p-0">
+                            <a href="{% url 'update_history_all_delete' %}" class="btn btn-sm btn-danger m-2">Tümünü
+                                Sil</a>
+                            <div class="mailbox-controls">
+                                <div class="float-right">
+                                    {{ histories.number }} / {{ histories.paginator.num_pages }}
+                                    <div class="btn-group">
+                                        {% if histories.has_previous %}
+                                            <a href="?page={{ histories.previous_page_number }}"
+                                               class="btn btn-default btn-sm">
+                                                <i class="fas fa-chevron-left"></i>
+                                            </a>
+                                        {% endif %}
+                                        {% if histories.has_next %}
+                                            <a href="?page={{ histories.next_page_number }}"
+                                               class="btn btn-default btn-sm">
+                                                <i class="fas fa-chevron-right"></i>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+
+        function searchFunction() {
+            let input, filter, table, tr, td, j;
+            input = document.getElementById("search");
+            filter = input.value.toLowerCase();
+            table = document.getElementById("historyTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (j = 0; j < tr.length; j++) {
+                td = tr[j].getElementsByTagName("td");
+                msg = document.getElementById("no-data");
+
+                if (td.length > 0) {
+                    if (td[0].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[1].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[2].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[3].innerHTML.toLocaleLowerCase().indexOf(filter) > -1) {
+                        tr[j].style.display = ""
+                        msg.innerHTML = ""
+                    } else {
+                        tr[j].style.display = "none"
+                    }
+                }
+
+                if (td.length == 0) {
+                    msg.innerHTML = "Aramanızla eşleşen kayıt bulunamadı."
+                }
+
+            }
+        }
+
+    </script>
+{% endblock %}

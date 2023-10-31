@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 import requests
 
+from carts.helpers import paytr_taksit_sorgu, taksit_hesaplama
 from orders.models import OrderProduct
 from product.models import *
 from django.contrib import messages
@@ -24,7 +25,10 @@ def products_detail(request, product_slug):
         product.image_url6, product.image_url7, product.image_url8
     ]
 
-    same_products = ApiProduct.objects.filter(model_code=product.model_code).exclude(id=product.id)
+    all_taksit_data = paytr_taksit_sorgu()
+    print(all_taksit_data)
+
+    same_products = ApiProduct.objects.filter(model_code=product.model_code).order_by('-size__name')
     similar_product = ApiProduct.objects.filter(subcategory=product.subcategory).exclude(slug=product.slug).order_by(
         "?")
 

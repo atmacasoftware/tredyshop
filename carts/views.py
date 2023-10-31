@@ -1,4 +1,4 @@
-import datetime
+from datetime import date
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ObjectDoesNotExist
@@ -8,9 +8,11 @@ from django.contrib import messages
 from django.template.loader import render_to_string
 import random
 from adminpage.models import Notification
-from carts.helpers import paytr_api, card_type, paytr_iframe
+from carts.helpers import paytr_api, card_type, paytr_sorgu, paytr_taksit_sorgu, taksit_hesaplama, \
+    bin_sorgu, paytr_post, create_order_token
 from customer.forms import AddressForm
 from customer.models import CustomerAddress, Bonuses, Coupon
+from ecommerce import settings
 from ecommerce.settings import EMAIL_HOST_USER
 from mainpage.models import Setting
 from carts.models import Cart, CartItem
@@ -21,9 +23,7 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import EmailMessage
 from django.views.decorators.csrf import csrf_exempt
-import base64
-import hashlib
-import hmac
+from django.contrib.auth import logout as auth_logout
 from django.shortcuts import render, HttpResponse
 
 
@@ -153,6 +153,7 @@ def cart(request, total=0, general_total=0, quantity=0, cart_items=None):
     cartitem_count = 0
 
     try:
+        cart = Cart.objects.get(cart_id=request.user.id)
         all_address = CustomerAddress.objects.all().filter(user=request.user, is_active="Hayır")
         add_form = AddressForm(data=request.POST or None, files=request.FILES or None)
 
@@ -166,44 +167,6 @@ def cart(request, total=0, general_total=0, quantity=0, cart_items=None):
             'all_address': all_address,
             'address': address
         })
-
-        if 'addAddressBtn' in request.POST:
-            if add_form.is_valid():
-                current_address = request.POST.get("is_active")
-                type = request.POST.get("bill_type")
-                tc = request.POST.get("tc")
-                if type == "Bireysel":
-                    if len(tc) == 11:
-                        if current_address == "Evet":
-                            user_address = CustomerAddress.objects.filter(is_active="Evet")
-                            for u in user_address:
-                                u.is_active = "Hayır"
-                                u.save()
-
-                        data = add_form.save(commit=False)
-                        data.company_name = None
-                        data.tax_number = None
-                        data.tax_administration = None
-                        data.user = request.user
-                        data.save()
-                        messages.success(request, 'Adres başarıyla eklendi.')
-                        return redirect('cart')
-                    else:
-                        messages.error(request, 'T.C. Kimlik Numarası 11 basamaklı olmalıdır.')
-                        return redirect('cart')
-                if type == "Kurumsal":
-                    if current_address == "Evet":
-                        user_address = CustomerAddress.objects.filter(is_active="Evet")
-                        for u in user_address:
-                            u.is_active = "Hayır"
-                            u.save()
-
-                    data = add_form.save(commit=False)
-                    data.tc = None
-                    data.user = request.user
-                    data.save()
-                    messages.success(request, 'Adres başarıyla eklendi.')
-                    return redirect('cart')
 
         setting = Setting.objects.filter().last()
 
@@ -239,6 +202,26 @@ def cart(request, total=0, general_total=0, quantity=0, cart_items=None):
                     else:
                         general_total = total
 
+        if 'sendCheckout' in request.POST:
+            coupon = request.POST.get('coupon')
+            yr = int(date.today().strftime('%Y'))
+            dt = int(date.today().strftime('%d'))
+            mt = int(date.today().strftime('%m'))
+            d = date(yr, mt, dt)
+            current_date = d.strftime("%y%m%d")
+            order_number = 'SN' + current_date + random.randint(1, 9999999).__str__()
+
+            if PreOrder.objects.filter(user=request.user, cart=cart).count() < 1:
+                if coupon:
+                    pre_order = PreOrder.objects.create(user=request.user, order_number=order_number,
+                                                        coupon=coupon,
+                                                        cart=cart)
+                else:
+                    pre_order = PreOrder.objects.create(user=request.user, order_number=order_number,
+                                                        cart=cart)
+            else:
+                pre_order = PreOrder.objects.get(user=request.user, cart=cart)
+            return redirect("checkout")
 
     except Cart.DoesNotExist:
         pass
@@ -253,41 +236,6 @@ def cart(request, total=0, general_total=0, quantity=0, cart_items=None):
     })
 
     return render(request, 'frontend/pages/carts.html', context)
-
-
-def submitCheckout(request):
-    addres_id = request.POST.get('addres_id')
-    approved = request.POST.get('approved')
-    coupon = request.POST.get('coupon')
-    delivery_price = request.POST.get('delivery_price')
-    preliminary_form = request.POST.get("preliminary_form")
-    distance_selling_form = request.POST.get("distance_selling_form")
-
-    data = 'failed'
-    if addres_id and approved == 'True':
-        address = CustomerAddress.objects.get(id=addres_id)
-        cart = Cart.objects.get(cart_id=request.user.id)
-
-        if PreOrder.objects.filter(user=request.user, cart=cart).count() < 1:
-            if coupon:
-                pre_order = PreOrder.objects.create(user=request.user, delivery_address=address, coupon=coupon,
-                                                    cart=cart, delivery_price=delivery_price,
-                                                    approved_contract=True,
-                                                    preliminary_information_form=preliminary_form,
-                                                    distance_selling_contract=distance_selling_form)
-            else:
-                pre_order = PreOrder.objects.create(user=request.user, delivery_address=address, cart=cart,
-                                                    approved_contract=True,
-                                                    preliminary_information_form=preliminary_form,
-                                                    delivery_price=delivery_price,
-                                                    distance_selling_contract=distance_selling_form)
-        else:
-            pre_order = PreOrder.objects.get(user=request.user, cart=cart)
-            pre_order.delivery_address = address
-            pre_order.save()
-        data = 'success'
-
-    return JsonResponse(data=data, safe=False)
 
 
 def uses_coupon(request):
@@ -333,23 +281,25 @@ def delete_coupon(request):
 
 
 @login_required(login_url="/giris-yap")
-def createOrder(request, order_number, order_total, status):
+def createOrder(request, address, order_number, order_amount, order_total, is_installment, installment, status):
     cart = Cart.objects.get(cart_id=request.user.id)
     pre_order = PreOrder.objects.get(cart=cart)
     user = pre_order.user
     ip = request.META.get('REMOTE_ADDR')
-    address = pre_order.delivery_address
+    address = CustomerAddress.objects.get(user=request.user, is_active="Evet")
     coupon = pre_order.coupon
     delivery_price = pre_order.delivery_price
-    preliminary_form = pre_order.preliminary_information_form
-    distance_selling_form = pre_order.distance_selling_contract
 
-    data = Order.objects.create(order_number=str(order_number), user=user, address_id=address.id,
+    if delivery_price == None:
+        delivery_price = 0
+
+    data = Order.objects.create(order_platform="TredyShop",order_number=str(order_number), user=user, address_id=address.id,
+                                order_amount=float(order_amount),
                                 order_total=float(order_total),
                                 delivery_price=delivery_price, is_ordered=True, approved_contract=True,
-                                ip=ip, status=status,
-                                paymenttype='Banka/Kredi Kartı', preliminary_information_form=preliminary_form,
-                                distance_selling_contract=distance_selling_form)
+                                ip=ip, status=status, is_installment=is_installment, installment=installment,
+                                paymenttype='Banka/Kredi Kartı', preliminary_information_form=pre_order.preliminary_information_form,
+                                distance_selling_contract=pre_order.distance_selling_contract)
 
     if coupon != '' and coupon != None:
         used_coupon = float(coupon)
@@ -364,11 +314,19 @@ def createOrder(request, order_number, order_total, status):
         orderproduct.order = data
         orderproduct.user = pre_order.user
         orderproduct.product = item.product
+        orderproduct.title = item.product.title
+        orderproduct.product_slug = item.product.slug
         orderproduct.quantity = item.quantity
+        orderproduct.size = item.product.size.name
+        orderproduct.color = item.product.color.name
         if item.product.is_discountprice == True:
             orderproduct.product_price = item.product.discountprice
         else:
             orderproduct.product_price = item.product.price
+        item_price = float(orderproduct.product_price)
+        item_weight = item_price / (float(data.order_amount) - float(data.delivery_price))
+        orderproduct.forward_sale = order_total * item_weight
+        orderproduct.save()
         orderproduct.ordered = True
         orderproduct.save()
 
@@ -385,25 +343,21 @@ def createOrder(request, order_number, order_total, status):
 
 @login_required(login_url="/giris-yap")
 def checkout(request, total=0, cart_items=None):
+
     context = {}
     grand_total = 0
     items = []
     pre_order = None
-
     cart_items = CartItem.objects.filter(user=request.user)
     for i in cart_items:
         if i.product.is_discountprice == True:
-            items.append([str(i.product.title), str(i.product.discountprice), i.quantity])
+            items.append([str(i.product.title).replace("İ","I").replace("ş","s").replace("ü","u").replace("Ş","S").replace("Ü", "U").replace("ğ","g").replace("ç","c").replace("Ç","C").replace("ö","o").replace("Ö","O"), str(i.product.discountprice), i.quantity])
         else:
-            items.append([i.product.title, float(i.product.price), i.quantity])
+            items.append([(i.product.title).replace("İ","I").replace("ş","s").replace("ü","u").replace("Ş","S").replace("Ü", "U").replace("ğ","g").replace("ç","c").replace("Ç","C").replace("ö","o").replace("Ö","O"), float(i.product.price), i.quantity])
+    add_form = AddressForm(data=request.POST or None, files=request.FILES or None)
 
-    yr = int(datetime.date.today().strftime('%Y'))
-    dt = int(datetime.date.today().strftime('%d'))
-    mt = int(datetime.date.today().strftime('%m'))
-    d = datetime.date(yr, mt, dt)
-    current_date = d.strftime("%y%m%d")
-    order_number = 'SN' + current_date + random.randint(1, 9999999).__str__()
-
+    all_address = CustomerAddress.objects.all().filter(user=request.user)
+    active_address = CustomerAddress.objects.get(user=request.user, is_active="Evet")
     coupon = None
     coupon_exist = Coupon.objects.filter(user=request.user, is_active=True).exists()
 
@@ -438,7 +392,9 @@ def checkout(request, total=0, cart_items=None):
                     grand_total = total
         pre_order = PreOrder.objects.get(cart=cart)
         pre_order.cart_total = grand_total
+        pre_order.address = active_address
         pre_order.save()
+
     except ObjectDoesNotExist:
         pass
 
@@ -449,17 +405,89 @@ def checkout(request, total=0, cart_items=None):
     else:
         get_user_mobile = '05426561106'
 
-    token = paytr_iframe(email=request.user.email, payment_amount=grand_total, merchant_oid=str(order_number),
-                         fullname=f"{request.user.get_full_name()}",
-                         address=f"{pre_order.delivery_address.address} {pre_order.delivery_address.neighbourhood} Mah. / {pre_order.delivery_address.county} / {pre_order.delivery_address.city}",
-                         mobile=get_user_mobile, item=items, ip=request.META.get('REMOTE_ADDR'),
-                         installment_option=True)
+    fullname = request.user.get_full_name()
+    if fullname == '' or fullname == None:
+        fullname = "TredyShop Alışveriş"
+
+    user_ip = request.META.get('REMOTE_ADDR')
+    if settings.DEBUG == True:
+        user_ip = '213.238.183.81'
+    else:
+        user_ip = user_ip
+    email = request.user.email
+    address = f"{active_address.address} {active_address.neighbourhood} Mah. / {active_address.county} / {active_address.city}"
+
+    if email == '' or email == None:
+        email = "siparis@tredyshop.com"
+
+    paytr_data = paytr_api(email=email, payment_amount=float(grand_total), merchant_oid=str(pre_order.order_number),
+                           full_name=fullname, address=address,
+                           mobile=get_user_mobile, item=items, ip=user_ip, installment_count="0")
+
+    all_taksit_data = paytr_taksit_sorgu()
+    taksitler = []
+    taksitler.append({
+        "taksit_sayisi": "Tek Çekim",
+        "vadeli_fiyat": grand_total,
+    })
+    brand = None
+    if request.is_ajax():
+        bin_code = request.GET.get('bin_code')
+        try:
+            bank = bin_sorgu(bin_code)
+            brand = bank['brand']
+            brand_taksit_rates = all_taksit_data[brand]
+
+            for taksit_orani in brand_taksit_rates:
+                vadeli_hesaplama = taksit_hesaplama(paymant_amount=grand_total, vade=taksit_orani.split("_")[1], faiz=brand_taksit_rates[taksit_orani])
+                taksitler.append({
+                    "taksit_sayisi": taksit_orani.split("_")[1],
+                    "vadeli_fiyat": vadeli_hesaplama,
+                })
+        except:
+            taksitler.append({
+                "taksit_sayisi": "Tek Çekim",
+                "vadeli_fiyat": grand_total,
+            })
+        return JsonResponse(data=[taksitler, brand], safe=False)
+
+
+    paytr_form_action = "https://www.paytr.com/odeme"
 
     context.update(
-        {'cart_items': cart_items, 'total': total, 'grand_total': grand_total, 'coupon': coupon, 'token': token,
-         'pre_order': pre_order})
+        {'cart_items': cart_items, 'total': total, 'grand_total': grand_total, 'coupon': coupon,
+         'pre_order': pre_order, 'address': active_address, 'add_form': add_form, 'all_address': all_address,
+         'paytr_data': paytr_data, 'taksitler':taksitler, 'paytr_form_action':paytr_form_action})
+
     return render(request, 'frontend/pages/checkout.html', context)
 
+def order_token(request):
+    user_ip = request.POST.get('user_ip')
+    merchant_oid = request.POST.get('merchant_oid')
+    email = request.POST.get('email')
+    payment_amount = request.POST.get('payment_amount')
+    installment_count = request.POST.get('installment_count')
+    token = create_order_token(user_ip=user_ip, email=email, merchant_oid=merchant_oid, payment_amount=payment_amount, installment_count=installment_count)
+    data = token
+    return JsonResponse(data=data, safe=False)
+
+
+def contracts(request):
+    data = 'success'
+    user_id = request.user.id
+    order_number = request.POST.get('order_number')
+    cart = Cart.objects.get(cart_id=user_id)
+    pre_order = PreOrder.objects.get(user=request.user, order_number=order_number, cart=cart)
+
+    preliminary_form = request.POST.get('preliminary_form')
+    distance_selling_contract = request.POST.get('distance_selling_contract')
+
+    pre_order.distance_selling_contract = distance_selling_contract
+    pre_order.preliminary_information_form = preliminary_form
+
+    pre_order.save()
+
+    return JsonResponse(data=data, safe=False)
 
 @csrf_exempt
 def callback(request):
@@ -490,16 +518,26 @@ def completed_checkout(request, order_number):
 
     if Order.objects.filter(order_number=order_number).exists():
         order = Order.objects.get(order_number=order_number)
+
         context.update({
             'order': order,
         })
 
     else:
-
         cart = Cart.objects.get(cart_id=request.user.id)
         pre_order = PreOrder.objects.get(cart=cart)
-        cart_total = pre_order.cart_total
-        order = createOrder(request, order_number=str(order_number), order_total=cart_total, status="Yeni")
+        sorgu_durum = paytr_sorgu(order_number=order_number)
+        taksit_durum = False
+        if int(sorgu_durum['taksit']) != 0:
+            taksit_durum = True
+        order = createOrder(request, address=pre_order.address, order_amount=float(pre_order.cart_total), order_number=str(order_number),
+                            order_total=float(sorgu_durum['payment_total']),
+                            is_installment=taksit_durum, installment=int(sorgu_durum['taksit']), status="Yeni")
+        cart.delete()
+        try:
+            pre_order.delete()
+        except:
+            pass
         context.update({
             'order': order,
         })

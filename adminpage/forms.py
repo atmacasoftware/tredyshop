@@ -1,9 +1,54 @@
 from django import forms
 from adminpage.models import *
 from categorymodel.models import *
+from mainpage.models import Slider
 from orders.models import Order, ExtraditionRequestResult
 from product.models import ApiProduct
+from trendyol.models import TrendyolOrders
 
+
+class SliderForm(forms.ModelForm):
+    class Meta:
+        model = Slider
+        fields = '__all__'
+        exclude = ['slug', 'created_at', 'updated_at']
+
+    def __init__(self, *args, **kwargs):
+        super(SliderForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field.widget.attrs.get('class'):
+                field.widget.attrs['class'] += ' form-control'
+            else:
+                field.widget.attrs['class'] = 'form-control'
+
+class BannerOneForm(forms.ModelForm):
+    class Meta:
+        model = BannerOne
+        fields = '__all__'
+        exclude = ['created_at', 'updated_at']
+
+    def __init__(self, *args, **kwargs):
+        super(BannerOneForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field.widget.attrs.get('class'):
+                field.widget.attrs['class'] += ' form-control'
+            else:
+                field.widget.attrs['class'] = 'form-control'
+
+
+class BannerTwoForm(forms.ModelForm):
+    class Meta:
+        model = BannerTwo
+        fields = '__all__'
+        exclude = ['created_at', 'updated_at']
+
+    def __init__(self, *args, **kwargs):
+        super(BannerTwoForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field.widget.attrs.get('class'):
+                field.widget.attrs['class'] += ' form-control'
+            else:
+                field.widget.attrs['class'] = 'form-control'
 
 class MainCategoryForm(forms.ModelForm):
     class Meta:
@@ -56,7 +101,7 @@ class IssuedInvoicesAddForm(forms.ModelForm):
     class Meta:
         model = IssuedInvoices
         fields = '__all__'
-        exclude = ['created_at', 'updated_at']
+        exclude = ['tax_amount','price_amount','created_at', 'updated_at']
 
     def __init__(self, *args, **kwargs):
         super(IssuedInvoicesAddForm, self).__init__(*args, **kwargs)
@@ -74,7 +119,7 @@ class IssuedInvoicesUpdateForm(forms.ModelForm):
     class Meta:
         model = IssuedInvoices
         fields = '__all__'
-        exclude = ['created_at', 'updated_at']
+        exclude = ['tax_amount','price_amount','created_at', 'updated_at']
 
     def __init__(self, *args, **kwargs):
         super(IssuedInvoicesUpdateForm, self).__init__(*args, **kwargs)
@@ -90,7 +135,7 @@ class InvoicesReceivedAddForm(forms.ModelForm):
     class Meta:
         model = InvoicesReceived
         fields = '__all__'
-        exclude = ['created_at', 'updated_at']
+        exclude = ['tax_amount','price_amount','created_at', 'updated_at']
 
     def __init__(self, *args, **kwargs):
         super(InvoicesReceivedAddForm, self).__init__(*args, **kwargs)
@@ -105,7 +150,7 @@ class InvoicesReceivedUpdateForm(forms.ModelForm):
     class Meta:
         model = InvoicesReceived
         fields = '__all__'
-        exclude = ['created_at', 'updated_at']
+        exclude = ['tax_amount','price_amount','created_at', 'updated_at']
 
     def __init__(self, *args, **kwargs):
         super(InvoicesReceivedUpdateForm, self).__init__(*args, **kwargs)
@@ -195,8 +240,8 @@ class ProductForm(forms.ModelForm):
         fields = ['title', 'model_code','barcode', 'stock_code', 'xml_id', 'dropshipping', 'category','subcategory', 'subbottomcategory', 'brand',
                   'description', 'trendyol_category_id', 'image_url1', 'image_url2', 'image_url3', 'image_url4', 'image_url5',
                   'image_url6', 'image_url7', 'image_url8', 'price', 'discountprice', 'quantity', 'trendyol_price', 'hepsiburada_price', 'pttavm_price',
-                  'is_discountprice', 'color', 'size', 'fabrictype', 'height','pattern', 'collartype',
-                  'weavingtype', 'material', 'age_group', 'sex', 'is_publish', 'is_active', 'is_publish_trendyol', 'sell_count', 'slug', 'detail'
+                  'is_discountprice', 'color', 'size', 'fabrictype', 'height','waist','pattern','armtype', 'collartype',
+                  'weavingtype', 'material', 'environment','legtype','pocket', 'age_group', 'sex', 'is_publish', 'is_active', 'is_publish_trendyol', 'sell_count', 'slug', 'detail'
                   ]
         exclude = ['created_at', 'updated_at','status']
 
@@ -227,5 +272,20 @@ class ProductForm(forms.ModelForm):
         for field_name, field in self.fields.items():
             if field.widget.attrs.get('class'):
                 field.widget.attrs['class'] += 'form-control'
+            else:
+                field.widget.attrs['class'] = 'form-control'
+
+
+class TrendyolOrderForm(forms.ModelForm):
+    order_date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}),label="Sipariş Tarihi")
+    class Meta:
+        model = TrendyolOrders
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(TrendyolOrderForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field.widget.attrs.get('class'):
+                field.widget.attrs['class'] += ' form-control'
             else:
                 field.widget.attrs['class'] = 'form-control'

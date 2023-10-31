@@ -25,6 +25,11 @@
                                 <span></span>
                             </div>
                             <div class="total__price">
+                                <span>Ödeme Şekli: {% if order.is_installment %}{{ order.installment }} Taksit {% else %}Peşin
+                                    Ödeme{% endif %}</span>
+                                <span></span>
+                            </div>
+                            <div class="total__price">
                                 <span>Ödeme Yöntemi: Banka/Kredi Kartı</span>
                                 <span></span>
                             </div>
@@ -39,6 +44,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 {% endblock %}

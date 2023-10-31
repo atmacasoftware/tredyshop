@@ -1,0 +1,104 @@
+<div class="quickview-wrapper" id="cookieWrapper">
+    <div class="quick-modal" id="cookie-modal">
+        <div id="quickview-content">
+            <h2>Çerez Ayarları</h2>
+            <a href="#" class="close-btn quickview-close"></a>
+            <p style="margin-top: 20px;">Çerezler (cookies), web tarayıcıları aracılığıyla kullanıcı cihazlarında saklanan küçük veri
+                dosyalarıdır. İnternet kullanıcılarının çevrimiçi deneyimini kişiselleştirmek, web sitelerinin ve
+                uygulamaların daha etkili çalışmasını sağlamak ve kullanıcı davranışlarını izlemek için yaygın olarak
+                kullanılırlar.</p>
+            <div class="single-product-detail cookieList">
+                <div class="row">
+                    <div class="cookie__title">
+                        <h3>Kesinlikle Gerekli Çerezler</h3>
+                        <span>Her Zaman Etkin</span>
+                    </div>
+                    <div class="cookie-body">
+                        Bu çerezler web websitemizi ziyaret ettiğinizde otomatik olarak cihazınıza yerleştirilen ve
+                        tarayıcınızda depolanan küçük metin dosyalarıdır. Bu çerezler, kullanıcı deneyimini geliştirmek
+                        veya kişiselleştirmek gibi özel işlevlere sahip değildir. Bunun yerine, temel işlevleri, web
+                        sitesinin çalışabilmesi için gereklidir. Bu çerezler, "Oturum Yönetimi", "Güvenlik" ve "Site
+                        Performansı" için kullanılmaktadır.
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cookie__title">
+                        <h3>İşlevsel Çerezler</h3>
+                        <label class="switch">
+                            <input type="checkbox" id="functionalityCheck">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="cookie-body">
+                        İşlevsel çerezler, kullanıcı deneyimini geliştirmek, siteyi daha kullanıcı dostu hale getirmek
+                        ve belirli işlevleri yerine getirmek için kullanılır. İşlevsel çerezler (functionality cookies),
+                        kullanıcının web sitesini nasıl kullanmak istediğiyle ilgili tercihleri ve seçimleri hatırlayan
+                        çerezlerdir. Temel olarak, bu çerezler web sitesinin işlevselliğini artırmak ve kullanıcıya daha
+                        iyi bir deneyim sunmak için tasarlanmıştır. İşlevsel çerezler kişisel verileri toplamazlar ve
+                        genellikle anonimdirler.
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cookie__title">
+                        <h3>Pazarlama/Hedefleme Çerezleri</h3>
+                        <label class="switch">
+                            <input type="checkbox" id="marketingCheck">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="cookie-body">
+                        Pazarlama çerezleri veya hedefleme çerezleri, web sitemiz ziyaretçilerinin çevrimiçi
+                        davranışlarını izlemek ve analiz etmek için kullanılan çerez türleridir. Bu çerezler,
+                        kullanıcının gezinme alışkanlıklarını, tercihlerini ve ilgi alanlarını izler. Elde edilen
+                        veriler, daha sonra kullanıcıya özel reklamlar göstermek ve pazarlama kampanyalarını
+                        kişiselleştirmek için kullanılır. Bu çerez sağlayacıların bazıları yurt dışında bulunmaktadır.
+                        Bu çerezi etkinleştirmeniz durumunda farklı sitelerde size özel reklamlar çıkacak ve bu çerezi
+                        sağlayan kaynaklar yurtdışı ise işlenen kişisel verileriniz yurt dışına aktarılacaktır.
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cookie__title">
+                        <h3>Performans Çerezleri</h3>
+                        <label class="switch">
+                            <input type="checkbox" id="performanceCheck">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="cookie-body">
+                        Performans çerezleri, web sitesi performansını ölçmek ve iyileştirmek amacıyla kullanılır. Bu
+                        tür çerezler, kullanıcıların bir web sitesini nasıl kullandıklarını, hangi sayfalara
+                        gittiklerini ve hangi işlevleri kullandıklarını izler. Elde edilen veriler, web sitesi
+                        sahiplerine daha iyi bir kullanıcı deneyimi sunmak için önemli bilgiler sağlar. Bu çerez
+                        sağlayacıların bazıları yurt dışında bulunmaktadır.
+                    </div>
+                </div>
+            </div>
+            <div class="cookie_button_group">
+                <button class="btn btn-gradient" id="settingAcceptBtn" style="margin-top: 20px;">Ayarları Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cookie-wrapper">
+    <header>
+        <i class="bx bx-cookie"></i>
+        <h2>Çerez Onayı</h2>
+    </header>
+    <div class="data">
+        <p>Bu web sitesi, web sitesinde daha üstün, daha verimli ve daha iyi bir alışveriş deneyimi yaşamanıza yardımcı
+            olmak amacıyla bazı çerezler kullanılmaktadır. Çerezleri "Reddetmeniz" durumunda malesef size özel bir
+            deneyim sağlayamayacağız. "Tümünü Kabul Et" diyerek tüm çerezleri kabul edip en verimli şekilde websitemizi
+            kullanarak alışveriş deneyimi yaşayabilir veya "Çerez Ayarları" butonuna tıklayarak çerezleri kendinize göre
+            ayarlayabilirsiniz.
+            Çerezler hakkında daha detaylı bilgi için, <a
+                    href="{% url 'cookies' %}"> Çerez Politikası</a>'nı okuyabilirsiniz.</p>
+
+        <div class="buttons">
+            <button class="cookie-button" id="cookieAcceptBtn">Tümünü Kabul Et</button>
+            <button class="cookie-button" id="cookieSettingBtn">Çerez Ayarları</button>
+            <button class="cookie-button" id="cookieDeclineBtn">Tümünü Reddet</button>
+        </div>
+    </div>
+
+</div>

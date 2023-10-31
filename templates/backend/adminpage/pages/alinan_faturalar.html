@@ -5,7 +5,13 @@
 {% block title %}<title>Alınan Faturalar</title>{% endblock %}
 
 {% block faturalar %}
-
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/css/selectize.default.min.css"
+            integrity="sha512-pTaEn+6gF1IeWv3W1+7X7eM60TFu/agjgoHmYhAfLEU8Phuf6JKiiE8YmsNC0aCgQv4192s4Vai8YZ6VNM6vyQ=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+    />
 
     <div class="content-header">
         <div class="container-fluid">
@@ -27,6 +33,91 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-outline card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Filtreleme</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                            <!-- /.card-tools -->
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <form action="" method="get" class="productSearchForm">
+
+                                <div class="row mt-3">
+                                    <div class="col-lg-3 col-md-4 col-sm-12 d-flex justify-content-center align-items-center flex-row">
+                                        <input type="search" name="fatura_adi" id="fatura_adi"
+                                               class="form-control float-right filter-checkbox"
+                                               placeholder="Fatura Adı"
+                                               value="{% if fatura_adi %}{{ fatura_adi }}{% endif %}">
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <select id="select-ay" name="ay"
+                                                class="demo-default filter-checkbox"
+                                                placeholder="Ay Seçiniz...">
+                                            <option value="">Ay Seçiniz...</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <select id="select-yil" name="yil"
+                                                class="demo-default filter-checkbox"
+                                                placeholder="Yıl Seçiniz...">
+                                            <option value="">Yıl Seçiniz...</option>
+                                            <option value="2022">2022</option>
+                                            <option value="2023">2023</option>
+                                            <option value="2024">2024</option>
+                                            <option value="2025">2025</option>
+                                            <option value="2026">2026</option>
+                                            <option value="2027">2027</option>
+                                            <option value="2028">2028</option>
+                                            <option value="2029">2029</option>
+                                            <option value="2030">2030</option>
+                                            <option value="2031">2031</option>
+                                            <option value="2032">2032</option>
+                                            <option value="2033">2033</option>
+                                            <option value="2034">2034</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <select id="select-desc" name="desc"
+                                                class="demo-default filter-checkbox"
+                                                placeholder="Sıralama...">
+                                            <option value="">Sıralama Seçiniz...</option>
+                                            <option value="-created_at">En Yeni Tarih</option>
+                                            <option value="created_at">En Eski Tarih</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <div class="btn-group float-right w-100">
+                                        <input type="reset" class="btn btn-dark" value="Sıfırlama">
+                                        <button type="submit" id="filterBtn" class="btn btn-success">Fitreleme</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+
+                </div>
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
@@ -62,26 +153,26 @@
                                     <table class="table table-hover text-nowrap" id="paymentTable">
                                         <thead>
                                         <tr>
-                                            <th>No</th>
+                                            <th>Fatura No</th>
                                             <th>Yıl</th>
                                             <th>Ay</th>
                                             <th>KDV Hariç Tutar (TL)</th>
                                             <th>KDV Oranı</th>
                                             <th>KDV Tutarı (TL)</th>
                                             <th>Toplam Tutar</th>
-                                            <th></th>
+                                            <th>İşlemler</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         {% for fatura in faturalar %}
                                             <tr>
-                                                <td>{{ forloop.counter }}</td>
+                                                <td>{{ fatura.bill_number }}</td>
                                                 <td>{{ fatura.get_year_display }}</td>
                                                 <td>{{ fatura.get_month_display }}</td>
                                                 <td>{{ fatura.price }}</td>
                                                 <td>{{ fatura.tax_rate }}</td>
-                                                <td>{{ fatura.price|mul:fatura.tax_rate|div:100|floatformat:2 }}</td>
-                                                <td>{{ fatura.price|mul:fatura.tax_rate|div:100|add:fatura.price|floatformat:2 }}</td>
+                                                <td>{{ fatura.tax_amount|floatformat:2 }}</td>
+                                                <td>{{ fatura.price_amount|floatformat:2 }}</td>
                                                 <td>
 
                                                     <a href="{% url 'update_alinan_fatura' fatura.id %}"
@@ -139,7 +230,88 @@
                                     <span id="no-data"
                                           style="display: block; text-align: center;padding-top: 10px; padding-bottom: 10px;"></span>
                                 </div>
-                                <!-- /.card-body -->
+                                <div class="card-footer">
+                            <nav aria-label="pagination" class="pagination_area">
+                                <div class="row">
+                                    {% if faturalar.end_index > 0 %}
+                                        <div class="col-sm-12 col-md-5 d-none d-md-block">
+                                            <p>Showing {{ faturalar.start_index }} to {{ faturalar.end_index }}
+                                                of {{ faturalar.paginator.count }}.</p>
+                                        </div>
+                                    {% endif %}
+                                    {% if faturalar.paginator.num_pages > 1 %}
+                                        <div class="col-sm-12 col-md-7 dataTables_pager">
+                                            <ul class="pagination">
+                                                {% if faturalar.has_previous %}
+
+                                                    <li class="page-item">
+                                                        <a class="page-link" data-page="1"
+                                                           href="{{ query }}&page={{ faturalar.previous_page_number }}">
+                                                            <i class="fa fa-angle-double-left"></i>
+                                                        </a>
+                                                    </li>
+                                                    {% if faturalar.previous_page_number > 1 %}
+                                                        <li class="page-item">
+                                                            <a class="page-link "
+                                                               data-page="{{ faturalar.previous_page_number }}"
+                                                               href="{{ query }}&page={{ faturalar.previous_page_number }}">
+                                                                <i class="fa fa-angle-left"></i>
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+
+                                                {% endif %}
+
+                                                {% if faturalar.previous_page_number > 2 %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ faturalar.number|add:'-2' }}"
+                                                           href="{{ query }}&page={{ faturalar.number|add:'-2' }}"> {{ faturalar.number|add:"-2" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ faturalar.number|add:'-1' }}"
+                                                           href="{{ query }}&page={{ faturalar.number|add:'-1' }}"> {{ faturalar.number|add:"-1" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                <li class="page-item active"><span
+                                                        class="page-link ">{{ products.number }}</span></li>
+
+                                                {% if faturalar.paginator.num_pages > faturalar.number|add:"2" %}
+                                                    <li class="page-item">
+                                                        <a class="page-link " data-page="{{ faturalar.number|add:'1' }}"
+                                                           href="{{ query }}&page={{ faturalar.number|add:'1' }}"> {{ faturalar.number|add:"1" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link " data-page="{{ faturalar.number|add:'2' }}"
+                                                           href="{{ query }}&page={{ faturalar.number|add:'2' }}"> {{ faturalar.number|add:"2" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                {% if faturalar.has_next %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ faturalar.next_page_number }}"
+                                                           href="{{ query }}&page={{ faturalar.next_page_number }}">
+                                                            <i class="fa fa-angle-right"></i>
+                                                        </a>
+                                                    </li>
+
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ faturalar.paginator.num_pages }}"
+                                                           href="{{ query }}&page={{ faturalar.paginator.num_pages }}">
+                                                            <i class="fa fa-angle-double-right"></i>
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </nav>
+                        </div>
                             </div>
                         </div>
                     </div>
@@ -148,7 +320,18 @@
         </div>
     </section>
 
+    <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/js/selectize.min.js"
+            integrity="sha512-IOebNkvA/HZjMM7MxL0NYeLYEalloZ8ckak+NDtOViP7oiYzG5vn6WVXyrJDiJPhl4yRdmNAG49iuLmhkUdVsQ=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+    ></script>
+
     <script>
+        $('#select-ay').selectize({sortField: 'number'})
+        $('#select-yil').selectize({sortField: 'number'})
+        $('#select-desc').selectize({sortField: 'text'})
+
         function searchFunction() {
             let input, filter, table, tr, td, j;
             input = document.getElementById("search");
@@ -167,7 +350,8 @@
                         td[3].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
                         td[4].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
                         td[5].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
-                        td[6].innerHTML.toLocaleLowerCase().indexOf(filter) > -1) {
+                        td[6].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[7].innerHTML.toLocaleLowerCase().indexOf(filter) > -1) {
                         tr[j].style.display = ""
                         msg.innerHTML = ""
                     } else {

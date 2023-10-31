@@ -11,7 +11,7 @@ $(document).ready(function () {
         success: function (res) {
             $(".slider_skeleton").hide()
             var data = res.data
-            console.log(data)
+
             $(".js-slider-3items").html('')
             data.forEach(function (item, index) {
                 $(".js-slider-3items").append(

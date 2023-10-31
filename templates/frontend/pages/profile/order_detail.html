@@ -513,16 +513,24 @@
                                                                                                     olması durumunda
                                                                                                     iade talebiniz kabul
                                                                                                     edilmeyecektir.
-                                                                                                    Ürünü/Ürünleri <b style="font-size: 2rem;">MNG
+                                                                                                    Ürünü/Ürünleri <b
+                                                                                                            style="font-size: 2rem;">MNG
                                                                                                         Kargo</b>
-                                                                                                    firmasına <b style="font-size: 2rem;">340695350</b>
+                                                                                                    firmasına <b
+                                                                                                            style="font-size: 2rem;">340695350</b>
                                                                                                     anlaşma numarası ile
                                                                                                     gönderim
                                                                                                     sağlamalısınız.
                                                                                                     Farklı kargo firması
                                                                                                     ile gönderilen
                                                                                                     gönderiler kabul
-                                                                                                    edilmemektedir. İade durumunuzun sonucunu kargo tarafımıza ulaştıktan sonra buradan görüntüleyebilirsiniz.</p>
+                                                                                                    edilmemektedir. İade
+                                                                                                    durumunuzun sonucunu
+                                                                                                    kargo tarafımıza
+                                                                                                    ulaştıktan sonra
+                                                                                                    buradan
+                                                                                                    görüntüleyebilirsiniz.
+                                                                                                </p>
                                                                                             </div>
                                                                                         </div>
                                                                                     {% endif %}
@@ -558,6 +566,27 @@
                                                                                 </span>
                                                                             </span>
                                                                         </div>
+                                                                        <div class="info-line">
+                                                                            <span class="info-line__label">
+                                                                                Ödeme Şekli
+                                                                            </span>
+                                                                            <span class="info-line__value">
+                                                                                {% if order.is_installment %}
+                                                                                    {{ order.installment }}
+                                                                                    Taksit{% else %}Peşin
+                                                                                    Ödeme{% endif %}
+                                                                            </span>
+                                                                        </div>
+                                                                        {% if order.is_installment %}
+                                                                            <div class="info-line">
+                                                                                <span class="info-line__label">
+                                                                                    Vade Farkı
+                                                                                </span>
+                                                                                <span class="info-line__value">
+                                                                                    {{ order.order_total|sub:order.order_amount }} TL
+                                                                                </span>
+                                                                            </div>
+                                                                        {% endif %}
                                                                         <div class="info-line">
                                                                             <span class="info-line__label">
                                                                                 Kargo Firması:
@@ -667,7 +696,11 @@
                                                                     </div>
                                                                     <div class="order-item-summary__body"
                                                                          style="height: 300px; overflow: auto;">
-                                                                        {{ order.preliminary_information_form|safe }}
+                                                                        <textarea name="preliminary_form"
+                                                                                  id="" cols="0"
+                                                                                  rows="2" hidden="hidden" style="width: 100%;"
+                                                                                  >{% include 'frontend/information/preliminary_information_form.html' %}</textarea>
+                                                                        {% include 'frontend/information/preliminary_information_form.html' %}
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -684,7 +717,7 @@
                                                                     </div>
                                                                     <div class="order-item-summary__body"
                                                                          style="height: 300px; overflow: auto;">
-                                                                        {{ order.distance_selling_contract|safe }}
+                                                                        {% include 'frontend/information/distance_selling_contract.html' %}
                                                                     </div>
                                                                 </div>
                                                             </div>

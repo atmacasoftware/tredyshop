@@ -6,7 +6,19 @@
 {% block products %}
 
     <link rel="stylesheet" href="{% static 'adminpage/css/table.css' %}">
+    <style>
+        #id_title, #id_barcode, #id_subbottomcategory, #id_price, #id_quantity, #id_is_discountprice, #id_is_publish {
+            background-color: #bebebe;
+            color: red;
+            font-weight: bold;
+        }
 
+        #id_is_publish_trendyol, #id_trendyol_price, #id_trendyol_category_id {
+            background-color: #5ca8e5;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
 
     <div class="content-header">
         <div class="container-fluid">
@@ -89,7 +101,7 @@
                                             {{ form.media }}
                                             {% for field in form %}
                                                 {% if field.name != 'detail' %}
-                                                    <div class="form-group col-4">
+                                                    <div class="form-group col-lg-4 col-md-6 col-sm-12">
                                                         <label>{{ field.label }}</label>
                                                         {% if field.field.required %}
                                                             <span style="color: red;" class="required">*</span>
@@ -117,7 +129,30 @@
                                                 {% endif %}
                                             {% endfor %}
                                         </div>
-
+                                        <div class="form-row">
+                                            <table class="table table-hover text-nowrap">
+                                                <thead>
+                                                <tr>
+                                                    <th>Başlık</th>
+                                                    <th>Barkod</th>
+                                                    <th>Beden/Boyut</th>
+                                                    <th>Renk</th>
+                                                    <th>Son Güncellenme Tarihi</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for v in variants %}
+                                                    <tr>
+                                                        <td><a href="{% url 'product_detail' v.id %}">{{ v.title }}</a></td>
+                                                        <td>{{ v.barcode }}</td>
+                                                        <td>{{ v.size }}</td>
+                                                        <td>{{ v.color }}</td>
+                                                        <td>{{ v.update_at }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
                                         <div class="footer__button_group">
                                             <div class="group__1">
                                                 <button type="submit" name="updateBtn" class="btn btn-success">
@@ -127,6 +162,9 @@
                                                     Güncelle
                                                     ve
                                                     Kapat
+                                                </button>
+                                                <button type="submit" name="variantUpdateBtn" class="btn btn-warning">
+                                                    Tüm Variantlara Uygula
                                                 </button>
                                                 <a href="{% url 'admin_product' %}" class="btn btn-dark">Kapat</a>
                                             </div>

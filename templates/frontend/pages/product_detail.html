@@ -114,12 +114,8 @@
                             <div class="product-size">
                                 <label>Beden:</label>
                                 <div class="size-group" id="size">
-
-                                    <div class="size active">
-                                        {{ product.size }}
-                                    </div>
                                     {% for size in same_products %}
-                                        <div class="size">
+                                        <div class="size {% if size.size.id == product.size.id %}active{% endif %}">
                                             <a href="{% url 'products_detail' size.slug %}">{{ size.size }}</a>
                                         </div>
                                     {% endfor %}
@@ -759,7 +755,7 @@
         <input type="hidden" id="product_id" value="{{ product.id }}">
     </div>
 
-    <div class="quickview-wrapper">
+    <div class="quickview-wrapper cart-popup">
         <div class="quick-modal">
             <div id="quickview-content">
                 <a href="#" onclick="location.reload();" class="close-btn quickview-close"></a>

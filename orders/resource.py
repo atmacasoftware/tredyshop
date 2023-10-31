@@ -1,5 +1,5 @@
 from import_export import resources
-from orders.models import Order, OrderProduct, BankInfo
+from orders.models import Order, OrderProduct, BankInfo, BINList
 
 
 class OrderResource(resources.ModelResource):
@@ -14,3 +14,7 @@ class OrderProductResource(resources.ModelResource):
 class BankInfoResource(resources.ModelResource):
     class Meta:
         model = BankInfo
+
+class BINListResource(resources.ModelResource):
+    class Meta:
+        model = BINList

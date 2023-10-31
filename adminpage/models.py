@@ -1,5 +1,7 @@
 from django.db import models
+from django.template import defaultfilters
 from django_ckeditor_5.fields import CKEditor5Field
+from unidecode import unidecode
 
 from categorymodel.models import MainCategory
 from user_accounts.models import User
@@ -60,23 +62,39 @@ class IssuedInvoices(models.Model):
         ("12","12"),
     )
 
+    TYPE = (
+        ("Satış", "Satış"),
+        ("Genel İade", "Genel İade"),
+        ("Tevkifat", "Tevkifat"),
+        ("Tevkifat İade", "Tevkifat İade"),
+        ("İstisna", "İstisna"),
+        ("Özel Matrah", "Özel Matrah"),
+        ("İhraç Kayıtlı", "İhraç Kayıtlı"),
+        ("Konaklama Vergisi", "Konaklama Vergisi"),
+    )
 
+    bill_type = models.CharField(choices=TYPE, default="Satış", verbose_name="Fatura Tipi", null=True, blank=False,
+                                 max_length=100)
+    bill_number = models.CharField(verbose_name="Fatura Numarası", max_length=255, null=True, blank=False)
     name = models.CharField(verbose_name="Ad/Soyad/Ünvan", max_length=500, null=True)
     tax_number = models.BigIntegerField(verbose_name="Vergi Numarası", null=True)
     tax_administration = models.CharField(max_length=255, verbose_name="Vergi Dairesi", null=True, blank=True)
     price = models.FloatField(verbose_name="KDV Hariç Fiyat", null=True, blank=False)
-    tax_rate = models.IntegerField(verbose_name="KVD Oranı", null=True, blank=False)
+    tax_rate = models.IntegerField(verbose_name="KDV Oranı", null=True, blank=False)
+    tax_amount = models.FloatField(verbose_name="KDV Tutarı", null=True, blank=True)
+    price_amount = models.FloatField(verbose_name="Toplam Tutar", null=True, blank=True)
     year = models.CharField(max_length=10, choices=YEAR, null=True, default="2023", verbose_name="Düzenlenme Yılı")
     month = models.CharField(max_length=10, choices=MONTH, null=True, default="1", verbose_name="Düzenleme Ayı")
     file = models.FileField(upload_to="adminpage/kesilen_fatular/", verbose_name="Fatura", null=True, blank=True)
     edited_date = models.DateField(auto_now=False, auto_now_add=False, verbose_name="Fatura Düzenlenme Tarihi", null=True)
+    is_cancelling = models.BooleanField(default=False, verbose_name="İptal Edildi Mi?", null=True)
     created_at = models.DateField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
 
     class Meta:
         verbose_name = "2) Kesilen Faturalar"
         verbose_name_plural = "2) Kesilen Faturalar"
-        ordering = ['created_at']
+        ordering = ['-created_at']
 
     def __str__(self):
         return f"{self.name}"
@@ -108,18 +126,34 @@ class InvoicesReceived(models.Model):
         ("12", "12"),
     )
 
+    TYPE = (
+        ("Satış","Satış"),
+        ("Genel İade","Genel İade"),
+        ("Tevkifat","Tevkifat"),
+        ("Tevkifat İade","Tevkifat İade"),
+        ("İstisna","İstisna"),
+        ("Özel Matrah","Özel Matrah"),
+        ("İhraç Kayıtlı","İhraç Kayıtlı"),
+        ("Konaklama Vergisi","Konaklama Vergisi"),
+    )
+
+    bill_type = models.CharField(choices=TYPE, default="Satış", verbose_name="Fatura Tipi", null=True, blank=False, max_length=100)
+    bill_number = models.CharField(verbose_name="Fatura Numarası", max_length=255, null=True, blank=False)
     price = models.FloatField(verbose_name="KDV Hariç Fiyat", null=True, blank=False)
-    tax_rate = models.IntegerField(verbose_name="KVD Oranı", null=True, blank=False)
+    tax_rate = models.IntegerField(verbose_name="KDV Oranı", null=True, blank=False)
+    tax_amount = models.FloatField(verbose_name="KDV Tutarı", null=True, blank=True)
+    price_amount = models.FloatField(verbose_name="Toplam Tutar", null=True, blank=True)
     year = models.CharField(max_length=10, choices=YEAR, null=True, default="2023", verbose_name="Düzenlenme Yılı")
     month = models.CharField(max_length=10, choices=MONTH, null=True, default="1", verbose_name="Düzenleme Ayı")
     file = models.FileField(upload_to="adminpage/kesilen_fatular/", verbose_name="Fatura", null=True, blank=True)
+    is_cancelling = models.BooleanField(default=False, verbose_name="İptal Edildi Mi?", null=True)
     created_at = models.DateField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
 
     class Meta:
         verbose_name = "3) Alınan Faturalar"
         verbose_name_plural = "3) Alınan Faturalar"
-        ordering = ['created_at']
+        ordering = ['-created_at']
 
 
 class Notification(models.Model):
@@ -189,3 +223,85 @@ class Hakkimizda(models.Model):
     pttavm_url = models.CharField(max_length=255,verbose_name="PTTAvm Mağaza Adresi", null=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
+
+
+class BannerOne(models.Model):
+    TYPE = (
+        ("Belirli Tutar Altı","Belirli Tutar Altı"),
+        ("İndirimli Ürünler","İndirimli Ürünler"),
+    )
+
+    banner_type = models.CharField(max_length=100, choices=TYPE, verbose_name="Tip", null=True, blank=False)
+    banner_title = models.CharField(max_length=255, verbose_name="Banner Başlık", null=True, blank=False)
+    banner_minprice = models.IntegerField(verbose_name="En Düşük Fiyat", null=True, blank=True)
+    banner_maxprice = models.IntegerField(verbose_name="En Yüksek Fiyat", null=True, blank=True)
+    banner_discountrate = models.IntegerField(null=True, verbose_name="İndirim Oranı", blank=True)
+    image = models.FileField(upload_to="adminpage/bannerone/", verbose_name="Görsel Seç", null=True, blank=True)
+    is_publish = models.BooleanField(default=False, verbose_name="Yayında Mı?")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
+    slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
+
+    def get_image(self):
+        if self.image:
+            return self.image.url
+        else:
+            return None
+
+    def save(self, *args, **kwargs):
+        if not self.id and not self.slug:
+            slug = defaultfilters.slugify(unidecode(self.banner_title))
+            slug_exists = True
+            counter = 1
+            self.slug = slug
+            while slug_exists:
+                try:
+                    slug_exits = BannerOne.objects.get(slug=slug)
+                    if slug_exits:
+                        slug = self.slug + '_' + str(counter)
+                        counter += 1
+                except BannerOne.DoesNotExist:
+                    self.slug = slug
+                    break
+        super(BannerOne, self).save(*args, **kwargs)
+
+class BannerTwo(models.Model):
+
+    TYPE = (
+        ("Belirli Tutar Altı","Belirli Tutar Altı"),
+        ("İndirimli Ürünler","İndirimli Ürünler"),
+    )
+
+    banner_type = models.CharField(max_length=100, choices=TYPE, verbose_name="Tip", null=True, blank=False)
+    banner_title = models.CharField(max_length=255, verbose_name="Banner Başlık", null=True, blank=False)
+    banner_minprice = models.IntegerField(verbose_name="En Düşük Fiyat", null=True, blank=True)
+    banner_maxprice = models.IntegerField(verbose_name="En Yüksek Fiyat", null=True, blank=True)
+    banner_discountrate = models.IntegerField(null=True, verbose_name="İndirim Oranı", blank=True)
+    image = models.FileField(upload_to="adminpage/bannerone/", verbose_name="Görsel Seç", null=True, blank=True)
+    is_publish = models.BooleanField(default=False, verbose_name="Yayında Mı?")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
+    slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
+
+    def get_image(self):
+        if self.image:
+            return self.image.url
+        else:
+            return None
+
+    def save(self, *args, **kwargs):
+        if not self.id and not self.slug:
+            slug = defaultfilters.slugify(unidecode(self.banner_title))
+            slug_exists = True
+            counter = 1
+            self.slug = slug
+            while slug_exists:
+                try:
+                    slug_exits = BannerTwo.objects.get(slug=slug)
+                    if slug_exits:
+                        slug = self.slug + '_' + str(counter)
+                        counter += 1
+                except BannerTwo.DoesNotExist:
+                    self.slug = slug
+                    break
+        super(BannerTwo, self).save(*args, **kwargs)

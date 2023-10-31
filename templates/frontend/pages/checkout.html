@@ -4,148 +4,457 @@
 
 {% block title %}<title>Ödeme Kontrol</title>{% endblock %}
 
+
+
 {% block checkout %}
+
+    {% include 'frontend/partials/__second_navbar.html' %}
+
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
     <link rel="stylesheet" href="{% static 'css/orders.css' %}">
-    <hr>
 
-    <div class="main-content space1">
+
+    <div class="main-content space1" style="margin-top: 120px;">
         <div class="container container-240">
-            <ul class="breadcrumb">
-                <li><a href="{% url 'mainpage' %}">Anasayfa</a></li>
-                <li><a href="{% url 'cart' %}">Sepetim</a></li>
-                <li class="active">Ödeme Yap</li>
-            </ul>
 
-            {% csrf_token %}
-            <div class="cart-box-container-ver2">
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="payment__method bd-7">
-                            <div class="cmt-title text-center abs">
-                                <h1 class="page-title v3">Ödeme Yöntemi</h1>
-                            </div>
-                            <div class="payment_content">
-                                <script src="https://www.paytr.com/js/iframeResizer.min.js"></script>
-                                <iframe src="https://www.paytr.com/odeme/guvenli/{{ token }}" id="paytriframe"
-                                        frameborder="0" scrolling="no" style="width: 100%;"></iframe>
-                                <script>iFrameResize({}, '#paytriframe');</script>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="cart-total bd-7">
-                            <div class="cmt-title text-center abs">
-                                <h1 class="page-title v3">Siparişiniz</h1>
-                            </div>
-                            <div class="table-responsive">
-                                <div class="co-pd">
-                                    <p class="co-title">
-                                        Ürün<span>Fiyatı</span>
-                                    </p>
-                                    <ul class="co-pd-list">
-                                        {% for p in cart_items %}
-                                            <li class="clearfix">
-                                                <div class="co-name">
-                                                    <span>- </span>{{ p.product.title }} ({% if p.variant != None %}
-                                                    <span>{{ p.variant.color }} {{ p.variant.size }}</span>
-                                                {% endif %}) x {{ p.quantity }}
-                                                </div>
-                                                {% if p.product.variant != 'Yok' %}
-                                                    <div class="co-price">
-                                                        {{ p.variant.price|mul:p.quantity|floatformat:2 }} TL
-                                                    </div>
-                                                {% else %}
-                                                    <div class="co-price">
-                                                        {{ p.sub_total|floatformat:2 }} TL
-                                                    </div>
-                                                {% endif %}
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
+            <form action="{{ paytr_form_action }}" name="checkout" method="post" id="checkoutForm" class="co">
+                <div class="cart-box-container-ver2">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="address-cart mb-50 bd-7">
+                                <div class="cmt-title text-center abs">
+                                    <h1 class="page-title v2">Adres</h1>
                                 </div>
-                                <table class="shop_table">
-                                    <tbody>
-                                    <tr class="cart-subtotal">
-                                        <th>Toplam</th>
-                                        <td>{{ total|floatformat:2 }} TL</td>
-                                    </tr>
-                                    <tr class="cart-subtotal">
-                                        <th>Kargo</th>
-                                        <td>
-                                            {% if total != 0 %}
-                                                {% if total < setting.free_shipping %}
-                                                    {{ setting.shipping_price|floatformat:2 }} TL
+
+                                <div class="address__button__group mb-30" style="padding-left: 20px;">
+                                    <a href="" data-toggle="modal" class="btn btn-primary" data-target="#addressCreate"><i
+                                            class="fas fa-plus"></i>
+                                        &nbsp;Yeni Adres Ekle</a>
+                                    <a href="" data-toggle="modal" class="btn btn-primary" data-target="#changeAddress"><i
+                                            class="fas fa-arrow-right"></i>
+                                        &nbsp;Adres Değiştir</a>
+                                </div>
+                                {% if address.is_active == "Evet" %}
+                                    <div class="profile-page__content mb-30"
+                                         style="margin-left: 15px; margin-right: 15px;">
+                                        <div class="addresses__list">
+                                            <div class="addresses__list-item">
+                                                <div class="address"
+                                                     style="display: flex; flex-direction: row; justify-content: space-between">
+                                                    <div class="address__body">
+                                                        <div class="address__rec">
+                                                            <span class="name-contacts">
+                                                                {{ address.title }} - {{ address.first_name }} {{ address.last_name }} <a
+                                                                    class="phone"
+                                                                    href="tel:{{ address.mobile }}">{{ address.mobile }}</a>
+                                                            </span>
+                                                            <input type="hidden" name="selectedAddress"
+                                                                   value="{{ address.id }}">
+                                                            <span class="address">
+                                                                {{ address.address }} {{ address.neighbourhood }} Mah. / {{ address.county }} / {{ address.city }}
+                                                    </span>
+                                                            {% if address.is_active == "Evet" %}
+                                                                <span class="status" style="display: block">
+                                                                        <span class="badge badge-grad-1 badge-lg">Geçerli Adres</span>
+                                                                    </span>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                    <div class="address__controls"
+                                                         style="display: flex; flex-direction: row; justify-content: center; align-items: center">
+                                                        <a href="{% url 'update_address' address.id %}"
+                                                           class="btn btn-icon-only">
+                                                            <svg xmlns="https://www.w3.org/2000/svg" width="24"
+                                                                 height="24"
+                                                                 viewBox="0 0 24 24" fill="none"
+                                                                 stroke="currentColor"
+                                                                 stroke-width="2" stroke-linecap="round"
+                                                                 stroke-linejoin="round"
+                                                                 class="feather feather-edit-3">
+                                                                <path d="M12 20h9"></path>
+                                                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                                                            </svg>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="profile-page__content mb-30"
+                                         style="margin-left: 15px; margin-right: 15px;">
+                                        <p>Seçili adresiniz veya hiç adresiniz bulunmuyor.</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="payment__method bd-7">
+                                <div class="cmt-title text-center abs">
+                                    <h1 class="page-title v3">Ödeme Yöntemi</h1>
+                                </div>
+                                <div class="payment_content">
+                                    <div class="row" style="margin-bottom: 20px;">
+                                        <div class="col-lg-6">
+                                            <div class="creditCard">
+                                                <div class="card-bounding">
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <div class="form-group mb-20">
+                                                                <div class="form-field">
+                                                                    <label for="id_cardholder"
+                                                                           class="form-control-label">
+                                                                        Kart Sahibi
+                                                                    </label>
+                                                                    <input type="text" placeholder="Ad Soyad"
+                                                                           name="cc_owner" maxlength="50"
+                                                                           class="form-control"
+                                                                           id="id_cardholder">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <label for="cardnumber">Kart
+                                                        Numarası</label>
+                                                    <div class="card-container">
+                                                        <input type="text"
+                                                               name="cardnumber"
+                                                               placeholder="**** **** **** ****"
+                                                               maxlength="19"
+                                                               onkeyup="$cc.validate(event)" id="cardnumber"/>
+                                                        <div class="card-valid"></div>
+
+                                                    </div>
+                                                    <span class="cardnumber_error">Girilen kart numarasız geçersizdir.</span>
+                                                    <div class="card-details clearfix">
+                                                        <div class="expiration">
+                                                            <label for="expiry_month"
+                                                                   class="form-control-label">
+                                                                Son Kullanma Tarihi
+                                                            </label>
+                                                            <div class="expiration-group" style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
+                                                                <input type="text" name="expiry_month" maxlength="2" class="form-control" placeholder="Ay" style="margin-right: 10px;">
+                                                                <input type="text" name="expiry_year" maxlength="2" class="form-control" placeholder="Yıl">
+                                                            </div>
+                                                        </div>
+                                                        <div class="cvv">
+                                                            <label for="cvv"
+                                                                   class="form-control-label">
+                                                                CVV
+                                                            </label>
+                                                            <input type="text" name="cvv" maxlength="4" id="cvv"
+                                                                   class="form-control"
+                                                                   placeholder="CVC/CVV"/>
+                                                        </div>
+                                                    </div>
+                                                    <input type="hidden" name="card_number" id="paytrCardNumber">
+                                                    <input type="hidden" name="merchant_id" value="{{ paytr_data.merchant_id }}">
+                                                    <input type="hidden" name="user_ip" value="{{ paytr_data.user_ip }}">
+                                                    <input type="hidden" name="merchant_oid" value="{{ paytr_data.merchant_oid }}">
+                                                    <input type="hidden" name="email" value="{{ paytr_data.email }}">
+                                                    <input type="hidden" name="payment_type" value="{{ paytr_data.payment_type }}">
+                                                    <input type="hidden" name="payment_amount" value="" id="paytrPaymentAmount">
+                                                    <input type="hidden" name="currency" value="{{ paytr_data.currency }}">
+                                                    <input type="hidden" name="test_mode" value="{{ paytr_data.test_mode }}">
+                                                    <input type="hidden" name="non_3d" value="{{ paytr_data.non_3d }}">
+                                                    <input type="hidden" name="merchant_ok_url" value="{{ paytr_data.merchant_ok_url }}">
+                                                    <input type="hidden" name="merchant_fail_url" value="{{ paytr_data.merchant_fail_url }}">
+                                                    <input type="hidden" name="user_name" value="{{ paytr_data.user_name }}">
+                                                    <input type="hidden" name="user_address" value="{{ paytr_data.user_address }}">
+                                                    <input type="hidden" name="user_phone" value="{{ paytr_data.user_phone }}">
+                                                    <input type="hidden" name="user_basket" value="{{ paytr_data.user_basket }}">
+                                                    <input type="hidden" name="debug_on" value="1">
+                                                    <input type="hidden" name="client_lang" value="{{ paytr_data.client_lang }}">
+                                                    <input type="hidden" name="paytr_token" value="{{ paytr_data.paytr_token }}">
+                                                    <input type="hidden" name="no_installment" value="0">
+                                                    <input type="hidden" name="max_installment" value="0">
+                                                    <input type="hidden" name="card_type" id="kartTipi">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="card installment-card">
+                                                <div class="card-header">
+                                                    <h4 class="card-title">
+                                                        Taksit Seçenekleri
+                                                    </h4>
+                                                </div>
+                                                <div class="card-body">
+                                                    <table id="installmentTable">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>Taksit Sayısı</th>
+                                                            <th>Toplam Ödeme</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody id="installmentTableBody">
+
+
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- End contact-form -->
+                        <div class="col-md-4">
+                            <div class="cart-total bd-7">
+                                <div class="cmt-title text-center abs">
+                                    <h1 class="page-title v3">Siparişiniz</h1>
+                                </div>
+                                <div class="table-responsive">
+                                    <div class="co-pd">
+                                        <p class="co-title">
+                                            Ürün<span>Fiyatı</span>
+                                        </p>
+                                        <ul class="co-pd-list">
+                                            {% for p in cart_items %}
+                                                <li class="clearfix">
+                                                    <div class="co-name">
+                                                        <span>- </span>{{ p.product.title }} ({% if p.product.color %}
+                                                        {{ p.product.color }} Renk{% endif %}
+                                                        {% if p.product.size %}{{ p.product.size }} Beden{% endif %})
+                                                        x {{ p.quantity }}
+                                                    </div>
+                                                    <div class="co-price">
+                                                        {% if p.product.is_discountprice %}
+                                                            {{ p.product.discountprice|mul:p.quantity|floatformat:2 }}
+                                                            TL
+                                                        {% else %}
+                                                            {{ p.product.price|mul:p.quantity|floatformat:2 }} TL
+                                                        {% endif %}
+                                                    </div>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <table class="shop_table">
+                                        <tbody>
+                                        <tr class="cart-subtotal">
+                                            <th>Toplam</th>
+                                            <td>{{ total|floatformat:2 }} TL</td>
+                                        </tr>
+                                        <tr class="cart-subtotal">
+                                            <th>Kargo</th>
+                                            <td>
+                                                {% if total != 0 %}
+                                                    {% if total < setting.free_shipping %}
+                                                        {{ setting.shipping_price|floatformat:2 }} TL
+                                                    {% else %}
+                                                        Ücretsiz
+                                                    {% endif %}
                                                 {% else %}
-                                                    <input type="hidden"
-                                                           value="0"
-                                                           name="delivery_price">
-                                                    Ücretsiz
+                                                    -
                                                 {% endif %}
-                                            {% else %}
-                                                -
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                    <tr class="cart-subtotal">
-                                        <th>Kupon</th>
-                                        <td>
-                                            {% if coupon.is_active %}
-                                                - {{ coupon.coupon_price }} TL
-                                            {% else %}
-                                                - 0,00 TL
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                    <tr class="cart-subtotal">
-                                        <th><b>Genel Toplam</b></th>
-                                        <td><b>{{ grand_total|floatformat:2 }} TL</b></td>
-                                    </tr>
-                                    <tr class="cart-subtotal">
-                                        <th>Ödeme Yöntemi</th>
-                                        <td id="paymentType">Banka/Kredi Kartı</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr class="cart-subtotal">
+                                            <th>Kupon</th>
+                                            <td>
+                                                <input type="hidden" value="{{ coupon.coupon_price }}"
+                                                       name="used_coupon">
+                                                {% if coupon.is_active %}
+                                                    - {{ coupon.coupon_price }} TL
+                                                {% else %}
+                                                    - 0,00 TL
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        <tr class="order-total v2">
+                                            <input type="hidden" value="{{ grand_total }}" id="orderTotal" name="order_total">
+                                            <input type="hidden" name="installment_count" value="0" id="resultInstallmentCount">
+                                            <th>Genel Toplam</th>
+                                            <td id="grandTotal">{{ grand_total|floatformat:2 }} TL</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="form-check">
+                                    <label class="form-check-label ver2">
+                                        <input type="checkbox" class="form-check-input" name="approved_contract"
+                                               value="approved" required="">
+                                        <span><a href="" data-toggle="modal" data-target="#preliminaryInformationForm"
+                                                 class="term">Ön Bilgilendirme Formunu</a> ve <a href="#"
+                                                                                                 class="term"
+                                                                                                 data-toggle="modal"
+                                                                                                 data-target="#distanceSellingContract">Mesafeli Satış Sözleşmesini</a></span>
+                                        okudum ve onaylıyorum.
+                                    </label>
+                                </div>
+                                <div class="cart-total-bottom v2">
+                                    <button type="submit"
+                                            class="btn-gradient btn-checkout btn-co-order">Onayla ve Ödeme Yap
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        <div class="cart-total bd-7 mt-50">
-                            <div class="cmt-title text-center abs">
-                                <h1 class="page-title v3">Adres</h1>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-lg-12">
+                            <div class="contract-card">
+                                <div class="contract-card-header">
+                                    Ön Bilgilendirme Formu
+                                </div>
+                                <textarea name="preliminary_form" id="preliminaryForm" cols="100" rows="10"
+                                                  style="display: none"></textarea>
+                                <div class="contract-body preliminary_form_body">
+                                    {% include 'frontend/information/preliminary_information_form.html' %}
+                                </div>
                             </div>
-                            <div class="selectingAddress" style="padding: 10px 5px;">
-                                - {{ pre_order.delivery_address.address }} {{ pre_order.delivery_address.neighbourhood }}
-                                Mah. / {{ pre_order.delivery_address.county }} / {{ pre_order.delivery_address.city }}
+
+                            <div class="contract-card">
+                                <div class="contract-card-header">
+                                    Mesafeli Satış Sözleşmesi
+                                </div>
+                                 <textarea name="distance_selling_form" id="distanceSellingForm" cols="0" rows="0"
+                                                  style="display: none">{% include 'frontend/information/distance_selling_contract.html' %}</textarea>
+                                <div class="contract-body distance_selling_form_body">
+                                    {% include 'frontend/information/distance_selling_contract.html' %}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row mt-30">
-                    <div class="col-lg-12">
-                        <div class="contract-card">
-                            <div class="contract-card-header">
-                                Ön Bilgilendirme Formu
-                            </div>
-                            <div class="contract-body">
-                                {% include 'frontend/information/preliminary_information_form.html' %}
-                            </div>
-                        </div>
-
-                        <div class="contract-card">
-                            <div class="contract-card-header">
-                                Mesafeli Satış Sözleşmesi
-                            </div>
-                            <div class="contract-body">
-                                {% include 'frontend/information/distance_selling_contract.html' %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+            </form>
         </div>
     </div>
 
+    <div class="modal fade confirm-actions" tabindex="-1" role="dialog"
+         id="addressCreate">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Yeni Adresi Ekle
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <form class="form address-form" method="POST"
+                          data-counties-url="{% url 'load_counties' %}" id="addAddressForm">
+                        {% csrf_token %}
+                        <div class="row">
+                            {% for field in add_form %}
+                                <div class="col-lg-12" id="field-{{ field.id_for_label }}">
+                                    <div class="form-group mb-20">
+                                        <div class="form-field">
+                                            <label for="{{ field.id_for_label }}"
+                                                   class="form-control-label">
+                                                {{ field.label }}
+                                            </label>
+                                            {{ field }}
+                                        </div>
+                                    </div>
+                                </div>
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                        <div class="flex lr">
+                            <button type="submit" class="btn btn-submit btn-gradient"
+                                    id="addAddressBtn"
+                                    name="addAddressBtn">
+                                Adres Ekle
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade confirm-actions" tabindex="-1" role="dialog"
+         id="changeAddress">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Adres Değiştir
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <ul>
+                        {% for a in all_address %}
+                            <li>
+                                <a href="{% url 'select_address' a.id %}">
+                                    <div class="profile-page__content mb-30"
+                                         style="margin-left: 15px; margin-right: 15px;">
+                                        <div class="addresses__list">
+                                            <div class="addresses__list-item">
+                                                <div class="address"
+                                                     style="display: flex; flex-direction: row; justify-content: space-between">
+                                                    <div class="address__body">
+                                                        <div class="address__rec"
+                                                             style="display: flex; flex-direction: column; justify-content: start">
+                                                            <span class="name-contacts">
+                                                                {{ a.title }}
+                                                            </span>
+                                                            <input type="hidden" name="selectedAddress" value="4">
+                                                            <span class="address">
+                                                                {{ a.address }} {{ a.neighbourhood }} Mah. / {{ a.county }} / {{ a.city }}
+                                                                </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        {% empty %}
+                            <li>
+                                <div class="profile-page__content mb-30" style="margin-left: 15px; margin-right: 15px;">
+                                    <p>Kayıtlı farklı adresiniz bulunmamaktadır.</p>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade confirm-actions" tabindex="-1" role="dialog"
+         id="preliminaryInformationForm">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Ön Bilgilendirme Formu
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    {% include 'frontend/information/preliminary_information_form.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade confirm-actions" tabindex="-1" role="dialog"
+         id="distanceSellingContract">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Mesafeli Satış Sözleşmesi
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    {% include 'frontend/information/distance_selling_contract.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'js/load_counties.js' %}"></script>
+    <script src="{% static 'js/address.js' %}"></script>
     <script src="{% static 'js/payment.js' %}"></script>
 
+
+    <script>
+        document.getElementById('id_mobile').addEventListener('input', function (e) {
+            var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+    </script>
 {% endblock %}

@@ -85,7 +85,6 @@ class ProductIntegrationService(BaseService):
             "size": filter_params.get("size", None)
         }
 
-        print(params)
 
         url = urljoin(self.base_url, endpoint)
         data = self._api.call("GET", url, params=params, headers=None, files=None)

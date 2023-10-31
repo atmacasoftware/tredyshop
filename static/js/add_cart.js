@@ -22,7 +22,7 @@ $(document).ready(function () {
     })
 
     $("#waitingCard").hide()
-    $(".quickview-wrapper").remove('open')
+    $(".cart-popup").remove('open')
     $(".quick-modal").remove('show')
 
     $("#addingCard").click(function (e) {
@@ -45,7 +45,7 @@ $(document).ready(function () {
                 console.log(quantity)
                 $("#waitingCard").show()
                 $("#addingCard").hide()
-                $(".quickview-wrapper").addClass('open')
+                $(".cart-popup").addClass('open')
                 $(".quick-modal").addClass('show')
 
 
@@ -57,11 +57,12 @@ $(document).ready(function () {
 
             },
             error: function (error) {
-                $(".quickview-wrapper").removeClass('open')
+                $(".cart-popup").removeClass('open')
                 $(".quick-modal").removeClass('show')
             }
         })
     })
+
 
 
 })

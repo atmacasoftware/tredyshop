@@ -42,3 +42,23 @@ class WeavingTypeResource(resources.ModelResource):
 class MaterialTypeResource(resources.ModelResource):
     class Meta:
         model = MaterialType
+
+
+class EnvironmentTypeResource(resources.ModelResource):
+    class Meta:
+        model = EnvironmentType
+
+
+class WaistResource(resources.ModelResource):
+    class Meta:
+        model = Waist
+
+
+class LegTypeResource(resources.ModelResource):
+    class Meta:
+        model = LegType
+
+
+class PocketResource(resources.ModelResource):
+    class Meta:
+        model = Pocket

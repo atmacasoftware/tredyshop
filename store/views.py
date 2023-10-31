@@ -5,6 +5,8 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.db.models import Q, Min, Max
+
+from adminpage.models import BannerOne, BannerTwo
 from categorymodel.models import *
 from product.models import *
 
@@ -21,7 +23,8 @@ def store_page(request, categroy_slug=None, subcategory_slug=None, subbottomcate
 
     if categroy_slug != None and subcategory_slug == None and brands_slug == None:
         category_s = MainCategory.objects.get(slug=categroy_slug)
-        products = ApiProduct.objects.filter(category__slug=categroy_slug, dropshipping="Modaymış").distinct()[:15]
+        products = ApiProduct.objects.filter(category__slug=categroy_slug, dropshipping="Modaymış",
+                                             quantity__gte=1).distinct()[:15]
         category_type = "main"
         minMaxPrice = products.aggregate(
             Min('price'),
@@ -31,17 +34,17 @@ def store_page(request, categroy_slug=None, subcategory_slug=None, subbottomcate
         category_s = MainCategory.objects.get(slug=categroy_slug)
         subcategory_s = SubCategory.objects.get(slug=subcategory_slug)
         products = ApiProduct.objects.filter(subcategory__slug=subcategory_slug,
-                                             dropshipping="Modaymış").distinct()[:15]
+                                             dropshipping="Modaymış", quantity__gte=1).distinct()[:15]
         product_count = ApiProduct.objects.filter(subcategory__slug=subcategory_slug, dropshipping="Modaymış").count()
         minMaxPrice = ApiProduct.objects.filter(subcategory__slug=subcategory_slug,
                                                 dropshipping="Modaymış").distinct().aggregate(
             Min('price'),
             Max('price'))
         colors = ApiProduct.objects.filter(subcategory__slug=subcategory_slug,
-                                         color_id__isnull=False).distinct().values(
+                                           color_id__isnull=False, quantity__gte=1).distinct().values(
             'color__name', 'color__id', 'color__code')
         sizes = ApiProduct.objects.filter(subcategory__slug=subcategory_slug,
-                                        size_id__isnull=False).distinct().values(
+                                          size_id__isnull=False, quantity__gte=1).distinct().values(
             'size__name', 'size__id', 'size__code')
         category_type = "sub"
         context.update(
@@ -52,14 +55,14 @@ def store_page(request, categroy_slug=None, subcategory_slug=None, subbottomcate
         subcategory_s = SubCategory.objects.get(slug=subcategory_slug)
         subbottomcategory_s = SubBottomCategory.objects.get(slug=subbottomcategory_slug)
         colors = ApiProduct.objects.filter(subbottomcategory__slug=subbottomcategory_slug,
-                                         color_id__isnull=False).distinct().values(
+                                           color_id__isnull=False, quantity__gte=1).distinct().values(
             'color__name', 'color__id', 'color__code')
         sizes = ApiProduct.objects.filter(subbottomcategory__slug=subbottomcategory_slug,
-                                        size_id__isnull=False).distinct().values(
+                                          size_id__isnull=False, quantity__gte=1).distinct().values(
             'size__name', 'size__id', 'size__code')
         category_type = "sub"
         products = ApiProduct.objects.filter(subbottomcategory__slug=subbottomcategory_slug,
-                                             dropshipping="Modaymış").distinct()[:15]
+                                             dropshipping="Modaymış", quantity__gte=1).distinct()[:15]
         minMaxPrice = ApiProduct.objects.filter(subbottomcategory__slug=subbottomcategory_slug,
                                                 dropshipping="Modaymış").distinct().aggregate(
             Min('price'),
@@ -70,7 +73,7 @@ def store_page(request, categroy_slug=None, subcategory_slug=None, subbottomcate
              'sizes': sizes})
     elif categroy_slug == None and subcategory_slug == None and brands_slug != None:
         brands_s = Brand.objects.get(slug=brands_slug)
-        products = ApiProduct.objects.filter(brand__slug=brands_slug, dropshipping="Modaymış")[:15]
+        products = ApiProduct.objects.filter(brand__slug=brands_slug, dropshipping="Modaymış", quantity__gte=1)[:15]
         context.update({'brands_s': brands_s, 'products': products})
 
     context.update({'categroy_slug': categroy_slug, 'subcategory_slug': subcategory_slug,
@@ -118,47 +121,53 @@ def product_list(request):
 
     if category != 'None' and subcategory == 'None' and subbottomcategory == 'None' and brands == 'None':
         data = ApiProduct.objects.filter(category__slug=category, dropshipping="Modaymış", price__gte=minPrice,
-                                         price__lte=maxPrice).order_by(order_type)[offset:offset + limit]
+                                         price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
+               offset:offset + limit]
         if len(colors) and colors != '' and colors != [] and colors != ['']:
             data = ApiProduct.objects.filter(color_id__in=colors, price__gte=minPrice,
-                                             price__lte=maxPrice).order_by(order_type)[offset:offset + limit]
-        if len(sizes) and sizes != '' and sizes != [] and sizes != ['']:
-            data = ApiProduct.objects.filter(size_id__in=sizes, price__gte=minPrice,
-                                             price__lte=maxPrice).order_by(order_type)[offset:offset + limit]
-    elif category != 'None' and subcategory != 'None' and subbottomcategory == 'None' and brands == 'None':
-        data = ApiProduct.objects.filter(subcategory__slug=subcategory, dropshipping="Modaymış", price__gte=minPrice,
-                                         price__lte=maxPrice).order_by(order_type)[offset:offset + limit]
-        if len(colors) and colors != '' and colors != [] and colors != ['']:
-            data = ApiProduct.objects.filter(color_id__in=colors, price__gte=minPrice,
-                                             price__lte=maxPrice).order_by(order_type)[
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
                    offset:offset + limit]
         if len(sizes) and sizes != '' and sizes != [] and sizes != ['']:
             data = ApiProduct.objects.filter(size_id__in=sizes, price__gte=minPrice,
-                                             price__lte=maxPrice).order_by(order_type)[
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
+                   offset:offset + limit]
+    elif category != 'None' and subcategory != 'None' and subbottomcategory == 'None' and brands == 'None':
+        data = ApiProduct.objects.filter(subcategory__slug=subcategory, dropshipping="Modaymış", price__gte=minPrice,
+                                         price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
+               offset:offset + limit]
+        if len(colors) and colors != '' and colors != [] and colors != ['']:
+            data = ApiProduct.objects.filter(color_id__in=colors, price__gte=minPrice,
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
+                   offset:offset + limit]
+        if len(sizes) and sizes != '' and sizes != [] and sizes != ['']:
+            data = ApiProduct.objects.filter(size_id__in=sizes, price__gte=minPrice,
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
                    offset:offset + limit]
     elif category != 'None' and subcategory != 'None' and subbottomcategory != 'None' and brands == 'None':
         data = ApiProduct.objects.filter(subbottomcategory__slug=subbottomcategory, dropshipping="Modaymış",
                                          price__gte=minPrice,
-                                         price__lte=maxPrice).order_by(order_type)[offset:offset + limit]
+                                         price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
+               offset:offset + limit]
         if len(colors) and colors != '' and colors != [] and colors != ['']:
             data = ApiProduct.objects.filter(color_id__in=colors, price__gte=minPrice,
-                                             price__lte=maxPrice).order_by(order_type)[
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
                    offset:offset + limit]
         if len(sizes) and sizes != '' and sizes != [] and sizes != ['']:
             data = ApiProduct.objects.filter(size_id__in=sizes, price__gte=minPrice,
-                                             price__lte=maxPrice).order_by(order_type)[
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
                    offset:offset + limit]
 
     elif category == 'None' and subcategory == 'None' and subbottomcategory == 'None' and brands != 'None':
         data = ApiProduct.objects.filter(brand__slug=brands, dropshipping="Modaymış", price__gte=minPrice,
-                                         price__lte=maxPrice).order_by(order_type)[offset:offset + limit]
+                                         price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
+               offset:offset + limit]
         if len(colors) and colors != '' and colors != [] and colors != ['']:
             data = ApiProduct.objects.filter(color_id__in=colors, price__gte=minPrice,
-                                             price__lte=maxPrice).order_by(order_type)[
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
                    offset:offset + limit]
         if len(sizes) and sizes != '' and sizes != [] and sizes != ['']:
             data = ApiProduct.objects.filter(size_id__in=sizes, price__gte=minPrice,
-                                             price__lte=maxPrice).order_by(order_type)[
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
                    offset:offset + limit]
 
     t = render_to_string('frontend/partials/ajax/product-list.html', {'data': data})
@@ -208,37 +217,37 @@ def filter_data(request, categroy_slug=None, subcategoryslug=None, subottomcateg
     if subcategoryslug != None and subottomcategoryslug == None and brandsslug == None:
         subcategory = SubCategory.objects.get(slug=subcategoryslug)
         products = ApiProduct.objects.filter(subcategory=subcategory, dropshipping="Modaymış", price__gte=minPrice,
-                                             price__lte=maxPrice).distinct().order_by(order_type)[:15]
+                                             price__lte=maxPrice, quantity__gte=1).distinct().order_by(order_type)[:15]
         if len(colors) > 0:
             products = ApiProduct.objects.filter(color_id__in=colors, price__gte=minPrice,
-                                                 price__lte=maxPrice).distinct().order_by(order_type)[:15]
+                                                 price__lte=maxPrice, quantity__gte=1).distinct().order_by(order_type)[:15]
         if len(sizes) > 0:
             products = ApiProduct.objects.filter(size_id__in=sizes, price__gte=minPrice,
-                                                 price__lte=maxPrice).distinct().order_by(order_type)[:15]
+                                                 price__lte=maxPrice, quantity__gte=1).distinct().order_by(order_type)[:15]
     elif subcategoryslug != None and subottomcategoryslug != None and brandsslug == None:
         bottomcategory = SubBottomCategory.objects.get(slug=subottomcategoryslug)
         products = ApiProduct.objects.filter(subbottomcategory=bottomcategory, dropshipping="Modaymış",
                                              price__gte=minPrice,
-                                             price__lte=maxPrice).distinct().order_by(order_type)[:15]
+                                             price__lte=maxPrice, quantity__gte=1).distinct().order_by(order_type)[:15]
         if len(colors) > 0:
             products = ApiProduct.objects.filter(subbottomcategory=bottomcategory,
                                                  color_id__in=colors, price__gte=minPrice,
-                                                 price__lte=maxPrice).distinct().order_by(order_type)[:15]
+                                                 price__lte=maxPrice, quantity__gte=1).distinct().order_by(order_type)[:15]
         if len(sizes) > 0:
             products = ApiProduct.objects.filter(subbottomcategory=bottomcategory, size_id__in=sizes,
                                                  price__gte=minPrice,
-                                                 price__lte=maxPrice).distinct().order_by(order_type)[
+                                                 price__lte=maxPrice, quantity__gte=1).distinct().order_by(order_type)[
                        :15]
     elif subcategoryslug == None and subottomcategoryslug == None and brandsslug != None:
         brand = Brand.objects.get(slug=brandsslug)
         products = ApiProduct.objects.filter(brand=brand, dropshipping="Modaymış", price__gte=minPrice,
-                                             price__lte=maxPrice).distinct()[:15]
+                                             price__lte=maxPrice, quantity__gte=1).distinct()[:15]
         if len(colors) > 0:
             products = ApiProduct.objects.filter(brand=brand, color_id__in=colors, price__gte=minPrice,
-                                                 price__lte=maxPrice).distinct().order_by(order_type)[:15]
+                                                 price__lte=maxPrice, quantity__gte=1).distinct().order_by(order_type)[:15]
         if len(sizes) > 0:
             products = ApiProduct.objects.filter(brand=brand, size_id__in=sizes, price__gte=minPrice,
-                                                 price__lte=maxPrice).distinct().order_by(order_type)[:15]
+                                                 price__lte=maxPrice, quantity__gte=1).distinct().order_by(order_type)[:15]
 
     t = render_to_string('frontend/partials/ajax/product-list.html', {'data': products})
     return JsonResponse({'data': t})
@@ -290,10 +299,23 @@ def most_sell_product(request):
     return render(request, 'frontend/pages/most_sell_product.html', context)
 
 
-def under_50_price(request):
+def banner_one(request):
     context = {}
+    banner_one = BannerOne.objects.all().last()
+    products = []
+    product_count = None
+    if banner_one.banner_type == 'Belirli Tutar Altı':
+        products = ApiProduct.objects.filter(price__gte=banner_one.banner_minprice,
+                                             price__lte=banner_one.banner_maxprice, dropshipping="Modaymış")
+        product_count = products.count()
+    elif banner_one.banner_type == 'İndirimli Ürünler':
+        allproducts = ApiProduct.objects.all().filter(dropshipping="Modaymış")
 
-    products = ApiProduct.objects.filter(price__gte=0, price__lte=50, dropshipping="Modaymış")
+        for p in allproducts:
+            if p.is_discountprice == True:
+                if 100 - ((p.discountprice * 100) / p.price) > banner_one.banner_discountrate:
+                    products.append(p)
+        product_count = len(products)
 
     page_number = 20
 
@@ -308,9 +330,49 @@ def under_50_price(request):
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
 
-    context.update({'products': products, 'page_obj': page_obj, 'page_range': page_range})
+    context.update({'products': products, 'page_obj': page_obj, 'page_range': page_range, 'banner_one': banner_one,
+                    'product_count': product_count})
 
-    return render(request, 'frontend/pages/under_50_price.html', context)
+    return render(request, 'frontend/pages/banner_one.html', context)
+
+
+def banner_two(request):
+    context = {}
+    banner_two = BannerTwo.objects.all().last()
+    products = []
+    product_count = None
+    if banner_two.banner_type == 'Belirli Tutar Altı':
+        products = ApiProduct.objects.filter(price__gte=banner_two.banner_minprice,
+                                             price__lte=banner_two.banner_maxprice, dropshipping="Modaymış")
+        product_count = products.count()
+
+    elif banner_two.banner_type == 'İndirimli Ürünler':
+        allproducts = ApiProduct.objects.all().filter(dropshipping="Modaymış")
+
+        for p in allproducts:
+            if p.is_discountprice == True:
+                if 100 - ((p.discountprice * 100) / p.price) > banner_two.banner_discountrate:
+                    products.append(p)
+
+        product_count = len(products)
+
+    page_number = 20
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(products, page_number)
+    page_range = paginator.get_elided_page_range(page)
+
+    try:
+        page_obj = paginator.page(page)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+
+    context.update({'products': products, 'page_obj': page_obj, 'page_range': page_range, 'banner_two': banner_two,
+                    'product_count': product_count})
+
+    return render(request, 'frontend/pages/banner_two.html', context)
 
 
 def most_discount_product(request):

@@ -67,6 +67,24 @@ class MaterialTypeAdmin(ImportExportModelAdmin):
     list_display = ['id','name']
     resource_class = MaterialTypeResource
 
+
+class EnvironmentTypeAdmin(ImportExportModelAdmin):
+    list_display = ['id','name']
+    resource_class = EnvironmentTypeResource
+
+class WaistAdmin(ImportExportModelAdmin):
+    list_display = ['id','name']
+    resource_class = WaistResource
+
+class LegTypeAdmin(ImportExportModelAdmin):
+    list_display = ['id','name']
+    resource_class = LegTypeResource
+
+class PocketAdmin(ImportExportModelAdmin):
+    list_display = ['id','name']
+    resource_class = PocketResource
+
+
 admin.site.register(Brand, BrandAdmin)
 admin.site.register(LikeProduct)
 admin.site.register(DisLikeProduct)
@@ -83,3 +101,8 @@ admin.site.register(WeavingType, WeavingTypeAdmin)
 admin.site.register(MaterialType, MaterialTypeAdmin)
 admin.site.register(StockAlarm, StockAlarmAdmin)
 admin.site.register(ApiProduct, ProductApiAdmin)
+admin.site.register(UpdateHistory)
+admin.site.register(EnvironmentType, EnvironmentTypeAdmin)
+admin.site.register(Waist, WaistAdmin)
+admin.site.register(LegType, LegTypeAdmin)
+admin.site.register(Pocket, PocketAdmin)

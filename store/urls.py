@@ -12,7 +12,8 @@ urlpatterns = [
     path('filtreler/marka/<slug:brandsslug>/', filter_data, name='ajax_product_filter'),
     path('yeni-urunler/', new_product, name="new_product"),
     path('en-cok-satan-urunler/', most_sell_product, name="most_sell_product"),
-    path('50-tl-alti-urunler/', under_50_price, name="under_50_price"),
+    path('firsatlar/', banner_one, name="banner_one"),
+    path('indirimler/', banner_two, name="banner_two"),
     path('super-firsatlar/', most_discount_product, name="most_discount_product"),
     path('load-more-product/', product_list, name="load_more_data"),
 ]

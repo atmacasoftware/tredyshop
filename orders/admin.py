@@ -28,9 +28,15 @@ class BankInfoAdmin(ImportExportModelAdmin):
     resource_class = BankInfoResource
 
 
+class BINListAdmin(ImportExportModelAdmin):
+    list_display = ['bank_code', 'bank_name', 'bin_code', 'card_type', 'businesscard', 'created_at']
+    search_fields = ('bank_name', 'bin_code', 'bank_code',)
+    resource_class = BINListResource
+
 admin.site.register(Order, OrderAdmin)
 admin.site.register(PreOrder)
 admin.site.register(ExtraditionRequest)
 admin.site.register(OrderProduct, OrderProductAdmin)
 admin.site.register(BankInfo, BankInfoAdmin)
 admin.site.register(CancellationRequest)
+admin.site.register(BINList, BINListAdmin)

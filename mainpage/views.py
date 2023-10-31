@@ -4,12 +4,13 @@ from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 import decimal
 import requests
-from adminpage.models import Hakkimizda
+from adminpage.models import *
 from customer.models import Subscription
 from mainpage.models import *
-from product.models import Brand, ReviewRating, ApiProduct
+from product.models import Brand, ReviewRating, ApiProduct, Pattern, EnvironmentType
 from categorymodel.models import *
 from product.read_xml import tahtakaleSaveXML2db, updateTahtakaleSaveXML2db, customPrice, notActiveModaymisProduct
+from product.update import kalip, kumas
 from store.views import listToString
 from urllib.request import urlopen
 import xml.etree.ElementTree as ET
@@ -23,10 +24,13 @@ def index(request):
     flash_deals = []
     new_release = []
 
-
+    banner_one = BannerOne.objects.all().last()
+    banner_two = BannerTwo.objects.all().last()
 
     context.update({
         'sliders': sliders,
+        'banner_one':banner_one,
+        'banner_two':banner_two
 
     })
     return render(request, 'frontend/pages/mainpage.html', context)

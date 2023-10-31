@@ -5,7 +5,7 @@
 
 {% block orders %}
     <style>
-        .form-control{
+        .form-control {
             width: auto;
         }
     </style>
@@ -39,10 +39,48 @@
                                 {{ form.media }}
                                 {{ form.as_p }}
                                 <button type="submit" name="editOrder" class="btn btn-primary">Sipariş Güncelle</button>
-                                <a href="{% url 'admin_order_delete' order.order_number %}" class="btn btn-danger">Sil</a>
+                                <a href="{% url 'admin_order_delete' order.order_number %}"
+                                   class="btn btn-danger">Sil</a>
                             </form>
                         </div>
 
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Ödeme Sorgusu Sonucu</h3>
+                        </div>
+                        <div class="card-body p-0">
+                            <table class="table table-sm">
+                                <thead>
+                                <tr>
+                                    <th>Sipariş Tutarı</th>
+                                    <th>Ödenen Tutar</th>
+                                    <th>Ödeme Tipi</th>
+                                    <th>Taksit Sayısı</th>
+                                    <th>Kart Marka</th>
+                                    <th>Kesinti Tutarı</th>
+                                    <th>Net Tutarı</th>
+                                    <th>Ödeme Tarihi</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{ sorgu_durum.payment_amount }}</td>
+                                    <td>{{ sorgu_durum.payment_total }}</td>
+                                    <td>{{ sorgu_durum.odeme_tipi }}</td>
+                                    <td>{{ sorgu_durum.taksit }}</td>
+                                    <td>{{ sorgu_durum.kart_marka }}</td>
+                                    <td>{{ sorgu_durum.kesinti_tutari }}</td>
+                                    <td>{{ sorgu_durum.net_tutar }}</td>
+                                    <td>{{ sorgu_durum.payment_date }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

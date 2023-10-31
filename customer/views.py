@@ -340,12 +340,17 @@ def order_detail(request, order_number):
     orderproduct_count = orderproducts.count()
     extraditionrequest_exists = ExtraditionRequest.objects.filter(user=request.user, order=order).exists()
     cancelling_request = CancellationRequest.objects.filter(user=request.user, order=order)
+    address = order.address
+    cart_items = orderproducts
+
     context.update({
         'order': order,
         'orderproducts': orderproducts,
         'orderproduct_count': orderproduct_count,
         'extraditionrequest_exists': extraditionrequest_exists,
         'cancelling_request': cancelling_request,
+        'address':address,
+        'cart_items':cart_items
     })
     if 'addExtraditionRequestBtn' in request.POST:
         extradition_type = request.POST.get('extraditiontype')

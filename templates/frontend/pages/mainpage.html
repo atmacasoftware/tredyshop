@@ -20,21 +20,25 @@
                     </div>
                     <div class="col-md-4 col-sm-4 col-xs-12">
                         <div class="row">
-                            <div class="col-md-12 banner-img-item">
-                                <div class="banner-img banner-img2">
-                                    <a href="{% url 'under_50_price' %}"><img
-                                            src="{% static 'img/banner/under_price.jpg' %}"
-                                            alt=""
-                                            class="img-responsive" style="height: 299px!important;"></a>
+                            {% if banner_one.is_publish %}
+                                <div class="col-md-12 banner-img-item">
+                                    <div class="banner-img banner-img2">
+                                        <a href="{% url 'banner_one' %}"><img
+                                                src="{{ banner_one.get_image }}"
+                                                alt=""
+                                                class="img-responsive" style="height: 299px!important;"></a>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-12 banner-img-item">
-                                <div class="banner-img banner-img2">
-                                    <a href="{% url 'most_discount_product' %}"><img
-                                            src="{% static 'img/banner/most_discount.jpg' %}" alt=""
-                                            class="img-responsive" style="height: 299px!important;"></a>
+                            {% endif %}
+                            {% if banner_two.is_publish %}
+                                <div class="col-md-12 banner-img-item">
+                                    <div class="banner-img banner-img2">
+                                        <a href="{% url 'banner_two' %}"><img
+                                                src="{{ banner_two.get_image }}" alt=""
+                                                class="img-responsive" style="height: 299px!important;"></a>
+                                    </div>
                                 </div>
-                            </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

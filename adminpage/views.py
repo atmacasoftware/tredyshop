@@ -8,10 +8,12 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.views.generic import ListView
+
+from carts.helpers import paytr_sorgu
 from trendyol.api import TrendyolApiClient
 
 from carts.models import CartItem
-from mainpage.models import City
+from mainpage.models import City, Slider
 from trendyol.models import LogRecords
 from trendyol.services import ProductIntegrationService
 
@@ -21,7 +23,8 @@ from categorymodel.models import SubCategory, SubBottomCategory, MainCategory
 from customer.models import CustomerAddress, Coupon
 from ecommerce import settings
 from orders.models import Order, ExtraditionRequest, OrderProduct, CancellationRequest
-from product.models import Color, ApiProduct, ReviewRating, Favorite
+from product.models import Color, ApiProduct, ReviewRating, Favorite, UpdateHistory, FabricType, Height, Pattern, \
+    ArmType, CollerType, WeavingType, MaterialType
 from product.read_xml import modaymissaveXML2db, updateModaymisSaveXML2db, updateTahtakaleSaveXML2db, \
     tahtakaleSaveXML2db, notActiveModaymisProduct
 # Create your views here.
@@ -29,6 +32,7 @@ from django.contrib import messages
 from django.contrib.auth.hashers import check_password, make_password
 import requests
 from user_accounts.models import User
+from product.update import *
 
 
 def admin_login(request):
@@ -170,6 +174,104 @@ def mainpage(request):
 
 
 @login_required(login_url="/yonetim/giris-yap/")
+def slider(request):
+    context = {}
+
+    slider = Slider.objects.all()
+
+    form = SliderForm(data=request.POST or None, files=request.FILES or None)
+
+    if 'addBtn' in request.POST:
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Slider eklendi')
+            return redirect("admin_slider")
+
+    paginator = Paginator(slider, 25)
+    page = request.GET.get('page')
+
+    try:
+        sliders = paginator.page(page)
+    except PageNotAnInteger:
+        sliders = paginator.page(1)
+    except EmptyPage:
+        sliders = paginator.page(paginator.num_pages)
+
+    context.update({
+        'sliders': sliders,
+        'form': form
+    })
+
+    return render(request, 'backend/adminpage/pages/slider.html', context)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def slider_detail(request, id):
+    context = {}
+
+    slider = Slider.objects.get(id=id)
+
+    form = SliderForm(instance=slider, data=request.POST or None, files=request.FILES or None)
+
+    context.update({
+        'slider': slider,
+        'form': form
+    })
+
+    if 'updateBtn' in request.POST:
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Slider güncellendi')
+            return redirect("admin_slider")
+
+    return render(request, 'backend/adminpage/pages/slider_update.html', context)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def slider_delete(request, id):
+    slider = Slider.objects.get(id=id)
+    slider.delete()
+    messages.success(request, 'Slider silindi')
+    return redirect('admin_slider')
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def slider_delete_all(request, ):
+    sliders = Slider.objects.all()
+    for s in sliders:
+        s.delete()
+
+    messages.success(request, 'Tüm sliderlar silindi')
+    return redirect('admin_slider')
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def slider_select_delete(request):
+    slider_id = request.GET.getlist('slider[]')
+    Slider.objects.filter(id__in=slider_id).delete()
+    data = 'success'
+    return JsonResponse(data=data, safe=False)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def slider_publish(request, id):
+    slider = Slider.objects.get(id=id)
+    slider.is_publish = True
+    slider.save()
+    messages.success(request, f'{slider.title} yayına alındı')
+    return redirect('admin_slider')
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def slider_not_publish(request, id):
+    slider = Slider.objects.get(id=id)
+    slider.is_publish = False
+    slider.save()
+    messages.success(request, f'{slider.title} yayından kaldırıldı')
+    return redirect('admin_slider')
+
+
+@login_required(login_url="/yonetim/giris-yap/")
 def notification(request):
     context = {}
     navbar_notify = readNotification()
@@ -304,6 +406,45 @@ def admin_aboutus(request):
             return redirect("admin_aboutus")
 
     return render(request, 'backend/adminpage/pages/aboutus.html', context)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def page_mainpage(request):
+    context = {}
+
+    banner_one = BannerOne.objects.filter().last()
+    banner_two = BannerTwo.objects.filter().last()
+
+    if banner_one:
+        banner_one_form = BannerOneForm(instance=banner_one, data=request.POST or None, files=request.FILES or None)
+    else:
+        banner_one_form = BannerOneForm(data=request.POST or None, files=request.FILES or None)
+
+    if banner_two:
+        banner_two_form = BannerTwoForm(instance=banner_two, data=request.POST or None, files=request.FILES or None)
+    else:
+        banner_two_form = BannerTwoForm(data=request.POST or None, files=request.FILES or None)
+
+    context.update({
+        'banner_one': banner_one,
+        'banner_two': banner_two,
+        'banner_one_form': banner_one_form,
+        'banner_two_form': banner_two_form
+    })
+
+    if 'firstBannerBtn' in request.POST:
+        if banner_one_form.is_valid():
+            banner_one_form.save()
+            messages.success(request, '1. Banner düzenlendi.')
+            return redirect('page_mainpage')
+
+    if 'secondBannerBtn' in request.POST:
+        if banner_two_form.is_valid():
+            banner_two_form.save()
+            messages.success(request, '2. Banner düzenlendi.')
+            return redirect('page_mainpage')
+
+    return render(request, 'backend/adminpage/pages/page_mainpage.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -648,8 +789,6 @@ def products(request):
         else:
             product = ApiProduct.objects.filter(quantity=0)
 
-
-
     paginator = Paginator(product, 50)
     page = request.GET.get('page')
 
@@ -683,6 +822,15 @@ def products(request):
         'categories': categories,
         'query': query,
         'not_active_product_count': not_active_product_count,
+        'baslik': baslik,
+        'barkod': barkod,
+        'modelKodu': modelKodu,
+        'stokKodu': stokKodu,
+        'kategori': kategori,
+        'dropshipping': dropshipping,
+        'publish': publish,
+        'stock': stock,
+        'desc': desc,
     })
 
     return render(request, 'backend/adminpage/pages/products.html', context)
@@ -703,12 +851,14 @@ def product_detail(request, id):
     product = ApiProduct.objects.get(id=id)
 
     form = ProductForm(instance=product, data=request.POST or None, files=request.FILES or None)
+    variants = ApiProduct.objects.filter(model_code=product.model_code).exclude(id=product.id)
 
     context.update({
         'product': product,
         'navbar_notify': navbar_notify,
         'navbar_notify_count': navbar_notify_count,
         'form': form,
+        'variants': variants,
     })
 
     if 'updateBtn' in request.POST:
@@ -721,7 +871,52 @@ def product_detail(request, id):
             form.save()
             messages.success(request, 'Ürün güncellendi.')
             return redirect('admin_product')
+    if 'variantUpdateBtn' in request.POST:
+        fabrictype = request.POST.get('fabrictype')
+        height = request.POST.get('height')
+        pattern = request.POST.get('pattern')
+        armtype = request.POST.get('armtype')
+        collartype = request.POST.get('collartype')
+        weavingtype = request.POST.get('weavingtype')
+        material = request.POST.get('material')
+        age_group = request.POST.get('age_group')
+        sex = request.POST.get('sex')
+        detail = request.POST.get('detail')
+        description = request.POST.get('description')
 
+        for v in variants:
+            if fabrictype:
+                fabric_type = FabricType.objects.get(id=fabrictype)
+                v.fabrictype = fabric_type
+            if height:
+                heights = Height.objects.get(id=height)
+                v.height = heights
+            if pattern:
+                patterns = Pattern.objects.get(id=pattern)
+                v.pattern = patterns
+            if armtype:
+                arm_type = ArmType.objects.get(id=armtype)
+                v.armtype = arm_type
+            if collartype:
+                collar_type = CollerType.objects.get(id=collartype)
+                v.collartype = collar_type
+            if weavingtype:
+                weaving_type = WeavingType.objects.get(id=weavingtype)
+                v.weavingtype = weaving_type
+            if material:
+                material_type = MaterialType.objects.get(id=material)
+                v.material = material_type
+            if age_group:
+                v.age_group = age_group
+            if sex:
+                v.sex = sex
+            if detail:
+                v.detail = detail
+            if description:
+                v.description = description
+            v.save()
+        messages.success(request, 'Tüm variantlar güncellendi.')
+        return redirect('product_detail', id)
     return render(request, 'backend/adminpage/pages/product_detay.html', context)
 
 
@@ -742,6 +937,41 @@ def kampanyali_urunler(request):
 
 
 @login_required(login_url="/yonetim/giris-yap/")
+def urun_ozellik_guncelleme(request):
+    context = {}
+
+    if 'kalip_guncelle' in request.POST:
+        kalip()
+        messages.success(request, 'Kalıp güncellendi.')
+        return redirect('urun_ozellik_guncelleme')
+    if 'kumas_guncelle' in request.POST:
+        kumas()
+        messages.success(request, 'Kumaş güncellendi.')
+        return redirect('urun_ozellik_guncelleme')
+    if 'ortam_guncelle' in request.POST:
+        kumas()
+        messages.success(request, 'Ortam güncellendi.')
+        return redirect('urun_ozellik_guncelleme')
+    if 'yaka_guncelle' in request.POST:
+        kumas()
+        messages.success(request, 'Yaka tipi güncellendi.')
+        return redirect('urun_ozellik_guncelleme')
+    if 'cinsiyet_guncelle' in request.POST:
+        kumas()
+        messages.success(request, 'Cinsiyet güncellendi.')
+        return redirect('urun_ozellik_guncelleme')
+    if 'bel_guncelle' in request.POST:
+        bel()
+        messages.success(request, 'Bel güncellendi.')
+        return redirect('urun_ozellik_guncelleme')
+    if 'boy_guncelle' in request.POST:
+        boy()
+        messages.success(request, 'Boy güncellendi.')
+        return redirect('urun_ozellik_guncelleme')
+
+    return render(request, 'backend/adminpage/pages/urun_ozellik_guncelleme.html', context)
+
+@login_required(login_url="/yonetim/giris-yap/")
 def all_delete_product(request):
     products = ApiProduct.objects.all().delete()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
@@ -755,6 +985,17 @@ def ajax_select_delete_product(request):
 
     data = 'success'
     return JsonResponse(data=data, safe=False)
+
+
+def product_export_excel(request):
+    deneme_product = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=False)
+    trendyol_list = []
+
+    columns = ['Başlık', 'Barkod']
+
+    rows = ApiProduct.objects.filter(is_publish_trendyol=True).values_list('title', 'barcode')
+
+    return exportExcel('products', 'Ürünler', columns=columns, rows=rows)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -776,6 +1017,29 @@ def orders(request):
 
     return render(request, 'backend/adminpage/pages/orders.html', context)
 
+@login_required(login_url="/yonetim/giris-yap/")
+def trendyol_add_order(request):
+    context = {}
+    navbar_notify = readNotification()
+    navbar_notify_count = notReadNotification()
+
+    form = TrendyolOrderForm(data=request.POST or None,
+                              files=request.FILES or None)
+
+    if request.POST:
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Trendyol sipariş eklendi.')
+            return redirect('trendyol_add_order')
+
+    context.update({
+        'navbar_notify': navbar_notify,
+        'navbar_notify_count': navbar_notify_count,
+        'form':form
+    })
+
+    return render(request, 'backend/adminpage/pages/trendyol/add_orders.html', context)
+
 
 @login_required(login_url="/yonetim/giris-yap/")
 def order_detail(request, order_number):
@@ -786,12 +1050,13 @@ def order_detail(request, order_number):
     order = Order.objects.get(order_number=order_number)
 
     form = OrderForm(instance=order, data=request.POST or None, files=request.FILES or None)
-
+    sorgu_durum = paytr_sorgu(order_number=order_number)
     context.update({
         'navbar_notify': navbar_notify,
         'navbar_notify_count': navbar_notify_count,
         'order': order,
         'form': form,
+        'sorgu_durum': sorgu_durum
     })
 
     if 'editOrder' in request.POST:
@@ -938,7 +1203,7 @@ def haydigiy_product_load(request):
 
 @login_required(login_url="/yonetim/giris-yap/")
 def haydigiy_product_update(request):
-    updateModaymisSaveXML2db(request)
+    updateModaymisSaveXML2db()
     createNotification(type="2", title="Modaymış ürünlerinin güncellemesi yapıldı.",
                        detail="Modaymış ürünlerinin güncellemesi yapıldı.")
     messages.success(request, 'Veriler güncelledi!')
@@ -961,7 +1226,7 @@ def haydigiy_find_not_active_product_page(request):
 
 @login_required(login_url="/yonetim/giris-yap/")
 def haydigiy_find_not_active_product(request):
-    notActiveModaymisProduct(request)
+    notActiveModaymisProduct()
     createNotification(type="2", title="Modaymış ürünlerde aktif olmayanlar bulundu.",
                        detail="Modaymış ürünlerinde aktif olmayan ürünler aktif değildir olarak güncellendi.")
     messages.success(request, 'Modaymış ürünlerde aktif olmayanlar bulundu')
@@ -1310,7 +1575,7 @@ def trendyol_update_function(request, products):
             if saleprice > trendyol.firstbarem and saleprice <= 102:
                 saleprice = trendyol.firstbarem
 
-            if saleprice > trendyol.secondbarem and saleprice <= 170:
+            if saleprice > trendyol.secondbarem and saleprice <= 151:
                 saleprice = trendyol.secondbarem
 
             if p.quantity > 2:
@@ -1330,11 +1595,114 @@ def trendyol_update_function(request, products):
                                     supplier_id=trendyol.saticiid)
             service = ProductIntegrationService(api)
             response = service.update_price_and_stock(items=product_data)
-            messages.success(request, f"{response}")
             log_record = LogRecords.objects.create(log_type="2", batch_id=response['batchRequestId'])
+            UpdateHistory.objects.create(history_type="Trendyol Stok&Fiyat Güncelleme")
         except:
             result = 'failed'
         return result
+
+
+def trendyol_schedule_update_price_stok(request):
+    total_product = ApiProduct.objects.all().filter(is_publish_trendyol=True, is_publish=True).count()
+    if total_product == 0 and total_product <= 999:
+        products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
+        trendyol_update_function(request, products=products)
+    elif total_product > 999 and total_product <= 1999:
+        products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
+        trendyol_update_function(request, products=products)
+        products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
+        trendyol_update_function(request, products=products2)
+    elif total_product > 1999 and total_product <= 2999:
+        products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
+        trendyol_update_function(request, products=products)
+        products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
+        trendyol_update_function(request, products=products2)
+        products3 = ApiProduct.objects.filter(is_publish_trendyol=True)[1999:2999]
+        trendyol_update_function(request, products=products3)
+    elif total_product > 2999 and total_product <= 3999:
+        products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
+        trendyol_update_function(request, products=products)
+        products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
+        trendyol_update_function(request, products=products2)
+        products3 = ApiProduct.objects.filter(is_publish_trendyol=True)[1999:2999]
+        trendyol_update_function(request, products=products3)
+        products4 = ApiProduct.objects.filter(is_publish_trendyol=True)[2999:3999]
+        trendyol_update_function(request, products=products4)
+    elif total_product > 3999 and total_product <= 4999:
+        products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
+        trendyol_update_function(request, products=products)
+        products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
+        trendyol_update_function(request, products=products2)
+        products3 = ApiProduct.objects.filter(is_publish_trendyol=True)[1999:2999]
+        trendyol_update_function(request, products=products3)
+        products4 = ApiProduct.objects.filter(is_publish_trendyol=True)[2999:3999]
+        trendyol_update_function(request, products=products4)
+        products5 = ApiProduct.objects.filter(is_publish_trendyol=True)[3999:4999]
+        trendyol_update_function(request, products=products5)
+    elif total_product > 4999 and total_product <= 5999:
+        products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
+        trendyol_update_function(request, products=products)
+        products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
+        trendyol_update_function(request, products=products2)
+        products3 = ApiProduct.objects.filter(is_publish_trendyol=True)[1999:2999]
+        trendyol_update_function(request, products=products3)
+        products4 = ApiProduct.objects.filter(is_publish_trendyol=True)[2999:3999]
+        trendyol_update_function(request, products=products4)
+        products5 = ApiProduct.objects.filter(is_publish_trendyol=True)[3999:4999]
+        trendyol_update_function(request, products=products5)
+        products6 = ApiProduct.objects.filter(is_publish_trendyol=True)[4999:5999]
+        trendyol_update_function(request, products=products6)
+    elif total_product > 5999 and total_product <= 6999:
+        products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
+        trendyol_update_function(request, products=products)
+        products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
+        trendyol_update_function(request, products=products2)
+        products3 = ApiProduct.objects.filter(is_publish_trendyol=True)[1999:2999]
+        trendyol_update_function(request, products=products3)
+        products4 = ApiProduct.objects.filter(is_publish_trendyol=True)[2999:3999]
+        trendyol_update_function(request, products=products4)
+        products5 = ApiProduct.objects.filter(is_publish_trendyol=True)[3999:4999]
+        trendyol_update_function(request, products=products5)
+        products6 = ApiProduct.objects.filter(is_publish_trendyol=True)[4999:5999]
+        trendyol_update_function(request, products=products6)
+        products7 = ApiProduct.objects.filter(is_publish_trendyol=True)[5999:6999]
+        trendyol_update_function(request, products=products7)
+    elif total_product > 6999 and total_product <= 7999:
+        products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
+        trendyol_update_function(request, products=products)
+        products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
+        trendyol_update_function(request, products=products2)
+        products3 = ApiProduct.objects.filter(is_publish_trendyol=True)[1999:2999]
+        trendyol_update_function(request, products=products3)
+        products4 = ApiProduct.objects.filter(is_publish_trendyol=True)[2999:3999]
+        trendyol_update_function(request, products=products4)
+        products5 = ApiProduct.objects.filter(is_publish_trendyol=True)[3999:4999]
+        trendyol_update_function(request, products=products5)
+        products6 = ApiProduct.objects.filter(is_publish_trendyol=True)[4999:5999]
+        trendyol_update_function(request, products=products6)
+        products7 = ApiProduct.objects.filter(is_publish_trendyol=True)[5999:6999]
+        trendyol_update_function(request, products=products7)
+        products8 = ApiProduct.objects.filter(is_publish_trendyol=True)[6999:7999]
+        trendyol_update_function(request, products=products8)
+    elif total_product > 7999 and total_product <= 8999:
+        products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
+        trendyol_update_function(request, products=products)
+        products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
+        trendyol_update_function(request, products=products2)
+        products3 = ApiProduct.objects.filter(is_publish_trendyol=True)[1999:2999]
+        trendyol_update_function(request, products=products3)
+        products4 = ApiProduct.objects.filter(is_publish_trendyol=True)[2999:3999]
+        trendyol_update_function(request, products=products4)
+        products5 = ApiProduct.objects.filter(is_publish_trendyol=True)[3999:4999]
+        trendyol_update_function(request, products=products5)
+        products6 = ApiProduct.objects.filter(is_publish_trendyol=True)[4999:5999]
+        trendyol_update_function(request, products=products6)
+        products7 = ApiProduct.objects.filter(is_publish_trendyol=True)[5999:6999]
+        trendyol_update_function(request, products=products7)
+        products8 = ApiProduct.objects.filter(is_publish_trendyol=True)[6999:7999]
+        trendyol_update_function(request, products=products8)
+        products9 = ApiProduct.objects.filter(is_publish_trendyol=True)[8999:9999]
+        trendyol_update_function(request, products=products9)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -1351,129 +1719,106 @@ def trendyol_update_price_stok(request):
     messages.success(request, f"Toplam Ürün Sayısı: {total_product}")
     trendyol = Trendyol.objects.all().last()
 
-    not_active = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=False)
-
     if 'updateBtn' in request.POST:
-        count = 1
         if total_product == 0 and total_product <= 999:
-            products = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[:999]
+            products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
             trendyol_update_function(request, products=products)
         elif total_product > 999 and total_product <= 1999:
-            products = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[:999]
+            products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
             trendyol_update_function(request, products=products)
-            products2 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[999:1999]
+            products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
             trendyol_update_function(request, products=products2)
         elif total_product > 1999 and total_product <= 2999:
-            products = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[:999]
+            products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
             trendyol_update_function(request, products=products)
-            products2 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[999:1999]
+            products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
             trendyol_update_function(request, products=products2)
-            products3 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[1999:2999]
+            products3 = ApiProduct.objects.filter(is_publish_trendyol=True)[1999:2999]
             trendyol_update_function(request, products=products3)
         elif total_product > 2999 and total_product <= 3999:
-            products = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[:999]
+            products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
             trendyol_update_function(request, products=products)
-            products2 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[999:1999]
+            products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
             trendyol_update_function(request, products=products2)
-            products3 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[1999:2999]
+            products3 = ApiProduct.objects.filter(is_publish_trendyol=True)[1999:2999]
             trendyol_update_function(request, products=products3)
-            products4 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[2999:3999]
+            products4 = ApiProduct.objects.filter(is_publish_trendyol=True)[2999:3999]
             trendyol_update_function(request, products=products4)
         elif total_product > 3999 and total_product <= 4999:
-            products = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[:999]
+            products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
             trendyol_update_function(request, products=products)
-            products2 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[999:1999]
+            products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
             trendyol_update_function(request, products=products2)
-            products3 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[1999:2999]
+            products3 = ApiProduct.objects.filter(is_publish_trendyol=True)[1999:2999]
             trendyol_update_function(request, products=products3)
-            products4 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[2999:3999]
+            products4 = ApiProduct.objects.filter(is_publish_trendyol=True)[2999:3999]
             trendyol_update_function(request, products=products4)
-            products5 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[3999:4999]
+            products5 = ApiProduct.objects.filter(is_publish_trendyol=True)[3999:4999]
             trendyol_update_function(request, products=products5)
         elif total_product > 4999 and total_product <= 5999:
-            products = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[:999]
+            products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
             trendyol_update_function(request, products=products)
-            products2 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[999:1999]
+            products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
             trendyol_update_function(request, products=products2)
-            products3 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[1999:2999]
+            products3 = ApiProduct.objects.filter(is_publish_trendyol=True)[1999:2999]
             trendyol_update_function(request, products=products3)
-            products4 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[2999:3999]
+            products4 = ApiProduct.objects.filter(is_publish_trendyol=True)[2999:3999]
             trendyol_update_function(request, products=products4)
-            products5 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[3999:4999]
+            products5 = ApiProduct.objects.filter(is_publish_trendyol=True)[3999:4999]
             trendyol_update_function(request, products=products5)
-            products6 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[4999:5999]
+            products6 = ApiProduct.objects.filter(is_publish_trendyol=True)[4999:5999]
             trendyol_update_function(request, products=products6)
         elif total_product > 5999 and total_product <= 6999:
-            products = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[:999]
+            products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
             trendyol_update_function(request, products=products)
-            products2 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[999:1999]
+            products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
             trendyol_update_function(request, products=products2)
-            products3 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[1999:2999]
+            products3 = ApiProduct.objects.filter(is_publish_trendyol=True)[1999:2999]
             trendyol_update_function(request, products=products3)
-            products4 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[2999:3999]
+            products4 = ApiProduct.objects.filter(is_publish_trendyol=True)[2999:3999]
             trendyol_update_function(request, products=products4)
-            products5 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[3999:4999]
+            products5 = ApiProduct.objects.filter(is_publish_trendyol=True)[3999:4999]
             trendyol_update_function(request, products=products5)
-            products6 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[4999:5999]
+            products6 = ApiProduct.objects.filter(is_publish_trendyol=True)[4999:5999]
             trendyol_update_function(request, products=products6)
-            products7 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[5999:6999]
+            products7 = ApiProduct.objects.filter(is_publish_trendyol=True)[5999:6999]
             trendyol_update_function(request, products=products7)
         elif total_product > 6999 and total_product <= 7999:
-            products = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[:999]
+            products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
             trendyol_update_function(request, products=products)
-            products2 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[999:1999]
+            products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
             trendyol_update_function(request, products=products2)
-            products3 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[1999:2999]
+            products3 = ApiProduct.objects.filter(is_publish_trendyol=True)[1999:2999]
             trendyol_update_function(request, products=products3)
-            products4 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[2999:3999]
+            products4 = ApiProduct.objects.filter(is_publish_trendyol=True)[2999:3999]
             trendyol_update_function(request, products=products4)
-            products5 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[3999:4999]
+            products5 = ApiProduct.objects.filter(is_publish_trendyol=True)[3999:4999]
             trendyol_update_function(request, products=products5)
-            products6 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[4999:5999]
+            products6 = ApiProduct.objects.filter(is_publish_trendyol=True)[4999:5999]
             trendyol_update_function(request, products=products6)
-            products7 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[5999:6999]
+            products7 = ApiProduct.objects.filter(is_publish_trendyol=True)[5999:6999]
             trendyol_update_function(request, products=products7)
-            products8 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[6999:7999]
+            products8 = ApiProduct.objects.filter(is_publish_trendyol=True)[6999:7999]
             trendyol_update_function(request, products=products8)
         elif total_product > 7999 and total_product <= 8999:
-            products = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[:999]
+            products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
             trendyol_update_function(request, products=products)
-            products2 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[999:1999]
+            products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
             trendyol_update_function(request, products=products2)
-            products3 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[1999:2999]
+            products3 = ApiProduct.objects.filter(is_publish_trendyol=True)[1999:2999]
             trendyol_update_function(request, products=products3)
-            products4 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[2999:3999]
+            products4 = ApiProduct.objects.filter(is_publish_trendyol=True)[2999:3999]
             trendyol_update_function(request, products=products4)
-            products5 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[3999:4999]
+            products5 = ApiProduct.objects.filter(is_publish_trendyol=True)[3999:4999]
             trendyol_update_function(request, products=products5)
-            products6 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[4999:5999]
+            products6 = ApiProduct.objects.filter(is_publish_trendyol=True)[4999:5999]
             trendyol_update_function(request, products=products6)
-            products7 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[5999:6999]
+            products7 = ApiProduct.objects.filter(is_publish_trendyol=True)[5999:6999]
             trendyol_update_function(request, products=products7)
-            products8 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[6999:7999]
+            products8 = ApiProduct.objects.filter(is_publish_trendyol=True)[6999:7999]
             trendyol_update_function(request, products=products8)
-            products9 = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=True)[8999:9999]
+            products9 = ApiProduct.objects.filter(is_publish_trendyol=True)[8999:9999]
             trendyol_update_function(request, products=products9)
-        if not_active.count() > 0:
-            items = []
-            product_data = []
-            for p in not_active:
-                items.append(
-                    trendyolUpdateData(barcode=p.barcode, quantity=0, list_price=p.trendyol_price,
-                                       sale_price=p.trendyol_price)
-                )
-
-                product_data = items
-            try:
-                api = TrendyolApiClient(api_key=trendyol.apikey, api_secret=trendyol.apisecret,
-                                        supplier_id=trendyol.saticiid)
-                service = ProductIntegrationService(api)
-                response = service.update_price_and_stock(items=product_data)
-                messages.success(request, f"{response}")
-                log_record = LogRecords.objects.create(log_type="2", batch_id=response['batchRequestId'])
-            except:
-                pass
-            return redirect('trendyol_update_price_stok')
 
     return render(request, 'backend/adminpage/pages/trendyol/stok_fiyat_guncelleme.html', context)
 
@@ -1513,6 +1858,29 @@ def trendyol_delete_product(request):
 
     return render(request, 'backend/adminpage/pages/trendyol/silme.html')
 
+@login_required(login_url="/yonetim/giris-yap/")
+def trendyol_add_order(request):
+    context = {}
+    navbar_notify = readNotification()
+    navbar_notify_count = notReadNotification()
+
+    form = TrendyolOrderForm(data=request.POST or None,
+                              files=request.FILES or None)
+
+    if request.POST:
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Sipariş kaydı başarıyla girildi.")
+            return redirect('trendyol_add_order')
+
+    context.update({
+        'navbar_notify': navbar_notify,
+        'navbar_notify_count': navbar_notify_count,
+        'form':form
+    })
+
+    return render(request, 'backend/adminpage/pages/trendyol/add_orders.html', context)
+    return render(request, 'backend/adminpage/pages/trendyol/add_orders.html', context)
 
 @login_required(login_url="/yonetim/giris-yap/")
 def trendyol_batch_request(request):
@@ -1633,7 +2001,13 @@ def kesilen_fatura_ekle(request):
     context.update({'form': form})
     if request.method == "POST":
         if form.is_valid():
-            form.save()
+            data = form.save()
+            kdv_tutari = data.price * (data.tax_rate / 100)
+            toplam_tutar = kdv_tutari + data.price
+            fatura = IssuedInvoices.objects.get(id=data.id)
+            fatura.tax_amount = kdv_tutari
+            fatura.price_amount = toplam_tutar
+            fatura.save()
             messages.success(request, 'Fatura başarıyla eklendi!')
             return redirect("kesilen_fatura_ekle")
     return render(request, 'backend/adminpage/pages/kesilen_fatura_ekle.html', context)
@@ -1642,9 +2016,56 @@ def kesilen_fatura_ekle(request):
 @login_required(login_url="/yonetim/giris-yap/")
 def kesilen_faturalar(request):
     context = {}
+
+    fatura_adi = request.GET.get("fatura_adi", '')
+    unvan = request.GET.get("unvan", '')
+    vergi_no = request.GET.get("vergi_no", '')
+    vergi_dairesi = request.GET.get("vergi_dairesi", '')
+    ay = request.GET.get("ay", '')
+    yil = request.GET.get("yil", '')
+    desc = request.GET.get("desc", '')
+
+    query = f"?fatura_adi={fatura_adi}&unvan={unvan}&vergi_no={vergi_no}&vergi_dairesi={vergi_dairesi}&ay={ay}&yil={yil}&desc={desc}"
+
     faturalar = IssuedInvoices.objects.all()
+
+    if desc:
+        faturalar = faturalar.order_by(desc)
+
+    if fatura_adi:
+        faturalar = faturalar.filter(Q(bill_number__icontains=fatura_adi))
+
+    if unvan:
+        faturalar = faturalar.filter(Q(name__icontains=unvan))
+
+    if vergi_no:
+        faturalar = faturalar.filter(tax_number=vergi_no)
+
+    if vergi_dairesi:
+        faturalar = faturalar.filter(Q(tax_administration__icontains=vergi_dairesi))
+
+    if ay:
+        faturalar = faturalar.filter(month=ay)
+
+    if yil:
+        faturalar = faturalar.filter(year=yil)
+
+
+    paginator = Paginator(faturalar, 50)
+    page = request.GET.get('page')
+
+    try:
+        fatura = paginator.page(page)
+    except PageNotAnInteger:
+        fatura = paginator.page(1)
+    except EmptyPage:
+        fatura = paginator.page(paginator.num_pages)
+
+
+
     context.update({
-        'faturalar': faturalar
+        'faturalar': fatura,
+        'query':query,
     })
     return render(request, 'backend/adminpage/pages/kesilen_faturalar.html', context)
 
@@ -1694,7 +2115,13 @@ def alinan_fatura_ekle(request):
     context.update({'form': form})
     if request.method == "POST":
         if form.is_valid():
-            form.save()
+            data = form.save()
+            kdv_tutari = data.price * (data.tax_rate / 100)
+            toplam_tutar = kdv_tutari + data.price
+            fatura = InvoicesReceived.objects.get(id=data.id)
+            fatura.tax_amount = kdv_tutari
+            fatura.price_amount = toplam_tutar
+            fatura.save()
             messages.success(request, 'Fatura başarıyla eklendi!')
             return redirect("alinan_fatura_ekle")
     return render(request, 'backend/adminpage/pages/alinan_fatura_ekle.html', context)
@@ -1703,9 +2130,41 @@ def alinan_fatura_ekle(request):
 @login_required(login_url="/yonetim/giris-yap/")
 def alinan_faturalar(request):
     context = {}
+    fatura_adi = request.GET.get("fatura_adi", '')
+    ay = request.GET.get("ay", '')
+    yil = request.GET.get("yil", '')
+    desc = request.GET.get("desc", '')
+
+    query = f"?fatura_adi={fatura_adi}&ay={ay}&yil={yil}&desc={desc}"
+
     faturalar = InvoicesReceived.objects.all()
+
+    if desc:
+        faturalar = faturalar.order_by(desc)
+
+    if fatura_adi:
+        faturalar = faturalar.filter(Q(bill_number__icontains=fatura_adi))
+
+
+    if ay:
+        faturalar = faturalar.filter(month=ay)
+
+    if yil:
+        faturalar = faturalar.filter(year=yil)
+
+    paginator = Paginator(faturalar, 50)
+    page = request.GET.get('page')
+
+    try:
+        fatura = paginator.page(page)
+    except PageNotAnInteger:
+        fatura = paginator.page(1)
+    except EmptyPage:
+        fatura = paginator.page(paginator.num_pages)
+
     context.update({
-        'faturalar': faturalar
+        'faturalar': fatura,
+        'query': query,
     })
     return render(request, 'backend/adminpage/pages/alinan_faturalar.html', context)
 
@@ -1744,3 +2203,41 @@ def alinan_faturalar_export_excel(request):
 
     rows = InvoicesReceived.objects.all().values_list('year', 'month', 'price', 'tax_rate', 'created_at')
     return exportExcel('alinan-faturalar', 'Ödemeler', columns=columns, rows=rows)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def update_history(request):
+    context = {}
+    navbar_notify = readNotification()
+    navbar_notify_count = notReadNotification()
+
+    history = UpdateHistory.objects.all()
+
+    p = Paginator(history, 50)
+    page = request.GET.get('page')
+    histories = p.get_page(page)
+
+    context.update({
+        'navbar_notify': navbar_notify,
+        'navbar_notify_count': navbar_notify_count,
+        'histories': histories,
+    })
+    return render(request, 'backend/adminpage/pages/update_history.html', context)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def update_history_all_delete(request):
+    history = UpdateHistory.objects.all()
+
+    for h in history:
+        h.delete()
+    messages.success(request, 'Tüm kayıtlar silindi!')
+    return redirect('update_history')
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def update_history_delete(request, id):
+    history = UpdateHistory.objects.get(id=id)
+    history.delete()
+    messages.success(request, 'İlgili kayıt silindi!')
+    return redirect('update_history')

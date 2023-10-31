@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'corsheaders',
 
     'admin_honeypot',
+    'django_crontab'
 
 ]
 
@@ -164,7 +165,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = 'user_accounts.User'
 
-
+CRONJOBS = [
+    ('*/30 * * * * ', 'ecommerce.cron.update_modaymis'),
+    ('*/15 * * * * ', 'ecommerce.cron.find_not_active_modaymis'),
+    ('*/30 * * * * ', 'ecommerce.cron.trendyol_update_stok_fiyat'),
+]
 
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
@@ -183,7 +188,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_PAGINATION_CLASS':"rest_framework.pagination.PageNumberPagination",
+    'DEFAULT_PAGINATION_CLASS': "rest_framework.pagination.PageNumberPagination",
 }
 
 from datetime import timedelta
@@ -219,7 +224,6 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/

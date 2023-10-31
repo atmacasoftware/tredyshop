@@ -33,6 +33,12 @@ class ContractsAdmin(ImportExportModelAdmin):
     list_display = ['created_at', 'updated_at']
     resource_class = ContractsResource
 
+
+class CookieAdmin(ImportExportModelAdmin):
+    list_display = ['cookie_provider', 'cookie_name', 'cookie_aim','cookie_type']
+    resource_class = CookiesResource
+
+
 admin.site.register(Setting)
 admin.site.register(City, CityAdmin)
 admin.site.register(County, CountyAdmin)
@@ -40,3 +46,4 @@ admin.site.register(Slider, SliderAdmin)
 admin.site.register(MostSearchingKeyword, MostSearchAdmin)
 admin.site.register(SSS, SSSAdmin)
 admin.site.register(Contracts, ContractsAdmin)
+admin.site.register(Cookies, CookieAdmin)

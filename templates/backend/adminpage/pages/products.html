@@ -60,22 +60,22 @@
                                     <div class="col-lg-3 col-md-4 col-sm-12 d-flex justify-content-center align-items-center flex-row">
                                         <input type="search" name="baslik" id="baslik"
                                                class="form-control float-right filter-checkbox"
-                                               placeholder="Ürün Adı">
+                                               placeholder="Ürün Adı" value="{% if baslik %}{{ baslik }}{% endif %}">
                                     </div>
                                     <div class="col-lg-3 col-md-4 col-sm-12 d-flex justify-content-center align-items-center flex-row">
                                         <input type="search" name="barkod" id="barkod"
                                                class="form-control float-right filter-checkbox"
-                                               placeholder="Barkod">
+                                               placeholder="Barkod" value="{% if barkod %}{{ barkod }}{% endif %}">
                                     </div>
                                     <div class="col-lg-3 col-md-4 col-sm-12 d-flex justify-content-center align-items-center flex-row">
                                         <input type="search" name="modelKodu" id="modelKodu"
                                                class="form-control float-right filter-checkbox"
-                                               placeholder="Model Kodu">
+                                               placeholder="Model Kodu" value="{% if modelKodu %}{{ modelKodu }}{% endif %}">
                                     </div>
                                     <div class="col-lg-3 col-md-4 col-sm-12 d-flex justify-content-center align-items-center flex-row">
                                         <input type="search" name="stokKodu" id="stokKodu"
                                                class="form-control float-right filter-checkbox"
-                                               placeholder="Stok Kodu">
+                                               placeholder="Stok Kodu" value="{% if stokKodu %}{{ stokKodu }}{% endif %}">
                                     </div>
                                 </div>
                                 <div class="row mt-3">
@@ -182,7 +182,7 @@
                                     <div class="dropdown-menu">
                                         <button class="dropdown-item" id="deletingSelect">Seçilileri Sil</button>
                                         <a class="dropdown-item" href="{% url 'all_delete_product' %}">Tümünü Sil</a>
-                                        <a class="dropdown-item" href="#">Excel İndir</a>
+                                        <a class="dropdown-item" href="{% url 'product_export_excel' %}">Excel İndir</a>
                                     </div>
                                 </div>
                             </div>

@@ -143,6 +143,7 @@ class SubBottomCategory(models.Model):
     class Meta:
         verbose_name = "3) 3. Düzey Kategori"
         verbose_name_plural = "3) 3. Düzey Kategori"
+        ordering = ('title',)
 
     def __str__(self):
         return f"{self.title}"

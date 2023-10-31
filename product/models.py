@@ -135,6 +135,33 @@ class MaterialType(models.Model):
     def __str__(self):
         return str(self.name)
 
+class EnvironmentType(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Ortam")
+
+    def __str__(self):
+        return str(self.name)
+
+
+class LegType(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Paça Tipi")
+
+    def __str__(self):
+        return str(self.name)
+
+class Pocket(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Cep")
+
+    def __str__(self):
+        return str(self.name)
+
+class Waist(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Bel")
+
+    def __str__(self):
+        return str(self.name)
+
+
+
 class ApiProduct(models.Model):
 
     AGE_GROUP = (
@@ -184,11 +211,15 @@ class ApiProduct(models.Model):
     size = models.ForeignKey(Size, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Boyut/Beden")
     fabrictype = models.ForeignKey(FabricType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Kumaş Tipi")
     height = models.ForeignKey(Height, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Boy")
+    waist = models.ForeignKey(Waist, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Bel")
     pattern = models.ForeignKey(Pattern, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Kalıp")
     armtype = models.ForeignKey(ArmType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Kol Tipi")
     collartype = models.ForeignKey(CollerType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Yaka Tipi")
     weavingtype = models.ForeignKey(WeavingType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Dokuma Tipi")
     material = models.ForeignKey(MaterialType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Materyal")
+    environment = models.ForeignKey(EnvironmentType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Ortam")
+    legtype = models.ForeignKey(LegType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Paça Tipi")
+    pocket = models.ForeignKey(Pocket, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Cep")
     price = models.DecimalField(verbose_name="Fiyat", decimal_places=2, max_digits=20)
     quantity = models.BigIntegerField(verbose_name="Miktar", null=True, default=0)
     detail = RichTextUploadingField()
@@ -511,3 +542,17 @@ class StockAlarm(models.Model):
 
     def __str__(self):
         return str(self.product.title)
+
+
+class UpdateHistory(models.Model):
+    TYPE = (
+        ("Modaymış Güncelleme","Modaymış Güncelleme"),
+        ("Modaymış Aktif Olmayan Ürün","Modaymış Aktif Olmayan Ürün"),
+        ("Tahtakale Güncelleme","Tahtakale Güncelleme"),
+        ("Trendyol Stok&Fiyat Güncelleme","Trendyol Stok&Fiyat Güncelleme"),
+    )
+    history_type = models.CharField(choices=TYPE, max_length=100, null=True, verbose_name="Geçmiş Tipi")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
+
+    class Meta:
+        ordering = ['-created_at']

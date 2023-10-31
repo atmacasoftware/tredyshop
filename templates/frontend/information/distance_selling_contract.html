@@ -1,6 +1,12 @@
 {% load static %}
 {% load mathfilters %}
 
+<style>
+    .paymentDetailTable td, .paymentDetailTable th{
+        border-style: double;
+    }
+</style>
+
 <h5><b>1. TARAFLAR</b></h5>
 <p style="margin-top: 10px;">İşbu Sözleşme aşağıdaki taraflar arasında aşağıda belirtilen hüküm ve şartlar çerçevesinde
     imzalanmıştır.
@@ -85,60 +91,107 @@
 <p>7.3. Sözleşme konusu mal ya da hizmetin tüm vergiler dâhil satış fiyatı aşağıda gösterilmiştir.
 </p>
 
-<table>
+<table class="paymentDetailTable">
     <thead>
     <tr>
-        <th>Ürün Adı ve Temel Nitelikleri</th>
-        <th>Adet</th>
-        <th>Birim Fiyat</th>
-        <th>Ara Toplam (KDV Dahil)</th>
+        <th>
+            Ürün Açıklaması
+        </th>
+        <th>
+            Adet
+        </th>
+        <th>
+            Peşin Fiyatı (KDV Dahil)
+        </th>
+        <th>
+            Ara Toplam (KDV Dahil)
+        </th>
     </tr>
     </thead>
     <tbody>
+
     {% for p in cart_items %}
         <tr>
             <td>
-                <span></span>{{ p.product.title }} ({% if p.variant != None %}
-                <span>{{ p.variant.color }} {{ p.variant.size }}</span>
-            {% endif %})
+                {{ p.product.title }} ({{ p.product.color }} {{ p.product.size }})
             </td>
             <td>
                 {{ p.quantity }}
             </td>
             <td>
-                {% if p.product.variant != 'Yok' %}
-                    {{ p.variant.price|floatformat:2 }} TL
+                {% if p.product.is_discountprice == False %}
+                    {{ p.product.price|floatformat:2 }} TL
                 {% else %}
-                    {% if p.product.is_discountprice == False %}
-                        {{ p.product.price|floatformat:2 }} TL
-                    {% else %}
-                        {{ p.product.discountprice|floatformat:2 }} TL
-                    {% endif %}
+                    {{ p.product.discountprice|floatformat:2 }} TL
                 {% endif %}
             </td>
             <td>
-                {% if p.product.variant != 'Yok' %}
-                    {{ p.variant.price|mul:p.quantity|floatformat:2 }} TL
+                {% if p.product.is_discountprice == False %}
+                    {{ p.product.price|mul:p.quantity|floatformat:2 }} TL
                 {% else %}
-                    {{ p.sub_total|floatformat:2 }} TL
+                    {{ p.product.discountprice|mul:p.quantity|floatformat:2 }} TL
                 {% endif %}
             </td>
         </tr>
     {% endfor %}
     <tr>
         <td>Kargo Tutarı</td>
-        <td></td>
-        <td></td>
-        <td>{% if total < setting.free_shipping %}
-            {{ setting.shipping_price|floatformat:2 }} TL
-        {% else %}
-            0,00 TL
-        {% endif %}</td>
+        <td>-</td>
+        <td>
+            {% if total < setting.free_shipping %}
+                {{ setting.shipping_price|floatformat:2 }} TL
+            {% else %}
+                0,00 TL
+            {% endif %}
+        </td>
+        <td>
+            {% if total < setting.free_shipping %}
+                {{ setting.shipping_price|floatformat:2 }} TL
+            {% else %}
+                0,00 TL
+            {% endif %}
+        </td>
     </tr>
     <tr>
-        <td colspan="3"><b>Toplam: </b></td>
+        <td>İndirim Kuponu</td>
+        <td>-</td>
         <td>
-            <b>{{ grand_total|floatformat:2 }} TL</b>
+            {% if coupon.is_active == True %}
+                <input type="hidden" value="{{ coupon.coupon_price }}"
+                       name="used_coupon">
+                {{ coupon.coupon_price|floatformat:2 }} TL
+            {% else %}
+                0.00 TL
+            {% endif %}
+        </td>
+        <td>
+            {% if coupon.is_active == True %}
+                <input type="hidden" value="{{ coupon.coupon_price }}"
+                       name="used_coupon">
+                {{ coupon.coupon_price|floatformat:2 }} TL
+            {% else %}
+                0.00 TL
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td>Vade Farkı</td>
+        <td>-</td>
+        <td id="maturity_difference3">0.00 TL</td>
+        <td id="maturity_difference4">0.00 TL</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td><b>Toplam</b></td>
+        <td id="generalTotal">
+            <b>
+                {% if total != 0 %}
+                    {{ grand_total|floatformat:2 }} TL
+                {% else %}
+                    0 TL
+                {% endif %}
+            </b>
         </td>
     </tr>
     </tbody>

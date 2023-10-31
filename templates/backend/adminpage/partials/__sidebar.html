@@ -49,6 +49,15 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{% url 'admin_slider' %}"
+                       class="nav-link {% if '/yonetim/sliders/' in request.path %}active{% endif %}">
+                        <i class="nav-icon fa-brands fa-slideshare"></i>
+                        <p>
+                            Slider
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{% url 'kategoriler_seviye1' %}"
                        class="nav-link {% if '/kategoriler/' in request.path %}active{% endif %}">
                         <i class="nav-icon fa-solid fa-table-list"></i>
@@ -79,6 +88,13 @@
                                class="nav-link {% if request.path == '/yonetim/urunler/kampanyali-urunler/' %}active{% endif %}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Kampanyalı Ürünler</p>
+                            </a>
+                        </li>
+                    <li class="nav-item">
+                            <a href="{% url 'urun_ozellik_guncelleme' %}"
+                               class="nav-link {% if request.path == '/yonetim/urunler/ozellik-guncelleme/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Özellik Guncelleme</p>
                             </a>
                         </li>
 
@@ -171,13 +187,19 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
+                            <a href="{% url 'page_mainpage' %}"
+                               class="nav-link {% if request.path == '/yonetim/sayfalar/anasayfa/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Anasayfa</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{% url 'admin_aboutus' %}"
                                class="nav-link {% if request.path == '/yonetim/sayfalar/hakkimizda/' %}active{% endif %}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Hakkımızda</p>
                             </a>
                         </li>
-
                     </ul>
                 </li>
                 <li class="nav-header">ENTEGRASYON</li>
@@ -231,6 +253,13 @@
                                class="nav-link {% if '/trendyol/urunler/' in request.path %}active{% endif %}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Ürünler</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'trendyol_add_order' %}"
+                               class="nav-link {% if request.path == '/yonetim/trendyol/siparis-ekle/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Sipariş Ekle</p>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -296,6 +325,25 @@
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item {% if '/gecmis-kayitlar/' in request.path %}menu-open{% endif %}">
+                    <a href="#"
+                       class="nav-link {% if '/gecmis-kayitlar/' in request.path %}active{% endif %}">
+                        <i class="nav-icon fa-solid fa-asterisk"></i>
+                        <p>
+                            Geçmiş Kayıtlar
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'update_history' %}"
+                               class="nav-link {% if request.path == '/yonetim/gecmis-kayitlar/guncelleme-gecmisi/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Güncelleme Geçmişi</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="nav-item {% if request.path == '/yonetim/hesap-bilgilerim/' or request.path == '/yonetim/sifre-degistir/' %}menu-open{% endif %}">
                     <a href="#"
                        class="nav-link {% if request.path == '/yonetim/hesap-bilgilerim/' or request.path == '/yonetim/sifre-degistir/' %}active{% endif %}">
@@ -329,6 +377,7 @@
                         </li>
                     </ul>
                 </li>
+
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

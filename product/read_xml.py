@@ -3,7 +3,7 @@ import xml.etree.ElementTree as ET
 from urllib.request import urlopen
 from unidecode import unidecode
 from categorymodel.models import SubCategory, SubBottomCategory, MainCategory
-from product.models import Color, Size, ApiProduct
+from product.models import Color, Size, ApiProduct, UpdateHistory
 from django.contrib import messages
 
 
@@ -57,58 +57,61 @@ def modaymissaveXML2db():
                             tredyshop_price = decimal.Decimal(price) + decimal.Decimal(90)
                             tredyshop_price = customPrice(0, 10, tredyshop_price)
                             pttavm_price = tredyshop_price
-                            trendyol_price = tredyshop_price
+                            trendyol_price = tredyshop_price + decimal.Decimal(10)
+                            trendyol_price = customPrice(0, 10, trendyol_price)
                         if float(price) >= 50.00 and float(price) < 100.00:
                             tredyshop_price = decimal.Decimal(price) + decimal.Decimal(115)
                             tredyshop_price = customPrice(0, 10, tredyshop_price)
                             pttavm_price = tredyshop_price
-                            trendyol_price = tredyshop_price
+                            trendyol_price = tredyshop_price + decimal.Decimal(10)
+                            trendyol_price = customPrice(0, 10, trendyol_price)
                         if float(price) >= 100.00 and float(price) < 150.00:
                             tredyshop_price = decimal.Decimal(price) + decimal.Decimal(130)
                             tredyshop_price = customPrice(0, 10, tredyshop_price)
                             pttavm_price = tredyshop_price
-                            trendyol_price = tredyshop_price
+                            trendyol_price = tredyshop_price + decimal.Decimal(10)
+                            trendyol_price = customPrice(0, 10, trendyol_price)
                         if float(price) >= 150.00 and float(price) < 200.00:
                             tredyshop_price = decimal.Decimal(price) + decimal.Decimal(120)
                             tredyshop_price = customPrice(0, 10, tredyshop_price)
                             pttavm_price = tredyshop_price
-                            trendyol_price = tredyshop_price + decimal.Decimal(45)
+                            trendyol_price = tredyshop_price + decimal.Decimal(45) + decimal.Decimal(10)
                             trendyol_price = customPrice(0, 10, trendyol_price)
                         if float(price) >= 200.00 and float(price) < 300.00:
                             tredyshop_price = decimal.Decimal(price) + decimal.Decimal(140)
                             tredyshop_price = customPrice(0, 10, tredyshop_price)
                             pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(75)
+                            trendyol_price = tredyshop_price + decimal.Decimal(75) + decimal.Decimal(10)
                             trendyol_price = customPrice(0, 10, trendyol_price)
                         if float(price) >= 300.00 and float(price) < 400.00:
                             tredyshop_price = decimal.Decimal(price) + decimal.Decimal(145)
                             tredyshop_price = customPrice(0, 10, tredyshop_price)
                             pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(95)
+                            trendyol_price = tredyshop_price + decimal.Decimal(95) + + decimal.Decimal(10)
                             trendyol_price = customPrice(0, 10, trendyol_price)
                         if float(price) >= 400.00 and float(price) < 500.00:
                             tredyshop_price = decimal.Decimal(price) + decimal.Decimal(140)
                             tredyshop_price = customPrice(0, 10, tredyshop_price)
                             pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(130)
+                            trendyol_price = tredyshop_price + decimal.Decimal(130) + decimal.Decimal(10)
                             trendyol_price = customPrice(0, 10, trendyol_price)
                         if float(price) >= 500.00 and float(price) < 600.00:
                             tredyshop_price = decimal.Decimal(price) + decimal.Decimal(150)
                             tredyshop_price = customPrice(0, 10, tredyshop_price)
                             pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(175)
+                            trendyol_price = tredyshop_price + decimal.Decimal(175) + decimal.Decimal(10)
                             trendyol_price = customPrice(0, 10, trendyol_price)
                         if float(price) >= 600.00 and float(price) < 700.00:
                             tredyshop_price = decimal.Decimal(price) + decimal.Decimal(170)
                             tredyshop_price = customPrice(0, 10, tredyshop_price)
                             pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(195)
+                            trendyol_price = tredyshop_price + decimal.Decimal(195) + decimal.Decimal(10)
                             trendyol_price = customPrice(0, 10, trendyol_price)
                         if float(price) >= 700.00:
                             tredyshop_price = decimal.Decimal(price) + decimal.Decimal(190)
                             tredyshop_price = customPrice(0, 10, tredyshop_price)
                             pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(260)
+                            trendyol_price = tredyshop_price + decimal.Decimal(260) + decimal.Decimal(10)
                             trendyol_price = customPrice(0, 10, trendyol_price)
 
                         hepsiburada_price = tredyshop_price + decimal.Decimal(25.00)
@@ -257,7 +260,7 @@ def modaymissaveXML2db():
                         data.save()
 
 
-def updateModaymisSaveXML2db(request):
+def updateModaymisSaveXML2db():
     with urlopen('https://www.modaymis.com/1.xml') as f:
         modaymis = ET.parse(f)
         modaymis_products = modaymis.findall("Product")
@@ -291,58 +294,58 @@ def updateModaymisSaveXML2db(request):
                             tredyshop_price = decimal.Decimal(price) + decimal.Decimal(90)
                             tredyshop_price = customPrice(0, 10, tredyshop_price)
                             pttavm_price = tredyshop_price
-                            trendyol_price = tredyshop_price
+                            trendyol_price = tredyshop_price + decimal.Decimal(10)
                         if float(price) >= 50.00 and float(price) < 100.00:
                             tredyshop_price = decimal.Decimal(price) + decimal.Decimal(115)
                             tredyshop_price = customPrice(0, 10, tredyshop_price)
                             pttavm_price = tredyshop_price
-                            trendyol_price = tredyshop_price
+                            trendyol_price = tredyshop_price + decimal.Decimal(10)
                         if float(price) >= 100.00 and float(price) < 150.00:
                             tredyshop_price = decimal.Decimal(price) + decimal.Decimal(130)
                             tredyshop_price = customPrice(0, 10, tredyshop_price)
                             pttavm_price = tredyshop_price
-                            trendyol_price = tredyshop_price
+                            trendyol_price = tredyshop_price + decimal.Decimal(10)
                         if float(price) >= 150.00 and float(price) < 200.00:
                             tredyshop_price = decimal.Decimal(price) + decimal.Decimal(120)
                             tredyshop_price = customPrice(0, 10, tredyshop_price)
                             pttavm_price = tredyshop_price
-                            trendyol_price = tredyshop_price + decimal.Decimal(45)
+                            trendyol_price = tredyshop_price + decimal.Decimal(45) + decimal.Decimal(10)
                             trendyol_price = customPrice(0, 10, trendyol_price)
                         if float(price) >= 200.00 and float(price) < 300.00:
                             tredyshop_price = decimal.Decimal(price) + decimal.Decimal(140)
                             tredyshop_price = customPrice(0, 10, tredyshop_price)
                             pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(75)
+                            trendyol_price = tredyshop_price + decimal.Decimal(75) + decimal.Decimal(10)
                             trendyol_price = customPrice(0, 10, trendyol_price)
                         if float(price) >= 300.00 and float(price) < 400.00:
                             tredyshop_price = decimal.Decimal(price) + decimal.Decimal(145)
                             tredyshop_price = customPrice(0, 10, tredyshop_price)
                             pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(95)
+                            trendyol_price = tredyshop_price + decimal.Decimal(95) + decimal.Decimal(10)
                             trendyol_price = customPrice(0, 10, trendyol_price)
                         if float(price) >= 400.00 and float(price) < 500.00:
                             tredyshop_price = decimal.Decimal(price) + decimal.Decimal(140)
                             tredyshop_price = customPrice(0, 10, tredyshop_price)
                             pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(130)
+                            trendyol_price = tredyshop_price + decimal.Decimal(130) + decimal.Decimal(10)
                             trendyol_price = customPrice(0, 10, trendyol_price)
                         if float(price) >= 500.00 and float(price) < 600.00:
                             tredyshop_price = decimal.Decimal(price) + decimal.Decimal(150)
                             tredyshop_price = customPrice(0, 10, tredyshop_price)
                             pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(175)
+                            trendyol_price = tredyshop_price + decimal.Decimal(175) + decimal.Decimal(10)
                             trendyol_price = customPrice(0, 10, trendyol_price)
                         if float(price) >= 600.00 and float(price) < 700.00:
                             tredyshop_price = decimal.Decimal(price) + decimal.Decimal(170)
                             tredyshop_price = customPrice(0, 10, tredyshop_price)
                             pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(195)
+                            trendyol_price = tredyshop_price + decimal.Decimal(195) + decimal.Decimal(10)
                             trendyol_price = customPrice(0, 10, trendyol_price)
                         if float(price) >= 700.00:
                             tredyshop_price = decimal.Decimal(price) + decimal.Decimal(190)
                             tredyshop_price = customPrice(0, 10, tredyshop_price)
                             pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(260)
+                            trendyol_price = tredyshop_price + decimal.Decimal(260) + decimal.Decimal(10)
                             trendyol_price = customPrice(0, 10, trendyol_price)
 
                         hepsiburada_price = tredyshop_price + decimal.Decimal(35.00)
@@ -380,11 +383,11 @@ def updateModaymisSaveXML2db(request):
                         exist_product.size_id = beden_id
                         exist_product.color_id = renk_id
                         exist_product.save()
+        UpdateHistory.objects.create(history_type="Modaymış Güncelleme")
 
-        messages.success(request, 'Ürünler güncelledi!')
 
 
-def notActiveModaymisProduct(request):
+def notActiveModaymisProduct():
     with urlopen('https://www.modaymis.com/1.xml') as f:
         modaymis = ET.parse(f)
         modaymis_products = modaymis.findall("Product")
@@ -403,13 +406,13 @@ def notActiveModaymisProduct(request):
         list_b = combination_gtin_list
         difference = list(set(list_a) - set(list_b))
 
-        messages.success(request, f'Farklı Ürün Sayısı {len(difference)}')
-
         for d in difference:
             for ap in all_products:
                 if ap.barcode == d:
                     ap.is_publish = False
+                    ap.quantity = 0
                     ap.save()
+        UpdateHistory.objects.create(history_type="Modaymış Aktif Olmayan Ürün")
 
 
 def tahtakaleSaveXML2db():

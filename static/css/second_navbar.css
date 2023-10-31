@@ -1,0 +1,49 @@
+#header{
+    height: 75px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9;
+    background: white;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.header-center {
+    width: 100%;
+    padding-top: 15px!important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (min-width: 1025px)
+.header-center {
+    padding-top: 0!important;
+    padding-bottom: 30px;
+}
+
+#header img{
+    width: auto;
+    height: auto;
+    margin-top: 10px;
+}
+
+.header-center{
+    position: fixed!important;
+}
+
+.nav-items{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.dropdown-cart, .dropdown-account{
+    right: 8px;
+}
+
+.js-push-menu i{
+    font-size: 3rem;
+}

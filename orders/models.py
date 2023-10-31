@@ -11,17 +11,15 @@ from user_accounts.models import User
 
 class PreOrder(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    delivery_address = models.ForeignKey(CustomerAddress, on_delete=models.CASCADE, null=True)
+    order_number = models.CharField(verbose_name="Sipariş Numarası", null=True, blank=False, max_length=255)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, null=True)
     coupon = models.FloatField(null=True, blank=True)
     bonuses = models.FloatField(verbose_name="Verdiği Bonus", blank=True, null=True)
     cart_total = models.FloatField(null=True, blank=True)
-    approved_contract = models.BooleanField(default=False, verbose_name="Sözleşme Onayı")
     delivery_price = models.CharField(max_length=100, verbose_name="Kargo Ücreti", null=True, blank=True)
-    preliminary_information_form = RichTextUploadingField(verbose_name='Ön Bilgilendirme Formu', null=True,
-                                                  blank=True)
-    distance_selling_contract = RichTextUploadingField(verbose_name='Mesafeli Satış Sözleşmesi', null=True,
-                                               blank=True)
+    address = models.ForeignKey(CustomerAddress, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Sipariş Adresi")
+    preliminary_information_form = RichTextUploadingField(verbose_name='Ön Bilgilendirme Formu', null=True, blank=True)
+    distance_selling_contract = RichTextUploadingField(verbose_name='Mesafeli Satış Sözleşmesi', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
 
@@ -43,10 +41,21 @@ class Order(models.Model):
         ('Havale/EFT', 'Havale/EFT'),
     )
 
+    PLATFORM = (
+        ("TredyShop","TredyShop"),
+        ("Trendyol","Trendyol"),
+        ("Hepsiburada","Hepsiburada"),
+        ("PTTAvm","PTTAvm"),
+        ("N11","N11"),
+        ("Çiçeksepeti","Çiçeksepeti"),
+    )
+
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name="Müşteri")
+    order_platform = models.CharField(choices=PLATFORM, null=True, blank=True, default="TredyShop", max_length=100, verbose_name="Sipariş Verilen Platform")
     order_number = models.CharField(max_length=20, verbose_name="Sipariş Numarası", blank=True, null=True)
     address = models.ForeignKey(CustomerAddress, on_delete=models.SET_NULL, blank=False, null=True, verbose_name="Adres")
-    order_total = models.FloatField(verbose_name="Sipariş Toplamı")
+    order_amount = models.FloatField(verbose_name="Sipariş Tutarı", null=True)
+    order_total = models.FloatField(verbose_name="Ödenen Tutar", null=True)
     delivery_name = models.CharField(max_length=255, verbose_name="Kargo Şirketi", null=True, blank=True)
     delivery_price = models.CharField(max_length=100, verbose_name="Kargo Ücreti", null=True, blank=True)
     delivery_track = models.CharField(max_length=255, verbose_name="Takip Kodu", null=True, blank=True)
@@ -55,11 +64,14 @@ class Order(models.Model):
     cardholder = models.CharField(max_length=255, blank=True, null=True, verbose_name="Kart Sahibi")
     cardnumber = models.CharField(max_length=20, blank=True, null=True, verbose_name="Kart Numarası")
     status = models.CharField(max_length=50, choices=STATUS, null=True, default="Yeni", verbose_name="Sipariş Durumu")
+    coupon_name = models.CharField(verbose_name="Kullanılan Kupon Adı", max_length=255, blank=True, null=True)
     used_coupon = models.FloatField(verbose_name="Kullanılan Kupon", blank=True, null=True)
     bill = models.FileField(upload_to='documents/bill/', null=True, verbose_name="Fatura Yükle")
     preliminary_information_form = RichTextUploadingField(verbose_name='Ön Bilgilendirme Formu', null=True, blank=True)
     distance_selling_contract = RichTextUploadingField(verbose_name='Mesafeli Satış Sözleşmesi', null=True, blank=True)
     ip = models.CharField(max_length=50, blank=False, verbose_name="İp Adresi")
+    is_installment = models.BooleanField(default=False, verbose_name="Taksitli Mi?", null=True, blank=False)
+    installment = models.IntegerField(default=0, verbose_name="Taksit Sayısı", null=True, blank=True)
     is_ordered = models.BooleanField(default=False, verbose_name="Sipariş Verildi Mi?")
     bonuses = models.FloatField(verbose_name="Verdiği Bonus", blank=True, null=True)
     approved_contract = models.BooleanField(default=False, verbose_name="Sözleşme Onayı")
@@ -85,10 +97,15 @@ class OrderProduct(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name="Sipariş")
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Müşteri")
     product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE, null=True, blank=False, verbose_name="Ürün")
+    title = models.CharField(verbose_name="Ürün Başlığı", null=True, max_length=500)
+    product_slug = models.CharField(verbose_name="Ürün Slug", null=True, max_length=500)
     color = models.CharField(max_length=50, verbose_name="Renk")
     size = models.CharField(max_length=50, verbose_name="Boyut")
     quantity = models.IntegerField(verbose_name="Miktar")
     product_price = models.FloatField(verbose_name="Ürün Fiyatı")
+    forward_sale = models.FloatField(verbose_name="Vadeli Satış Fiyatı (KDV Dahil)", null=True, blank=True)
+    coupon_name = models.CharField(verbose_name="Kullanılan Kupon Adı", max_length=255, blank=True, null=True)
+    used_coupon = models.FloatField(verbose_name="Kullanılan Kupon", blank=True, null=True)
     ordered = models.BooleanField(default=False, verbose_name="Sipariş Verildi Mi?")
     is_cancelling = models.BooleanField(default=False, verbose_name="İptal Talebi Var Mı?")
     is_extradation = models.BooleanField(default=False, verbose_name="İade Talebi Var Mı?")
@@ -167,3 +184,16 @@ class CancellationRequest(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+
+class BINList(models.Model):
+    bank_code = models.CharField(verbose_name="Banka Kodu", null=True, blank=True, max_length=10)
+    bank_name = models.CharField(verbose_name="Banka Adı", null=True, blank=True, max_length=255)
+    bin_code = models.BigIntegerField(verbose_name="BIN Numarası", null=True, blank=True)
+    card_type = models.CharField(verbose_name="Kart Tipi", null=True, blank=True, max_length=50)
+    businesscard = models.BooleanField(default=False, verbose_name="Ticari Kart")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi", null=True)
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi", null=True)
+
+    class Meta:
+        ordering = ['-bank_code']

@@ -1,7 +1,7 @@
 {% extends 'frontend/layout.html' %}
 {% load static %}
 
-{% block title %}<title>50 TL Altı Ürünler</title>{% endblock %}
+{% block title %}<title>{{ banner_one.banner_title }}</title>{% endblock %}
 
 {% block store %}
     <link rel="stylesheet" href="{% static 'css/shopfull.css' %}">
@@ -10,23 +10,30 @@
         <div class="e-product">
             <ul class="breadcrumb v4">
                 <li><a href="{% url 'mainpage' %}">Anasayfa</a></li>
-                <li class="active">50 TL Altı Ürünler</li>
+                <li class="active">{{ banner_one.banner_title }}</li>
             </ul>
-            <div class="pd-banner">
-                <a href="{% url 'new_product' %}" class="image-bd effect_img2"><img
-                        src="{% static 'img/banner/under_price.jpg' %}" alt="" class="img-reponsive"></a>
-            </div>
-            <div class="pd-top">
-                <h1 class="title">50 TL Altı Ürünler</h1>
+
+            <div class="pd-top bg-tredyshop">
+
+                <h1 class="title v2">
+
+                    {{ banner_one.banner_title }}</h1>
+                <div class="show-element">
+                            <span>{{ product_count }}
+                                ürün bulundu.
+                                </span></div>
+
+
             </div>
 
-            <div class="product-collection-grid product-grid spc1">
+            <div class="product-collection-grid product-grid spc1" style="margin-top: 30px;">
                 <div class="row">
                     {% for p in page_obj %}
                         <div class="col-xs-6 col-sm-4 col-md-4 col-lg-3 product-item">
                             <div class="pd-bd product-inner">
                                 <div class="product-img">
-                                    <a href="{{ p.get_url }}"><img src="{{ p.get_image }}" alt="" class="img-reponsive"></a>
+                                    <a href="{{ p.get_url }}" style="display:flex; justify-content: center; align-items: center;"><img src="{{ p.image_url1 }}" alt=""
+                                                                   class="img-reponsive"></a>
                                 </div>
                                 <div class="product-info">
                                     <div class="element-list element-list-middle">
