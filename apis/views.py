@@ -138,7 +138,7 @@ class MostPointProductApiView(APIView):
                 '-rating_count')
 
             if products.count() < 16:
-                products = ApiProduct.objects.filter(is_publish=True,subcategory__title__isnull=False,  dropshipping="Modaymış").order_by("?")[:16]
+                products = ApiProduct.objects.filter(is_publish=True, subcategory__title__isnull=False,  dropshipping="Modaymış").order_by("?")[:16]
             else:
                 products = products[:16]
 

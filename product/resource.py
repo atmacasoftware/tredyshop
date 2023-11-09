@@ -62,3 +62,16 @@ class LegTypeResource(resources.ModelResource):
 class PocketResource(resources.ModelResource):
     class Meta:
         model = Pocket
+
+class HeelTypeResource(resources.ModelResource):
+    class Meta:
+        model = HeelType
+
+
+class HeelSizeResource(resources.ModelResource):
+    class Meta:
+        model = HeelSize
+
+class SexResource(resources.ModelResource):
+    class Meta:
+        model = Sex

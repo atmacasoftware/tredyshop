@@ -1,4 +1,4 @@
-from product.models import Pattern, ApiProduct, FabricType, EnvironmentType, CollerType, Waist, Height
+from product.models import Pattern, ApiProduct, FabricType, EnvironmentType, CollerType, Waist, Height, LegType, Sex
 
 
 def kalip():
@@ -7,13 +7,16 @@ def kalip():
     regular_pattern = Pattern.objects.get(name='Regular')
     comfort_pattern = Pattern.objects.get(name='Comfort')
     dar_pattern = Pattern.objects.get(name='Dar')
+    slim_pattern = Pattern.objects.get(name='Slim')
 
     product = ApiProduct.objects.all().exclude(subcategory__category_no=5 or 6)
 
     data = 'failed'
 
     for p in product:
-        if p.pattern == '' or p.pattern == None:
+        if p.pattern == '' or p.pattern == None or p.pattern == 'None':
+            p.pattern = regular_pattern
+            p.save()
             for d in p.detail.split():
                 for liste in kalip_liste:
                     if liste.lower() in d.lower():
@@ -22,7 +25,7 @@ def kalip():
                         elif liste == 'Rahat':
                             p.pattern = comfort_pattern
                         elif liste == 'Dar':
-                            p.pattern = dar_pattern
+                            p.pattern = slim_pattern
                         else:
                             p.pattern = regular_pattern
                         p.save()
@@ -44,8 +47,9 @@ def kumas():
     flamli = FabricType.objects.get(id=7)
 
     for p in product:
-        if p.fabrictype == '' or p.fabrictype == None:
+        if p.fabrictype == '' or p.fabrictype == None or p.fabrictype == 'None':
             p.fabrictype = dokuma
+            p.save()
             for liste in kumas_list:
                 if liste.lower() in p.title.lower().split():
                     if liste == 'deri':
@@ -63,9 +67,9 @@ def kumas():
                     if liste == 'poplin':
                         p.fabrictype = poplin
                     if liste == 'kaşkorse':
-                        p.fabrictype = kaskorse
+                        p.fabrictype = dokuma
                     if liste == 'flamlı':
-                        p.fabrictype = flamli
+                        p.fabrictype = dokuma
                     p.save()
 
     return 'success'
@@ -76,7 +80,7 @@ def ortam():
     casual = EnvironmentType.objects.get(id=4)
 
     for p in product:
-        if p.environment == '' or p.environment == None:
+        if p.environment == '' or p.environment == None or p.environment == 'None':
             p.environment = casual
             p.save()
 
@@ -99,7 +103,7 @@ def yaka():
     madonna = CollerType.objects.get(id=58)
 
     for p in product:
-        if p.collartype == '' or p.collartype == None:
+        if p.collartype == '' or p.collartype == None or p.collartype == 'None':
             for liste in yaka_list:
                 if liste.lower() in p.title.lower().split():
                     if liste == 'hakim':
@@ -130,14 +134,17 @@ def yaka():
 
 
 def cinsiyet():
-    product = ApiProduct.objects.filter(dropshipping="Modaymış")
+    product = ApiProduct.objects.filter(category_id=1)
+    women = Sex.objects.get(id=2)
 
     for p in product:
-        p.sex = 'Kadın/Kız'
-        p.save()
+        if p.sextype == '' or p.sextype == None or p.sextype == 'None':
+            p.sextype = women
+            p.save()
+
+    return 'success'
 
 def bel():
-    product = ApiProduct.objects.filter(subbottomcategory_id=8 or 7 or 9 or 10 or 11 or 13 or 14)
 
     bel_list = ['yüksek bel', 'süper yüksek bel', 'regular', 'paperbag', 'normal bel', 'lastikli', 'kuşaklı', 'kemerli', 'jogger lastik bel', 'extra yüksek bel', 'düşük bel']
 
@@ -153,8 +160,8 @@ def bel():
     extra_yuksek = Waist.objects.get(id=123)
     dusuk_bel = Waist.objects.get(id=122)
 
-    for p in product:
-        if p.waist == '' or p.waist == None:
+    for p in ApiProduct.objects.filter(subbottomcategory_id=8):
+        if p.waist == '' or p.waist == None or p.waist == 'None':
             for liste in bel_list:
                 if liste.lower() in p.title.lower():
                     if liste == 'yüksek bel':
@@ -184,6 +191,221 @@ def bel():
                     p.waist = normal
                     p.save()
 
+    for p in ApiProduct.objects.filter(subbottomcategory_id=7):
+        if p.waist == '' or p.waist == None or p.waist == 'None':
+            for liste in bel_list:
+                if liste.lower() in p.title.lower():
+                    if liste == 'yüksek bel':
+                        p.waist = yuksek_bel
+                    if liste == 'süper yüksek bel':
+                        p.waist = super_yuksek_bel
+                    if liste == 'regular':
+                        p.waist = regular
+                    if liste == 'paperbag':
+                        p.waist = paperbag
+                    if liste == 'normal bel':
+                        p.waist = normal
+                    if liste == 'lastikli':
+                        p.waist = lastikli
+                    if liste == 'kuşaklı':
+                        p.waist = kusakli
+                    if liste == 'kemerli':
+                        p.waist = kemerli
+                    if liste == 'jogger lastik bel':
+                        p.waist = jogger_lastik
+                    if liste == 'extra yüksek bel':
+                        p.waist = extra_yuksek
+                    if liste == 'düşük bel':
+                        p.waist = dusuk_bel
+                    p.save()
+                else:
+                    p.waist = normal
+                    p.save()
+
+    for p in ApiProduct.objects.filter(subbottomcategory_id=9):
+        if p.waist == '' or p.waist == None or p.waist == 'None':
+            for liste in bel_list:
+                if liste.lower() in p.title.lower():
+                    if liste == 'yüksek bel':
+                        p.waist = yuksek_bel
+                    if liste == 'süper yüksek bel':
+                        p.waist = super_yuksek_bel
+                    if liste == 'regular':
+                        p.waist = regular
+                    if liste == 'paperbag':
+                        p.waist = paperbag
+                    if liste == 'normal bel':
+                        p.waist = normal
+                    if liste == 'lastikli':
+                        p.waist = lastikli
+                    if liste == 'kuşaklı':
+                        p.waist = kusakli
+                    if liste == 'kemerli':
+                        p.waist = kemerli
+                    if liste == 'jogger lastik bel':
+                        p.waist = jogger_lastik
+                    if liste == 'extra yüksek bel':
+                        p.waist = extra_yuksek
+                    if liste == 'düşük bel':
+                        p.waist = dusuk_bel
+                    p.save()
+                else:
+                    p.waist = normal
+                    p.save()
+
+    for p in ApiProduct.objects.filter(subbottomcategory_id=10):
+        if p.waist == '' or p.waist == None or p.waist == 'None':
+            for liste in bel_list:
+                if liste.lower() in p.title.lower():
+                    if liste == 'yüksek bel':
+                        p.waist = yuksek_bel
+                    if liste == 'süper yüksek bel':
+                        p.waist = super_yuksek_bel
+                    if liste == 'regular':
+                        p.waist = regular
+                    if liste == 'paperbag':
+                        p.waist = paperbag
+                    if liste == 'normal bel':
+                        p.waist = normal
+                    if liste == 'lastikli':
+                        p.waist = lastikli
+                    if liste == 'kuşaklı':
+                        p.waist = kusakli
+                    if liste == 'kemerli':
+                        p.waist = kemerli
+                    if liste == 'jogger lastik bel':
+                        p.waist = jogger_lastik
+                    if liste == 'extra yüksek bel':
+                        p.waist = extra_yuksek
+                    if liste == 'düşük bel':
+                        p.waist = dusuk_bel
+                    p.save()
+                else:
+                    p.waist = normal
+                    p.save()
+        for p in ApiProduct.objects.filter(subbottomcategory_id=11):
+            if p.waist == '' or p.waist == None or p.waist == 'None':
+                for liste in bel_list:
+                    if liste.lower() in p.title.lower():
+                        if liste == 'yüksek bel':
+                            p.waist = yuksek_bel
+                        if liste == 'süper yüksek bel':
+                            p.waist = super_yuksek_bel
+                        if liste == 'regular':
+                            p.waist = regular
+                        if liste == 'paperbag':
+                            p.waist = paperbag
+                        if liste == 'normal bel':
+                            p.waist = normal
+                        if liste == 'lastikli':
+                            p.waist = lastikli
+                        if liste == 'kuşaklı':
+                            p.waist = kusakli
+                        if liste == 'kemerli':
+                            p.waist = kemerli
+                        if liste == 'jogger lastik bel':
+                            p.waist = jogger_lastik
+                        if liste == 'extra yüksek bel':
+                            p.waist = extra_yuksek
+                        if liste == 'düşük bel':
+                            p.waist = dusuk_bel
+                        p.save()
+                    else:
+                        p.waist = normal
+                        p.save()
+
+        for p in ApiProduct.objects.filter(subbottomcategory_id=12):
+            if p.waist == '' or p.waist == None or p.waist == 'None':
+                for liste in bel_list:
+                    if liste.lower() in p.title.lower():
+                        if liste == 'yüksek bel':
+                            p.waist = yuksek_bel
+                        if liste == 'süper yüksek bel':
+                            p.waist = super_yuksek_bel
+                        if liste == 'regular':
+                            p.waist = regular
+                        if liste == 'paperbag':
+                            p.waist = paperbag
+                        if liste == 'normal bel':
+                            p.waist = normal
+                        if liste == 'lastikli':
+                            p.waist = lastikli
+                        if liste == 'kuşaklı':
+                            p.waist = kusakli
+                        if liste == 'kemerli':
+                            p.waist = kemerli
+                        if liste == 'jogger lastik bel':
+                            p.waist = jogger_lastik
+                        if liste == 'extra yüksek bel':
+                            p.waist = extra_yuksek
+                        if liste == 'düşük bel':
+                            p.waist = dusuk_bel
+                        p.save()
+                    else:
+                        p.waist = normal
+                        p.save()
+
+        for p in ApiProduct.objects.filter(subbottomcategory_id=13):
+            if p.waist == '' or p.waist == None or p.waist == 'None':
+                for liste in bel_list:
+                    if liste.lower() in p.title.lower():
+                        if liste == 'yüksek bel':
+                            p.waist = yuksek_bel
+                        if liste == 'süper yüksek bel':
+                            p.waist = super_yuksek_bel
+                        if liste == 'regular':
+                            p.waist = regular
+                        if liste == 'paperbag':
+                            p.waist = paperbag
+                        if liste == 'normal bel':
+                            p.waist = normal
+                        if liste == 'lastikli':
+                            p.waist = lastikli
+                        if liste == 'kuşaklı':
+                            p.waist = kusakli
+                        if liste == 'kemerli':
+                            p.waist = kemerli
+                        if liste == 'jogger lastik bel':
+                            p.waist = jogger_lastik
+                        if liste == 'extra yüksek bel':
+                            p.waist = extra_yuksek
+                        if liste == 'düşük bel':
+                            p.waist = dusuk_bel
+                        p.save()
+                    else:
+                        p.waist = normal
+                        p.save()
+
+        for p in ApiProduct.objects.filter(subbottomcategory_id=14):
+            if p.waist == '' or p.waist == None or p.waist == 'None':
+                for liste in bel_list:
+                    if liste.lower() in p.title.lower():
+                        if liste == 'yüksek bel':
+                            p.waist = yuksek_bel
+                        if liste == 'süper yüksek bel':
+                            p.waist = super_yuksek_bel
+                        if liste == 'regular':
+                            p.waist = regular
+                        if liste == 'paperbag':
+                            p.waist = paperbag
+                        if liste == 'normal bel':
+                            p.waist = normal
+                        if liste == 'lastikli':
+                            p.waist = lastikli
+                        if liste == 'kuşaklı':
+                            p.waist = kusakli
+                        if liste == 'kemerli':
+                            p.waist = kemerli
+                        if liste == 'jogger lastik bel':
+                            p.waist = jogger_lastik
+                        if liste == 'extra yüksek bel':
+                            p.waist = extra_yuksek
+                        if liste == 'düşük bel':
+                            p.waist = dusuk_bel
+                        p.save()
+                    else:
+                        p.waist = normal
+                        p.save()
     return 'success'
 
 
@@ -204,7 +426,7 @@ def boy():
     kapri = Height.objects.get(id=61)
 
     for p in product:
-        if p.height == '' or p.height == None:
+        if p.height == '' or p.height == None or p.height == 'None':
             for liste in boy_list:
                 if liste.lower() in p.title.lower():
                     if liste == 'bilek boy':
@@ -232,3 +454,105 @@ def boy():
                     p.height = regular
                     p.save()
     return 'success'
+
+def paca():
+    product = ApiProduct.objects.filter(subbottomcategory_id=7 or 8 or 9 or 11 or 13 or 14)
+    paca_list = LegType.objects.all()
+
+    for p in product:
+        if p.legtype == '' or p.legtype == None or p.legtype == 'None':
+            for liste in paca_list:
+                if liste.name.lower() in p.title.lower():
+                    p.legtype = liste
+                    p.save()
+
+    return 'success'
+
+def kategori():
+    product = ApiProduct.objects.all()
+
+    for p in product:
+        if p.subbottomcategory == '' or p.subbottomcategory == None or p.subbottomcategory == 'None':
+            if product.filter(subcategory_id=3):
+                if 'takım' in p.title.lower():
+                    p.subbottomcategory_id = 12
+            if product.filter(subcategory_id=5):
+                if 'terlik' in p.title.lower():
+                    p.subbottomcategory_id = 19
+                if 'ev terliği' in p.title.lower():
+                    p.subbottomcategory_id = 80
+                if 'bot' in p.title.lower():
+                    p.subbottomcategory_id = 73
+                if 'ev botu' in p.title.lower():
+                    p.subbottomcategory_id = 81
+                if 'çizme' in p.title.lower():
+                    p.subbottomcategory_id = 78
+                if 'panduf' in p.title.lower():
+                    p.subbottomcategory_id = 76
+                if 'babet' in p.title.lower():
+                    p.subbottomcategory_id = 19
+            if product.filter(subcategory_id=1):
+                if 'süveter' in p.title.lower():
+                    p.subbottomcategory_id = 75
+                if 'kazak' in p.title.lower():
+                    p.subbottomcategory_id = 74
+                if 'panço' in p.title.lower():
+                    p.subbottomcategory_id = 77
+                if 'body' in p.title.lower():
+                    p.subbottomcategory_id = 2
+            if product.filter(subcategory_id=2):
+                if 'pantolon' in p.title.lower():
+                    p.subbottomcategory_id = 8
+
+            if 'deri pantolon' in p.title.lower():
+                p.subcategory_id = 2
+                p.subbottomcategory_id = 8
+
+            if 'sweat' in p.title.lower():
+                p.subcategory_id = 1
+                p.subbottomcategory_id = 65
+
+            if 'günlük ayakkabı' in p.title.lower():
+                p.subcategory_id = 5
+                p.subbottomcategory_id = 21
+
+            if 'topuklu ayakkabı' in p.title.lower():
+                p.subcategory_id = 5
+                p.subbottomcategory_id = 22
+
+            if 'sandalet' in p.title.lower():
+                p.subcategory_id = 5
+                p.subbottomcategory_id = 19
+
+            if 'şapka' in p.title.lower() or 'kep' in p.title.lower():
+                p.subcategory_id = 6
+                p.subbottomcategory_id = 23
+
+            if 'sırt çantası' in p.title.lower() or 'çanta' in p.title.lower():
+                p.subcategory_id = 6
+                p.subbottomcategory_id = 24
+
+            if 'ev botu' in p.title.lower():
+                p.subcategory_id = 5
+                p.subbottomcategory_id = 19
+
+            if 'çocuk' in p.title.lower():
+                p.age_group = "Çocuk"
+
+            if 'bebek' in p.title.lower():
+                p.age_group = "Bebek"
+
+            if 'süet takım' in p.title.lower():
+                p.subcategory_id = 3
+                p.subbottomcategory_id = 12
+
+            if 'çorabı' in p.title.lower() or 'çorab' in p.title.lower():
+                p.subbottomcategory_id = 79
+
+            p.save()
+
+    return 'success'
+
+
+def topukTipi():
+    product = ApiProduct.objects.filter(subcategory_id=5)

@@ -117,6 +117,13 @@
                                 <p>Siparişler</p>
                             </a>
                         </li>
+                    <li class="nav-item">
+                            <a href="{% url 'trendyol_orders' %}"
+                               class="nav-link {% if request.path == '/yonetim/siparis-yonetimi/trendyol-siparisleri/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Trendyol Siparişleri</p>
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a href="{% url 'admin_iptal_talepleri' %}"
                                class="nav-link {% if request.path == '/yonetim/siparis-yonetimi/iptal-talepleri/' %}active{% endif %}">
@@ -253,6 +260,13 @@
                                class="nav-link {% if '/trendyol/urunler/' in request.path %}active{% endif %}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Ürünler</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'trendyol_hatali_urunler' %}"
+                               class="nav-link {% if '/trendyol/hatali-urunler/' in request.path %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Hatalı Ürünler</p>
                             </a>
                         </li>
                         <li class="nav-item">

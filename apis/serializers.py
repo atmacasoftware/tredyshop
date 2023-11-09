@@ -22,7 +22,7 @@ class ProductSerializer(serializers.ModelSerializer):
                   'subbottomcategory',
                   'brand', 'title', 'description', 'image_url1', 'image_url2', 'image_url3', 'image_url4', 'image_url5',
                   'image_url6', 'image_url7', 'image_url8', 'color', 'size', 'price', 'quantity', 'detail',
-                  'discountprice', 'is_discountprice', 'age_group', 'sex', 'is_publish', 'is_active', 'slug']
+                  'discountprice', 'is_discountprice', 'age_group', 'sextype', 'is_publish', 'slug']
 
 
 class SecondCategorySerializer(serializers.ModelSerializer):

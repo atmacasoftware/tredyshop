@@ -103,6 +103,18 @@ class TrendyolBrand(models.Model):
 
 
 class TrendyolOrders(models.Model):
+
+    STATUS = (
+        ('Yeni', 'Yeni'),
+        ('Onaylandı', 'Onaylandı'),
+        ('Hazırlanıyor', 'Hazırlanıyor'),
+        ('Kargolandı', 'Kargolandı'),
+        ('Tamamlandı', 'Tamamlandı'),
+        ('İptal Edildi', 'İptal Edildi'),
+        ('İade Edildi', 'İade Edildi'),
+        ('Ödeme Yapılmadı', 'Ödeme Yapılmadı'),
+    )
+
     order_number = models.CharField(max_length=255, verbose_name="Sipariş Numarası", null=True, blank=False)
     packet_number = models.CharField(max_length=255, verbose_name="Paket Numarası", null=True, blank=False)
     buyer = models.CharField(max_length=255, verbose_name="Alıcı", null=True, blank=False)
@@ -115,7 +127,11 @@ class TrendyolOrders(models.Model):
     unit_price = models.FloatField(verbose_name="Birim Fiyat", null=True, blank=False)
     sales_amount = models.FloatField(verbose_name="Satış Tutarı", null=True, blank=False)
     discount_amount = models.FloatField(verbose_name="İndirim Tutarı", null=True, blank=True)
+    delivery_price = models.FloatField(verbose_name="Kargo Bedeli (KDV Dahil)", null=True, blank=True)
+    commission_price = models.FloatField(verbose_name="Komisyon Tutarı", null=True, blank=True)
+    tax_price = models.FloatField(verbose_name="Vergi Tutarı", null=True, blank=True)
     order_date = models.DateTimeField(auto_now_add=False, verbose_name="Sipariş Tarihi")
+    status = models.CharField(choices=STATUS, verbose_name="Durum", default="Tamamlandı", null=True, max_length=255)
 
     class Meta:
         verbose_name = "Trendyol Siparişler"

@@ -3,6 +3,7 @@ from import_export.admin import ImportExportModelAdmin
 from categorymodel.models import *
 from trendyol.resource import *
 
+
 class TrendyolFirstCategoryAdmin(ImportExportModelAdmin):
     list_display = ['id', 'name', 'parentId','is_subcategory']
     search_fields = ('id', 'name', 'parentId',)
@@ -50,6 +51,13 @@ class TrendyolBrandAdmin(ImportExportModelAdmin):
     list_per_page = 5000
     resource_class = TrendyolBrandResource
 
+
+class TrendyolOrderAdmin(ImportExportModelAdmin):
+    list_display = ['order_number', 'packet_number','buyer','sales_amount']
+    search_fields = ('order_number', 'packet_number',)
+    list_per_page = 100
+    resource_class = TrendyolOrderResource
+
 admin.site.register(TrendyolFirstCategory, TrendyolFirstCategoryAdmin)
 admin.site.register(TrendyolSecondCategory, TrendyolSecondCategoryAdmin)
 admin.site.register(TrendyolThirdCategory, TrendyolThirdCategoryAdmin)
@@ -58,5 +66,5 @@ admin.site.register(TrendyolFiveCategory, TrendyolFiveCategoryAdmin)
 admin.site.register(TrendyolSixCategory, TrendyolSixCategoryAdmin)
 admin.site.register(TrendyolBrand, TrendyolBrandAdmin)
 admin.site.register(LogRecords)
-admin.site.register(TrendyolOrders)
+admin.site.register(TrendyolOrders, TrendyolOrderAdmin)
 

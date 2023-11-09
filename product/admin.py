@@ -84,6 +84,17 @@ class PocketAdmin(ImportExportModelAdmin):
     list_display = ['id','name']
     resource_class = PocketResource
 
+class HeelTypeAdmin(ImportExportModelAdmin):
+    list_display = ['id','name']
+    resource_class = HeelTypeResource
+
+class HeelSizeAdmin(ImportExportModelAdmin):
+    list_display = ['id','name']
+    resource_class = HeelSizeResource
+
+class SexAdmin(ImportExportModelAdmin):
+    list_display = ['id','name']
+    resource_class = SexResource
 
 admin.site.register(Brand, BrandAdmin)
 admin.site.register(LikeProduct)
@@ -106,3 +117,6 @@ admin.site.register(EnvironmentType, EnvironmentTypeAdmin)
 admin.site.register(Waist, WaistAdmin)
 admin.site.register(LegType, LegTypeAdmin)
 admin.site.register(Pocket, PocketAdmin)
+admin.site.register(HeelType, HeelTypeAdmin)
+admin.site.register(HeelSize, HeelSizeAdmin)
+admin.site.register(Sex, SexAdmin)

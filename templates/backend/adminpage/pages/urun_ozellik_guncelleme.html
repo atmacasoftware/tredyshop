@@ -95,6 +95,26 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-md-4 col-sm-12 col-lg-3">
+                    <div class="info-box bg-orange">
+                        <div class="info-box-content">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <button type="submit" name="paca_guncelle" class="btn font-weight-bold btn-block">Paça Güncelle</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-12 col-lg-3">
+                    <div class="info-box bg-primary">
+                        <div class="info-box-content">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <button type="submit" name="kategori_guncelle" class="btn text-white font-weight-bold btn-block">Kategori Güncelle</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

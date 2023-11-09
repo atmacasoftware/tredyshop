@@ -30,3 +30,7 @@ class TrendyolSixCategoryResource(resources.ModelResource):
 class TrendyolBrandResource(resources.ModelResource):
     class Meta:
         model = TrendyolBrand
+
+class TrendyolOrderResource(resources.ModelResource):
+    class Meta:
+        model = TrendyolOrders

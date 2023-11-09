@@ -241,7 +241,7 @@ class ProductForm(forms.ModelForm):
                   'description', 'trendyol_category_id', 'image_url1', 'image_url2', 'image_url3', 'image_url4', 'image_url5',
                   'image_url6', 'image_url7', 'image_url8', 'price', 'discountprice', 'quantity', 'trendyol_price', 'hepsiburada_price', 'pttavm_price',
                   'is_discountprice', 'color', 'size', 'fabrictype', 'height','waist','pattern','armtype', 'collartype',
-                  'weavingtype', 'material', 'environment','legtype','pocket', 'age_group', 'sex', 'is_publish', 'is_active', 'is_publish_trendyol', 'sell_count', 'slug', 'detail'
+                  'weavingtype', 'material', 'environment','legtype','pocket','heeltype','heelsize', 'age_group', 'sextype', 'is_publish', 'is_publish_trendyol', 'sell_count', 'slug', 'detail'
                   ]
         exclude = ['created_at', 'updated_at','status']
 
@@ -268,6 +268,7 @@ class ProductForm(forms.ModelForm):
                 pass
         elif self.instance.pk:
             self.fields['subbottomcategory'].queryset = self.instance.subcategory.subbottomcategories.order_by('title')
+
 
         for field_name, field in self.fields.items():
             if field.widget.attrs.get('class'):

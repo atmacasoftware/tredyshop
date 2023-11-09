@@ -160,7 +160,24 @@ class Waist(models.Model):
     def __str__(self):
         return str(self.name)
 
+class HeelType(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Topuk Tipi")
 
+    def __str__(self):
+        return str(self.name)
+
+class HeelSize(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Topuk Boyu")
+
+    def __str__(self):
+        return str(self.name)
+
+
+class Sex(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Cinsiyet")
+
+    def __str__(self):
+        return str(self.name)
 
 class ApiProduct(models.Model):
 
@@ -170,12 +187,6 @@ class ApiProduct(models.Model):
         ("Çocuk","Çocuk"),
         ("Genç","Genç"),
         ("Yetişkin","Yetişkin"),
-    )
-
-    SEX = (
-        ("Erkek", "Erkek"),
-        ("Kadın/Kız", "Kadın/Kız"),
-        ("Unisex", "Unisex"),
     )
 
     ACVTIVE_STATUS = (
@@ -220,6 +231,8 @@ class ApiProduct(models.Model):
     environment = models.ForeignKey(EnvironmentType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Ortam")
     legtype = models.ForeignKey(LegType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Paça Tipi")
     pocket = models.ForeignKey(Pocket, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Cep")
+    heeltype = models.ForeignKey(HeelType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Topuk Tipi")
+    heelsize = models.ForeignKey(HeelSize, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Topuk Boyu")
     price = models.DecimalField(verbose_name="Fiyat", decimal_places=2, max_digits=20)
     quantity = models.BigIntegerField(verbose_name="Miktar", null=True, default=0)
     detail = RichTextUploadingField()
@@ -231,9 +244,8 @@ class ApiProduct(models.Model):
                                         blank=True)
     is_discountprice = models.BooleanField(default=False, verbose_name="İndirimli Yayınla", null=True, blank=True)
     age_group = models.CharField(choices=AGE_GROUP, max_length=50, verbose_name="Yaş Grubu", null=True, blank=True)
-    sex = models.CharField(choices=SEX, max_length=50, verbose_name="Cinsiyet", null=True, blank=True)
+    sextype = models.ForeignKey(Sex, verbose_name="Cinsiyet", null=True, blank=True, on_delete=models.CASCADE)
     is_publish = models.BooleanField(default=True, verbose_name="Yayında mı?", null=True)
-    is_active = models.CharField(choices=ACVTIVE_STATUS, max_length=50, verbose_name="Mevcut mu?", null=True)
     is_publish_trendyol = models.BooleanField(default=False, verbose_name="Trendyolda Yayında Mı?", null=True)
     sell_count = models.BigIntegerField(default=0, verbose_name="Toplam Satış Sayısı", null=True, blank=True)
     slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)

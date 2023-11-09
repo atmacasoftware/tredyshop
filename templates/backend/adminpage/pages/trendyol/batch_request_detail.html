@@ -56,6 +56,9 @@
                                 </div>
                             </div>
                             <div class="card-body">
+                                {% for i in items %}
+                                    {{ i }}
+                                {% endfor %}
                                 <div class="card-body table-responsive p-0">
                                     <table class="table table-hover text-nowrap" id="batchTable">
                                         <thead>
