@@ -13,11 +13,11 @@
             <a class="nav-link" data-widget="navbar-search" href="#" role="button">
                 <i class="fas fa-search"></i>
             </a>
-            <div class="navbar-search-block">
-                <form class="form-inline">
-                    <div class="input-group input-group-sm">
-                        <input class="form-control form-control-navbar" type="search" placeholder="Search"
-                               aria-label="Search">
+            <div class="navbar-search-block" style="height: 100%; padding: 0;">
+                <form class="form-inline" style="height: 100%;">
+                    <div class="input-group input-group-sm" style="height: 100%;">
+                        <input class="form-control form-control-navbar" type="search" placeholder="Arama Yap"
+                               aria-label="Search" style="height: 100%;">
                         <div class="input-group-append">
                             <button class="btn btn-navbar" type="submit">
                                 <i class="fas fa-search"></i>
@@ -53,13 +53,8 @@
             </div>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-                <i class="fas fa-expand-arrows-alt"></i>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#" role="button">
-                <i class="fas fa-th-large"></i>
+            <a class="nav-link" data-widget="fullscreen" href="{% url 'mainpage' %}" role="button">
+                <i class="fa-solid fa-globe"></i>
             </a>
         </li>
     </ul>

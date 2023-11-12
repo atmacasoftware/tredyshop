@@ -279,6 +279,7 @@ class ProductForm(forms.ModelForm):
 
 class TrendyolOrderForm(forms.ModelForm):
     order_date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}),label="Sipariş Tarihi")
+
     class Meta:
         model = TrendyolOrders
         fields = '__all__'
@@ -290,3 +291,38 @@ class TrendyolOrderForm(forms.ModelForm):
                 field.widget.attrs['class'] += ' form-control'
             else:
                 field.widget.attrs['class'] = 'form-control'
+
+
+class TrendyolUpdateOrderForm(forms.ModelForm):
+    class Meta:
+        model = TrendyolOrders
+        fields = '__all__'
+        exclude = ['order_date']
+
+    def __init__(self, *args, **kwargs):
+        super(TrendyolUpdateOrderForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field.widget.attrs.get('class'):
+                field.widget.attrs['class'] += ' form-control'
+            else:
+                field.widget.attrs['class'] = 'form-control'
+
+class HarcamalarForm(forms.ModelForm):
+    created_at = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}),label="Harcama Tarihi")
+
+    class Meta:
+        model = Harcamalar
+        fields = ["harcama_tipi","harcama_adi","harcama_tutari","harcama_notu","durum", "created_at"]
+        exclude = ["updated_at"]
+        widgets = {
+            'harcama_notu': forms.Textarea(attrs={'rows': 2, 'cols': 15}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(HarcamalarForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field.widget.attrs.get('class'):
+                field.widget.attrs['class'] += ' form-control'
+            else:
+                field.widget.attrs['class'] = 'form-control'
+

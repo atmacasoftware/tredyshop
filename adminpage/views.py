@@ -15,7 +15,7 @@ from trendyol.api import TrendyolApiClient
 from carts.models import CartItem
 from mainpage.models import City, Slider
 from trendyol.models import LogRecords
-from trendyol.services import ProductIntegrationService
+from trendyol.services import ProductIntegrationService, OrderIntegrationService
 
 from adminpage.custom import exportExcel, exportPdf, readNotification, createNotification, notReadNotification
 from adminpage.forms import *
@@ -117,10 +117,22 @@ def mainpage(request):
 
     product_count = ApiProduct.objects.all().count()
     user_count = User.objects.all().count()
-    order_count = Order.objects.all().count()
+    order_count = Order.objects.all().count() + TrendyolOrders.objects.all().count()
     delivery_product = Order.objects.all().exclude(status="Kargolandı").count()
     sold_out_product_count = ApiProduct.objects.filter(quantity=0).count()
     trendyol_product_count = ApiProduct.objects.filter(is_publish_trendyol=True).count()
+
+    total_cash_list = []
+    total_cash = 0
+
+    for o in Order.objects.all():
+        total_cash_list.append(o.order_total)
+
+    for o in TrendyolOrders.objects.all():
+        total_cash_list.append(o.sales_amount)
+
+    for tc in total_cash_list:
+        total_cash += tc
 
     waiting_order = Order.objects.filter(status="Yeni").count()
 
@@ -168,7 +180,8 @@ def mainpage(request):
         'campaing_product': campaing_product,
         'review_rating': review_rating,
         'favoruite_product': favoruite_product,
-        'cart_item_product': cart_item_product
+        'cart_item_product': cart_item_product,
+        'total_cash': total_cash,
     })
     return render(request, 'backend/adminpage/pages/mainpage.html', context)
 
@@ -755,13 +768,6 @@ def products(request):
 
     product = ApiProduct.objects.all()
 
-    deneme = ApiProduct.objects.filter(subcategory_id=3)
-
-    for d in deneme:
-        d.is_publish_trendyol = True
-        d.save()
-
-
     if desc:
         product = product.order_by(desc)
 
@@ -1010,6 +1016,7 @@ def urun_ozellik_guncelleme(request):
         return redirect('urun_ozellik_guncelleme')
     return render(request, 'backend/adminpage/pages/urun_ozellik_guncelleme.html', context)
 
+
 @login_required(login_url="/yonetim/giris-yap/")
 def all_delete_product(request):
     products = ApiProduct.objects.all().delete()
@@ -1037,7 +1044,6 @@ def product_export_excel(request):
     return exportExcel('products', 'Ürünler', columns=columns, rows=rows)
 
 
-
 @login_required(login_url="/yonetim/giris-yap/")
 def orders(request):
     context = {}
@@ -1057,6 +1063,7 @@ def orders(request):
 
     return render(request, 'backend/adminpage/pages/orders.html', context)
 
+
 @login_required(login_url="/yonetim/giris-yap/")
 def trendyol_add_order(request):
     context = {}
@@ -1064,7 +1071,7 @@ def trendyol_add_order(request):
     navbar_notify_count = notReadNotification()
 
     form = TrendyolOrderForm(data=request.POST or None,
-                              files=request.FILES or None)
+                             files=request.FILES or None)
 
     if request.POST:
         if form.is_valid():
@@ -1075,10 +1082,11 @@ def trendyol_add_order(request):
     context.update({
         'navbar_notify': navbar_notify,
         'navbar_notify_count': navbar_notify_count,
-        'form':form
+        'form': form
     })
 
     return render(request, 'backend/adminpage/pages/trendyol/add_orders.html', context)
+
 
 @login_required(login_url="/yonetim/giris-yap/")
 def trendyol_orders(request):
@@ -1098,6 +1106,42 @@ def trendyol_orders(request):
     })
 
     return render(request, 'backend/adminpage/pages/trendyol/orders.html', context)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def get_trendyol_orders(request):
+    context = {}
+    trendyol = Trendyol.objects.all().last()
+    trendyol_orders = TrendyolOrders.objects.all()
+    filter_params = None
+    try:
+        api = TrendyolApiClient(api_key=trendyol.apikey, api_secret=trendyol.apisecret,
+                                supplier_id=trendyol.saticiid)
+        service = OrderIntegrationService(api)
+        response = service.get_shipment_packages(filter_params=filter_params)
+        for r in response['content']:
+            customerName = r['customerFirstName'] + ' ' + r['customerLastName']
+            print(customerName)
+            if len(r['lines']) == 1:
+                for l in r['lines']:
+                    print(l)
+                    quantity = l['quantity']
+                    size = l['productSize']
+                    color = l['productColor']
+                    sku = l['merchantSku']
+                    title = l['productName']
+                    barcode = l['barcode']
+                    kdv = l['vatBaseAmount']
+                    status = l['orderLineItemStatusName']
+                    discount = l['discount']
+                    price = l['amount']
+
+        messages.success(request, "Siparişler getirildi.")
+        return redirect('trendyol_orders')
+    except Exception as e:
+        messages.error(request, f"{e}")
+
+    return redirect('trendyol_orders')
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -1135,7 +1179,7 @@ def trendyol_order_detail(request, id):
 
     order = TrendyolOrders.objects.get(id=id)
 
-    form = TrendyolOrderForm(instance=order, data=request.POST or None, files=request.FILES or None)
+    form = TrendyolUpdateOrderForm(instance=order, data=request.POST or None, files=request.FILES or None)
 
     context.update({
         'navbar_notify': navbar_notify,
@@ -1433,10 +1477,15 @@ def trendyolUpdateData(barcode, quantity, list_price, sale_price):
     return data
 
 
-def trendyolDeleteData(barcode):
-    data = {
-        "barcode": str(barcode)
-    }
+def trendyolDeleteData(products):
+    data = []
+
+    for p in products:
+        data.append(
+            {
+                "barcode": str(p.barcode)
+            }
+        )
 
     return data
 
@@ -1714,7 +1763,6 @@ def trendyol_add_product_giyim_send_trendyol(request, id):
                 data_attributes = []
                 p.trendyol_category_id = int(trendyol_category)
                 p.save()
-
 
         try:
             api = TrendyolApiClient(api_key=trendyol.apikey, api_secret=trendyol.apisecret,
@@ -2095,6 +2143,7 @@ def trendyol_schedule_update_price_stok(request):
         products17 = ApiProduct.objects.filter(is_publish_trendyol=True)[15999:16999]
         trendyol_update_function(request, products=products17)
 
+
 @login_required(login_url="/yonetim/giris-yap/")
 def trendyol_update_price_stok(request):
     context = {}
@@ -2444,32 +2493,64 @@ def trendyol_update_product(request):
 
 @login_required(login_url="/yonetim/giris-yap/")
 def trendyol_delete_product(request):
-    if 'deleteBtn' in request.POST:
+    items = []
+    product_data = []
+    trendyol = Trendyol.objects.all().last()
+
+    if 'inactiveDeleteBtn' in request.POST:
         products = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=False)
+        products_count = products.count()
+        result = round(products_count / 999)
 
-        items = []
-        product_data = []
-        trendyol = Trendyol.objects.all().last()
+        i = 0
 
-        if products.count() > 0:
-            for p in products:
-                items.append(
-                    trendyolDeleteData(barcode=p.barcode)
-                )
+        while (i < result):
+            j = 0
+            if i == 0:
+                j = 0
+                products = ApiProduct.objects.filter(is_publish_trendyol=True)[j:999]
+                for p in products:
+                    product_data.append(
+                        {
+                            "barcode": p.barcode
+                        }
+                    )
 
-                product_data = items
-            try:
+                try:
+                    api = TrendyolApiClient(api_key=trendyol.apikey, api_secret=trendyol.apisecret,
+                                            supplier_id=trendyol.saticiid)
+                    service = ProductIntegrationService(api)
+                    response = service.deleted_products(items=product_data)
+                    messages.success(request, f"{response}")
+                    log_record = LogRecords.objects.create(log_type="4", batch_id=response['batchRequestId'])
+                    return redirect('trendyol_batch_request_detail', str(log_record.batch_id))
+                except:
+                    messages.error(request, "Bir hata meydana geldi!")
+
+            else:
+                j = i * 1000
+                products = ApiProduct.objects.filter(is_publish_trendyol=True)[j - 1:j + 999]
+                for p in products:
+                    product_data.append(
+                        {
+                            "barcode": p.barcode
+                        }
+                    )
+
                 api = TrendyolApiClient(api_key=trendyol.apikey, api_secret=trendyol.apisecret,
                                         supplier_id=trendyol.saticiid)
                 service = ProductIntegrationService(api)
                 response = service.deleted_products(items=product_data)
                 messages.success(request, f"{response}")
                 log_record = LogRecords.objects.create(log_type="4", batch_id=response['batchRequestId'])
-            except:
-                pass
-            return redirect('trendyol_delete_product')
+                return redirect('trendyol_batch_request_detail', str(log_record.batch_id))
+
+            i = i + 1
+
+        return redirect('trendyol_delete_product')
 
     return render(request, 'backend/adminpage/pages/trendyol/silme.html')
+
 
 @login_required(login_url="/yonetim/giris-yap/")
 def trendyol_add_order(request):
@@ -2478,7 +2559,7 @@ def trendyol_add_order(request):
     navbar_notify_count = notReadNotification()
 
     form = TrendyolOrderForm(data=request.POST or None,
-                              files=request.FILES or None)
+                             files=request.FILES or None)
 
     if request.POST:
         if form.is_valid():
@@ -2489,11 +2570,11 @@ def trendyol_add_order(request):
     context.update({
         'navbar_notify': navbar_notify,
         'navbar_notify_count': navbar_notify_count,
-        'form':form
+        'form': form
     })
 
     return render(request, 'backend/adminpage/pages/trendyol/add_orders.html', context)
-    return render(request, 'backend/adminpage/pages/trendyol/add_orders.html', context)
+
 
 @login_required(login_url="/yonetim/giris-yap/")
 def trendyol_batch_request(request):
@@ -2532,16 +2613,28 @@ def trendyol_batch_request_detail(request, batch_request):
         service = ProductIntegrationService(api)
         response = service.get_batch_requests(batch_request_id=batch_request)
         request_id = response['batchRequestId']
-        for i in response['items']:
 
-            if i['status'] == 'SUCCESS':
-                product = ApiProduct.objects.get(barcode=i['requestItem']['product']['barcode'])
-                product.is_publish_trendyol = True
-                product.save()
-        context.update({
-            'response': response,
-            'all_batch_request': all_batch_request
-        })
+        if all_batch_request.log_type == "1":
+            for i in response['items']:
+                if i['status'] == 'SUCCESS':
+                    product = ApiProduct.objects.get(barcode=i['requestItem']['product']['barcode'])
+                    product.is_publish_trendyol = True
+                    product.save()
+            context.update({
+                'response': response,
+                'all_batch_request': all_batch_request
+            })
+
+        if all_batch_request.log_type == "4":
+            for i in response['items']:
+                if i['status'] == 'SUCCESS':
+                    product = ApiProduct.objects.get(barcode=i['requestItem']['product']['barcode'])
+                    product.is_publish_trendyol = False
+                    product.save()
+            context.update({
+                'response': response,
+                'all_batch_request': all_batch_request
+            })
     except:
         pass
 
@@ -2728,7 +2821,6 @@ def kesilen_faturalar(request):
     if yil:
         faturalar = faturalar.filter(year=yil)
 
-
     paginator = Paginator(faturalar, 50)
     page = request.GET.get('page')
 
@@ -2739,11 +2831,9 @@ def kesilen_faturalar(request):
     except EmptyPage:
         fatura = paginator.page(paginator.num_pages)
 
-
-
     context.update({
         'faturalar': fatura,
-        'query':query,
+        'query': query,
     })
     return render(request, 'backend/adminpage/pages/kesilen_faturalar.html', context)
 
@@ -2823,7 +2913,6 @@ def alinan_faturalar(request):
     if fatura_adi:
         faturalar = faturalar.filter(Q(bill_number__icontains=fatura_adi))
 
-
     if ay:
         faturalar = faturalar.filter(month=ay)
 
@@ -2881,6 +2970,135 @@ def alinan_faturalar_export_excel(request):
 
     rows = InvoicesReceived.objects.all().values_list('year', 'month', 'price', 'tax_rate', 'created_at')
     return exportExcel('alinan-faturalar', 'Ödemeler', columns=columns, rows=rows)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def harcamalar(request):
+    context = {}
+
+    tip = request.GET.get("tip")
+    status = request.GET.get("status")
+    harcama_adi = request.GET.get("harcama_adi")
+    yil = request.GET.get("yil")
+    ay = request.GET.get("ay")
+
+    query = f"?tip={tip}&status={status}&harcama_adi={harcama_adi}&yil={yil}&ay={ay}"
+
+    yapilan_harcamalar = Harcamalar.objects.all()
+    total_harcama = 0
+
+    if tip:
+        if tip == "None" or tip == None:
+            yapilan_harcamalar = yapilan_harcamalar
+        else:
+            yapilan_harcamalar = yapilan_harcamalar.filter(harcama_tipi=tip)
+
+    if status:
+        if status == "None" or status == None:
+            yapilan_harcamalar = yapilan_harcamalar
+        else:
+            yapilan_harcamalar = yapilan_harcamalar.filter(durum=status)
+
+    if harcama_adi:
+        yapilan_harcamalar = yapilan_harcamalar.filter(Q(harcama_adi__icontains=harcama_adi))
+
+    if yil:
+        yapilan_harcamalar = yapilan_harcamalar.filter(created_at__year=yil)
+
+    if ay:
+        yapilan_harcamalar = yapilan_harcamalar.filter(created_at__month=ay)
+
+    for h in yapilan_harcamalar:
+        total_harcama += h.harcama_tutari
+
+    p = Paginator(yapilan_harcamalar, 20)
+    page = request.GET.get('page')
+    tum_harcamalar = p.get_page(page)
+
+    form = HarcamalarForm(data=request.POST, files=request.FILES)
+
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Harcama başarıyla eklendi!')
+            return redirect("harcamalar")
+
+    context.update({
+        'harcamalar': tum_harcamalar,
+        'form': form,
+        'total_harcama':total_harcama,
+        'query':query,
+        'tip':tip,
+        'status':status,
+        'harcama_adi':harcama_adi,
+        'yil':yil,
+        'ay':ay,
+    })
+
+    return render(request, 'backend/adminpage/pages/harcamalar.html', context)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def harcama_detay(request, id):
+    context = {}
+
+    harcama = get_object_or_404(Harcamalar, id=id)
+    form = HarcamalarForm(instance=harcama, data=request.POST or None, files=request.FILES or None)
+
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Güncelleme başarıyla yapıldı!')
+            return redirect('harcama_detay', id)
+
+    context.update({
+        'harcama':harcama,
+        'form': form,
+    })
+    return render(request, 'backend/adminpage/pages/harcamalar_guncelle.html', context)
+
+def harcamalar_export_excel(request):
+    columns = ['Harcama Tipi', 'Harcama Adı', 'Harcama Tutarı', 'Harcama Tarihi']
+
+    rows = Harcamalar.objects.all().values_list('harcama_tipi', 'harcama_adi', 'harcama_tutari', 'created_at')
+    return exportExcel('Harcamalar', 'Harcamalar', columns=columns, rows=rows)
+
+
+def harcamalar_export_pdf(request):
+    columns = ['Harcama Tipi', 'Harcama Adı', 'Harcama Tutarı', 'Harcama Tarihi']
+    rows = []
+    row = Harcamalar.objects.all().values_list('harcama_tipi', 'harcama_adi', 'harcama_tutari', 'created_at')
+    for r in row:
+        rows.append(r)
+
+    dict = {
+        'columns': columns,
+        'rows': rows
+    }
+
+    pdf = exportPdf(f"{str(settings.BASE_DIR)}" + "/templates/backend/adminpage/partials/table_pdf.html", dict)
+    response = HttpResponse(pdf, content_type='application/pdf')
+    content = f'attachment; filename=Harcamalar' + '.pdf'
+    response['Content-Disposition'] = content
+
+    return response
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def harcamalar_hepsini_sil(request):
+    context = {}
+    harcamalar = Harcamalar.objects.all().delete()
+    messages.success(request, 'Tüm harcamalar silindi.')
+    return redirect("harcamalar")
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def harcamalar_secilileri_sil(request):
+    harcama_id = request.GET.getlist('harcama[]')
+
+    Harcamalar.objects.filter(id__in=harcama_id).delete()
+    data = 'success'
+    return JsonResponse(data=data, safe=False)
 
 
 @login_required(login_url="/yonetim/giris-yap/")

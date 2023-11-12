@@ -286,7 +286,7 @@
                     </ul>
                 </li>
 
-                <li class="nav-header">MUHASEBE</li>
+                <li class="nav-header">FİNANS</li>
                 <li class="nav-item {% if '/kesilen-faturalar/' in request.path %}menu-open{% endif %}">
                     <a href="#"
                        class="nav-link {% if '/kesilen-faturalar/' in request.path %}active{% endif %}">
@@ -339,6 +339,16 @@
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item">
+                    <a href="{% url 'harcamalar' %}"
+                       class="nav-link {% if '/yonetim/harcamalar/' in request.path %}active{% endif %}">
+                        <i class="nav-icon fa-solid fa-wallet"></i>
+                        <p>
+                            Harcamalar
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-header">DİĞER</li>
                 <li class="nav-item {% if '/gecmis-kayitlar/' in request.path %}menu-open{% endif %}">
                     <a href="#"
                        class="nav-link {% if '/gecmis-kayitlar/' in request.path %}active{% endif %}">

@@ -23,7 +23,7 @@
                 <div class="col-lg-3 col-6">
                     <div class="small-box bg-info">
                         <div class="inner">
-                            <h3>{{ product_count }}</h3>
+                            <h4>{{ product_count }}</h4>
                             <p>Toplam Ürün Sayısı</p>
                         </div>
                         <div class="icon">
@@ -37,7 +37,7 @@
                 <div class="col-lg-3 col-6">
                     <div class="small-box bg-warning">
                         <div class="inner">
-                            <h3>{{ user_count }}</h3>
+                            <h4>{{ user_count }}</h4>
                             <p>Kullanıcı Sayısı</p>
                         </div>
                         <div class="icon">
@@ -51,7 +51,7 @@
                 <div class="col-lg-3 col-6">
                     <div class="small-box bg-success">
                         <div class="inner">
-                            <h3>{{ order_count }}</h3>
+                            <h4>{{ order_count }}</h4>
 
                             <p>Sipariş Sayısı</p>
                         </div>
@@ -67,14 +67,13 @@
                     <!-- small box -->
                     <div class="small-box bg-danger">
                         <div class="inner">
-                            <h3>{{ delivery_product }}</h3>
-
-                            <p>Kargolanması Gereken Sipariş</p>
+                            <h4>{{ total_cash|floatformat:2 }}</h4>
+                            <p>Satış Tutarı</p>
                         </div>
                         <div class="icon">
-                            <i class="ion ion-android-sad"></i>
+                            <i class="ion ion-cash"></i>
                         </div>
-                        <a href="#" class="small-box-footer">Siparişleri Gör <i
+                        <a href="#" class="small-box-footer">Detayları Gör <i
                                 class="fas fa-arrow-circle-right"></i></a>
                     </div>
                 </div>

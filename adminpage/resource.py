@@ -18,3 +18,7 @@ class InvoicesReceivedResource(resources.ModelResource):
 class HakkimizdaResource(resources.ModelResource):
     class Meta:
         model = Hakkimizda
+
+class HarcamalarResource(resources.ModelResource):
+    class Meta:
+        model = Harcamalar

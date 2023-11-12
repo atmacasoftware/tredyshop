@@ -28,14 +28,13 @@ class Trendyol(models.Model):
     iadeadresid_5 = models.BigIntegerField(null=True, blank=True, verbose_name="İade Adres ID 5")
     firstbarem = models.FloatField(verbose_name="Barem 1. Aralık Maksimum Değeri", null=True)
     secondbarem = models.FloatField(verbose_name="Barem 2. Aralık Maksimum Değeri", null=True)
+
     class Meta:
         verbose_name = "1) Trendyol Hesap Bilgileri"
         verbose_name_plural = "1) Trendyol Hesap Bilgileri"
 
 
-
 class IssuedInvoices(models.Model):
-
     YEAR = (
         ("2023", "2023"),
         ("2024", "2024"),
@@ -48,18 +47,18 @@ class IssuedInvoices(models.Model):
     )
 
     MONTH = (
-        ("1","1"),
-        ("2","2"),
-        ("3","3"),
-        ("4","4"),
-        ("5","5"),
-        ("6","6"),
-        ("7","7"),
-        ("8","8"),
-        ("9","9"),
-        ("10","10"),
-        ("11","11"),
-        ("12","12"),
+        ("1", "1"),
+        ("2", "2"),
+        ("3", "3"),
+        ("4", "4"),
+        ("5", "5"),
+        ("6", "6"),
+        ("7", "7"),
+        ("8", "8"),
+        ("9", "9"),
+        ("10", "10"),
+        ("11", "11"),
+        ("12", "12"),
     )
 
     TYPE = (
@@ -86,7 +85,8 @@ class IssuedInvoices(models.Model):
     year = models.CharField(max_length=10, choices=YEAR, null=True, default="2023", verbose_name="Düzenlenme Yılı")
     month = models.CharField(max_length=10, choices=MONTH, null=True, default="1", verbose_name="Düzenleme Ayı")
     file = models.FileField(upload_to="adminpage/kesilen_fatular/", verbose_name="Fatura", null=True, blank=True)
-    edited_date = models.DateField(auto_now=False, auto_now_add=False, verbose_name="Fatura Düzenlenme Tarihi", null=True)
+    edited_date = models.DateField(auto_now=False, auto_now_add=False, verbose_name="Fatura Düzenlenme Tarihi",
+                                   null=True)
     is_cancelling = models.BooleanField(default=False, verbose_name="İptal Edildi Mi?", null=True)
     created_at = models.DateField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
@@ -98,6 +98,7 @@ class IssuedInvoices(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
 
 class InvoicesReceived(models.Model):
     YEAR = (
@@ -127,17 +128,18 @@ class InvoicesReceived(models.Model):
     )
 
     TYPE = (
-        ("Satış","Satış"),
-        ("Genel İade","Genel İade"),
-        ("Tevkifat","Tevkifat"),
-        ("Tevkifat İade","Tevkifat İade"),
-        ("İstisna","İstisna"),
-        ("Özel Matrah","Özel Matrah"),
-        ("İhraç Kayıtlı","İhraç Kayıtlı"),
-        ("Konaklama Vergisi","Konaklama Vergisi"),
+        ("Satış", "Satış"),
+        ("Genel İade", "Genel İade"),
+        ("Tevkifat", "Tevkifat"),
+        ("Tevkifat İade", "Tevkifat İade"),
+        ("İstisna", "İstisna"),
+        ("Özel Matrah", "Özel Matrah"),
+        ("İhraç Kayıtlı", "İhraç Kayıtlı"),
+        ("Konaklama Vergisi", "Konaklama Vergisi"),
     )
 
-    bill_type = models.CharField(choices=TYPE, default="Satış", verbose_name="Fatura Tipi", null=True, blank=False, max_length=100)
+    bill_type = models.CharField(choices=TYPE, default="Satış", verbose_name="Fatura Tipi", null=True, blank=False,
+                                 max_length=100)
     bill_number = models.CharField(verbose_name="Fatura Numarası", max_length=255, null=True, blank=False)
     price = models.FloatField(verbose_name="KDV Hariç Fiyat", null=True, blank=False)
     tax_rate = models.IntegerField(verbose_name="KDV Oranı", null=True, blank=False)
@@ -158,14 +160,14 @@ class InvoicesReceived(models.Model):
 
 class Notification(models.Model):
     TYPE = (
-        ("1","1"),
-        ("2","2"),
-        ("3","3"),
-        ("4","4"),
-        ("5","5"),
-        ("6","6"),
-        ("7","7"),
-        ("8","8"),
+        ("1", "1"),
+        ("2", "2"),
+        ("3", "3"),
+        ("4", "4"),
+        ("5", "5"),
+        ("6", "6"),
+        ("7", "7"),
+        ("8", "8"),
     )
 
     # 1: Ürünler pazaryerlerine yüklendi.
@@ -178,8 +180,10 @@ class Notification(models.Model):
     # 8: Yeni müşteri kaydı.
 
     noti_type = models.CharField(choices=TYPE, max_length=20, verbose_name="Bildirim Tipi")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Kullanıcı", related_name="noti_user")
-    customer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Müşteri", related_name="noti_customer")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Kullanıcı",
+                             related_name="noti_user")
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Müşteri",
+                                 related_name="noti_customer")
     title = models.CharField(max_length=255, verbose_name="Bildirim Başlığı", null=True, blank=False)
     detail = models.TextField(max_length=1000, verbose_name="Bildirim İçeriği", null=True, blank=True)
     is_read = models.BooleanField(default=False, verbose_name="Okundu mu?")
@@ -218,17 +222,17 @@ class Hakkimizda(models.Model):
     category_count = models.BigIntegerField(verbose_name="Kategori Sayısı", null=True)
     categories = models.CharField(max_length=500, verbose_name="Kategoriler", null=True)
     product_count = models.BigIntegerField(verbose_name="Ürün Sayısı", null=True)
-    trendyol_url = models.CharField(max_length=255,verbose_name="Trendyol Mağaza Adresi", null=True)
-    hepsiburada_url = models.CharField(max_length=255,verbose_name="Hepsiburada Mağaza Adresi", null=True)
-    pttavm_url = models.CharField(max_length=255,verbose_name="PTTAvm Mağaza Adresi", null=True)
+    trendyol_url = models.CharField(max_length=255, verbose_name="Trendyol Mağaza Adresi", null=True)
+    hepsiburada_url = models.CharField(max_length=255, verbose_name="Hepsiburada Mağaza Adresi", null=True)
+    pttavm_url = models.CharField(max_length=255, verbose_name="PTTAvm Mağaza Adresi", null=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
 
 
 class BannerOne(models.Model):
     TYPE = (
-        ("Belirli Tutar Altı","Belirli Tutar Altı"),
-        ("İndirimli Ürünler","İndirimli Ürünler"),
+        ("Belirli Tutar Altı", "Belirli Tutar Altı"),
+        ("İndirimli Ürünler", "İndirimli Ürünler"),
     )
 
     banner_type = models.CharField(max_length=100, choices=TYPE, verbose_name="Tip", null=True, blank=False)
@@ -265,11 +269,11 @@ class BannerOne(models.Model):
                     break
         super(BannerOne, self).save(*args, **kwargs)
 
-class BannerTwo(models.Model):
 
+class BannerTwo(models.Model):
     TYPE = (
-        ("Belirli Tutar Altı","Belirli Tutar Altı"),
-        ("İndirimli Ürünler","İndirimli Ürünler"),
+        ("Belirli Tutar Altı", "Belirli Tutar Altı"),
+        ("İndirimli Ürünler", "İndirimli Ürünler"),
     )
 
     banner_type = models.CharField(max_length=100, choices=TYPE, verbose_name="Tip", null=True, blank=False)
@@ -305,3 +309,35 @@ class BannerTwo(models.Model):
                     self.slug = slug
                     break
         super(BannerTwo, self).save(*args, **kwargs)
+
+
+class Harcamalar(models.Model):
+    TYPE = (
+        ("Ürün Alımı", "Ürün Alımı"),
+        ("KDV Ödemesi", "KDV Ödemesi"),
+        ("Gelir Geçici Vergi Ödemesi", "Gelir Geçici Vergi Ödemesi"),
+        ("Diğer Harcamalar", "Diğer Harcamalar")
+    )
+
+    STATUS = (
+        ("Ödeme Yapıldı", "Ödeme Yapıldı"),
+        ("İptal Edildi", "İptal Edildi"),
+        ("İade Yapıldı", "İade Yapıldı"),
+    )
+
+    harcama_tipi = models.CharField(choices=TYPE, null=True, blank=False, max_length=100, verbose_name="Harcama Tipi")
+    harcama_adi = models.CharField(max_length=300, verbose_name="Harcama Adı", null=True)
+    harcama_tutari = models.FloatField(verbose_name="Harcama Tutarı", null=True)
+    harcama_notu = models.TextField(null=True, blank=True, verbose_name="Not")
+    durum = models.CharField(choices=STATUS, null=True, blank=False, verbose_name="Ödeme Durumu",
+                             default="Ödeme Yapıldı", max_length=50)
+    created_at = models.DateField(verbose_name="Harcama Tarihi")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
+
+    class Meta:
+        verbose_name = "Harcamalar"
+        verbose_name_plural = "Harcamalar"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.harcama_adi

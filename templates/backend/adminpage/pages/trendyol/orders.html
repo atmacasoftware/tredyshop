@@ -25,10 +25,12 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
+                <div class="col-lg-12 mb-3">
+                    <a href="{% url 'get_trendyol_orders' %}" class="btn rounded-5 btn-primary" id="getTrendyolOrders">Siparişleri Getir</a>
+                </div>
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-
                             <div class="card-tools">
                                 <div class="input-group input-group-sm" style="width: 250px;">
                                     <input type="text" name="table_search" id="search" onkeyup="searchFunction();"
@@ -113,9 +115,9 @@
         </div>
     </section>
 
-    <script>
 
-        function searchFunction() {
+    <script>
+    function searchFunction() {
             let input, filter, table, tr, td, j;
             input = document.getElementById("search");
             filter = input.value.toLowerCase();
@@ -151,6 +153,5 @@
 
             }
         }
-
     </script>
 {% endblock %}

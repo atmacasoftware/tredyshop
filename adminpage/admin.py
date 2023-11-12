@@ -25,8 +25,15 @@ class HakkimizdaAdmin(ImportExportModelAdmin):
     list_display = ['id']
     resource_class = Hakkimizda
 
+
+class HarcamalarAdmin(ImportExportModelAdmin):
+    list_display = ['id']
+    resource_class = HarcamalarResource
+
+
 admin.site.register(Trendyol, TrendyolAdmin)
 admin.site.register(IssuedInvoices, IssuedInvoicesAdmin)
 admin.site.register(InvoicesReceived, InvoicesReceivedAdmin)
 admin.site.register(Hakkimizda, InvoicesReceivedAdmin)
+admin.site.register(Harcamalar, HarcamalarAdmin)
 

@@ -28,8 +28,6 @@ $(function () {
         zIndex: 999999
     })
 
-    // bootstrap WYSIHTML5 - text editor
-    $('.textarea').summernote()
 
     $('.daterange').daterangepicker({
         ranges: {
@@ -50,27 +48,6 @@ $(function () {
     /* jQueryKnob */
     $('.knob').knob()
 
-    // jvectormap data
-    var visitorsData = {
-        US: 398, // USA
-        SA: 400, // Saudi Arabia
-        CA: 1000, // Canada
-        DE: 500, // Germany
-        FR: 760, // France
-        CN: 300, // China
-        AU: 700, // Australia
-        BR: 600, // Brazil
-        IN: 800, // India
-        GB: 320, // Great Britain
-        RU: 3000 // Russia
-    }
-
-
-    // The Calender
-    $('#calendar').datetimepicker({
-        format: 'L',
-        inline: true
-    })
 
     // SLIMSCROLL FOR CHAT WIDGET
     $('#chat-box').overlayScrollbars({

@@ -15,7 +15,7 @@
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Bootstrap 5 -->
-    <link rel="stylesheet"href="{% static 'adminpage/plugins/bootstrap5/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'adminpage/plugins/bootstrap5/bootstrap.min.css' %}">
     <!-- iCheck -->
     <link rel="stylesheet" href="{% static 'adminpage/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
     <!-- Theme style -->
@@ -64,6 +64,8 @@
         {% endblock %}
         {% block orders %}
         {% endblock %}
+        {% block finans %}
+        {% endblock %}
     </div>
     <!-- /.content-wrapper -->
 
@@ -77,6 +79,10 @@
 </div>
 <!-- ./wrapper -->
 
+<a id="back-to-top" href="#" class="btn btn-primary back-to-top" role="button" aria-label="Scroll to top">
+    <i class="fas fa-chevron-up"></i>
+</a>
+
 <!-- jQuery -->
 <script src="{% static 'adminpage/plugins/jquery/jquery.min.js' %}"></script>
 <!-- jQuery UI 1.11.4 -->
@@ -85,8 +91,6 @@
 <script>
     $.widget.bridge('uibutton', $.ui.button)
 </script>
-<!-- Bootstrap 4 -->
-<script src="{% static 'adminpage/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 <!-- ChartJS -->
 <script src="{% static 'adminpage/plugins/chart.js/Chart.min.js' %}"></script>
 <!-- jQuery Knob Chart -->
