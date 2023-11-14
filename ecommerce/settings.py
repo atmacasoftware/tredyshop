@@ -169,6 +169,7 @@ CRONJOBS = [
     ('*/30 * * * * ', 'ecommerce.cron.update_modaymis'),
     ('*/15 * * * * ', 'ecommerce.cron.find_not_active_modaymis'),
     ('*/30 * * * * ', 'ecommerce.cron.trendyol_update_stok_fiyat'),
+    ('* */1 * * * ', 'ecommerce.cron.trendyol_orders'),
 ]
 
 ACCOUNT_AUTHENTICATION_METHOD = 'email'

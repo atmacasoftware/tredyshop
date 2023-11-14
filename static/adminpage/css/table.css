@@ -92,6 +92,11 @@ table th {
         font-size: 1.3em;
     }
 
+    .table-responsive {
+        overflow-x: hidden;
+        padding: 0;
+    }
+
     table thead {
         border: none;
         clip: rect(0 0 0 0);
@@ -130,6 +135,15 @@ table th {
     table td:last-child {
         border-bottom: 0;
     }
+
+    .product__title{
+        overflow: hidden;
+    }
+
+    table td:first-child{
+        border-top: 0;
+    }
+
 }
 
 .pagination {

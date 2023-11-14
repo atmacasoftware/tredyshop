@@ -1195,6 +1195,7 @@ def get_trendyol_orders(request):
     return redirect('trendyol_orders')
 
 
+
 @login_required(login_url="/yonetim/giris-yap/")
 def order_detail(request, order_number):
     context = {}
@@ -3030,15 +3031,16 @@ def alinan_faturalar_export_excel(request):
 def harcamalar(request):
     context = {}
 
-    tip = request.GET.get("tip")
-    status = request.GET.get("status")
-    harcama_adi = request.GET.get("harcama_adi")
-    yil = request.GET.get("yil")
-    ay = request.GET.get("ay")
+    tip = request.GET.get("tip", '')
+    status = request.GET.get("status", '')
+    harcama_adi = request.GET.get("harcama_adi", '')
+    yil = request.GET.get("yil", '')
+    ay = request.GET.get("ay", '')
 
     query = f"?tip={tip}&status={status}&harcama_adi={harcama_adi}&yil={yil}&ay={ay}"
 
     yapilan_harcamalar = Harcamalar.objects.all()
+
     total_harcama = 0
 
     if tip:
@@ -3069,6 +3071,8 @@ def harcamalar(request):
     page = request.GET.get('page')
     tum_harcamalar = p.get_page(page)
 
+    harcama_sayisi = yapilan_harcamalar.count()
+
     form = HarcamalarForm(data=request.POST, files=request.FILES)
 
     if request.method == "POST":
@@ -3079,6 +3083,7 @@ def harcamalar(request):
 
     context.update({
         'harcamalar': tum_harcamalar,
+        'harcama_sayisi':harcama_sayisi,
         'form': form,
         'total_harcama': total_harcama,
         'query': query,

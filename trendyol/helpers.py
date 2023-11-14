@@ -1,8 +1,8 @@
 from adminpage.models import Trendyol
 from product.models import ApiProduct, UpdateHistory
 from trendyol.api import TrendyolApiClient
-from trendyol.models import LogRecords
-from trendyol.services import ProductIntegrationService
+from trendyol.models import LogRecords, TrendyolOrders
+from trendyol.services import ProductIntegrationService, OrderIntegrationService
 
 
 def trendyolUpdateData(barcode, quantity, list_price, sale_price):
@@ -157,3 +157,85 @@ def trendyol_schedule_update_price_stok():
         trendyol_update_function(products=products8)
         products9 = ApiProduct.objects.filter(is_publish_trendyol=True)[8999:9999]
         trendyol_update_function(products=products9)
+
+def get_cron_trendyol_orders(request):
+    context = {}
+    trendyol = Trendyol.objects.all().last()
+    trendyol_orders = TrendyolOrders.objects.all()
+    filter_params = None
+    quantity = 0
+    title = ''
+    barcode = ''
+    color = '-'
+    size = '-'
+    unitPrice = 0.0
+    salesAmount = 0.0
+    discount = 0.0
+    sku = ''
+
+    api = TrendyolApiClient(api_key=trendyol.apikey, api_secret=trendyol.apisecret,
+                            supplier_id=trendyol.saticiid)
+    service = OrderIntegrationService(api)
+    response = service.get_shipment_packages(filter_params=filter_params)
+    status = None
+    for r in response['content']:
+        customerName = r['customerFirstName'] + ' ' + r['customerLastName']
+        orderNumber = r['orderNumber']
+        packetNumber = r['id']
+        orderDate = r['orderDate']
+        datetime_obj_with_tz = datetime.utcfromtimestamp(orderDate / 1000)
+
+        if TrendyolOrders.objects.filter(packet_number__contains=str(packetNumber)).count() > 0:
+            order = TrendyolOrders.objects.get(packet_number=str(packetNumber))
+            if len(r['lines']) == 1:
+                for l in r['lines']:
+                    orderStatus = l['orderLineItemStatusName']
+                    if orderStatus == 'UnDeliveredAndReturned':
+                        status = "İade Edildi"
+                    elif orderStatus == 'Picking':
+                        status = "Hazırlanıyor"
+                    elif orderStatus == "Deliverd":
+                        status = "Tamamlandı"
+                    elif orderStatus == "Cancelled":
+                        status = "İptal Edildi"
+                    elif orderStatus == "Created":
+                        status = "Yeni"
+                    elif orderStatus == "Shipped":
+                        status = "Taşıma Durumunda"
+                    else:
+                        status = "Taşıma Durumunda"
+                order.status = status
+                order.save()
+        else:
+            if len(r['lines']) == 1:
+                for l in r['lines']:
+                    quantity = l['quantity']
+                    size = l['productSize']
+                    sku = l['merchantSku']
+                    title = l['productName']
+                    barcode = l['barcode']
+                    kdv = l['vatBaseAmount']
+                    orderStatus = l['orderLineItemStatusName']
+                    if orderStatus == 'UnDeliveredAndReturned':
+                        status = "İade Edildi"
+                    elif orderStatus == 'Picking':
+                        status = "Hazırlanıyor"
+                    elif orderStatus == "Deliverd":
+                        status = "Tamamlandı"
+                    elif orderStatus == "Cancelled":
+                        status = "İptal Edildi"
+                    elif orderStatus == "Created":
+                        status = "Yeni"
+                    elif orderStatus == "Shipped":
+                        status = "Taşıma Durumunda"
+                    else:
+                        status = "Taşıma Durumunda"
+                    discount = l['discount']
+                    unitPrice = l['price']
+                    salesAmount = l['amount']
+                    TrendyolOrders.objects.create(order_number=orderNumber, packet_number=packetNumber,
+                                                  buyer=customerName, quantity=quantity, title=title,
+                                                  barcode=barcode, color=color, size=size, stock_code=sku,
+                                                  unit_price=unitPrice, sales_amount=salesAmount,
+                                                  discount_amount=discount, status=status,
+                                                  order_date=datetime_obj_with_tz)
