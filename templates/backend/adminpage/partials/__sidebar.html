@@ -348,6 +348,15 @@
                         </p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{% url 'gelir_gider' %}"
+                       class="nav-link {% if '/yonetim/gelir-gider/' in request.path %}active{% endif %}">
+                        <i class="nav-icon fa-solid fa-cash-register"></i>
+                        <p>
+                            Gelir-Gider Durumu
+                        </p>
+                    </a>
+                </li>
                 <li class="nav-header">DİĞER</li>
                 <li class="nav-item {% if '/gecmis-kayitlar/' in request.path %}menu-open{% endif %}">
                     <a href="#"

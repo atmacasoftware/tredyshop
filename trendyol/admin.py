@@ -55,7 +55,7 @@ class TrendyolBrandAdmin(ImportExportModelAdmin):
 class TrendyolOrderAdmin(ImportExportModelAdmin):
     list_display = ['order_number', 'packet_number','buyer','sales_amount']
     search_fields = ('order_number', 'packet_number',)
-    list_per_page = 100
+    list_per_page = 1000
     resource_class = TrendyolOrderResource
 
 admin.site.register(TrendyolFirstCategory, TrendyolFirstCategoryAdmin)

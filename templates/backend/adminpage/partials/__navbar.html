@@ -14,42 +14,23 @@
                 <i class="fas fa-search"></i>
             </a>
             <div class="navbar-search-block" style="height: 100%; padding: 0;">
-                <form class="form-inline" style="height: 100%;">
+                <form class="form-inline" id="generalSearchForm" style="height: 100%;">
                     <div class="input-group input-group-sm" style="height: 100%;">
                         <input class="form-control form-control-navbar" type="search" placeholder="Arama Yap"
-                               aria-label="Search" style="height: 100%;">
+                               aria-label="Search" id="generalSearch" style="height: 100%;">
                         <div class="input-group-append">
                             <button class="btn btn-navbar" type="submit">
                                 <i class="fas fa-search"></i>
                             </button>
-                            <button class="btn btn-navbar" type="button" data-widget="navbar-search">
+                            <button class="btn btn-navbar" id="searchCloseBtn" type="button" data-widget="navbar-search">
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
                     </div>
                 </form>
             </div>
-        </li>
+            <div class="result-box not-visible">
 
-        <li class="nav-item dropdown">
-            <a class="nav-link" data-toggle="dropdown" href="#">
-                <i class="far fa-bell"></i>
-                <span class="badge badge-warning navbar-badge">{{ navbar_notify_count }}</span>
-            </a>
-            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="max-height: 400px; overflow: auto">
-                <span class="dropdown-item dropdown-header">{{ navbar_notify_count }} Duyuru</span>
-
-                {% for n in navbar_notify %}
-                    <div class="dropdown-divider"></div>
-                    {% if n.noti_type == "2" or n.noti_type == "1" or n.noti_type == "3" %}
-                        <a href="#" class="dropdown-item" style="display: flex; justify-content: space-between; align-items: center;">
-                            <p>{{ n.title|truncatechars_html:50 }}</p>
-                            <span class="float-right text-muted text-sm">{{ n.passing_time }}</span>
-                        </a>
-                    {% endif %}
-                {% endfor %}
-
-                <a href="{% url 'notification' %}" class="dropdown-item dropdown-footer">Tüm Duyuruları Gör</a>
             </div>
         </li>
         <li class="nav-item">

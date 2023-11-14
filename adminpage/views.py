@@ -8,7 +8,7 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.views.generic import ListView
-
+import pytz
 from carts.helpers import paytr_sorgu
 from trendyol.api import TrendyolApiClient
 
@@ -1114,33 +1114,84 @@ def get_trendyol_orders(request):
     trendyol = Trendyol.objects.all().last()
     trendyol_orders = TrendyolOrders.objects.all()
     filter_params = None
-    try:
-        api = TrendyolApiClient(api_key=trendyol.apikey, api_secret=trendyol.apisecret,
-                                supplier_id=trendyol.saticiid)
-        service = OrderIntegrationService(api)
-        response = service.get_shipment_packages(filter_params=filter_params)
-        for r in response['content']:
-            customerName = r['customerFirstName'] + ' ' + r['customerLastName']
-            print(customerName)
+    quantity = 0
+    title = ''
+    barcode = ''
+    color = '-'
+    size = '-'
+    unitPrice = 0.0
+    salesAmount = 0.0
+    discount = 0.0
+    sku = ''
+
+    api = TrendyolApiClient(api_key=trendyol.apikey, api_secret=trendyol.apisecret,
+                            supplier_id=trendyol.saticiid)
+    service = OrderIntegrationService(api)
+    response = service.get_shipment_packages(filter_params=filter_params)
+    status = None
+    for r in response['content']:
+        customerName = r['customerFirstName'] + ' ' + r['customerLastName']
+        orderNumber = r['orderNumber']
+        packetNumber = r['id']
+        orderDate = r['orderDate']
+        datetime_obj_with_tz = datetime.utcfromtimestamp(orderDate / 1000)
+
+        if TrendyolOrders.objects.filter(packet_number__contains=str(packetNumber)).count() > 0:
+            order = TrendyolOrders.objects.get(packet_number=str(packetNumber))
             if len(r['lines']) == 1:
                 for l in r['lines']:
-                    print(l)
+                    orderStatus = l['orderLineItemStatusName']
+                    if orderStatus == 'UnDeliveredAndReturned':
+                        status = "İade Edildi"
+                    elif orderStatus == 'Picking':
+                        status = "Hazırlanıyor"
+                    elif orderStatus == "Deliverd":
+                        status = "Tamamlandı"
+                    elif orderStatus == "Cancelled":
+                        status = "İptal Edildi"
+                    elif orderStatus == "Created":
+                        status = "Yeni"
+                    elif orderStatus == "Shipped":
+                        status = "Taşıma Durumunda"
+                    else:
+                        status = "Taşıma Durumunda"
+                order.status = status
+                order.save()
+        else:
+            if len(r['lines']) == 1:
+                for l in r['lines']:
                     quantity = l['quantity']
                     size = l['productSize']
-                    color = l['productColor']
                     sku = l['merchantSku']
                     title = l['productName']
                     barcode = l['barcode']
                     kdv = l['vatBaseAmount']
-                    status = l['orderLineItemStatusName']
+                    orderStatus = l['orderLineItemStatusName']
+                    if orderStatus == 'UnDeliveredAndReturned':
+                        status = "İade Edildi"
+                    elif orderStatus == 'Picking':
+                        status = "Hazırlanıyor"
+                    elif orderStatus == "Deliverd":
+                        status = "Tamamlandı"
+                    elif orderStatus == "Cancelled":
+                        status = "İptal Edildi"
+                    elif orderStatus == "Created":
+                        status = "Yeni"
+                    elif orderStatus == "Shipped":
+                        status = "Taşıma Durumunda"
+                    else:
+                        status = "Taşıma Durumunda"
                     discount = l['discount']
-                    price = l['amount']
+                    unitPrice = l['price']
+                    salesAmount = l['amount']
+                    TrendyolOrders.objects.create(order_number=orderNumber, packet_number=packetNumber,
+                                                  buyer=customerName, quantity=quantity, title=title,
+                                                  barcode=barcode, color=color, size=size, stock_code=sku,
+                                                  unit_price=unitPrice, sales_amount=salesAmount,
+                                                  discount_amount=discount, status=status,
+                                                  order_date=datetime_obj_with_tz)
 
-        messages.success(request, "Siparişler getirildi.")
-        return redirect('trendyol_orders')
-    except Exception as e:
-        messages.error(request, f"{e}")
-
+    messages.success(request, "Siparişler getirildi.")
     return redirect('trendyol_orders')
 
 
@@ -2605,6 +2656,9 @@ def trendyol_batch_request_detail(request, batch_request):
     context = {}
     trendyol = Trendyol.objects.all().last()
 
+    navbar_notify = readNotification()
+    navbar_notify_count = notReadNotification()
+
     all_batch_request = get_object_or_404(LogRecords, batch_id=batch_request)
 
     try:
@@ -3026,13 +3080,13 @@ def harcamalar(request):
     context.update({
         'harcamalar': tum_harcamalar,
         'form': form,
-        'total_harcama':total_harcama,
-        'query':query,
-        'tip':tip,
-        'status':status,
-        'harcama_adi':harcama_adi,
-        'yil':yil,
-        'ay':ay,
+        'total_harcama': total_harcama,
+        'query': query,
+        'tip': tip,
+        'status': status,
+        'harcama_adi': harcama_adi,
+        'yil': yil,
+        'ay': ay,
     })
 
     return render(request, 'backend/adminpage/pages/harcamalar.html', context)
@@ -3052,10 +3106,11 @@ def harcama_detay(request, id):
             return redirect('harcama_detay', id)
 
     context.update({
-        'harcama':harcama,
+        'harcama': harcama,
         'form': form,
     })
     return render(request, 'backend/adminpage/pages/harcamalar_guncelle.html', context)
+
 
 def harcamalar_export_excel(request):
     columns = ['Harcama Tipi', 'Harcama Adı', 'Harcama Tutarı', 'Harcama Tarihi']
@@ -3102,6 +3157,13 @@ def harcamalar_secilileri_sil(request):
 
 
 @login_required(login_url="/yonetim/giris-yap/")
+def gelir_gider(request):
+    context = {}
+
+    return render(request, 'backend/adminpage/pages/gelir_gider.html', context)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
 def update_history(request):
     context = {}
     navbar_notify = readNotification()
@@ -3137,3 +3199,28 @@ def update_history_delete(request, id):
     history.delete()
     messages.success(request, 'İlgili kayıt silindi!')
     return redirect('update_history')
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def ajax_search(request):
+    res = None
+    series = request.GET.get('series', '')
+
+    products = ApiProduct.objects.filter(title__icontains=series) | ApiProduct.objects.filter(
+        barcode__icontains=series) | ApiProduct.objects.filter(
+        stock_code__icontains=series) | ApiProduct.objects.filter(model_code__icontains=series)
+
+    if len(products) > 0:
+        data = []
+        for r in products:
+            item = {
+                'id': r.id,
+                'p_title': r.title,
+                'slug': r.slug,
+            }
+            data.append(item)
+
+        res = data
+    else:
+        res = "Herhangi bir kayıt bulunamadı!"
+    return JsonResponse({'data': res})

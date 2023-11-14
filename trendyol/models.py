@@ -136,7 +136,7 @@ class TrendyolOrders(models.Model):
     class Meta:
         verbose_name = "Trendyol Siparişler"
         verbose_name_plural = "Trendyol Siparişler"
-        ordering = ['-order_number']
+        ordering = ['-order_date']
 
     def __str__(self):
         return f"{self.order_number}"

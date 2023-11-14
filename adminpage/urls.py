@@ -152,6 +152,9 @@ urlpatterns = [
          name='harcamalar_export_pdf'),
     path('harcamalar/secili-harcama-sil/', harcamalar_secilileri_sil,
          name='harcamalar_secilileri_sil'),
+    path('gelir-gider/', gelir_gider, name="gelir_gider"),
+
+    path('arama/', ajax_search, name="ajax_search"),
 
     path('hesap-bilgilerim/', user_info, name='user_info'),
     path('sifre-degistir/', change_password, name='admin_change_password'),
