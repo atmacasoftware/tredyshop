@@ -28,6 +28,7 @@ class Trendyol(models.Model):
     iadeadresid_5 = models.BigIntegerField(null=True, blank=True, verbose_name="İade Adres ID 5")
     firstbarem = models.FloatField(verbose_name="Barem 1. Aralık Maksimum Değeri", null=True)
     secondbarem = models.FloatField(verbose_name="Barem 2. Aralık Maksimum Değeri", null=True)
+    hizmet_bedeli = models.FloatField(verbose_name="Hizmet Bedeli", null=True, blank=True)
 
     class Meta:
         verbose_name = "1) Trendyol Hesap Bilgileri"

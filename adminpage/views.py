@@ -2821,6 +2821,89 @@ def trendyol_hatali_urunler(request):
 
 
 @login_required(login_url="/yonetim/giris-yap/")
+def trendyol_komisyon(request):
+    context = {}
+
+    komisyonlar = TrendyolCommission.objects.all()
+    form = TrendyolCommissionForm(data=request.POST, files=request.FILES)
+
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Komisyon başarıyla eklendi!')
+            return redirect("trendyol_komisyon")
+
+    context.update({
+        'form':form,
+        'komisyonlar':komisyonlar,
+    })
+
+    return render(request, 'backend/adminpage/pages/trendyol/komisyon.html', context)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def trendyol_komisyon_detay(request, id):
+    context = {}
+
+    komisyon = get_object_or_404(TrendyolCommission, id=id)
+    form = TrendyolCommissionForm(instance=komisyon, data=request.POST or None, files=request.FILES or None)
+
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Güncelleme başarıyla yapıldı!')
+            return redirect('trendyol_komisyon_detay', id)
+
+    context.update({
+        'komisyon': komisyon,
+        'form': form,
+    })
+    return render(request, 'backend/adminpage/pages/trendyol/komisyon_guncelle.html', context)
+
+
+def trendyol_komisyon_export_excel(request):
+    columns = ['Kategori Adı', 'Komisyon Tutarı', 'Oluşturulma Tarihi', 'Güncellenme Tarihi']
+
+    rows = TrendyolCommission.objects.all().values_list('kategori_adi', 'komisyon_tutari', 'create_at', 'update_at')
+    return exportExcel('Harcamalar', 'Harcamalar', columns=columns, rows=rows)
+
+
+def trendyol_komisyon_export_pdf(request):
+    columns = ['Kategori Adı', 'Komisyon Tutarı', 'Oluşturulma Tarihi', 'Güncellenme Tarihi']
+    rows = []
+    row = Harcamalar.objects.all().values_list('kategori_adi', 'komisyon_tutari', 'create_at', 'update_at')
+    for r in row:
+        rows.append(r)
+
+    dict = {
+        'columns': columns,
+        'rows': rows
+    }
+
+    pdf = exportPdf(f"{str(settings.BASE_DIR)}" + "/templates/backend/adminpage/partials/table_pdf.html", dict)
+    response = HttpResponse(pdf, content_type='application/pdf')
+    content = f'attachment; filename=KomisyonOranlari' + '.pdf'
+    response['Content-Disposition'] = content
+
+    return response
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def trendyol_komisyon_hepsini_sil(request):
+    komisyon = TrendyolCommission.objects.all().delete()
+    messages.success(request, 'Tüm komisyonlar silindi.')
+    return redirect("trendyol_komisyon")
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def trendyol_komisyon_secilileri_sil(request):
+    komisyon_id = request.GET.getlist('komisyon[]')
+
+    TrendyolCommission.objects.filter(id__in=komisyon_id).delete()
+    data = 'success'
+    return JsonResponse(data=data, safe=False)
+
+@login_required(login_url="/yonetim/giris-yap/")
 def kesilen_fatura_ekle(request):
     context = {}
     form = IssuedInvoicesAddForm(data=request.POST, files=request.FILES)
@@ -3164,6 +3247,30 @@ def harcamalar_secilileri_sil(request):
 @login_required(login_url="/yonetim/giris-yap/")
 def gelir_gider(request):
     context = {}
+
+    order_count = Order.objects.all().count() + TrendyolOrders.objects.all().count()
+    harcamalar = Harcamalar.objects.all()
+
+    total_cash_list = []
+    total_cash = 0
+    toplam_harcamalar = 0
+
+    for o in Order.objects.all():
+        total_cash_list.append(o.order_total)
+
+    for o in TrendyolOrders.objects.all():
+        total_cash_list.append(o.sales_amount)
+
+    for tc in total_cash_list:
+        total_cash += tc
+
+    for h in harcamalar:
+        toplam_harcamalar += h.harcama_tutari
+
+    context.update({
+        'total_cash':total_cash,
+        'toplam_harcamalar':toplam_harcamalar,
+    })
 
     return render(request, 'backend/adminpage/pages/gelir_gider.html', context)
 

@@ -4,7 +4,7 @@ from categorymodel.models import *
 from mainpage.models import Slider
 from orders.models import Order, ExtraditionRequestResult
 from product.models import ApiProduct
-from trendyol.models import TrendyolOrders
+from trendyol.models import TrendyolOrders, TrendyolCommission
 
 
 class SliderForm(forms.ModelForm):
@@ -326,3 +326,17 @@ class HarcamalarForm(forms.ModelForm):
             else:
                 field.widget.attrs['class'] = 'form-control'
 
+class TrendyolCommissionForm(forms.ModelForm):
+
+    class Meta:
+        model = TrendyolCommission
+        fields = "__all__"
+        exclude = ["create_at","update_at"]
+
+    def __init__(self, *args, **kwargs):
+        super(TrendyolCommissionForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field.widget.attrs.get('class'):
+                field.widget.attrs['class'] += ' form-control'
+            else:
+                field.widget.attrs['class'] = 'form-control'

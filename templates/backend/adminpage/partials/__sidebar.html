@@ -90,7 +90,7 @@
                                 <p>Kampanyalı Ürünler</p>
                             </a>
                         </li>
-                    <li class="nav-item">
+                        <li class="nav-item">
                             <a href="{% url 'urun_ozellik_guncelleme' %}"
                                class="nav-link {% if request.path == '/yonetim/urunler/ozellik-guncelleme/' %}active{% endif %}">
                                 <i class="far fa-circle nav-icon"></i>
@@ -117,7 +117,7 @@
                                 <p>Siparişler</p>
                             </a>
                         </li>
-                    <li class="nav-item">
+                        <li class="nav-item">
                             <a href="{% url 'trendyol_orders' %}"
                                class="nav-link {% if request.path == '/yonetim/siparis-yonetimi/trendyol-siparisleri/' %}active{% endif %}">
                                 <i class="far fa-circle nav-icon"></i>
@@ -274,6 +274,13 @@
                                class="nav-link {% if request.path == '/yonetim/trendyol/siparis-ekle/' %}active{% endif %}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Sipariş Ekle</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'trendyol_komisyon' %}"
+                               class="nav-link {% if '/trendyol/komisyon-oranlari/' in request.path %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Komisyon Oranları</p>
                             </a>
                         </li>
                         <li class="nav-item">

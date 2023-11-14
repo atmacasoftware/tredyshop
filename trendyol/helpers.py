@@ -3,7 +3,7 @@ from product.models import ApiProduct, UpdateHistory
 from trendyol.api import TrendyolApiClient
 from trendyol.models import LogRecords, TrendyolOrders
 from trendyol.services import ProductIntegrationService, OrderIntegrationService
-
+from datetime import datetime, timezone
 
 def trendyolUpdateData(barcode, quantity, list_price, sale_price):
     data = {
@@ -158,7 +158,7 @@ def trendyol_schedule_update_price_stok():
         products9 = ApiProduct.objects.filter(is_publish_trendyol=True)[8999:9999]
         trendyol_update_function(products=products9)
 
-def get_cron_trendyol_orders(request):
+def get_cron_trendyol_orders():
     context = {}
     trendyol = Trendyol.objects.all().last()
     trendyol_orders = TrendyolOrders.objects.all()
