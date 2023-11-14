@@ -4,22 +4,18 @@
 {% block title %}<title>Sipariş Numarası {{ order.order_number }}</title>{% endblock %}
 
 {% block orders %}
-    <style>
-        .form-control {
-            width: auto;
-        }
-    </style>
+
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Sipariş Numarası {{ order.order_number }}</h1>
+                    <h1 class="m-0">{{ order.order_number }}</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{% url 'mainpage' %}">Anasayfa</a></li>
                         <li class="breadcrumb-item"><a href="{% url 'admin_orders' %}">Siparişler</a></li>
-                        <li class="breadcrumb-item active">Sipariş Numarası {{ order.order_number }}</li>
+                        <li class="breadcrumb-item active">Sipariş Detay</li>
                     </ol>
                 </div>
             </div>
@@ -53,7 +49,7 @@
                         <div class="card-header">
                             <h3 class="card-title">Ödeme Sorgusu Sonucu</h3>
                         </div>
-                        <div class="card-body p-0">
+                        <div class="card-body table-responsive p-0">
                             <table class="table table-sm">
                                 <thead>
                                 <tr>
