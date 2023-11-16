@@ -1,9 +1,10 @@
-from adminpage.models import Trendyol
-from product.models import ApiProduct, UpdateHistory
+from adminpage.models import Trendyol, UpdateHistory
+from product.models import ApiProduct
 from trendyol.api import TrendyolApiClient
 from trendyol.models import LogRecords, TrendyolOrders
 from trendyol.services import ProductIntegrationService, OrderIntegrationService
 from datetime import datetime, timezone
+from math import *
 
 def trendyolUpdateData(barcode, quantity, list_price, sale_price):
     data = {
@@ -57,106 +58,20 @@ def trendyol_update_function(products):
 
 
 def trendyol_schedule_update_price_stok():
-    total_product = ApiProduct.objects.all().filter(is_publish_trendyol=True, is_publish=True).count()
-    if total_product == 0 and total_product <= 999:
-        products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
-        trendyol_update_function(products=products)
-    elif total_product > 999 and total_product <= 1999:
-        products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
-        trendyol_update_function(products=products)
-        products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
-        trendyol_update_function(products=products2)
-    elif total_product > 1999 and total_product <= 2999:
-        products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
-        trendyol_update_function(products=products)
-        products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
-        trendyol_update_function(products=products2)
-        products3 = ApiProduct.objects.filter(is_publish_trendyol=True)[1999:2999]
-        trendyol_update_function(products=products3)
-    elif total_product > 2999 and total_product <= 3999:
-        products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
-        trendyol_update_function(products=products)
-        products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
-        trendyol_update_function(products=products2)
-        products3 = ApiProduct.objects.filter(is_publish_trendyol=True)[1999:2999]
-        trendyol_update_function(products=products3)
-        products4 = ApiProduct.objects.filter(is_publish_trendyol=True)[2999:3999]
-        trendyol_update_function(products=products4)
-    elif total_product > 3999 and total_product <= 4999:
-        products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
-        trendyol_update_function(products=products)
-        products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
-        trendyol_update_function(products=products2)
-        products3 = ApiProduct.objects.filter(is_publish_trendyol=True)[1999:2999]
-        trendyol_update_function(products=products3)
-        products4 = ApiProduct.objects.filter(is_publish_trendyol=True)[2999:3999]
-        trendyol_update_function(products=products4)
-        products5 = ApiProduct.objects.filter(is_publish_trendyol=True)[3999:4999]
-        trendyol_update_function(products=products5)
-    elif total_product > 4999 and total_product <= 5999:
-        products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
-        trendyol_update_function(products=products)
-        products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
-        trendyol_update_function(products=products2)
-        products3 = ApiProduct.objects.filter(is_publish_trendyol=True)[1999:2999]
-        trendyol_update_function(products=products3)
-        products4 = ApiProduct.objects.filter(is_publish_trendyol=True)[2999:3999]
-        trendyol_update_function(products=products4)
-        products5 = ApiProduct.objects.filter(is_publish_trendyol=True)[3999:4999]
-        trendyol_update_function(products=products5)
-        products6 = ApiProduct.objects.filter(is_publish_trendyol=True)[4999:5999]
-        trendyol_update_function(products=products6)
-    elif total_product > 5999 and total_product <= 6999:
-        products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
-        trendyol_update_function(products=products)
-        products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
-        trendyol_update_function(products=products2)
-        products3 = ApiProduct.objects.filter(is_publish_trendyol=True)[1999:2999]
-        trendyol_update_function(products=products3)
-        products4 = ApiProduct.objects.filter(is_publish_trendyol=True)[2999:3999]
-        trendyol_update_function(products=products4)
-        products5 = ApiProduct.objects.filter(is_publish_trendyol=True)[3999:4999]
-        trendyol_update_function(products=products5)
-        products6 = ApiProduct.objects.filter(is_publish_trendyol=True)[4999:5999]
-        trendyol_update_function(products=products6)
-        products7 = ApiProduct.objects.filter(is_publish_trendyol=True)[5999:6999]
-        trendyol_update_function(products=products7)
-    elif total_product > 6999 and total_product <= 7999:
-        products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
-        trendyol_update_function(products=products)
-        products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
-        trendyol_update_function(products=products2)
-        products3 = ApiProduct.objects.filter(is_publish_trendyol=True)[1999:2999]
-        trendyol_update_function(products=products3)
-        products4 = ApiProduct.objects.filter(is_publish_trendyol=True)[2999:3999]
-        trendyol_update_function(products=products4)
-        products5 = ApiProduct.objects.filter(is_publish_trendyol=True)[3999:4999]
-        trendyol_update_function(products=products5)
-        products6 = ApiProduct.objects.filter(is_publish_trendyol=True)[4999:5999]
-        trendyol_update_function(products=products6)
-        products7 = ApiProduct.objects.filter(is_publish_trendyol=True)[5999:6999]
-        trendyol_update_function(products=products7)
-        products8 = ApiProduct.objects.filter(is_publish_trendyol=True)[6999:7999]
-        trendyol_update_function(products=products8)
-    elif total_product > 7999 and total_product <= 8999:
-        products = ApiProduct.objects.filter(is_publish_trendyol=True)[:999]
-        trendyol_update_function(products=products)
-        products2 = ApiProduct.objects.filter(is_publish_trendyol=True)[999:1999]
-        trendyol_update_function(products=products2)
-        products3 = ApiProduct.objects.filter(is_publish_trendyol=True)[1999:2999]
-        trendyol_update_function(products=products3)
-        products4 = ApiProduct.objects.filter(is_publish_trendyol=True)[2999:3999]
-        trendyol_update_function(products=products4)
-        products5 = ApiProduct.objects.filter(is_publish_trendyol=True)[3999:4999]
-        trendyol_update_function(products=products5)
-        products6 = ApiProduct.objects.filter(is_publish_trendyol=True)[4999:5999]
-        trendyol_update_function(products=products6)
-        products7 = ApiProduct.objects.filter(is_publish_trendyol=True)[5999:6999]
-        trendyol_update_function(products=products7)
-        products8 = ApiProduct.objects.filter(is_publish_trendyol=True)[6999:7999]
-        trendyol_update_function(products=products8)
-        products9 = ApiProduct.objects.filter(is_publish_trendyol=True)[8999:9999]
-        trendyol_update_function(products=products9)
+    total_product = ApiProduct.objects.all().filter(is_publish_trendyol=True).count()
+    result = ceil(total_product / 999)
+    i = 0
+
+    while i < result:
+        if i == 0:
+            j = 0
+            products = ApiProduct.objects.filter(is_publish_trendyol=True)[j:999]
+            trendyol_update_function(products=products)
+        else:
+            j = i * 1000
+            products = ApiProduct.objects.filter(is_publish_trendyol=True)[j - 1:j + 999]
+            trendyol_update_function(products=products)
+        i = i + 1
 
 def get_cron_trendyol_orders():
     context = {}

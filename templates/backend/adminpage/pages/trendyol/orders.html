@@ -49,17 +49,14 @@
                             <table class="table table-hover text-nowrap" id="userTable">
                                 <thead>
                                 <tr>
-                                    <th>Sipariş Numarası</th>
+                                    <th>SN</th>
                                     <th>Paket Numarası</th>
-                                    <th>Alıcı</th>
-                                    <th>Ürün Adı</th>
+                                    <th>Müşteri</th>
+                                    <th>Ürün Bilgileri</th>
                                     <th>Adet</th>
-                                    <th>Barkod</th>
-                                    <th>Stok Kodu</th>
-                                    <th>Birim Fiyat</th>
-                                    <th>İndirim</th>
-                                    <th>Satış Tutarı</th>
+                                    <th>Fiyat</th>
                                     <th>Sipariş Tarihi</th>
+                                    <th>Kargo Bedeli</th>
                                     <th>Durum</th>
                                     <th>İşlem</th>
                                 </tr>
@@ -70,14 +67,29 @@
                                         <td>{{ order.order_number }}</td>
                                         <td>{{ order.packet_number }}</td>
                                         <td>{{ order.buyer }}</td>
-                                        <td>{{ order.title }}</td>
+                                        <td>
+                                            <div>
+                                                <p><b>{{ order.title|truncatechars_html:25 }}</b></p>
+                                            </div>
+                                            <div>
+                                                <p>Barkod: {{ order.barcode }}</p>
+                                                <p>Stok Kodu: {{ order.stock_code }}</p>
+                                            </div>
+                                        </td>
                                         <td>{{ order.quantity }}</td>
-                                        <td>{{ order.barcode }}</td>
-                                        <td>{{ order.stock_code }}</td>
-                                        <td>{{ order.unit_price }}</td>
-                                        <td>{{ order.discount_amount }}</td>
-                                        <td>{{ order.sales_amount }}</td>
-                                        <td>{{ order.order_date }}</td>
+                                        <td>
+                                            <div>
+                                                <p>Birim Fiyat: {{ order.unit_price }}</p>
+                                            </div>
+                                            <div>
+                                                <p>Satış Fiyatı: {{ order.sales_amount }}</p>
+                                            </div>
+                                            <div>
+                                                <p>İndirim: {{ order.discount_amount }}</p>
+                                            </div>
+                                        </td>
+                                        <td>{{ order.order_date|date:"d/m/y G:i"}}</td>
+                                        <td>{% if order.delivery_price %}{{ order.delivery_price }}{% else %}-{% endif %}</td>
                                         <td>{{ order.status }}</td>
                                         <td>
                                             <a href="{% url 'trendyol_order_detail' order.id %}" class="btn btn-primary btn-sm btn-block">Gör</a>
@@ -137,9 +149,7 @@
                         td[5].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
                         td[6].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
                         td[7].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
-                        td[8].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
-                        td[9].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
-                        td[10].innerHTML.toLocaleLowerCase().indexOf(filter) > -1) {
+                        td[8].innerHTML.toLocaleLowerCase().indexOf(filter) > -1) {
                         tr[j].style.display = ""
                         msg.innerHTML = ""
                     } else {

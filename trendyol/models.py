@@ -32,7 +32,7 @@ class TrendyolOrders(models.Model):
     service_price = models.FloatField(verbose_name="Hizmet Bedeli", null=True, blank=True)
     tax_price = models.FloatField(verbose_name="Vergi Tutarı", null=True, blank=True)
     order_date = models.DateTimeField(auto_now_add=False, verbose_name="Sipariş Tarihi")
-    status = models.CharField(choices=STATUS, verbose_name="Durum", default="Tamamlandı", null=True, max_length=255)
+    status = models.CharField(choices=STATUS, verbose_name="Durum", null=True, max_length=255)
 
     class Meta:
         verbose_name = "Trendyol Siparişler"

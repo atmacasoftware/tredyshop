@@ -554,17 +554,3 @@ class StockAlarm(models.Model):
 
     def __str__(self):
         return str(self.product.title)
-
-
-class UpdateHistory(models.Model):
-    TYPE = (
-        ("Modaymış Güncelleme","Modaymış Güncelleme"),
-        ("Modaymış Aktif Olmayan Ürün","Modaymış Aktif Olmayan Ürün"),
-        ("Tahtakale Güncelleme","Tahtakale Güncelleme"),
-        ("Trendyol Stok&Fiyat Güncelleme","Trendyol Stok&Fiyat Güncelleme"),
-    )
-    history_type = models.CharField(choices=TYPE, max_length=100, null=True, verbose_name="Geçmiş Tipi")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
-
-    class Meta:
-        ordering = ['-created_at']

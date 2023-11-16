@@ -3,8 +3,9 @@ import xml.etree.ElementTree as ET
 from urllib.request import urlopen
 from unidecode import unidecode
 from categorymodel.models import SubCategory, SubBottomCategory, MainCategory
-from product.models import Color, Size, ApiProduct, UpdateHistory
+from product.models import Color, Size, ApiProduct
 from django.contrib import messages
+from adminpage.models import UpdateHistory
 
 
 

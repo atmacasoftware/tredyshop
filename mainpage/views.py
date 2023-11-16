@@ -27,6 +27,7 @@ def index(request):
     banner_one = BannerOne.objects.all().last()
     banner_two = BannerTwo.objects.all().last()
 
+
     context.update({
         'sliders': sliders,
         'banner_one':banner_one,
