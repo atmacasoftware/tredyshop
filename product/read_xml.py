@@ -260,7 +260,6 @@ def modaymissaveXML2db():
                             data.image_url8 = image_list[7]
                         data.save()
 
-
 def updateModaymisSaveXML2db():
     with urlopen('https://www.modaymis.com/1.xml') as f:
         modaymis = ET.parse(f)

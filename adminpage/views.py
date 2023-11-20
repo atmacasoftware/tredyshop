@@ -3,7 +3,7 @@ from math import ceil
 
 from django.contrib.auth import login as auth_login, authenticate
 from django.contrib.auth.decorators import login_required
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
@@ -324,7 +324,7 @@ def kullanicilar(request):
         'navbar_notify_count': navbar_notify_count,
         'users': users,
     })
-    return render(request, 'backend/adminpage/pages/kullanicilar.html', context)
+    return render(request, 'backend/adminpage/pages/kullanici_yonetimi/kullanicilar.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -347,7 +347,7 @@ def kullanici_goruntule(request, id):
         'address': address,
         'coupons': coupons
     })
-    return render(request, 'backend/adminpage/pages/kullanici_goruntule.html', context)
+    return render(request, 'backend/adminpage/pages/kullanici_yonetimi/kullanici_goruntule.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -356,6 +356,72 @@ def kullanici_sil(request, id):
     user.delete()
     messages.success(request, 'Kullanıcı silindi.')
     return redirect('kullanicilar')
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def kullanici_ekle(request):
+    context = {}
+
+
+    filter_full_name = request.GET.get('filter_full_name')
+    filter_email = request.GET.get('filter_email')
+    filter_mobile = request.GET.get('filter_mobile')
+    filter_user_type = request.GET.get('filter_user_type')
+    filter_activated = request.GET.get('filter_activated')
+
+    query = f"?ad_soyad={filter_full_name}&email={filter_email}&telefon={filter_mobile}&uyelik_tipi={filter_user_type}&aktif={filter_activated}"
+
+    kullanicilar = User.objects.all()
+
+    if filter_full_name:
+        kullanicilar = User.objects.filter(Q(first_name__icontains=filter_full_name))
+    if filter_email:
+        kullanicilar = User.objects.filter(Q(email__icontains=filter_email))
+    if filter_mobile:
+        kullanicilar = User.objects.filter(Q(mobile__icontains=filter_mobile))
+    if filter_user_type:
+        if filter_user_type == "Yönetici":
+            kullanicilar = User.objects.filter(is_superuser=True)
+        if filter_user_type == "Personel":
+            kullanicilar = User.objects.filter(is_superuser=False, is_staff=True)
+        if filter_user_type == "Müşteri":
+            kullanicilar = User.objects.filter(is_superuser=False, is_staff=False, is_customer=True)
+    if filter_activated:
+        kullanicilar = User.objects.filter(is_activated=filter_activated)
+
+    p = Paginator(kullanicilar, 20)
+    page = request.GET.get('page')
+    kullanici = p.get_page(page)
+
+    if 'create_user' in request.POST:
+        user_type = request.POST.get('user_type')
+        ad = request.POST.get('first_name')
+        soyad = request.POST.get('last_name')
+        email = request.POST.get('email')
+        telefon = request.POST.get('mobile')
+        sifre = request.POST.get('password')
+
+        if user_type == "Yönetici":
+            User.objects.create(first_name=ad, last_name=soyad, email=email, mobile=telefon, password=sifre,
+                                is_customer=False, is_superuser=True, is_staff=True, is_activated=True, is_active=True)
+
+        if user_type == "Personel":
+            User.objects.create(first_name=ad, last_name=soyad, email=email, mobile=telefon, password=sifre,
+                                is_customer=False, is_superuser=False, is_staff=True, is_activated=True, is_active=True)
+
+        if user_type == "Müşteri":
+            User.objects.create(first_name=ad, last_name=soyad, email=email, mobile=telefon, password=sifre,
+                                is_customer=True, is_superuser=False, is_staff=False, is_activated=True, is_active=True)
+
+        messages.success(request, 'Kullanıcı başarıyla oluşturuldu.')
+        return redirect('kullanici_ekle')
+
+    context.update({
+        'users': kullanici,
+        'query':query,
+    })
+
+    return render(request, 'backend/adminpage/pages/kullanici_yonetimi/kullanici_ekle.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -1133,6 +1199,7 @@ def get_trendyol_orders(request):
         if TrendyolOrders.objects.filter(packet_number__contains=str(packetNumber)).count() > 0:
             order = TrendyolOrders.objects.get(packet_number=str(packetNumber))
             if len(r['lines']) == 1:
+                order.shippment_city = r['shipmentAddress']['city']
                 for l in r['lines']:
                     orderStatus = l['orderLineItemStatusName']
                     if orderStatus == 'UnDeliveredAndReturned':
@@ -1143,6 +1210,9 @@ def get_trendyol_orders(request):
                         status = "Tamamlandı"
                     elif orderStatus == "Cancelled":
                         status = "İptal Edildi"
+                        order.commission_price = 0.0
+                        order.delivery_price = 0.0
+                        order.service_price = 3.59
                     elif orderStatus == "Created" or orderStatus == "ReadyToShip":
                         status = "Yeni"
                     elif orderStatus == "Shipped":
@@ -1210,6 +1280,7 @@ def get_trendyol_orders(request):
                                                   barcode=barcode, color=color, size=size, stock_code=sku,
                                                   unit_price=unitPrice, sales_amount=salesAmount,
                                                   discount_amount=discount, status=status,
+                                                  shippment_city=r['shipmentAddress']['city'],
                                                   order_date=datetime_obj_with_tz, commission_price=komisyon_tutari,
                                                   service_price=trendyol.hizmet_bedeli)
 
@@ -1948,62 +2019,369 @@ def trendyol_update_product(request):
     return render(request, 'backend/adminpage/pages/trendyol/bilgi_guncelleme.html', context)
 
 
+def trendyolDeleteData(barcode):
+    data = {
+        "barcode": str(barcode),
+    }
+
+    return data
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def trendyol_delete_api(request, products):
+    trendyol = Trendyol.objects.all().last()
+    items = []
+    if products.count() > 0:
+        for p in products:
+            items.append(
+                {'barcode': str(p.barcode)}
+            )
+
+    api = TrendyolApiClient(api_key=trendyol.apikey, api_secret=trendyol.apisecret,
+                            supplier_id=trendyol.saticiid)
+    service = ProductIntegrationService(api)
+    response = service.deleted_products(items=items)
+    messages.success(request, f"{response}")
+    log_record = LogRecords.objects.create(log_type="4", batch_id=response['batchRequestId'])
+    return str(log_record.batch_id)
+
+
 @login_required(login_url="/yonetim/giris-yap/")
 def trendyol_delete_product(request):
-    items = []
-    product_data = []
-    trendyol = Trendyol.objects.all().last()
-
+    context = {}
+    log_records = LogRecords.objects.filter(log_type="4")
+    products = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=False)
+    products_count = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=False).count()
     if 'inactiveDeleteBtn' in request.POST:
-        products = ApiProduct.objects.filter(is_publish_trendyol=True, is_publish=False)
-        products_count = products.count()
-        result = round(products_count / 999)
-        i = 0
-        while (i < result):
-            if i == 0:
-                j = 0
-                products = ApiProduct.objects.filter(is_publish_trendyol=True)[j:999]
-                for p in products:
-                    product_data.append(
-                        {
-                            "barcode": p.barcode
-                        }
-                    )
-
-                try:
-                    api = TrendyolApiClient(api_key=trendyol.apikey, api_secret=trendyol.apisecret,
-                                            supplier_id=trendyol.saticiid)
-                    service = ProductIntegrationService(api)
-                    response = service.deleted_products(items=product_data)
-                    messages.success(request, f"{response}")
-                    log_record = LogRecords.objects.create(log_type="4", batch_id=response['batchRequestId'])
-                    return redirect('trendyol_batch_request_detail', str(log_record.batch_id))
-                except:
-                    messages.error(request, "Bir hata meydana geldi!")
-
-            else:
-                j = i * 1000
-                products = ApiProduct.objects.filter(is_publish_trendyol=True)[j - 1:j + 999]
-                for p in products:
-                    product_data.append(
-                        {
-                            "barcode": p.barcode
-                        }
-                    )
-
-                api = TrendyolApiClient(api_key=trendyol.apikey, api_secret=trendyol.apisecret,
-                                        supplier_id=trendyol.saticiid)
-                service = ProductIntegrationService(api)
-                response = service.deleted_products(items=product_data)
-                messages.success(request, f"{response}")
-                log_record = LogRecords.objects.create(log_type="4", batch_id=response['batchRequestId'])
-                return redirect('trendyol_batch_request_detail', str(log_record.batch_id))
-
-            i = i + 1
-
+        if products_count == 0 and products_count <= 999:
+            products = products[:999]
+            trendyol_delete_api(request, products=products)
+        elif products_count > 999 and products_count <= 1999:
+            products = products[:999]
+            trendyol_delete_api(request, products=products)
+            products2 = products[999:1999]
+            trendyol_delete_api(request, products=products2)
+        elif products_count > 1999 and products_count <= 2999:
+            products = products[:999]
+            trendyol_delete_api(request, products=products)
+            products2 = products[999:1999]
+            trendyol_delete_api(request, products=products2)
+            products3 = products[1999:2999]
+            trendyol_delete_api(request, products=products3)
+        elif products_count > 2999 and products_count <= 3999:
+            products = products[:999]
+            trendyol_delete_api(request, products=products)
+            products2 = products[999:1999]
+            trendyol_delete_api(request, products=products2)
+            products3 = products[1999:2999]
+            trendyol_delete_api(request, products=products3)
+            products4 = products[2999:3999]
+            trendyol_delete_api(request, products=products4)
+        elif products_count > 3999 and products_count <= 4999:
+            products = products[:999]
+            trendyol_delete_api(request, products=products)
+            products2 = products[999:1999]
+            trendyol_delete_api(request, products=products2)
+            products3 = products[1999:2999]
+            trendyol_delete_api(request, products=products3)
+            products4 = products[2999:3999]
+            trendyol_delete_api(request, products=products4)
+            products5 = products[3999:4999]
+            trendyol_delete_api(request, products=products5)
+        elif products_count > 4999 and products_count <= 5999:
+            products = products[:999]
+            trendyol_delete_api(request, products=products)
+            products2 = products[999:1999]
+            trendyol_delete_api(request, products=products2)
+            products3 = products[1999:2999]
+            trendyol_delete_api(request, products=products3)
+            products4 = products[2999:3999]
+            trendyol_delete_api(request, products=products4)
+            products5 = products[3999:4999]
+            trendyol_delete_api(request, products=products5)
+            products6 = products[4999:5999]
+            trendyol_delete_api(request, products=products6)
+        elif products_count > 5999 and products_count <= 6999:
+            products = products[:999]
+            trendyol_delete_api(request, products=products)
+            products2 = products[999:1999]
+            trendyol_delete_api(request, products=products2)
+            products3 = products[1999:2999]
+            trendyol_delete_api(request, products=products3)
+            products4 = products[2999:3999]
+            trendyol_delete_api(request, products=products4)
+            products5 = products[3999:4999]
+            trendyol_delete_api(request, products=products5)
+            products6 = products[4999:5999]
+            trendyol_delete_api(request, products=products6)
+            products7 = products[5999:6999]
+            trendyol_delete_api(request, products=products7)
+        elif products_count > 6999 and products_count <= 7999:
+            products = products[:999]
+            trendyol_delete_api(request, products=products)
+            products2 = products[999:1999]
+            trendyol_delete_api(request, products=products2)
+            products3 = products[1999:2999]
+            trendyol_delete_api(request, products=products3)
+            products4 = products[2999:3999]
+            trendyol_delete_api(request, products=products4)
+            products5 = products[3999:4999]
+            trendyol_delete_api(request, products=products5)
+            products6 = products[4999:5999]
+            trendyol_delete_api(request, products=products6)
+            products7 = products[5999:6999]
+            trendyol_delete_api(request, products=products7)
+            products8 = products[6999:7999]
+            trendyol_delete_api(request, products=products8)
+        elif products_count > 7999 and products_count <= 8999:
+            products = products[:999]
+            trendyol_delete_api(request, products=products)
+            products2 = products[999:1999]
+            trendyol_delete_api(request, products=products2)
+            products3 = products[1999:2999]
+            trendyol_delete_api(request, products=products3)
+            products4 = products[2999:3999]
+            trendyol_delete_api(request, products=products4)
+            products5 = products[3999:4999]
+            trendyol_delete_api(request, products=products5)
+            products6 = products[4999:5999]
+            trendyol_delete_api(request, products=products6)
+            products7 = products[5999:6999]
+            trendyol_delete_api(request, products=products7)
+            products8 = products[6999:7999]
+            trendyol_delete_api(request, products=products8)
+            products9 = products[7999:8999]
+            trendyol_delete_api(request, products=products9)
+        elif products_count > 8999 and products_count <= 9999:
+            products = products[:999]
+            trendyol_delete_api(request, products=products)
+            products2 = products[999:1999]
+            trendyol_delete_api(request, products=products2)
+            products3 = products[1999:2999]
+            trendyol_delete_api(request, products=products3)
+            products4 = products[2999:3999]
+            trendyol_delete_api(request, products=products4)
+            products5 = products[3999:4999]
+            trendyol_delete_api(request, products=products5)
+            products6 = products[4999:5999]
+            trendyol_delete_api(request, products=products6)
+            products7 = products[5999:6999]
+            trendyol_delete_api(request, products=products7)
+            products8 = products[6999:7999]
+            trendyol_delete_api(request, products=products8)
+            products9 = products[7999:8999]
+            trendyol_delete_api(request, products=products9)
+            products10 = products[8999:9999]
+            trendyol_update_function(request, products=products10)
+        elif products_count > 9999 and products_count <= 10999:
+            products = products[:999]
+            trendyol_delete_api(request, products=products)
+            products2 = products[999:1999]
+            trendyol_delete_api(request, products=products2)
+            products3 = products[1999:2999]
+            trendyol_delete_api(request, products=products3)
+            products4 = products[2999:3999]
+            trendyol_delete_api(request, products=products4)
+            products5 = products[3999:4999]
+            trendyol_delete_api(request, products=products5)
+            products6 = products[4999:5999]
+            trendyol_delete_api(request, products=products6)
+            products7 = products[5999:6999]
+            trendyol_delete_api(request, products=products7)
+            products8 = products[6999:7999]
+            trendyol_delete_api(request, products=products8)
+            products9 = products[7999:8999]
+            trendyol_delete_api(request, products=products9)
+            products10 = products[8999:9999]
+            trendyol_delete_api(request, products=products10)
+            products11 = products[9999:10999]
+            trendyol_delete_api(request, products=products11)
+        elif products_count > 10999 and products_count <= 11999:
+            products = products[:999]
+            trendyol_delete_api(request, products=products)
+            products2 = products[999:1999]
+            trendyol_delete_api(request, products=products2)
+            products3 = products[1999:2999]
+            trendyol_delete_api(request, products=products3)
+            products4 = products[2999:3999]
+            trendyol_delete_api(request, products=products4)
+            products5 = products[3999:4999]
+            trendyol_delete_api(request, products=products5)
+            products6 = products[4999:5999]
+            trendyol_delete_api(request, products=products6)
+            products7 = products[5999:6999]
+            trendyol_delete_api(request, products=products7)
+            products8 = products[6999:7999]
+            trendyol_delete_api(request, products=products8)
+            products9 = products[7999:8999]
+            trendyol_delete_api(request, products=products9)
+            products10 = products[8999:9999]
+            trendyol_delete_api(request, products=products10)
+            products11 = products[9999:10999]
+            trendyol_delete_api(request, products=products11)
+            products12 = products[10999:11999]
+            trendyol_delete_api(request, products=products12)
+        elif products_count > 11999 and products_count <= 12999:
+            products = products[:999]
+            trendyol_delete_api(request, products=products)
+            products2 = products[999:1999]
+            trendyol_delete_api(request, products=products2)
+            products3 = products[1999:2999]
+            trendyol_delete_api(request, products=products3)
+            products4 = products[2999:3999]
+            trendyol_delete_api(request, products=products4)
+            products5 = products[3999:4999]
+            trendyol_delete_api(request, products=products5)
+            products6 = products[4999:5999]
+            trendyol_delete_api(request, products=products6)
+            products7 = products[5999:6999]
+            trendyol_delete_api(request, products=products7)
+            products8 = products[6999:7999]
+            trendyol_delete_api(request, products=products8)
+            products9 = products[7999:8999]
+            trendyol_delete_api(request, products=products9)
+            products10 = products[8999:9999]
+            trendyol_delete_api(request, products=products10)
+            products11 = products[9999:10999]
+            trendyol_delete_api(request, products=products11)
+            products12 = products[10999:11999]
+            trendyol_delete_api(request, products=products12)
+            products13 = products[11999:12999]
+            trendyol_delete_api(request, products=products13)
+        elif products_count > 12999 and products_count <= 13999:
+            products = products[:999]
+            trendyol_delete_api(request, products=products)
+            products2 = products[999:1999]
+            trendyol_delete_api(request, products=products2)
+            products3 = products[1999:2999]
+            trendyol_delete_api(request, products=products3)
+            products4 = products[2999:3999]
+            trendyol_delete_api(request, products=products4)
+            products5 = products[3999:4999]
+            trendyol_delete_api(request, products=products5)
+            products6 = products[4999:5999]
+            trendyol_delete_api(request, products=products6)
+            products7 = products[5999:6999]
+            trendyol_delete_api(request, products=products7)
+            products8 = products[6999:7999]
+            trendyol_delete_api(request, products=products8)
+            products9 = products[7999:8999]
+            trendyol_delete_api(request, products=products9)
+            products10 = products[8999:9999]
+            trendyol_delete_api(request, products=products10)
+            products11 = products[9999:10999]
+            trendyol_delete_api(request, products=products11)
+            products12 = products[10999:11999]
+            trendyol_delete_api(request, products=products12)
+            products13 = products[11999:12999]
+            trendyol_delete_api(request, products=products13)
+            products14 = products[12999:13999]
+            trendyol_delete_api(request, products=products14)
+        elif products_count > 13999 and products_count <= 14999:
+            products = products[:999]
+            trendyol_delete_api(request, products=products)
+            products2 = products[999:1999]
+            trendyol_delete_api(request, products=products2)
+            products3 = products[1999:2999]
+            trendyol_delete_api(request, products=products3)
+            products4 = products[2999:3999]
+            trendyol_delete_api(request, products=products4)
+            products5 = products[3999:4999]
+            trendyol_delete_api(request, products=products5)
+            products6 = products[4999:5999]
+            trendyol_delete_api(request, products=products6)
+            products7 = products[5999:6999]
+            trendyol_delete_api(request, products=products7)
+            products8 = products[6999:7999]
+            trendyol_delete_api(request, products=products8)
+            products9 = products[7999:8999]
+            trendyol_delete_api(request, products=products9)
+            products10 = products[8999:9999]
+            trendyol_delete_api(request, products=products10)
+            products11 = products[9999:10999]
+            trendyol_delete_api(request, products=products11)
+            products12 = products[10999:11999]
+            trendyol_delete_api(request, products=products12)
+            products13 = products[11999:12999]
+            trendyol_delete_api(request, products=products13)
+            products14 = products[12999:13999]
+            trendyol_delete_api(request, products=products14)
+            products15 = products[13999:14999]
+            trendyol_delete_api(request, products=products15)
+        elif products_count > 14999 and products_count <= 15999:
+            products = products[:999]
+            trendyol_delete_api(request, products=products)
+            products2 = products[999:1999]
+            trendyol_delete_api(request, products=products2)
+            products3 = products[1999:2999]
+            trendyol_delete_api(request, products=products3)
+            products4 = products[2999:3999]
+            trendyol_delete_api(request, products=products4)
+            products5 = products[3999:4999]
+            trendyol_delete_api(request, products=products5)
+            products6 = products[4999:5999]
+            trendyol_delete_api(request, products=products6)
+            products7 = products[5999:6999]
+            trendyol_delete_api(request, products=products7)
+            products8 = products[6999:7999]
+            trendyol_delete_api(request, products=products8)
+            products9 = products[7999:8999]
+            trendyol_delete_api(request, products=products9)
+            products10 = products[8999:9999]
+            trendyol_delete_api(request, products=products10)
+            products11 = products[9999:10999]
+            trendyol_delete_api(request, products=products11)
+            products12 = products[10999:11999]
+            trendyol_delete_api(request, products=products12)
+            products13 = products[11999:12999]
+            trendyol_delete_api(request, products=products13)
+            products14 = products[12999:13999]
+            trendyol_delete_api(request, products=products14)
+            products15 = products[13999:14999]
+            trendyol_delete_api(request, products=products15)
+            products16 = products[14999:15999]
+            trendyol_delete_api(request, products=products16)
+        elif products_count > 15999 and products_count <= 16999:
+            products = products[:999]
+            trendyol_delete_api(request, products=products)
+            products2 = products[999:1999]
+            trendyol_delete_api(request, products=products2)
+            products3 = products[1999:2999]
+            trendyol_delete_api(request, products=products3)
+            products4 = products[2999:3999]
+            trendyol_delete_api(request, products=products4)
+            products5 = products[3999:4999]
+            trendyol_delete_api(request, products=products5)
+            products6 = products[4999:5999]
+            trendyol_delete_api(request, products=products6)
+            products7 = products[5999:6999]
+            trendyol_delete_api(request, products=products7)
+            products8 = products[6999:7999]
+            trendyol_delete_api(request, products=products8)
+            products9 = products[7999:8999]
+            trendyol_delete_api(request, products=products9)
+            products10 = products[8999:9999]
+            trendyol_delete_api(request, products=products10)
+            products11 = products[9999:10999]
+            trendyol_delete_api(request, products=products11)
+            products12 = products[10999:11999]
+            trendyol_delete_api(request, products=products12)
+            products13 = products[11999:12999]
+            trendyol_delete_api(request, products=products13)
+            products14 = products[12999:13999]
+            trendyol_delete_api(request, products=products14)
+            products15 = products[13999:14999]
+            trendyol_delete_api(request, products=products15)
+            products16 = products[14999:15999]
+            trendyol_delete_api(request, products=products16)
+            products17 = products[15999:16999]
+            trendyol_delete_api(request, products=products17)
         return redirect('trendyol_delete_product')
 
-    return render(request, 'backend/adminpage/pages/trendyol/silme.html')
+    context.update({
+        'log_records': log_records,
+    })
+    return render(request, 'backend/adminpage/pages/trendyol/silme.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -2528,6 +2906,7 @@ def harcamalar(request):
     yapilan_harcamalar = Harcamalar.objects.all()
 
     total_harcama = 0
+    iade_tutari = 0
 
     if tip:
         if tip == "None" or tip == None:
@@ -2550,14 +2929,18 @@ def harcamalar(request):
     if ay:
         yapilan_harcamalar = yapilan_harcamalar.filter(created_at__month=ay)
 
-    for h in yapilan_harcamalar:
+    for h in yapilan_harcamalar.filter(durum="Ödeme Yapıldı"):
         total_harcama += h.harcama_tutari
+
+    for i in yapilan_harcamalar.filter(durum="İade Yapıldı"):
+        iade_tutari += i.harcama_tutari
 
     p = Paginator(yapilan_harcamalar, 20)
     page = request.GET.get('page')
     tum_harcamalar = p.get_page(page)
 
-    harcama_sayisi = yapilan_harcamalar.count()
+    harcama_sayisi = yapilan_harcamalar.filter(durum="Ödeme Yapıldı").count()
+    iade_sayisi = yapilan_harcamalar.filter(durum="İade Yapıldı").count()
 
     form = HarcamalarForm(data=request.POST, files=request.FILES)
 
@@ -2578,6 +2961,8 @@ def harcamalar(request):
         'harcama_adi': harcama_adi,
         'yil': yil,
         'ay': ay,
+        'iade_sayisi': iade_sayisi,
+        'iade_tutari': iade_tutari,
     })
 
     return render(request, 'backend/adminpage/pages/harcamalar.html', context)
@@ -2648,74 +3033,241 @@ def harcamalar_secilileri_sil(request):
 
 
 @login_required(login_url="/yonetim/giris-yap/")
-def gelir_gider(request):
-    context = {}
+def satislar_api(request):
+    bugun = datetime.today().day
+    oncekigun = (datetime.today() - timedelta(days=1)).day
+    ay = datetime.today().month
+    oncekiay = (datetime.today().month - 1)
+    yil = datetime.today().year
+    oncekiyil = (datetime.today().year - 1)
 
-    order_count = Order.objects.all().count() + TrendyolOrders.objects.all().count()
+    daily_order_list = []
+    daily_order_total = 0
+    onceki_gun_satis = 0
+    mountly_order_list = []
+    mountly_order_total = 0
+    onceki_ay_satis = 0
+    yearly_order_list = []
+    yearly_order_total = 0
+    onceki_yil_satis = 0
+
+    for o in Order.objects.all():
+        if o.updated_at.day == bugun:
+            daily_order_list.append(o.order_total)
+        if o.updated_at.month == ay:
+            mountly_order_list.append(o.order_total)
+        if o.updated_at.year == yil:
+            yearly_order_list.append(o.order_total)
+
+    for o in TrendyolOrders.objects.all().exclude(status="İptal Edildi"):
+        if o.order_date.month == ay:
+            if (o.order_date + timedelta(hours=1)).day == bugun:
+                daily_order_list.append(o.sales_amount)
+            if (o.order_date + timedelta(hours=1)).day == oncekigun:
+                if o:
+                    onceki_gun_satis += o.sales_amount
+        if o.order_date.month == ay:
+            mountly_order_list.append(o.sales_amount)
+        if (o.order_date + timedelta(hours=1)).month == oncekiay:
+            if o:
+                onceki_ay_satis += o.sales_amount
+        if o.order_date.year == yil:
+            yearly_order_list.append(o.sales_amount)
+        if (o.order_date + timedelta(hours=1)).year == oncekiyil:
+            if o:
+                onceki_yil_satis += o.sales_amount
+
+    for d in daily_order_list:
+        daily_order_total += d
+
+    for m in mountly_order_list:
+        mountly_order_total += m
+
+    for y in yearly_order_list:
+        yearly_order_total += y
+
+    gunluk_degisim = ((daily_order_total * 100) / onceki_gun_satis) - 100
+    aylik_degisim = ((mountly_order_total * 100) / onceki_ay_satis) - 100
+    if onceki_yil_satis == 0:
+        yillik_degisim = 0
+    else:
+        yillik_degisim = ((yearly_order_total * 100) / onceki_yil_satis) - 100
+
+    data = [daily_order_total, mountly_order_total, yearly_order_total, ay, yil, gunluk_degisim, aylik_degisim,
+            yillik_degisim]
+    return JsonResponse(data=data, safe=False)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def kar_api(request):
     harcamalar = Harcamalar.objects.all()
     kesintiler = 0
 
     total_cash_list = []
     total_cash = 0
     toplam_harcamalar = 0
+    iade_harcamalar = 0
+    iade_list = []
+    iade_tutari = 0
+    komisyon_ucreti = 0
 
     for o in Order.objects.all():
         total_cash_list.append(o.order_total)
 
-    for o in TrendyolOrders.objects.all():
+    for o in TrendyolOrders.objects.all().exclude(status="İptal Edildi"):
         total_cash_list.append(o.sales_amount)
-        kargo_ucreti = o.delivery_price
-        komisyon_ucreti = o.commission_price
-        hizmet_bedeli = o.service_price
 
+    for o in TrendyolOrders.objects.all().exclude(status="İptal Edildi"):
+        kargo_ucreti = o.delivery_price
+        if o.is_return == True:
+            komisyon_ucreti = 0
+        else:
+            if o.commission_price:
+                komisyon_ucreti = o.commission_price
+            else:
+                komisyon_ucreti = 0
+
+        hizmet_bedeli = o.service_price
 
         if o.delivery_price is None:
             kargo_ucreti = 0.0
-
-        if o.commission_price is None:
-            komisyon_ucreti = 0.0
 
         if o.service_price is None:
             hizmet_bedeli = 0.0
 
         kesintiler += kargo_ucreti + komisyon_ucreti + hizmet_bedeli
 
-    i = 1
-
-
-    aylara_gore_harcamalar = []
-    aylara_gore_satislar = []
-
-
-    while i <= 12:
-        aylara_gore_harcamalar.append(
-            {'Ay': i, 'Harcamalar': [Harcamalar.objects.filter(created_at__month=i)]}
-        )
-
-        i += 1
-
-    tredyshop_siparis_sayilari = []
-    trendyol_siparis_sayilari = []
-
-    for o in Order.objects.all():
-        pass
-
     for tc in total_cash_list:
         total_cash += tc
 
-    for h in harcamalar:
+    for h in harcamalar.filter(durum="Ödeme Yapıldı"):
         toplam_harcamalar += h.harcama_tutari
 
-    toplam_kar = total_cash - toplam_harcamalar - kesintiler
+    for h in harcamalar.filter(durum="İade Yapıldı"):
+        iade_harcamalar += h.harcama_tutari
 
-    context.update({
-        'total_cash': total_cash,
-        'toplam_harcamalar': toplam_harcamalar,
-        'kesintiler': kesintiler,
-        'toplam_kar': toplam_kar,
-    })
+    for o in Order.objects.filter(status="İptal Edildi"):
+        iade_list.append(o.order_total)
 
-    return render(request, 'backend/adminpage/pages/gelir_gider.html', context)
+    for o in TrendyolOrders.objects.filter(is_return=True):
+        iade_list.append(o.sales_amount)
+
+    for i in iade_list:
+        iade_tutari += i
+
+    toplam_kar = total_cash - toplam_harcamalar - kesintiler - iade_tutari + iade_harcamalar
+
+    data = [toplam_kar, total_cash, toplam_harcamalar, kesintiler, iade_tutari]
+    return JsonResponse(data=data, safe=False)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def yedi_gunluk_kar(request):
+    yedigunonce = datetime.today() - timedelta(days=6)
+    son_yedi_gun = []
+
+    ilgili_gun_satislar_list = []
+    ilgili_gun_harcamalar_list = []
+    ilgili_gun_iade_harcamalar_list = []
+    ilgili_gun_kesintiler_list = []
+    ilgili_gun_iadeler_list = []
+
+    while yedigunonce <= datetime.today():
+        son_yedi_gun.append(yedigunonce.strftime("%d-%m-%Y"))
+
+        ilgili_gun_satislar = 0
+        ilgili_gun_kesintiler = 0
+        ilgili_gun_harcamalar = 0
+        ilgili_gun_iade_harcamalar = 0
+        ilgili_gun_iadeler = 0
+
+        for o in Order.objects.filter(created_at__year=yedigunonce.year, created_at__month=yedigunonce.month,
+                                      created_at__day=yedigunonce.day):
+            ilgili_gun_satislar += o.order_total
+
+        for o in TrendyolOrders.objects.all().exclude(status="İptal Edildi"):
+            if (o.order_date + timedelta(hours=1)).month == yedigunonce.month:
+                if (o.order_date + timedelta(hours=1)).day == yedigunonce.day:
+                    ilgili_gun_satislar += o.sales_amount
+
+                    kargo_ucreti = o.delivery_price
+
+                    if o.is_return == True:
+                        komisyon_ucreti = 0.0
+                    else:
+                        if o.commission_price:
+                            komisyon_ucreti = o.commission_price
+                        else:
+                            komisyon_ucreti = 0
+
+                    hizmet_bedeli = o.service_price
+
+                    if o.delivery_price is None:
+                        kargo_ucreti = 0.0
+
+                    if o.service_price is None:
+                        hizmet_bedeli = 0.0
+
+                    ilgili_gun_kesintiler += kargo_ucreti + komisyon_ucreti + hizmet_bedeli
+
+        ilgili_gun_satislar_list.append(ilgili_gun_satislar)
+        ilgili_gun_kesintiler_list.append(ilgili_gun_kesintiler)
+
+        for h in Harcamalar.objects.filter(durum="Ödeme Yapıldı", created_at__day=yedigunonce.day,
+                                           created_at__month=yedigunonce.month, created_at__year=yedigunonce.year):
+            ilgili_gun_harcamalar += h.harcama_tutari
+
+        ilgili_gun_harcamalar_list.append(ilgili_gun_harcamalar)
+
+        for h in Harcamalar.objects.filter(durum="İade Yapıldı", created_at__day=yedigunonce.day,
+                                           created_at__month=yedigunonce.month, created_at__year=yedigunonce.year):
+            ilgili_gun_iade_harcamalar += h.harcama_tutari
+
+        ilgili_gun_iade_harcamalar_list.append(ilgili_gun_iade_harcamalar)
+
+        for o in Order.objects.filter(status="İptal Edildi", updated_at__day=yedigunonce.day,
+                                      updated_at__month=yedigunonce.month, updated_at__year=yedigunonce.year):
+            ilgili_gun_iadeler += o.order_total
+
+        for o in TrendyolOrders.objects.filter(is_return=True):
+            if o.order_date.month == yedigunonce.month:
+                if (o.order_date + timedelta(hours=1)).day == yedigunonce.day:
+                    ilgili_gun_iadeler += o.sales_amount
+
+        ilgili_gun_iadeler_list.append(ilgili_gun_iadeler)
+
+        yedigunonce += timedelta(days=1)
+
+    k = 0
+    kar_list = []
+    while k < 7:
+
+        kar_list.append((ilgili_gun_satislar_list[k] - ilgili_gun_kesintiler_list[k] - ilgili_gun_harcamalar_list[k] -
+                         ilgili_gun_iadeler_list[k] + ilgili_gun_iade_harcamalar_list[k]))
+        k += 1
+
+    data = [son_yedi_gun, kar_list, ilgili_gun_harcamalar_list, ilgili_gun_kesintiler_list, ilgili_gun_iadeler_list,
+            ilgili_gun_satislar_list]
+    return JsonResponse(data=data, safe=False)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def en_cok_siparis_gelen_10_sehir(request):
+    from collections import Counter
+    tum_sehirler_list = []
+    alisveris_sayisi_list = []
+
+    for o in TrendyolOrders.objects.all():
+        if o.shippment_city != None:
+            tum_sehirler_list.append(o.shippment_city)
+
+    for v in Counter(tum_sehirler_list).values():
+        alisveris_sayisi_list.append(v)
+
+    sehirler = sorted(Counter(tum_sehirler_list), key=Counter(tum_sehirler_list).get, reverse=True)[:10]
+    alısveris_sayisi = sorted(alisveris_sayisi_list, reverse=True)[:10]
+    data = [sehirler, alısveris_sayisi]
+    return JsonResponse(data=data, safe=False)
 
 
 @login_required(login_url="/yonetim/giris-yap/")

@@ -173,15 +173,31 @@
                         </li>
                     </ul>
                 </li>
-
-                <li class="nav-item">
-                    <a href="{% url 'kullanicilar' %}"
-                       class="nav-link {% if '/yonetim/kullanicilar/' in request.path %}active{% endif %}">
+                <li class="nav-item {% if '/kullanici-yonetimi/' in request.path %}menu-open{% endif %}">
+                    <a href="#"
+                       class="nav-link {% if '/kullanici-yonetimi/' in request.path %}active{% endif %}">
                         <i class="nav-icon fa-solid fa-users"></i>
                         <p>
-                            Kullanıcılar
+                            Kullanıcı Yönetimi
+                            <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'kullanicilar' %}"
+                               class="nav-link {% if request.path == '/yonetim/kullanici-yonetimi/kullanicilar/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Kullanıcılar</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'kullanici_ekle' %}"
+                               class="nav-link {% if request.path == '/yonetim/kullanici-yonetimi/kullanici-ekle/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Kullanıcı Ekle</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item {% if '/yonetim/sayfalar/' in request.path %}menu-open{% endif %}">
                     <a href="#"
@@ -352,15 +368,6 @@
                         <i class="nav-icon fa-solid fa-wallet"></i>
                         <p>
                             Harcamalar
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'gelir_gider' %}"
-                       class="nav-link {% if '/yonetim/gelir-gider/' in request.path %}active{% endif %}">
-                        <i class="nav-icon fa-solid fa-cash-register"></i>
-                        <p>
-                            Gelir-Gider Durumu
                         </p>
                     </a>
                 </li>

@@ -28,7 +28,6 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Kayıtlı Kullanıcılar</h3>
 
                             <div class="card-tools">
                                 <div class="input-group input-group-sm" style="width: 250px;">
@@ -64,7 +63,7 @@
                                         <td><a href="{% url 'kullanici_goruntule' u.id %}">{{ u.email }}</a></td>
                                         <td>{{ u.mobile }}</td>
                                         <td>{% if u.is_superuser %}Yönetici{% elif u.is_staff %}
-                                            Müşteri{% elif u.is_customer %}Müşteri{% endif %}</td>
+                                            Personel{% elif u.is_customer %}Müşteri{% endif %}</td>
                                         <td><a href="">{{ u.created_date }}</a></td>
                                     </tr>
                                 {% endfor %}

@@ -19,9 +19,14 @@ urlpatterns = [
     path('bildirimler/secili-sil/', secili_sil_notification, name='secili_sil_notification'),
     path('sayfalar/hakkimizda/', admin_aboutus, name='admin_aboutus'),
     path('sayfalar/anasayfa/', page_mainpage, name='page_mainpage'),
-    path('kullanicilar/', kullanicilar, name='kullanicilar'),
+
+    ##Kullanıcı Yönetimi
+    path('kullanici-yonetimi/kullanicilar/', kullanicilar, name='kullanicilar'),
+    path('kullanici-yonetimi/kullanici-ekle/', kullanici_ekle, name='kullanici_ekle'),
     path('kullanicilar/kullanici-goruntule/kullanici_id=<int:id>/', kullanici_goruntule, name='kullanici_goruntule'),
     path('kullanicilar/kullanici-sil/kullanici_id=<int:id>/', kullanici_sil, name='kullanici_sil'),
+
+    ##Kategori Yönetimi
     path('kategoriler/birinci-seviye-kategoriler/', kategoriler_seviye1, name='kategoriler_seviye1'),
     path('kategoriler/birinci-seviye-kategoriler/id=<int:id>/guncelle/', kategoriler_seviye1_guncelle,
          name='kategoriler_seviye1_guncelle'),
@@ -72,6 +77,7 @@ urlpatterns = [
     path('kategoriler/ucuncu-seviye-kategoriler/secili-kategori-sil/', kategoriler3_secilileri_sil,
          name='kategoriler3_secilileri_sil'),
     path('kategoriler/secili-kategori-sil/', kategoriler_secilileri_sil, name='kategoriler_secilileri_sil'),
+
     path('urunler/', products, name='admin_product'),
     path('urunler/sil/json/', ajax_select_delete_product, name='ajax_select_delete_product'),
     path('urunler/sil/', all_delete_product, name='all_delete_product'),
@@ -162,7 +168,10 @@ urlpatterns = [
          name='harcamalar_export_pdf'),
     path('harcamalar/secili-harcama-sil/', harcamalar_secilileri_sil,
          name='harcamalar_secilileri_sil'),
-    path('gelir-gider/', gelir_gider, name="gelir_gider"),
+    path('satislar-api/', satislar_api, name="satislar_api"),
+    path('kar-api/', kar_api, name="kar_api"),
+    path('son-yedi-gun-kar-api/', yedi_gunluk_kar, name="yedi_gunluk_kar"),
+    path('en-cok-siparis-gelen-10-sehir/', en_cok_siparis_gelen_10_sehir, name="en_cok_siparis_gelen_10_sehir"),
 
     path('arama/', ajax_search, name="ajax_search"),
 

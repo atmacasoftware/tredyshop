@@ -191,9 +191,9 @@
                                         </td>
                                         <td data-label="Ürün Bilgisi">
                                             <div class="product__info">
-                                                    <div class="product__image"><img src="{{ product.images.0.url }}"
-                                                                                     alt="">
-                                                    </div>
+                                                <div class="product__image"><img src="{{ product.images.0.url }}"
+                                                                                 alt="">
+                                                </div>
                                                 <div class="product__title"><p><b><a
                                                         href="">{{ product.title }}</a></b>
                                                 </p><span>Stok Kodu: {{ product.stockCode }}</span></div>
@@ -207,15 +207,17 @@
                                         <td data-label="Satış Fiyatı (TL)">{{ product.salePrice }}</td>
                                         <td data-label="Stok">{{ product.quantity }}</td>
                                     </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="9">
+                                            <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                                                <div><i class="fa-regular fa-face-smile-wink"
+                                                        style="font-size: 3rem; margin-bottom: 20px;"></i></div>
+                                                <div><h4>Herşey yolunda gözüküyor. Farklı bir ürün bulamadım.</h4></div>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 {% endfor %}
-                                <tr>
-                                    <td colspan="9">
-                                        <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                                            <div><i class="fa-regular fa-face-smile-wink" style="font-size: 3rem; margin-bottom: 20px;"></i></div>
-                                            <div><h4>Herşey yolunda gözüküyor. Farklı bir ürün bulamadım.</h4></div>
-                                        </div>
-                                    </td>
-                                </tr>
                                 </tbody>
                             </table>
                         </div>

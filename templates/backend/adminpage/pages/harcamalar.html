@@ -65,6 +65,8 @@
                         <div class="card-body">
                             <button class="btn btn-default btn-block" disabled>Toplam Harcama Sayısı: {{ harcama_sayisi }} </button>
                             <button class="btn btn-default btn-block" disabled>Toplam Harcama Tutarı: {{ total_harcama|floatformat:2 }} TL</button>
+                            <button class="btn btn-default btn-block" disabled>Toplam İade Sayısı: {{ iade_sayisi }} </button>
+                            <button class="btn btn-default btn-block" disabled>Toplam İade Tutarı: {{ iade_tutari|floatformat:2 }} TL</button>
                         </div>
                     </div>
                 </div>
@@ -152,6 +154,7 @@
                                     <th style="text-align: start; vertical-align: middle">Harcama Tipi</th>
                                     <th style="text-align: start; vertical-align: middle">Harcama Adı</th>
                                     <th style="text-align: start; vertical-align: middle">Harcama Tutarı</th>
+                                    <th style="text-align: start; vertical-align: middle">Ödeme Durumu</th>
                                     <th style="text-align: start; vertical-align: middle">Harcama Tarihi</th>
                                     <th style="text-align: start; vertical-align: middle">İşlemler</th>
                                 </tr>
@@ -167,6 +170,7 @@
                                         <td style="text-align: start; vertical-align: middle">{{ h.harcama_tipi }}</td>
                                         <td style="text-align: start; vertical-align: middle">{{ h.harcama_adi }}</td>
                                         <td style="text-align: start; vertical-align: middle">{{ h.harcama_tutari|floatformat:2 }}</td>
+                                        <td style="text-align: start; vertical-align: middle">{{ h.durum }}</td>
                                         <td style="text-align: start; vertical-align: middle">{{ h.created_at }}</td>
                                         <td style="text-align: start; vertical-align: middle">
                                             <a href="{% url 'harcama_detay' h.id %}"
@@ -291,6 +295,7 @@
                         td[2].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
                         td[3].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
                         td[4].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[5].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
                         td[5].innerHTML.toLocaleLowerCase().indexOf(filter) > -1) {
                         tr[j].style.display = ""
                         msg.innerHTML = ""

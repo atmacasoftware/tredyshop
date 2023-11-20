@@ -27,11 +27,13 @@ class TrendyolOrders(models.Model):
     unit_price = models.FloatField(verbose_name="Birim Fiyat", null=True, blank=False)
     sales_amount = models.FloatField(verbose_name="Satış Tutarı", null=True, blank=False)
     discount_amount = models.FloatField(verbose_name="İndirim Tutarı", null=True, blank=True)
+    shippment_city = models.CharField(verbose_name="Teslimat Şehri", null=True, blank=True, max_length=255)
     delivery_price = models.FloatField(verbose_name="Kargo Bedeli (KDV Dahil)", null=True, blank=True)
     commission_price = models.FloatField(verbose_name="Komisyon Tutarı", null=True, blank=True)
     service_price = models.FloatField(verbose_name="Hizmet Bedeli", null=True, blank=True)
     tax_price = models.FloatField(verbose_name="Vergi Tutarı", null=True, blank=True)
     order_date = models.DateTimeField(auto_now_add=False, verbose_name="Sipariş Tarihi")
+    is_return = models.BooleanField(default=False, null=True, verbose_name="İade Edildi Mi?")
     status = models.CharField(choices=STATUS, verbose_name="Durum", null=True, max_length=255)
 
     class Meta:
