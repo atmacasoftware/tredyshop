@@ -97,7 +97,13 @@
                                 <p>Özellik Guncelleme</p>
                             </a>
                         </li>
-
+                        <li class="nav-item">
+                            <a href="{% url 'beden_tablosu' %}"
+                               class="nav-link {% if request.path == '/yonetim/urunler/beden-tablosu/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Beden Tablosu</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li class="nav-item {% if '/yonetim/siparis-yonetimi/' in request.path %}menu-open{% endif %}">
@@ -192,9 +198,9 @@
                         </li>
                         <li class="nav-item">
                             <a href="{% url 'kullanici_ekle' %}"
-                               class="nav-link {% if request.path == '/yonetim/kullanici-yonetimi/kullanici-ekle/' %}active{% endif %}">
+                               class="nav-link {% if '/yonetim/kullanici-yonetimi/kullanici-islemleri/' in request.path %}active{% endif %}">
                                 <i class="far fa-circle nav-icon"></i>
-                                <p>Kullanıcı Ekle</p>
+                                <p>Kullanıcı İşlemleri</p>
                             </a>
                         </li>
                     </ul>
@@ -229,7 +235,7 @@
 
                 <li class="nav-item {% if '/trendyol/' in request.path %}menu-open{% endif %}">
                     <a href="#" class="nav-link {% if '/trendyol/' in request.path %}active{% endif %}">
-                        <i class="nav-icon fa fa-shopping-cart"></i>
+                        <i class="nav-icon fa-solid fa-t"></i>
                         <p>
                             Trendyol
                             <i class="fas fa-angle-left right"></i>
@@ -246,6 +252,87 @@
                         <li class="nav-item">
                             <a href="{% url 'trendyol_add_product' %}"
                                class="nav-link {% if '/trendyol/urun-giris/' in request.path %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Ürün Girişi</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'trendyol_update_price_stok' %}"
+                               class="nav-link {% if '/trendyol/stok-fiyat-guncelleme/' in request.path %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Stok & Fiyat Güncelleme</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'trendyol_update_product' %}"
+                               class="nav-link {% if '/trendyol/bilgi-guncelleme/' in request.path %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Bilgi Güncelleme</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'trendyol_delete_product' %}"
+                               class="nav-link {% if '/trendyol/urun-silme/' in request.path %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Ürün Silme</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'trendyol_products' %}"
+                               class="nav-link {% if '/trendyol/urunler/' in request.path %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Ürünler</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'trendyol_hatali_urunler' %}"
+                               class="nav-link {% if '/trendyol/hatali-urunler/' in request.path %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Hatalı Ürünler</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'trendyol_add_order' %}"
+                               class="nav-link {% if request.path == '/yonetim/trendyol/siparis-ekle/' %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Sipariş Ekle</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'trendyol_komisyon' %}"
+                               class="nav-link {% if '/trendyol/komisyon-oranlari/' in request.path %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Komisyon Oranları</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'trendyol_batch_request' %}"
+                               class="nav-link {% if '/trendyol/servis-istekleri/' in request.path %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>İstek Cevapları</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item {% if '/hepsiburada/' in request.path %}menu-open{% endif %}">
+                    <a href="#" class="nav-link {% if '/hepsiburada/' in request.path %}active{% endif %}">
+                        <i class="nav-icon fa-solid fa-h"></i>
+                        <p>
+                            Hepsiburada
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'hepsiburada_hesap_bilgileri' %}"
+                               class="nav-link {% if '/hepsiburada/hesap-bilgileri/' in request.path %}active{% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Hesap Bilgileri</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'hepsiburada_add_product' %}"
+                               class="nav-link {% if '/hepsiburada/urun-giris/' in request.path %}active{% endif %}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Ürün Girişi</p>
                             </a>
@@ -368,6 +455,16 @@
                         <i class="nav-icon fa-solid fa-wallet"></i>
                         <p>
                             Harcamalar
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-header">PAZARLAMA</li>
+                <li class="nav-item">
+                    <a href="{% url 'email_pazarlama' %}"
+                       class="nav-link {% if '/yonetim/pazarlama-yonetimi/email-pazarlama/' in request.path %}active{% endif %}">
+                        <i class="nav-icon fa-solid fa-envelope"></i>
+                        <p>
+                            E-Posta Pazarlama
                         </p>
                     </a>
                 </li>

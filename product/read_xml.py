@@ -6,8 +6,25 @@ from categorymodel.models import SubCategory, SubBottomCategory, MainCategory
 from product.models import Color, Size, ApiProduct
 from django.contrib import messages
 from adminpage.models import UpdateHistory
+from PIL import Image
+from io import BytesIO
+from django.core.files.images import ImageFile
+import requests
 
+def convert_webp(slug, image_url):
+    try:
+        img_url = f'{image_url}'
 
+        res = Image.open(requests.get(img_url, stream=True).raw)
+        try:
+            filename = f'{slug}'
+        except:
+            filename = "urun_fotografi"
+
+        img_object = ImageFile(BytesIO(res.fp.getvalue()), name=filename)
+        return img_object
+    except:
+        pass
 
 def customPrice(starter, finish, price):
     while finish < 10000:
@@ -28,7 +45,7 @@ def modaymissaveXML2db():
             modelcode = product.get("ModelCode")
             sku = product.get("Sku")
             name = product.get("Name").split("-")[0].rstrip()
-            keywords = name.split(" ")
+            title = product.get("Name")
             manufacturer = product.get("Manufacturer")
             description = product.get("FullDescription")
             stok = product.get("StockQuantity")
@@ -178,15 +195,17 @@ def modaymissaveXML2db():
                                     " ", "").replace("İ", "I").replace("ı", "i").replace("ö", "o").replace("ü", "u"):
                                     renk_id = c.id
 
-                        data = ApiProduct.objects.create(xml_id=id, category_id=1, dropshipping="Modaymış" ,subcategory_id=sub_category_id,
+                        data = ApiProduct.objects.create(xml_id=id, category_id=1, dropshipping="Modaymış",
+                                                         subcategory_id=sub_category_id,
                                                          barcode=combination_gtin, model_code=sku,
                                                          stock_code=combination_sku,
-                                                         brand_id=9, title=name, description=name,
+                                                         brand_id=9, title=title, description=name,
                                                          price=tredyshop_price,
                                                          trendyol_price=trendyol_price,
                                                          hepsiburada_price=hepsiburada_price, pttavm_price=pttavm_price,
                                                          quantity=combination_stock, detail=description,
-                                                         status=True, color_id=renk_id, size_id=beden_id, age_group="Yetişkin")
+                                                         status=True, color_id=renk_id, size_id=beden_id,
+                                                         age_group="Yetişkin")
                         data.save()
 
                         for sb in SubBottomCategory.objects.all():
@@ -206,6 +225,8 @@ def modaymissaveXML2db():
                             for i in p.iter("Picture"):
                                 image_list.append(i.get("Path"))
 
+                        kapak = convert_webp(data.slug, image_list[0])
+                        data.kapak = kapak
 
                         if len(image_list) > 0 and len(image_list) <= 1:
                             data.image_url1 = image_list[0]
@@ -240,7 +261,7 @@ def modaymissaveXML2db():
                             data.image_url5 = image_list[4]
                             data.image_url6 = image_list[5]
 
-                        if len(image_list) > 6 and len(image_list) <=7:
+                        if len(image_list) > 6 and len(image_list) <= 7:
                             data.image_url1 = image_list[0]
                             data.image_url2 = image_list[1]
                             data.image_url3 = image_list[2]
@@ -259,6 +280,7 @@ def modaymissaveXML2db():
                             data.image_url7 = image_list[6]
                             data.image_url8 = image_list[7]
                         data.save()
+
 
 def updateModaymisSaveXML2db():
     with urlopen('https://www.modaymis.com/1.xml') as f:
@@ -386,7 +408,6 @@ def updateModaymisSaveXML2db():
         UpdateHistory.objects.create(history_type="Modaymış Güncelleme")
 
 
-
 def notActiveModaymisProduct():
     with urlopen('https://www.modaymis.com/1.xml') as f:
         modaymis = ET.parse(f)
@@ -395,7 +416,7 @@ def notActiveModaymisProduct():
         current_product_list = []
         all_products = ApiProduct.objects.filter(dropshipping="Modaymış")
         for ap in all_products:
-           current_product_list.append(ap.barcode)
+            current_product_list.append(ap.barcode)
         for product in modaymis_products:
             for p in product.iter("Combinations"):
                 for c in p.iter("Combination"):
@@ -692,13 +713,13 @@ def tahtakaleSaveXML2db():
 
                 if existing == False:
                     data = ApiProduct.objects.create(price=tredyshop_price, amount=quantity, category_id=category1_id,
-                                                  subcategory_id=category2_id, subbottomcategory_id=category3_id,
-                                                  dropshipping="Tahtakale", xml_id=id, barcode=barcode,
-                                                  stock_code=model_number, is_publish=publish_status,
-                                                  trendyol_price=trendyol_price, hepsiburada_price=hepsiburada_price,
-                                                  pttavm_price=pttavm_price, title=title, description=title,
-                                                  detail=description, image_url=kapak, brand_id=8
-                                                  )
+                                                     subcategory_id=category2_id, subbottomcategory_id=category3_id,
+                                                     dropshipping="Tahtakale", xml_id=id, barcode=barcode,
+                                                     stock_code=model_number, is_publish=publish_status,
+                                                     trendyol_price=trendyol_price, hepsiburada_price=hepsiburada_price,
+                                                     pttavm_price=pttavm_price, title=title, description=title,
+                                                     detail=description, image_url=kapak, brand_id=8
+                                                     )
                     slugtitle = title.lower().replace("ı", "i").replace(" ", "-").replace("ü", "u").replace("ö",
                                                                                                             "o").replace(
                         "İ", "i").replace("I", "i").replace("/", "-"

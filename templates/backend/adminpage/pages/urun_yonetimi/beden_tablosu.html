@@ -1,0 +1,313 @@
+{% extends 'backend/adminpage/layout.html' %}
+{% load static %}
+
+{% block title %}<title>Beden Tablosu</title>{% endblock %}
+
+{% block products %}
+
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Beden Tablosu</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'mainpage' %}">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Beden Tablosu</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Kadın Üst Beden Tablosu</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive" style="height: 400px;">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Beden Adı</th>
+                                    <th scope="col">EU-TR</th>
+                                    <th scope="col">Boyun (cm)</th>
+                                    <th scope="col">Göğüs (cm)</th>
+                                    <th scope="col">Bel (cm)</th>
+                                    <th scope="col">İşlemler</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <td><input type="text" name="kadin_ust_beden_adi" required class="form-control">
+                                        </td>
+                                        <td><input type="number" name="kadin_ust_eu_tr" required class="form-control">
+                                        </td>
+                                        <td><input type="text" name="kadin_ust_boyun" class="form-control"></td>
+                                        <td><input type="text" name="kadin_ust_gogus" class="form-control"></td>
+                                        <td><input type="text" name="kadin_ust_bel" class="form-control"></td>
+                                        <td>
+                                            <button type="submit" name="add_kadin_ust_beden"
+                                                    class="btn btn-sm btn-primary">Ekle
+                                            </button>
+                                        </td>
+                                    </form>
+                                </tr>
+                                {% for beden in kadin_ust_beden_tablosu %}
+                                    <tr>
+                                        <td>{{ beden.beden_adi }}</td>
+                                        <td>{{ beden.eu_tr }}</td>
+                                        <td>{{ beden.boyun }}</td>
+                                        <td>{{ beden.gogus }}</td>
+                                        <td>{{ beden.bel }}</td>
+                                        <td><a href="{% url 'kadin_ust_beden_sil' beden.id %}"
+                                               class="btn btn-sm btn-danger">Sil</a></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Kadın Üst Büyük Beden Tablosu</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive" style="height: 400px;">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Beden Adı</th>
+                                    <th scope="col">EU-TR</th>
+                                    <th scope="col">Boyun (cm)</th>
+                                    <th scope="col">Göğüs (cm)</th>
+                                    <th scope="col">Bel (cm)</th>
+                                    <th scope="col">İşlemler</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <td><input type="text" name="kadin_ust_buyuk_beden_adi" required
+                                                   class="form-control">
+                                        </td>
+                                        <td><input type="number" name="kadin_ust_buyuk_eu_tr" required
+                                                   class="form-control">
+                                        </td>
+                                        <td><input type="text" name="kadin_ust_buyuk_boyun" class="form-control"></td>
+                                        <td><input type="text" name="kadin_ust_buyuk_gogus" class="form-control"></td>
+                                        <td><input type="text" name="kadin_ust_buyuk_bel" class="form-control"></td>
+                                        <td>
+                                            <button type="submit" name="add_kadin_ust_buyuk_beden"
+                                                    class="btn btn-sm btn-primary">Ekle
+                                            </button>
+                                        </td>
+                                    </form>
+                                </tr>
+                                {% for beden in kadin_ust_buyuk_beden_tablosu %}
+                                    <tr>
+                                        <td>{{ beden.beden_adi }}</td>
+                                        <td>{{ beden.eu_tr }}</td>
+                                        <td>{{ beden.boyun }}</td>
+                                        <td>{{ beden.gogus }}</td>
+                                        <td>{{ beden.bel }}</td>
+                                        <td><a href="{% url 'kadin_ust_buyuk_beden_sil' beden.id %}"
+                                               class="btn btn-sm btn-danger">Sil</a></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Kadın Alt Beden Tablosu</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive" style="height: 400px;">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Beden Adı</th>
+                                    <th scope="col">EU-TR</th>
+                                    <th scope="col">Bel (cm)</th>
+                                    <th scope="col">Basen (cm)</th>
+                                    <th scope="col">İşlemler</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <td><input type="text" name="kadin_alt_beden_adi" required class="form-control">
+                                        </td>
+                                        <td><input type="number" name="kadin_alt_eu_tr" required class="form-control">
+                                        </td>
+                                        <td><input type="text" name="kadin_alt_bel" class="form-control"></td>
+                                        <td><input type="text" name="kadin_alt_basen" class="form-control"></td>
+                                        <td>
+                                            <button type="submit" name="add_kadin_alt_beden"
+                                                    class="btn btn-sm btn-primary">Ekle
+                                            </button>
+                                        </td>
+                                    </form>
+                                </tr>
+                                {% for beden in kadin_alt_beden_tablosu %}
+                                    <tr>
+                                        <td>{{ beden.beden_adi }}</td>
+                                        <td>{{ beden.eu_tr }}</td>
+                                        <td>{{ beden.bel }}</td>
+                                        <td>{{ beden.basen }}</td>
+                                        <td><a href="{% url 'kadin_alt_beden_sil' beden.id %}"
+                                               class="btn btn-sm btn-danger">Sil</a></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Kadın Alt Büyük Beden Tablosu</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive" style="height: 400px;">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Beden Adı</th>
+                                    <th scope="col">EU-TR</th>
+                                    <th scope="col">Bel (cm)</th>
+                                    <th scope="col">Basen (cm)</th>
+                                    <th scope="col">İşlemler</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <td><input type="text" name="kadin_alt_buyuk_beden_adi" required
+                                                   class="form-control">
+                                        </td>
+                                        <td><input type="number" name="kadin_alt_buyuk_eu_tr" required
+                                                   class="form-control">
+                                        </td>
+                                        <td><input type="text" name="kadin_alt_buyuk_bel" class="form-control"></td>
+                                        <td><input type="text" name="kadin_alt_buyuk_basen" class="form-control"></td>
+                                        <td>
+                                            <button type="submit" name="add_kadin_alt_buyuk_beden"
+                                                    class="btn btn-sm btn-primary">Ekle
+                                            </button>
+                                        </td>
+                                    </form>
+                                </tr>
+                                {% for beden in kadin_alt_buyuk_beden_tablosu %}
+                                    <tr>
+                                        <td>{{ beden.beden_adi }}</td>
+                                        <td>{{ beden.eu_tr }}</td>
+                                        <td>{{ beden.bel }}</td>
+                                        <td>{{ beden.basen }}</td>
+                                        <td><a href="{% url 'kadin_alt_buyuk_beden_sil' beden.id %}"
+                                               class="btn btn-sm btn-danger">Sil</a></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Kadın Jean Beden Tablosu</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive" style="height: 400px;">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Beden Adı</th>
+                                    <th scope="col">EU-TR</th>
+                                    <th scope="col">Bel (cm)</th>
+                                    <th scope="col">Basen (cm)</th>
+                                    <th scope="col">İşlemler</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <td><input type="text" name="kadin_jean_beden_adi" required class="form-control">
+                                        </td>
+                                        <td><input type="text" name="kadin_jean_eu_tr" required class="form-control">
+                                        </td>
+                                        <td><input type="text" name="kadin_jean_bel" class="form-control"></td>
+                                        <td><input type="text" name="kadin_jean_basen" class="form-control"></td>
+                                        <td>
+                                            <button type="submit" name="add_kadin_jean_beden"
+                                                    class="btn btn-sm btn-primary">Ekle
+                                            </button>
+                                        </td>
+                                    </form>
+                                </tr>
+                                {% for beden in kadin_jean_beden_tablosu %}
+                                    <tr>
+                                        <td>{{ beden.beden_adi }}</td>
+                                        <td>{{ beden.eu_tr }}</td>
+                                        <td>{{ beden.bel }}</td>
+                                        <td>{{ beden.basen }}</td>
+                                        <td><a href="{% url 'kadin_jean_beden_sil' beden.id %}"
+                                               class="btn btn-sm btn-danger">Sil</a></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+{% endblock %}

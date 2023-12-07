@@ -1,0 +1,360 @@
+{% extends 'backend/adminpage/layout.html' %}
+{% load static %}
+
+{% block title %}<title>Sipariş Numarası {{ order.order_number }}</title>{% endblock %}
+
+{% block orders %}
+    <link rel="stylesheet" href="{% static 'adminpage/css/category.css' %}">
+
+    <div class="waiting">
+        <div class="spinner-border text-danger" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <h4>Lütfen Bekleyiniz...</h4>
+    </div>
+
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'mainpage' %}">Anasayfa</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'admin_orders' %}">Siparişler</a></li>
+                        <li class="breadcrumb-item active">Sipariş Detay</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-danger shadow-lg">
+                        <div class="card-header">
+                            <h3 class="card-title">Müşteri Bilgileri</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-sm">
+                                <thead>
+                                <tr>
+                                    <th>Ad-Soyad</th>
+                                    <th>Email</th>
+                                    <th>Telefon</th>
+                                    <th>İp Adresi</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{ order.user.get_full_name }}</td>
+                                    <td>{{ order.user.email }}</td>
+                                    <td>{{ order.user.mobile }}</td>
+                                    <td>{{ order.ip }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-danger shadow-lg">
+                        <div class="card-header">
+                            <h3 class="card-title">Sipariş Bilgileri</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-sm">
+                                <thead>
+                                <tr>
+                                    <th>Sipariş Numarası</th>
+                                    <th>Sipariş Tutarı</th>
+                                    <th>Toplam Ödenen Tutar</th>
+                                    <th>Sipariş Durumu</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td id="orderNumber">{{ order.order_number }}</td>
+                                    <td>{{ order.order_amount }}</td>
+                                    <td>{{ order.order_total }}</td>
+                                    <td>{{ order.status }}</td>
+                                    <td>
+                                        {% if order.status == "Hazırlanıyor" %}
+                                            <button data-bs-toggle="modal" data-bs-target="#shippingInformation"
+                                                    class="btn btn-primary btn-block btn-sm">Kargo Bildir
+                                            </button>
+                                        {% elif order.status == "Yeni" %}
+                                            <a href="{% url 'order_isleme_al' order.order_number %}"
+                                               class="btn btn-primary btn-block btn-sm">İşleme Al</a>
+                                        {% elif order.status == "Kargolandı" %}
+                                            <a href="{% url 'order_isleme_al' order.order_number %}"
+                                               class="btn btn-primary btn-block btn-sm">Siparişi Tamamla</a>
+                                        {% elif order.status == "Tamamlandı" %}
+                                            <span class="bg-success">Sipariş Tamamlandı</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if order.status == "Kargolandı" %}
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card card-danger shadow-lg">
+                            <div class="card-header">
+                                <h3 class="card-title">Kargo Durumu</h3>
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-body table-responsive p-0">
+                                <table class="table table-sm">
+                                    <thead>
+                                    <tr>
+                                        <th>Kargo Firması</th>
+                                        <th>Takip Numarası</th>
+                                        <th>Kargo Takibi</th>
+                                        <th>Kargo Ücreti</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>{{ order.delivery_name }}</td>
+                                        <td>{{ order.delivery_track }}</td>
+                                        <td><a href="{{ order.delivery_track }}" class="btn btn-dark btn-sm"
+                                               target="_blank">Kargo Takibi</a></td>
+                                        <td>{{ order.delivery_price }}</td>
+                                        <td>
+                                            <button data-bs-toggle="modal" data-bs-target="#shippingInformationUpdate"
+                                                    class="btn btn-sm btn-primary">Kargo Güncelle
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-danger shadow-lg">
+                        <div class="card-header">
+                            <h3 class="card-title">Adres Bilgileri</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Ad-Soyad: </strong>
+                                <span>{{ order.address.first_name }} - {{ order.address.last_name }}</span></p>
+                            <p><strong>Adres: </strong> <span>{{ order.address.address }}</span></p>
+                            <p><strong>Fatura Tipi: </strong> <span>{{ order.address.bill_type }}</span></p>
+                            {% if order.address.bill_type == "Bireysel" %}
+                                <p><strong>T.C.: </strong> <span>{{ order.address.tc }}</span></p>
+                            {% elif order.address.bill_type == "Kurumsal" %}
+                                <p><strong>Şirket Adı: </strong> <span>{{ order.address.company_name }}</span></p>
+                                <p><strong>Vergi Numarası: </strong> <span>{{ order.address.tax_number }}</span></p>
+                                <p><strong>Vergi Dairesi: </strong> <span>{{ order.address.tax_administration }}</span>
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-danger shadow-lg">
+                        <div class="card-header">
+                            <h3 class="card-title">Fatura</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            {% if order.bill %}
+                                <a href="{{ order.get_bill }}" download="download" class="btn btn-app bg-success">
+                                    <i class="fas fa-download"></i> Fatura İndir
+                                </a>
+                            {% endif %}
+                            <form action="" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-lg-9">
+                                        <div class="custom-file">
+                                            <input type="file" name="bill" class="custom-file-input" id="billFile">
+                                            <label class="custom-file-label" for="billFile">Fatura Seç</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <button id="uploadFaturaBtn" name="uploadFaturaBtn"
+                                                class="btn btn-primary float-right">Fatura Yükle
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{% url 'order_mail_gonder' order.order_number %}" class="btn bg-gradient-fuchsia">
+                                <i class="fa-solid fa-envelope fa-bounce"></i>
+                                Mail Gönder
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-danger shadow-lg">
+                        <div class="card-header">
+                            <h3 class="card-title">Ödeme Sorgusu Sonucu</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-sm">
+                                <thead>
+                                <tr>
+                                    <th>Sipariş Tutarı</th>
+                                    <th>Ödenen Tutar</th>
+                                    <th>Ödeme Tipi</th>
+                                    <th>Taksit Sayısı</th>
+                                    <th>Kart Marka</th>
+                                    <th>Kesinti Tutarı</th>
+                                    <th>Net Tutarı</th>
+                                    <th>Ödeme Tarihi</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{ sorgu_durum.payment_amount }}</td>
+                                    <td>{{ sorgu_durum.payment_total }}</td>
+                                    <td>{{ sorgu_durum.odeme_tipi }}</td>
+                                    <td>{{ sorgu_durum.taksit }}</td>
+                                    <td>{{ sorgu_durum.kart_marka }}</td>
+                                    <td>{{ sorgu_durum.kesinti_tutari }}</td>
+                                    <td>{{ sorgu_durum.net_tutar }}</td>
+                                    <td>{{ sorgu_durum.payment_date }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="shippingInformation" tabindex="-1" aria-labelledby="shippingInformationLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="shippingInformationLabel">Kargo Bilgileri</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="">
+                        <div class="form-group">
+                            <label>Kargo Firması</label>
+                            <select class="form-control" name="deliveryCompany">
+                                <option>-----------</option>
+                                <option value="Aras Kargo">Aras Kargo</option>
+                                <option value="MNG Kargo">MNG Kargo</option>
+                                <option value="Yurtiçi Kargo">Yurtiçi Kargo</option>
+                                <option value="Sürat Kargo">Sürat Kargo</option>
+                                <option value="PTT Kargo">PTT Kargo</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Takip Numarası</label>
+                            <input type="text" class="form-control" name="trackNumber">
+                        </div>
+                        <div class="form-group">
+                            <label>Takip Linki</label>
+                            <input type="text" class="form-control" name="takipLinki">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="shippingInformationBtn" class="btn btn-primary">Kargo Bildir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="shippingInformationUpdate" tabindex="-1"
+         aria-labelledby="shippingInformationUpdateLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="shippingInformationUpdateLabel">Kargo Bilgileri</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="">
+                        <div class="form-group">
+                            <label>Kargo Firması</label>
+                            <select class="form-control" name="deliveryUpdateCompany">
+                                <option>-----------</option>
+                                <option value="Aras Kargo">Aras Kargo</option>
+                                <option value="MNG Kargo">MNG Kargo</option>
+                                <option value="Yurtiçi Kargo">Yurtiçi Kargo</option>
+                                <option value="Sürat Kargo">Sürat Kargo</option>
+                                <option value="PTT Kargo">PTT Kargo</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Takip Numarası</label>
+                            <input type="text" class="form-control" name="trackNumberUpdate">
+                        </div>
+                        <div class="form-group">
+                            <label>Takip Linki</label>
+                            <input type="text" class="form-control" name="takipLinkiUpdate">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="shippingInformationUpdateBtn" class="btn btn-primary">Kargo Güncelle
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" multiple="multiple" class="dz-hidden-input" tabindex="-1"
+           style="visibility: hidden; position: absolute; top: 0px; left: 0px; height: 0px; width: 0px;">
+
+
+    <script src="{% static 'adminpage/js/order_detail.js' %}"></script>
+
+{% endblock %}

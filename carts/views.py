@@ -7,6 +7,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.template.loader import render_to_string
 import random
+
+from adminpage.custom import customerTredyShopCreateOrder
 from adminpage.models import Notification
 from carts.helpers import paytr_api, card_type, paytr_sorgu, paytr_taksit_sorgu, taksit_hesaplama, \
     bin_sorgu, paytr_post, create_order_token
@@ -293,12 +295,14 @@ def createOrder(request, address, order_number, order_amount, order_total, is_in
     if delivery_price == None:
         delivery_price = 0
 
-    data = Order.objects.create(order_platform="TredyShop",order_number=str(order_number), user=user, address_id=address.id,
+    data = Order.objects.create(order_platform="TredyShop", order_number=str(order_number), user=user,
+                                address_id=address.id,
                                 order_amount=float(order_amount),
                                 order_total=float(order_total),
                                 delivery_price=delivery_price, is_ordered=True, approved_contract=True,
                                 ip=ip, status=status, is_installment=is_installment, installment=installment,
-                                paymenttype='Banka/Kredi Kartı', preliminary_information_form=pre_order.preliminary_information_form,
+                                paymenttype='Banka/Kredi Kartı',
+                                preliminary_information_form=pre_order.preliminary_information_form,
                                 distance_selling_contract=pre_order.distance_selling_contract)
 
     if coupon != '' and coupon != None:
@@ -343,7 +347,6 @@ def createOrder(request, address, order_number, order_amount, order_total, is_in
 
 @login_required(login_url="/giris-yap")
 def checkout(request, total=0, cart_items=None):
-
     context = {}
     grand_total = 0
     items = []
@@ -351,13 +354,23 @@ def checkout(request, total=0, cart_items=None):
     cart_items = CartItem.objects.filter(user=request.user)
     for i in cart_items:
         if i.product.is_discountprice == True:
-            items.append([str(i.product.title).replace("İ","I").replace("ş","s").replace("ü","u").replace("Ş","S").replace("Ü", "U").replace("ğ","g").replace("ç","c").replace("Ç","C").replace("ö","o").replace("Ö","O"), str(i.product.discountprice), i.quantity])
+            items.append([str(i.product.title).replace("İ", "I").replace("ş", "s").replace("ü", "u").replace("Ş",
+                                                                                                             "S").replace(
+                "Ü", "U").replace("ğ", "g").replace("ç", "c").replace("Ç", "C").replace("ö", "o").replace("Ö", "O"),
+                          str(i.product.discountprice), i.quantity])
         else:
-            items.append([(i.product.title).replace("İ","I").replace("ş","s").replace("ü","u").replace("Ş","S").replace("Ü", "U").replace("ğ","g").replace("ç","c").replace("Ç","C").replace("ö","o").replace("Ö","O"), float(i.product.price), i.quantity])
+            items.append([(i.product.title).replace("İ", "I").replace("ş", "s").replace("ü", "u").replace("Ş",
+                                                                                                          "S").replace(
+                "Ü", "U").replace("ğ", "g").replace("ç", "c").replace("Ç", "C").replace("ö", "o").replace("Ö", "O"),
+                          float(i.product.price), i.quantity])
     add_form = AddressForm(data=request.POST or None, files=request.FILES or None)
 
     all_address = CustomerAddress.objects.all().filter(user=request.user)
-    active_address = CustomerAddress.objects.get(user=request.user, is_active="Evet")
+    try:
+        active_address = CustomerAddress.objects.get(user=request.user, is_active="Evet")
+    except:
+        messages.warning(request, 'Kayıtlı aktif adresiniz bulunmamaktadır. Adres eklemeniz gerekmektedir.')
+        return redirect('address')
     coupon = None
     coupon_exist = Coupon.objects.filter(user=request.user, is_active=True).exists()
 
@@ -439,7 +452,8 @@ def checkout(request, total=0, cart_items=None):
             brand_taksit_rates = all_taksit_data[brand]
 
             for taksit_orani in brand_taksit_rates:
-                vadeli_hesaplama = taksit_hesaplama(paymant_amount=grand_total, vade=taksit_orani.split("_")[1], faiz=brand_taksit_rates[taksit_orani])
+                vadeli_hesaplama = taksit_hesaplama(paymant_amount=grand_total, vade=taksit_orani.split("_")[1],
+                                                    faiz=brand_taksit_rates[taksit_orani])
                 taksitler.append({
                     "taksit_sayisi": taksit_orani.split("_")[1],
                     "vadeli_fiyat": vadeli_hesaplama,
@@ -451,15 +465,15 @@ def checkout(request, total=0, cart_items=None):
             })
         return JsonResponse(data=[taksitler, brand], safe=False)
 
-
     paytr_form_action = "https://www.paytr.com/odeme"
 
     context.update(
         {'cart_items': cart_items, 'total': total, 'grand_total': grand_total, 'coupon': coupon,
          'pre_order': pre_order, 'address': active_address, 'add_form': add_form, 'all_address': all_address,
-         'paytr_data': paytr_data, 'taksitler':taksitler, 'paytr_form_action':paytr_form_action})
+         'paytr_data': paytr_data, 'taksitler': taksitler, 'paytr_form_action': paytr_form_action})
 
     return render(request, 'frontend/pages/checkout.html', context)
+
 
 def order_token(request):
     user_ip = request.POST.get('user_ip')
@@ -467,7 +481,8 @@ def order_token(request):
     email = request.POST.get('email')
     payment_amount = request.POST.get('payment_amount')
     installment_count = request.POST.get('installment_count')
-    token = create_order_token(user_ip=user_ip, email=email, merchant_oid=merchant_oid, payment_amount=payment_amount, installment_count=installment_count)
+    token = create_order_token(user_ip=user_ip, email=email, merchant_oid=merchant_oid, payment_amount=payment_amount,
+                               installment_count=installment_count)
     data = token
     return JsonResponse(data=data, safe=False)
 
@@ -488,6 +503,7 @@ def contracts(request):
     pre_order.save()
 
     return JsonResponse(data=data, safe=False)
+
 
 @csrf_exempt
 def callback(request):
@@ -530,9 +546,19 @@ def completed_checkout(request, order_number):
         taksit_durum = False
         if int(sorgu_durum['taksit']) != 0:
             taksit_durum = True
-        order = createOrder(request, address=pre_order.address, order_amount=float(pre_order.cart_total), order_number=str(order_number),
+        order = createOrder(request, address=pre_order.address, order_amount=float(pre_order.cart_total),
+                            order_number=str(order_number),
                             order_total=float(sorgu_durum['payment_total']),
                             is_installment=taksit_durum, installment=int(sorgu_durum['taksit']), status="Yeni")
+
+        total = 0
+        order_list = OrderProduct.objects.filter(order=order)
+
+        for p in order_list:
+            total += (float(p.quantity * p.product_price))
+
+        customerTredyShopCreateOrder(request=request, email=request.user.email, address=pre_order.address.address, order=order, order_list=order_list,
+                                     total=total, grand_total=float(sorgu_durum['payment_total']))
         cart.delete()
         try:
             pre_order.delete()
@@ -561,7 +587,7 @@ def select_address(request, address_id):
         address.is_active = "Evet"
         address.save()
         messages.success(request, 'Adresiniz seçildi. Ödeme işlemine devam edebilirsiniz.')
-        return redirect('cart')
+        return redirect('checkout')
     except:
         messages.warning(request, 'Adresiniz seçilemedi. Tekrar deneyiniz.')
-        return redirect('cart')
+        return redirect('checkout')

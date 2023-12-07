@@ -75,3 +75,29 @@ class HeelSizeResource(resources.ModelResource):
 class SexResource(resources.ModelResource):
     class Meta:
         model = Sex
+
+
+class KadinUstBedenResource(resources.ModelResource):
+    class Meta:
+        model = KadinUstBedenTablosu
+
+
+class KadinUstBuyukBedenResource(resources.ModelResource):
+    class Meta:
+        model = KadinUstBuyukBedenTablosu
+
+class KadinAltBedenResource(resources.ModelResource):
+    class Meta:
+        model = KadinAltBedenTablosu
+
+class KadinAltBuyukBedenResource(resources.ModelResource):
+    class Meta:
+        model = KadinAltBuyukBedenTablosu
+
+class KadinJeanBedenResource(resources.ModelResource):
+    class Meta:
+        model = KadinJeanBedenTablosu
+
+class ProductGroupResource(resources.ModelResource):
+    class Meta:
+        model = ProductModelGroup

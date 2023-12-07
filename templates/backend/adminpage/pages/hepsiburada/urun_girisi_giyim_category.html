@@ -1,0 +1,51 @@
+{% extends 'backend/adminpage/layout.html' %}
+{% load static %}
+
+{% block title %}<title>{{ subcategory.title }} Ürün Girişi</title>{% endblock %}
+
+{% block hepsiburada %}
+
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">{{ subcategory.title }} Ürün Girişi</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'mainpage' %}">Anasayfa</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'hepsiburada_add_product' %}">Ürün Girişi</a></li>
+                        <li class="breadcrumb-item active">{{ subcategory.title }} Ürün Girişi</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                {% for c in categories %}
+                    {% if c.slug == 'davet-kiyafetleri' %}
+                    {% elif c.slug == 'cocuk-ayakkabi' %}
+                    {% elif c.slug == 'taki-ve-aksesuar-urunleri' %}
+                    {% elif c.slug == 'saat-aksesuarlar' %}
+                    {% elif c.slug == 'fantezi-gecelik' %}
+                    {% elif c.slug == 'fantezi-ic-giyim' %}
+                    {% else %}
+                        <div class="col-md-2 col-sm-3 col-6">
+                            <div class="info-box bg-info">
+                                <div class="info-box-content">
+                                    <a href="{% url 'hepsiburada_add_product_giyim_send' c.id %}"
+                                       class="info-box-text text-white">{{ c.title }}</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

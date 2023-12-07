@@ -28,6 +28,8 @@ def index(request):
     banner_two = BannerTwo.objects.all().last()
 
 
+
+
     context.update({
         'sliders': sliders,
         'banner_one':banner_one,
@@ -56,12 +58,12 @@ def ajax_search(request):
     if len(products) > 0:
         data = []
         for r in products:
-            if r.image:
+            if r.image_url1:
                 item = {
                     'id': r.id,
                     'title': r.title,
                     'slug': r.slug,
-                    'image': r.image.url,
+                    'image': r.image_url1,
                     'get_url': r.get_url(),
                 }
                 data.append(item)
@@ -70,7 +72,7 @@ def ajax_search(request):
                     'id': r.id,
                     'title': r.title,
                     'slug': r.slug,
-                    'image': r.image_url,
+                    'image': r.image_url1,
                     'get_url': r.get_url(),
                 }
                 data.append(item)

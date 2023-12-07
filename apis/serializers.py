@@ -25,6 +25,11 @@ class ProductSerializer(serializers.ModelSerializer):
                   'discountprice', 'is_discountprice', 'age_group', 'sextype', 'is_publish', 'slug']
 
 
+class ProductModelGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductModelGroup
+        fields = ['get_product_title','kapak', 'get_product_slug', 'get_product_price', 'get_product_isdiscount', 'get_product_discountprice', 'third_category']
+
 class SecondCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = SubCategory

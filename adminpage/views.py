@@ -1,6 +1,6 @@
 import json
+import os
 from math import ceil
-
 from django.contrib.auth import login as auth_login, authenticate
 from django.contrib.auth.decorators import login_required
 from datetime import datetime, timezone, timedelta
@@ -8,18 +8,20 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from django.template.loader import render_to_string
-from django.views.generic import ListView
-import pytz
-from carts.helpers import paytr_sorgu
-from trendyol.api import TrendyolApiClient
 
+from adminpage.analtycs import initialize_analyticsreporting
+from amazon.models import *
+from carts.helpers import paytr_sorgu
+from hepsiburada.api import HepsiburadaApiClient
+from hepsiburada.models import *
+from hepsiburada.services import HepsiburadaProductIntegrationService
+from trendyol.api import TrendyolApiClient
 from carts.models import CartItem
 from mainpage.models import City, Slider
-from trendyol.models import LogRecords
+from trendyol.models import LogRecords, TrendyolMoreProductOrder
 from trendyol.services import ProductIntegrationService, OrderIntegrationService
-
-from adminpage.custom import exportExcel, exportPdf, readNotification, createNotification, notReadNotification
+from adminpage.custom import exportExcel, exportPdf, readNotification, createNotification, notReadNotification, izinSor, \
+    sendOrderInfoEmail, customerTredyShopDeliveryOrder
 from adminpage.forms import *
 from categorymodel.models import SubCategory, SubBottomCategory, MainCategory
 from customer.models import CustomerAddress, Coupon
@@ -29,7 +31,6 @@ from product.models import Color, ApiProduct, ReviewRating, Favorite, FabricType
     ArmType, CollerType, WeavingType, MaterialType, HeelType, HeelSize, Pocket
 from product.read_xml import modaymissaveXML2db, updateModaymisSaveXML2db, updateTahtakaleSaveXML2db, \
     tahtakaleSaveXML2db, notActiveModaymisProduct
-# Create your views here.
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password, make_password
 import requests
@@ -217,7 +218,7 @@ def slider(request):
         'form': form
     })
 
-    return render(request, 'backend/adminpage/pages/slider.html', context)
+    return render(request, 'backend/adminpage/pages/frontend_sayfalar/slider.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -239,7 +240,7 @@ def slider_detail(request, id):
             messages.success(request, 'Slider güncellendi')
             return redirect("admin_slider")
 
-    return render(request, 'backend/adminpage/pages/slider_update.html', context)
+    return render(request, 'backend/adminpage/pages/frontend_sayfalar/slider_update.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -362,7 +363,6 @@ def kullanici_sil(request, id):
 def kullanici_ekle(request):
     context = {}
 
-
     filter_full_name = request.GET.get('filter_full_name')
     filter_email = request.GET.get('filter_email')
     filter_mobile = request.GET.get('filter_mobile')
@@ -418,10 +418,45 @@ def kullanici_ekle(request):
 
     context.update({
         'users': kullanici,
-        'query':query,
+        'query': query,
     })
 
     return render(request, 'backend/adminpage/pages/kullanici_yonetimi/kullanici_ekle.html', context)
+
+
+@login_required(login_url="/giris-yap")
+def kullanici_izinleri(request, id):
+    context = {}
+
+    user = get_object_or_404(User, id=id)
+
+    izin = izinSor(user_id=id)
+
+    context.update({
+        'user': user,
+        'izin': izin,
+    })
+
+    if izin is None:
+        form = IzinForm(data=request.POST or None, files=request.FILES or None)
+        context.update({'form': form})
+        if 'submit_btn' in request.POST:
+            if form.is_valid():
+                data = form.save(commit=False)
+                data.user = user
+                data.save()
+                messages.success(request, 'İlgili kullanıcının yetkileri başarıyla yapıldı.')
+                return redirect('kullanici_izinleri', id)
+    else:
+        form = IzinForm(instance=izin, data=request.POST or None, files=request.FILES or None)
+        context.update({'form': form})
+        if 'submit_btn' in request.POST:
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'İlgili kullanıcının yetkileri güncellendi.')
+                return redirect('kullanici_izinleri', id)
+
+    return render(request, 'backend/adminpage/pages/kullanici_yonetimi/kullanici_izinleri.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -486,7 +521,7 @@ def admin_aboutus(request):
             messages.success(request, 'Hakkımızda sayfası bilgiler eklendi.')
             return redirect("admin_aboutus")
 
-    return render(request, 'backend/adminpage/pages/aboutus.html', context)
+    return render(request, 'backend/adminpage/pages/frontend_sayfalar/aboutus.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -525,7 +560,7 @@ def page_mainpage(request):
             messages.success(request, '2. Banner düzenlendi.')
             return redirect('page_mainpage')
 
-    return render(request, 'backend/adminpage/pages/page_mainpage.html', context)
+    return render(request, 'backend/adminpage/pages/frontend_sayfalar/page_mainpage.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -546,7 +581,7 @@ def kategoriler_seviye1(request):
             messages.success(request, 'Kategori eklendi.')
             return redirect("kategoriler_seviye1")
 
-    return render(request, 'backend/adminpage/pages/kategoriler_seviye1.html', context)
+    return render(request, 'backend/adminpage/pages/kategori_yonetimi/kategoriler_seviye1.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -565,7 +600,7 @@ def kategoriler_seviye1_guncelle(request, id):
             messages.success(request, 'Kategori güncellendi.')
             return redirect("kategoriler_seviye1_guncelle", id)
 
-    return render(request, 'backend/adminpage/pages/kategoriler_seviye1_guncelle.html', context)
+    return render(request, 'backend/adminpage/pages/kategori_yonetimi/kategoriler_seviye1_guncelle.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -645,7 +680,7 @@ def kategoriler_seviye2(request, slug):
             messages.success(request, 'Kategori başarıyla eklendi.')
             return redirect("kategoriler_seviye2")
 
-    return render(request, 'backend/adminpage/pages/kategoriler_seviye2.html', context)
+    return render(request, 'backend/adminpage/pages/kategori_yonetimi/kategoriler_seviye2.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -664,7 +699,7 @@ def kategoriler_seviye2_guncelle(request, id):
             messages.success(request, 'Kategori güncellendi.')
             return redirect("kategoriler_seviye2_guncelle", id)
 
-    return render(request, 'backend/adminpage/pages/kategoriler_seviye2_guncelle.html', context)
+    return render(request, 'backend/adminpage/pages/kategori_yonetimi/kategoriler_seviye2_guncelle.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -742,7 +777,7 @@ def kategoriler_seviye3(request, main_slug, sub_slug):
             messages.success(request, 'Kategori başarıyla eklendi.')
             return redirect("kategoriler_seviye3", main_slug, sub_slug)
 
-    return render(request, 'backend/adminpage/pages/kategoriler_seviye3.html', context)
+    return render(request, 'backend/adminpage/pages/kategori_yonetimi/kategoriler_seviye3.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -761,7 +796,7 @@ def kategoriler_seviye3_guncelle(request, main_slug, sub_slug, id):
             messages.success(request, 'Kategori güncellendi.')
             return redirect("kategoriler_seviye3_guncelle", main_slug, sub_slug, id)
 
-    return render(request, 'backend/adminpage/pages/kategoriler_seviye3_guncelle.html', context)
+    return render(request, 'backend/adminpage/pages/kategori_yonetimi/kategoriler_seviye3_guncelle.html', context)
 
 
 def kategoriler_seviye3_export_excel(request, slug):
@@ -870,6 +905,12 @@ def products(request):
         else:
             product = ApiProduct.objects.filter(quantity=0)
 
+    if kategori and publish:
+        if kategori == "None":
+            product = ApiProduct.objects.filter(subbottomcategory__isnull=True, is_publish=publish)
+        else:
+            product = ApiProduct.objects.filter(subbottomcategory_id=kategori, is_publish=publish)
+
     paginator = Paginator(product, 50)
     page = request.GET.get('page')
 
@@ -914,7 +955,7 @@ def products(request):
         'desc': desc,
     })
 
-    return render(request, 'backend/adminpage/pages/products.html', context)
+    return render(request, 'backend/adminpage/pages/urun_yonetimi/products.html', context)
 
 
 def clean_filters(filters):
@@ -931,7 +972,10 @@ def product_detail(request, id):
 
     product = ApiProduct.objects.get(id=id)
 
-    form = ProductForm(instance=product, data=request.POST or None, files=request.FILES or None)
+    try:
+        form = ProductForm(instance=product, data=request.POST or None, files=request.FILES or None)
+    except:
+        form = ErrorProductForm(instance=product, data=request.POST or None, files=request.FILES or None)
     variants = ApiProduct.objects.filter(model_code=product.model_code).exclude(id=product.id)
 
     context.update({
@@ -952,7 +996,17 @@ def product_detail(request, id):
             form.save()
             messages.success(request, 'Ürün güncellendi.')
             return redirect('admin_product')
+
     if 'variantUpdateBtn' in request.POST:
+        kapak = request.FILES['kapak']
+        image1 = request.POST.get('fabrictype')
+        image2 = request.POST.get('fabrictype')
+        image3 = request.POST.get('fabrictype')
+        image4 = request.POST.get('fabrictype')
+        image5 = request.POST.get('fabrictype')
+        image6 = request.POST.get('fabrictype')
+        image7 = request.POST.get('fabrictype')
+        image8 = request.POST.get('fabrictype')
         fabrictype = request.POST.get('fabrictype')
         height = request.POST.get('height')
         waist = request.POST.get('waist')
@@ -1020,10 +1074,28 @@ def product_detail(request, id):
                 v.detail = detail
             if description:
                 v.description = description
+            if kapak:
+                v.kapak = kapak
+            if image1:
+                v.image_url1 = image1
+            if image2:
+                v.image_url2 = image2
+            if image3:
+                v.image_url3 = image3
+            if image4:
+                v.image_url4 = image4
+            if image5:
+                v.image_url5 = image5
+            if image6:
+                v.image_url6 = image6
+            if image7:
+                v.image_url7 = image7
+            if image8:
+                v.image_url8 = image8
             v.save()
         messages.success(request, 'Tüm variantlar güncellendi.')
         return redirect('product_detail', id)
-    return render(request, 'backend/adminpage/pages/product_detay.html', context)
+    return render(request, 'backend/adminpage/pages/urun_yonetimi/product_detay.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -1039,7 +1111,7 @@ def kampanyali_urunler(request):
         'navbar_notify_count': navbar_notify_count,
         'products': products,
     })
-    return render(request, 'backend/adminpage/pages/kampanyali_urunler.html', context)
+    return render(request, 'backend/adminpage/pages/urun_yonetimi/kampanyali_urunler.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -1082,7 +1154,126 @@ def urun_ozellik_guncelleme(request):
         kategori()
         messages.success(request, 'Kategori bilgisi güncellendi.')
         return redirect('urun_ozellik_guncelleme')
-    return render(request, 'backend/adminpage/pages/urun_ozellik_guncelleme.html', context)
+    return render(request, 'backend/adminpage/pages/urun_yonetimi/urun_ozellik_guncelleme.html', context)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def beden_tablosu(request):
+    context = {}
+
+    kadin_ust_beden_tablosu = KadinUstBedenTablosu.objects.all()
+    kadin_ust_buyuk_beden_tablosu = KadinUstBuyukBedenTablosu.objects.all()
+    kadin_alt_beden_tablosu = KadinAltBedenTablosu.objects.all()
+    kadin_alt_buyuk_beden_tablosu = KadinAltBuyukBedenTablosu.objects.all()
+    kadin_jean_beden_tablosu = KadinJeanBedenTablosu.objects.all()
+
+    context.update({
+        'kadin_ust_beden_tablosu': kadin_ust_beden_tablosu,
+        'kadin_ust_buyuk_beden_tablosu': kadin_ust_buyuk_beden_tablosu,
+        'kadin_alt_beden_tablosu': kadin_alt_beden_tablosu,
+        'kadin_alt_buyuk_beden_tablosu': kadin_alt_buyuk_beden_tablosu,
+        'kadin_jean_beden_tablosu': kadin_jean_beden_tablosu,
+    })
+
+    if 'add_kadin_ust_beden' in request.POST:
+        kadin_ust_beden_adi = request.POST.get('kadin_ust_beden_adi')
+        kadin_ust_eu_tr = request.POST.get('kadin_ust_eu_tr')
+        kadin_ust_boyun = request.POST.get('kadin_ust_boyun', None)
+        kadin_ust_gogus = request.POST.get('kadin_ust_gogus', None)
+        kadin_ust_bel = request.POST.get('kadin_ust_bel', None)
+
+        KadinUstBedenTablosu.objects.create(beden_adi=kadin_ust_beden_adi, eu_tr=kadin_ust_eu_tr, boyun=kadin_ust_boyun,
+                                            bel=kadin_ust_bel, gogus=kadin_ust_gogus)
+        messages.success(request, 'Kadın üst beden başarıyla eklendi')
+        return redirect('beden_tablosu')
+
+    if 'add_kadin_ust_buyuk_beden' in request.POST:
+        kadin_ust_beden_adi = request.POST.get('kadin_ust_buyuk_beden_adi')
+        kadin_ust_eu_tr = request.POST.get('kadin_ust_buyuk_eu_tr')
+        kadin_ust_boyun = request.POST.get('kadin_ust_buyuk_boyun', None)
+        kadin_ust_gogus = request.POST.get('kadin_ust_buyuk_gogus', None)
+        kadin_ust_bel = request.POST.get('kadin_ust_buyuk_bel', None)
+
+        KadinUstBuyukBedenTablosu.objects.create(beden_adi=kadin_ust_beden_adi, eu_tr=kadin_ust_eu_tr,
+                                                 boyun=kadin_ust_boyun, bel=kadin_ust_bel, gogus=kadin_ust_gogus)
+        messages.success(request, 'Kadın üst büyük beden başarıyla eklendi')
+        return redirect('beden_tablosu')
+
+    if 'add_kadin_alt_beden' in request.POST:
+        kadin_alt_beden_adi = request.POST.get('kadin_alt_beden_adi')
+        kadin_alt_eu_tr = request.POST.get('kadin_alt_eu_tr')
+        kadin_alt_bel = request.POST.get('kadin_alt_bel', None)
+        kadin_alt_basen = request.POST.get('kadin_alt_basen', None)
+
+        KadinAltBedenTablosu.objects.create(beden_adi=kadin_alt_beden_adi, eu_tr=kadin_alt_eu_tr, bel=kadin_alt_bel,
+                                            basen=kadin_alt_basen)
+        messages.success(request, 'Kadın alt beden başarıyla eklendi')
+        return redirect('beden_tablosu')
+
+    if 'add_kadin_alt_buyuk_beden' in request.POST:
+        kadin_alt_buyuk_beden_adi = request.POST.get('kadin_alt_buyuk_beden_adi')
+        kadin_alt_buyuk_eu_tr = request.POST.get('kadin_alt_buyuk_eu_tr')
+        kadin_alt_buyuk_bel = request.POST.get('kadin_alt_buyuk_bel', None)
+        kadin_alt_buyuk_basen = request.POST.get('kadin_alt_buyuk_basen', None)
+
+        KadinAltBuyukBedenTablosu.objects.create(beden_adi=kadin_alt_buyuk_beden_adi, eu_tr=kadin_alt_buyuk_eu_tr,
+                                                 bel=kadin_alt_buyuk_bel,
+                                                 basen=kadin_alt_buyuk_basen)
+        messages.success(request, 'Kadın alt büyük beden başarıyla eklendi')
+        return redirect('beden_tablosu')
+
+    if 'add_kadin_jean_beden' in request.POST:
+        kadin_jean_beden_adi = request.POST.get('kadin_jean_beden_adi')
+        kadin_jean_eu_tr = request.POST.get('kadin_jean_eu_tr')
+        kadin_jean_bel = request.POST.get('kadin_jean_bel', None)
+        kadin_jean_basen = request.POST.get('kadin_jean_basen', None)
+
+        KadinJeanBedenTablosu.objects.create(beden_adi=kadin_jean_beden_adi, eu_tr=kadin_jean_eu_tr, bel=kadin_jean_bel,
+                                             basen=kadin_jean_basen)
+        messages.success(request, 'Kadın jean beden başarıyla eklendi')
+        return redirect('beden_tablosu')
+
+    return render(request, 'backend/adminpage/pages/urun_yonetimi/beden_tablosu.html', context)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def kadin_ust_beden_sil(request, id):
+    kadin_ust_beden = get_object_or_404(KadinUstBedenTablosu, id=id)
+    kadin_ust_beden.delete()
+    messages.success(request, 'Kadın üst beden başarıyla silindi.')
+    return redirect('beden_tablosu')
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def kadin_ust_buyuk_beden_sil(request, id):
+    kadin_ust_beden = get_object_or_404(KadinUstBuyukBedenTablosu, id=id)
+    kadin_ust_beden.delete()
+    messages.success(request, 'Kadın üst büyük beden başarıyla silindi.')
+    return redirect('beden_tablosu')
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def kadin_alt_beden_sil(request, id):
+    kadin_alt_beden = get_object_or_404(KadinAltBedenTablosu, id=id)
+    kadin_alt_beden.delete()
+    messages.success(request, 'Kadın alt beden başarıyla silindi.')
+    return redirect('beden_tablosu')
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def kadin_alt_buyuk_beden_sil(request, id):
+    kadin_alt_beden = get_object_or_404(KadinAltBuyukBedenTablosu, id=id)
+    kadin_alt_beden.delete()
+    messages.success(request, 'Kadın alt büyük beden başarıyla silindi.')
+    return redirect('beden_tablosu')
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def kadin_jean_beden_sil(request, id):
+    kadin_jean_beden = get_object_or_404(KadinJeanBedenTablosu, id=id)
+    kadin_jean_beden.delete()
+    messages.success(request, 'Kadın jean beden başarıyla silindi.')
+    return redirect('beden_tablosu')
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -1129,7 +1320,7 @@ def orders(request):
         'orders': orders,
     })
 
-    return render(request, 'backend/adminpage/pages/orders.html', context)
+    return render(request, 'backend/adminpage/pages/siparis_yonetimi/orders.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -1196,6 +1387,7 @@ def get_trendyol_orders(request):
         packetNumber = r['id']
         orderDate = r['orderDate']
         datetime_obj_with_tz = datetime.utcfromtimestamp(orderDate / 1000)
+
         if TrendyolOrders.objects.filter(packet_number__contains=str(packetNumber)).count() > 0:
             order = TrendyolOrders.objects.get(packet_number=str(packetNumber))
             if len(r['lines']) == 1:
@@ -1219,7 +1411,34 @@ def get_trendyol_orders(request):
                         status = "Kargolandı"
                     else:
                         status = "Kargolandı"
+
                 order.status = status
+                order.save()
+            elif len(r['lines']) > 1:
+                order.shippment_city = r['shipmentAddress']['city']
+                for l in r['lines']:
+                    for product in TrendyolMoreProductOrder.objects.filter(order_number=orderNumber,
+                                                                           packet_number=packetNumber):
+                        orderStatus = l['orderLineItemStatusName']
+                        if orderStatus == 'UnDeliveredAndReturned':
+                            status = "İade Edildi"
+                        elif orderStatus == 'Picking':
+                            status = "Hazırlanıyor"
+                        elif orderStatus == "Deliverd":
+                            status = "Tamamlandı"
+                        elif orderStatus == "Cancelled":
+                            status = "İptal Edildi"
+                            order.commission_price = 0.0
+                            order.delivery_price = 0.0
+                            order.service_price = 3.59
+                        elif orderStatus == "Created" or orderStatus == "ReadyToShip":
+                            status = "Yeni"
+                        elif orderStatus == "Shipped":
+                            status = "Kargolandı"
+                        else:
+                            status = "Kargolandı"
+                        product.status = status
+                        product.save()
                 order.save()
         else:
             if len(r['lines']) == 1:
@@ -1229,7 +1448,6 @@ def get_trendyol_orders(request):
                     sku = l['merchantSku']
                     title = l['productName']
                     barcode = l['barcode']
-
                     try:
                         seller_product = get_object_or_404(ApiProduct, barcode=str(l['barcode']))
                         if seller_product.subcategory == "Üst Giyim":
@@ -1273,17 +1491,92 @@ def get_trendyol_orders(request):
                     else:
                         status = "Kargolandı"
                     discount = l['discount']
-                    unitPrice = l['price']
-                    salesAmount = l['amount']
-                    TrendyolOrders.objects.create(order_number=orderNumber, packet_number=packetNumber,
+                    unitPrice = l['amount']
+                    salesAmount = l['price']
+                    data = TrendyolOrders.objects.create(order_number=orderNumber, packet_number=packetNumber,
                                                   buyer=customerName, quantity=quantity, title=title,
-                                                  barcode=barcode, color=color, size=size, stock_code=sku,
+                                                  barcode=barcode, color=l['productColor'], size=size, stock_code=sku,
                                                   unit_price=unitPrice, sales_amount=salesAmount,
                                                   discount_amount=discount, status=status,
                                                   shippment_city=r['shipmentAddress']['city'],
                                                   order_date=datetime_obj_with_tz, commission_price=komisyon_tutari,
                                                   service_price=trendyol.hizmet_bedeli)
+                    sendOrderInfoEmail(request=request, platform="Trendyol", email="atmacaahmet5261@hotmail.com", order=data)
+            elif len(r['lines']) > 1:
+                for l in r['lines']:
+                    quantity = l['quantity']
+                    size = l['productSize']
+                    sku = l['merchantSku']
+                    title = l['productName']
+                    barcode = l['barcode']
+                    try:
+                        seller_product = get_object_or_404(ApiProduct, barcode=str(l['barcode']))
+                        if seller_product.subcategory == "Üst Giyim":
+                            komisyon_orani = TrendyolCommission.objects.get(kategori_adi="Üst Giyim").komisyon_tutari
+                            komisyon_tutari = l['amount'] * komisyon_orani / 100
+                        elif seller_product.subcategory == "Alt Giyim":
+                            komisyon_orani = TrendyolCommission.objects.get(kategori_adi="Alt Giyim").komisyon_tutari
+                            komisyon_tutari = l['amount'] * komisyon_orani / 100
+                        elif seller_product.subcategory == "Dış Giyim":
+                            komisyon_orani = TrendyolCommission.objects.get(kategori_adi="Dış Giyim").komisyon_tutari
+                            komisyon_tutari = l['amount'] * komisyon_orani / 100
+                        elif seller_product.subcategory == "İç Giyim":
+                            komisyon_orani = TrendyolCommission.objects.get(kategori_adi="İç Giyim").komisyon_tutari
+                            komisyon_tutari = l['amount'] * komisyon_orani / 100
+                        elif seller_product.subcategory == "Ayakkabı":
+                            komisyon_orani = TrendyolCommission.objects.get(kategori_adi="Ayakkabı").komisyon_tutari
+                            komisyon_tutari = l['amount'] * komisyon_orani / 100
+                        elif seller_product.subcategory == "Aksesuar":
+                            komisyon_orani = TrendyolCommission.objects.get(kategori_adi="Çanta").komisyon_tutari
+                            komisyon_tutari = l['amount'] * komisyon_orani / 100
+                        else:
+                            komisyon_orani = TrendyolCommission.objects.get(kategori_adi="Alt Giyim").komisyon_tutari
+                            komisyon_tutari = l['amount'] * komisyon_orani / 100
+                    except:
+                        komisyon_orani = TrendyolCommission.objects.get(kategori_adi="Alt Giyim").komisyon_tutari
+                        komisyon_tutari = l['amount'] * komisyon_orani / 100
 
+                    orderStatus = l['orderLineItemStatusName']
+                    if orderStatus == 'UnDeliveredAndReturned':
+                        status = "İade Edildi"
+                    elif orderStatus == 'Picking':
+                        status = "Hazırlanıyor"
+                    elif orderStatus == "Deliverd":
+                        status = "Tamamlandı"
+                    elif orderStatus == "Cancelled":
+                        status = "İptal Edildi"
+                    elif orderStatus == "Created" or orderStatus == "ReadyToShip":
+                        status = "Yeni"
+                    elif orderStatus == "Shipped":
+                        status = "Kargolandı"
+                    else:
+                        status = "Kargolandı"
+                    discount = l['discount']
+                    unitPrice = l['amount']
+                    salesAmount = l['price']
+                    TrendyolMoreProductOrder.objects.create(order_number=orderNumber, barcode=barcode, title=title, packet_number=packetNumber, color=l['productColor'], quantity=quantity,  size=size, stock_code=sku,
+                                              unit_price=unitPrice, sales_amount=salesAmount,
+                                              discount_amount=discount, status=status)
+                birim_fiyat = 0
+                satis_fiyat = 0
+                indirim = 0
+                miktar = 0
+                for product in TrendyolMoreProductOrder.objects.filter(order_number=orderNumber, packet_number=packetNumber):
+                    birim_fiyat += product.unit_price
+                    satis_fiyat += product.sales_amount
+                    indirim += product.discount_amount
+                    miktar += product.quantity
+
+
+                data = TrendyolOrders.objects.create(order_number=orderNumber, packet_number=packetNumber,
+                                              buyer=customerName, quantity=miktar, title="Birden Fazla Ürün",
+                                              barcode="Birden Fazla Barkod", color="Birden Fazla Ürün", size="Birden Fazla Ürün", stock_code="Birden Fazla STK",
+                                              unit_price=birim_fiyat, sales_amount=satis_fiyat,
+                                              discount_amount=indirim, status="Birden Fazla",
+                                              shippment_city=r['shipmentAddress']['city'],
+                                              order_date=datetime_obj_with_tz, commission_price=komisyon_tutari,
+                                              service_price=trendyol.hizmet_bedeli)
+                sendOrderInfoEmail(request=request, platform="Trendyol", email="atmacaahmet5261@hotmail.com", order=data)
     messages.success(request, "Siparişler getirildi.")
     return redirect('trendyol_orders')
 
@@ -1294,26 +1587,64 @@ def order_detail(request, order_number):
     navbar_notify = readNotification()
     navbar_notify_count = notReadNotification()
 
-    order = Order.objects.get(order_number=order_number)
+    order = get_object_or_404(Order, order_number=order_number)
 
-    form = OrderForm(instance=order, data=request.POST or None, files=request.FILES or None)
     sorgu_durum = paytr_sorgu(order_number=order_number)
+
     context.update({
         'navbar_notify': navbar_notify,
         'navbar_notify_count': navbar_notify_count,
         'order': order,
-        'form': form,
         'sorgu_durum': sorgu_durum
     })
 
-    if 'editOrder' in request.POST:
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Sipariş güncellendi.')
-            return redirect('admin_order_detail', order_number)
+    if 'uploadFaturaBtn' in request.POST:
+        file = request.FILES['bill']
+        order.bill = file
+        order.save()
+        messages.success(request, 'Fatura yüklendi.')
+        return redirect('admin_order_detail', order_number)
+    return render(request, 'backend/adminpage/pages/siparis_yonetimi/order_detail.html', context)
 
-    return render(request, 'backend/adminpage/pages/order_detail.html', context)
+@login_required(login_url="/yonetim/giris-yap/")
+def order_isleme_al(request, order_number):
+    order = get_object_or_404(Order, order_number=order_number)
+    order.status = "Hazırlanıyor"
+    order.save()
+    messages.success(request, 'Sipariş hazırlanma aşamasına geçildi.')
+    return redirect('admin_order_detail', order_number)
 
+@login_required(login_url="/yonetim/giris-yap/")
+def order_kargo_bildir(request, order_number):
+
+    kargo_firmasi = request.POST.get("kargo_firmasi")
+    takip_numarasi = request.POST.get("takip_numarasi")
+    takip_linki = request.POST.get("takip_linki")
+
+    order = get_object_or_404(Order, order_number=order_number)
+    order.delivery_name = kargo_firmasi
+    order.delivery_track = takip_numarasi
+    order.track_link = takip_linki
+    order.status = "Kargolandı"
+    order.save()
+
+    data = "success"
+    return JsonResponse(data=data, safe=False)
+
+@login_required(login_url="/yonetim/giris-yap/")
+def order_mail_gonder(request, order_number):
+
+    order = get_object_or_404(Order, order_number=order_number)
+    total = 0
+    order_list = OrderProduct.objects.filter(order=order)
+
+    for p in order_list:
+        total += (float(p.quantity * p.product_price))
+
+    customerTredyShopDeliveryOrder(request=request, order=order, order_list=order_list, total=total, email=order.user.email, grand_total=order.order_total, address=order.address.address)
+
+    messages.success(request, 'E-Posta gönderildi.')
+    return redirect('admin_order_detail', order_number)
 
 @login_required(login_url="/yonetim/giris-yap/")
 def trendyol_order_detail(request, id):
@@ -1321,25 +1652,59 @@ def trendyol_order_detail(request, id):
     navbar_notify = readNotification()
     navbar_notify_count = notReadNotification()
 
-    order = TrendyolOrders.objects.get(id=id)
+    order = get_object_or_404(TrendyolOrders, id=id)
 
-    form = TrendyolUpdateOrderForm(instance=order, data=request.POST or None, files=request.FILES or None)
+    order_products = TrendyolMoreProductOrder.objects.filter(order_number=order.order_number, packet_number=order.packet_number)
+    harcamalar = Harcamalar.objects.filter(siparis_numarasi=order.order_number)
 
     context.update({
         'navbar_notify': navbar_notify,
         'navbar_notify_count': navbar_notify_count,
         'order': order,
-        'form': form,
+        'order_products':order_products,
+        'harcamalar':harcamalar
     })
 
-    if 'editOrder' in request.POST:
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Sipariş güncellendi.')
-            return redirect('trendyol_order_detail', id)
+    if 'addTrendyolCost' in request.POST:
+        delivery_price = request.POST.get('delivery_price',0.0)
+        commission_price = request.POST.get('commission_price',0.0)
+        service_price = request.POST.get('service_price',0.0)
+
+        order.delivery_price = delivery_price
+        order.commission_price = commission_price
+        order.service_price = service_price
+        order.save()
+        messages.success(request, 'Sipariş güncellendi.')
+        return redirect('trendyol_order_detail', id)
+
+    if 'returnStatusBtn' in request.POST:
+        is_return = request.POST.get('is_return')
+
+        if is_return == None or is_return == "None":
+            order.is_return = False
+        else:
+            order.is_return = True
+            created_at = datetime.now()
+            for harcama in Harcamalar.objects.filter(siparis_numarasi=order.order_number):
+                Harcamalar.objects.create(siparis_numarasi=order.order_number, harcama_adi=harcama.harcama_adi, harcama_tutari=harcama.harcama_tutari, harcama_notu=harcama.harcama_notu, harcama_tipi="Ürün Alımı", durum="İade Yapıldı", created_at=created_at)
+        order.save()
+        messages.success(request, 'Sipariş iade edildi.')
+        return redirect('trendyol_order_detail', id)
 
     return render(request, 'backend/adminpage/pages/trendyol/order_detail.html', context)
 
+@login_required(login_url="/yonetim/giris-yap/")
+def urun_maliyeti_ekle(request):
+    siparis_no = request.POST.get('siparis_no')
+    harcama_adi = request.POST.get('harcama_adi')
+    harcama_tutari = request.POST.get('harcama_tutari')
+    harcama_not = request.POST.get('harcama_not')
+
+    created_at = datetime.now()
+
+    Harcamalar.objects.create(siparis_numarasi=siparis_no, harcama_adi=harcama_adi, harcama_tutari=harcama_tutari, harcama_notu=harcama_not, harcama_tipi="Ürün Alımı", durum="Ödeme Yapıldı", created_at=created_at)
+    data = 'success'
+    return JsonResponse(data=data, safe=False)
 
 @login_required(login_url="/yonetim/giris-yap/")
 def order_delete(request, order_number):
@@ -1374,7 +1739,7 @@ def iptal_talepleri(request):
         'cancellings': cancellings,
     })
 
-    return render(request, 'backend/adminpage/pages/iptal_talepleri.html', context)
+    return render(request, 'backend/adminpage/pages/siparis_yonetimi/iptal_talepleri.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -1394,7 +1759,7 @@ def iade_talepleri(request):
         'extraditions': extraditions,
     })
 
-    return render(request, 'backend/adminpage/pages/iade_talepleri.html', context)
+    return render(request, 'backend/adminpage/pages/siparis_yonetimi/iade_talepleri.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -1428,12 +1793,12 @@ def iade_talepleri_detay(request, order_number, product_id):
         'orderproduct': orderproduct,
     })
 
-    return render(request, 'backend/adminpage/pages/iade_talepleri_detay.html', context)
+    return render(request, 'backend/adminpage/pages/siparis_yonetimi/iade_talepleri_detay.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
 def tahtakale_product(request):
-    return render(request, "backend/adminpage/pages/tahtakale.html")
+    return render(request, "backend/adminpage/pages/xml_yonetimi/tahtakale.html")
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -1469,7 +1834,7 @@ def haydigiy_product(request):
         'navbar_notify_count': navbar_notify_count,
     })
 
-    return render(request, "backend/adminpage/pages/haydigiy.html", context)
+    return render(request, "backend/adminpage/pages/xml_yonetimi/haydigiy.html", context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -1502,7 +1867,7 @@ def haydigiy_find_not_active_product_page(request):
         'navbar_notify_count': navbar_notify_count,
     })
 
-    return render(request, "backend/adminpage/pages/haydigiy_not_active.html", context)
+    return render(request, "backend/adminpage/pages/xml_yonetimi/haydigiy_not_active.html", context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -2685,6 +3050,254 @@ def trendyol_komisyon_secilileri_sil(request):
 
 
 @login_required(login_url="/yonetim/giris-yap/")
+def hepsiburada_hesap_bilgileri(request):
+    context = {}
+    hepsiburada = Hepsiburada.objects.all()
+
+    if hepsiburada.count() > 0:
+        form = HepsiburadaForm(instance=hepsiburada.last(), data=request.POST or None,
+                               files=request.FILES or None)
+        context.update({'form': form})
+        if request.method == "POST":
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Hepsiburada hesap bilgileri başarıyla güncellendi!')
+                return redirect("hepsiburada_hesap_bilgileri")
+    else:
+        form = HepsiburadaForm(data=request.POST, files=request.FILES)
+        context.update({'form': form})
+        if request.method == "POST":
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Hepsiburada hesap bilgileri başarıyla eklendi!')
+                return redirect("hepsiburada_hesap_bilgileri")
+
+    return render(request, 'backend/adminpage/pages/hepsiburada/hepsiburada.html', context)
+
+
+def hepsiburadaCategory(category_title):
+    hepsiburada_category = None
+
+    hepsiburada = Hepsiburada.objects.all().last()
+    api = HepsiburadaApiClient(username=hepsiburada.username, password=hepsiburada.password,
+                               mercant_id=hepsiburada.merchantID)
+    service = HepsiburadaProductIntegrationService(api)
+    max = service.get_categories(page=0)
+    max_page = max['totalPages']
+
+    i = 0
+    while (i <= max_page):
+        response = service.get_categories(page=i)
+        for r in response['data']:
+            if category_title.lower() == str(r['displayName']).lower():
+                hepsiburada_category = r['categoryId']
+                break
+        i += 1
+
+    return hepsiburada_category
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def hepsiburada_add_product(request):
+    return render(request, 'backend/adminpage/pages/hepsiburada/urun_girisi.html')
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def hepsiburada_add_product_giyim(request):
+    return render(request, 'backend/adminpage/pages/hepsiburada/urun_girisi_giyim.html')
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def hepsiburada_add_product_giyim_category(request, category_no):
+    context = {}
+    subcategory = SubCategory.objects.get(category_no=category_no)
+    categories = SubBottomCategory.objects.filter(subcategory__category_no=category_no)
+    context.update({'categories': categories, 'subcategory': subcategory})
+    return render(request, 'backend/adminpage/pages/hepsiburada/urun_girisi_giyim_category.html', context)
+
+
+def hepsiburadaProductData(categoryId, merchant, merchantSku, VaryantGroupID, barcode, title, detail, brand, price,
+                           quantity, image1, image2, image3, image4, image5, color, size):
+    data = {
+        "categoryId": categoryId,
+        "merchant": str(merchant),
+        "attributes": {
+            "merchantSku": merchantSku,
+            "VaryantGroupID": str(VaryantGroupID),
+            "Barcode": barcode,
+            "UrunAdi": title,
+            "UrunAciklamasi": detail,
+            "Marka": brand,
+            "GarantiSuresi": 0,
+            "kg": "1",
+            "tax_vat_rate": "10",
+            "price": price,
+            "stock": str(quantity),
+            "Image1": image1,
+            "Image2": image2,
+            "Image3": image3,
+            "Image4": image4,
+            "Image5": image5,
+            "Video1": "",
+            "renk_variant_property": str(color),
+            "ebatlar_variant_property": str(size)
+        }
+    }
+
+    return data
+
+
+def hepsiburadaUpdateProductData(categoryId, merchant, merchantSku, VaryantGroupID, barcode, title, detail, brand,
+                                 price, quantity, image1, image2, image3, image4, image5, color, size):
+    data = {
+        "categoryId": categoryId,
+        "merchant": str(merchant),
+        "attributes": {
+            "merchantSku": merchantSku,
+            "VaryantGroupID": str(VaryantGroupID),
+            "Barcode": barcode,
+            "UrunAdi": title,
+            "UrunAciklamasi": detail,
+            "Marka": brand,
+            "GarantiSuresi": 0,
+            "kg": "1",
+            "tax_vat_rate": "10",
+            "price": price,
+            "stock": str(quantity),
+            "Image1": image1,
+            "Image2": image2,
+            "Image3": image3,
+            "Image4": image4,
+            "Image5": image5,
+            "Video1": "",
+            "renk_variant_property": str(color),
+            "ebatlar_variant_property": str(size)
+        }
+    }
+
+    return data
+
+
+def hepsiburadaUpdateData(barcode, quantity, list_price, sale_price):
+    data = {
+        "barcode": str(barcode),
+        "quantity": int(quantity),
+        "listPrice": float(list_price),
+        "salePrice": float(sale_price)
+    }
+
+    return data
+
+
+def hepsiburadaDeleteData(products):
+    data = []
+
+    for p in products:
+        data.append(
+            {
+                "barcode": str(p.barcode)
+            }
+        )
+
+    return data
+
+
+def hepsiburadaCallingProduct(category, title):
+    products = ApiProduct.objects.filter(subbottomcategory=category, title__icontains=title, is_publish=True,
+                                         is_publish_trendyol=False)
+    return products
+
+
+def hepsiburadaUpdateCallingProduct(category, title):
+    products = ApiProduct.objects.filter(subbottomcategory=category, title__icontains=title, is_publish=True,
+                                         is_publish_trendyol=True)
+    return products
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def hepsiburada_add_product_giyim_send(request, id):
+    context = {}
+    hepsiburada = Hepsiburada.objects.all().last()
+    category = SubBottomCategory.objects.get(id=id)
+
+    context.update({'category': category, 'log_record': ""})
+    product_data = []
+    items = []
+
+    hepsiburada_category = None
+
+    if 'sendHepsiburada' in request.POST:
+
+        module_dir = os.path.dirname(__file__)
+        file_path = os.path.join(module_dir, 'integrator.json')
+        os.remove(file_path)
+
+        category_title = request.POST.get('category_title')
+        product_title = request.POST.get('product_title')
+
+        if category_title == "Triko":
+            category_title = "Atlet"
+
+        hepsiburada_category = hepsiburadaCategory(category_title)
+
+        ##Calling Product
+        products = hepsiburadaCallingProduct(category, product_title)
+
+        if hepsiburada_category:
+            for p in products:
+                title = p.title
+                detail = p.detail
+                if detail == '' or detail == None:
+                    detail = title
+                images = []
+                if p.image_url1:
+                    images.append({'url': p.image_url1})
+                if p.image_url2:
+                    images.append({'url': p.image_url2})
+                if p.image_url3:
+                    images.append({'url': p.image_url3})
+                if p.image_url4:
+                    images.append({'url': p.image_url4})
+                if p.image_url5:
+                    images.append({'url': p.image_url5})
+
+                items.append(hepsiburadaProductData(categoryId=hepsiburada_category, merchant=hepsiburada.merchantID, merchantSku=p.stock_code.upper(), VaryantGroupID=p.model_code, barcode=p.barcode, title=title, detail=detail, brand=p.brand.title, price=float(p.price),
+                           quantity=p.quantity, image1=p.image_url1, image2=p.image_url2, image3=p.image_url3, image4=p.image_url4, image5=p.image_url5, color=p.color, size=p.size))
+
+                product_data = items
+                p.hepsiburada_category_id = int(hepsiburada_category)
+                p.save()
+
+        module_dir = os.path.dirname(__file__)
+        file_path = os.path.join(module_dir, 'integrator.json')
+        with open(file_path , 'w', encoding='utf8') as out_file:
+            json.dump(product_data, out_file, sort_keys=True, indent=4,
+                      ensure_ascii=False)
+
+        files = {"file": ("integrator.json", open(file_path, "rb"), "application/json")}
+
+        headers = {
+            "accept": "application/json",
+            "authorization": "Basic dHJlZHlzaG9wX2RldjpIYjEyMzQ1IQ=="
+        }
+
+        url = "https://mpop-sit.hepsiburada.com/product/api/products/import"
+
+        response = requests.post(url, files=files, headers=headers)
+
+        #api = HepsiburadaApiClient(username=hepsiburada.username, password=hepsiburada.password,
+        #                           mercant_id=hepsiburada.merchantID)
+        #service = HepsiburadaProductIntegrationService(api)
+        #response = service.create_products(files=files)
+        print(response.text)
+
+        # messages.success(request, f"{response}")
+        # log_record = LogRecords.objects.create(log_type="1", batch_id=str(response['batchRequestId']))
+        return redirect('hepsiburada_add_product_giyim_send', id)
+    return render(request, 'backend/adminpage/pages/hepsiburada/urun_girisi_giyim_send_hepsiburada.html', context)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
 def kesilen_fatura_ekle(request):
     context = {}
     form = IssuedInvoicesAddForm(data=request.POST, files=request.FILES)
@@ -2700,7 +3313,7 @@ def kesilen_fatura_ekle(request):
             fatura.save()
             messages.success(request, 'Fatura başarıyla eklendi!')
             return redirect("kesilen_fatura_ekle")
-    return render(request, 'backend/adminpage/pages/kesilen_fatura_ekle.html', context)
+    return render(request, 'backend/adminpage/pages/finans_yonetimi/kesilen_fatura_ekle.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -2754,7 +3367,7 @@ def kesilen_faturalar(request):
         'faturalar': fatura,
         'query': query,
     })
-    return render(request, 'backend/adminpage/pages/kesilen_faturalar.html', context)
+    return render(request, 'backend/adminpage/pages/finans_yonetimi/kesilen_faturalar.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -2774,7 +3387,7 @@ def update_kesilen_fatura(request, id):
         'fatura': fatura,
         'form': form
     })
-    return render(request, 'backend/adminpage/pages/kesilen_fatura_guncelle.html', context)
+    return render(request, 'backend/adminpage/pages/finans_yonetimi/kesilen_fatura_guncelle.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -2811,7 +3424,7 @@ def alinan_fatura_ekle(request):
             fatura.save()
             messages.success(request, 'Fatura başarıyla eklendi!')
             return redirect("alinan_fatura_ekle")
-    return render(request, 'backend/adminpage/pages/alinan_fatura_ekle.html', context)
+    return render(request, 'backend/adminpage/pages/finans_yonetimi/alinan_fatura_ekle.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -2852,7 +3465,7 @@ def alinan_faturalar(request):
         'faturalar': fatura,
         'query': query,
     })
-    return render(request, 'backend/adminpage/pages/alinan_faturalar.html', context)
+    return render(request, 'backend/adminpage/pages/finans_yonetimi/alinan_faturalar.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -2872,7 +3485,7 @@ def update_alinan_fatura(request, id):
         'fatura': fatura,
         'form': form
     })
-    return render(request, 'backend/adminpage/pages/alinan_fatura_guncelle.html', context)
+    return render(request, 'backend/adminpage/pages/finans_yonetimi/alinan_fatura_guncelle.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -2965,7 +3578,7 @@ def harcamalar(request):
         'iade_tutari': iade_tutari,
     })
 
-    return render(request, 'backend/adminpage/pages/harcamalar.html', context)
+    return render(request, 'backend/adminpage/pages/finans_yonetimi/harcamalar.html', context)
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -2985,7 +3598,7 @@ def harcama_detay(request, id):
         'harcama': harcama,
         'form': form,
     })
-    return render(request, 'backend/adminpage/pages/harcamalar_guncelle.html', context)
+    return render(request, 'backend/adminpage/pages/finans_yonetimi/harcamalar_guncelle.html', context)
 
 
 def harcamalar_export_excel(request):
@@ -3086,8 +3699,16 @@ def satislar_api(request):
     for y in yearly_order_list:
         yearly_order_total += y
 
-    gunluk_degisim = ((daily_order_total * 100) / onceki_gun_satis) - 100
-    aylik_degisim = ((mountly_order_total * 100) / onceki_ay_satis) - 100
+    if onceki_gun_satis == 0:
+        gunluk_degisim = ((daily_order_total * 100) / 1) - 100
+    else:
+        gunluk_degisim = ((daily_order_total * 100) / onceki_gun_satis) - 100
+
+    if onceki_ay_satis == 0:
+        aylik_degisim = ((mountly_order_total * 100) / 1) - 100
+    else:
+        aylik_degisim = ((mountly_order_total * 100) / onceki_ay_satis) - 100
+
     if onceki_yil_satis == 0:
         yillik_degisim = 0
     else:
@@ -3241,7 +3862,6 @@ def yedi_gunluk_kar(request):
     k = 0
     kar_list = []
     while k < 7:
-
         kar_list.append((ilgili_gun_satislar_list[k] - ilgili_gun_kesintiler_list[k] - ilgili_gun_harcamalar_list[k] -
                          ilgili_gun_iadeler_list[k] + ilgili_gun_iade_harcamalar_list[k]))
         k += 1
@@ -3331,3 +3951,35 @@ def ajax_search(request):
     else:
         res = "Herhangi bir kayıt bulunamadı!"
     return JsonResponse({'data': res})
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def pazaryerleri_istatistikler(request):
+    tredyshop_siparis_sayisi = Order.objects.all().exclude(status="İptal Edildi").count()
+    trendyol_siparis_sayisi = TrendyolOrders.objects.all().exclude(status="İptal Edildi").count()
+    hepsiburada_siparis_sayisi = HepsiburadaSiparisler.objects.all().exclude(status="İptal Edildi").count()
+    amazon_siparis_sayisi = AmazonSiparisler.objects.all().exclude(status="İptal Edildi").count()
+
+    data = [tredyshop_siparis_sayisi, trendyol_siparis_sayisi, hepsiburada_siparis_sayisi, amazon_siparis_sayisi]
+
+    return JsonResponse(data=data, safe=False)
+
+
+@login_required(login_url="/yonetim/giris-yap/")
+def email_pazarlama(request):
+    context = {}
+    tum_kullanicilar = User.objects.all()
+
+    p = Paginator(tum_kullanicilar, 50)
+    page = request.GET.get('page')
+    kullanicilar = p.get_page(page)
+
+    context.update({
+        'kullanicilar':kullanicilar
+    })
+
+    if 'single_send_mail' in request.POST:
+        email = request.POST.get('single_email')
+
+
+    return render(request, 'backend/adminpage/pages/pazarlama_yonetimi/email_pazarlama.html', context)

@@ -29,8 +29,9 @@
                                                             <a href="{% url 'delete_wishlist' p.id %}"
                                                                class="btn-del"><i
                                                                     class="ion-ios-close-empty"></i></a>
+                                                            <input type="hidden" value="{{ p.id }}">
                                                             <div class="product-img">
-                                                                <img src="{{ p.product.get_image }}" alt="Futurelife">
+                                                                <img src="{{ p.product.image_url1 }}" alt="Futurelife">
                                                             </div>
                                                             <div class="product-info">
                                                                 <a href="{{ p.product.get_url }}"
@@ -40,29 +41,80 @@
 
 
                                                         <td class="total-price">
-                                                            <p class="price">
+                                                            <div class="price">
                                                                 {% if p.product.is_discountprice == True %}
-                                                                    <span>{% if p.product.is_discountprice == True %}
-                                                                        <span style="text-decoration-line: line-through;color: red; font-size: 1.3rem">{{ p.product.price }} TL</span>
-                                                                        &nbsp;
-                                                                        <span>{{ p.product.discountprice }} TL</span> {% else %}
-                                                                        {{ p.product.price }} TL{% endif %}</span>
+                                                                    <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                                                                        {% if p.product.is_discountprice == True %}
+                                                                            <span style="text-decoration-line: line-through;color: red; font-size: 1.3rem">{{ p.product.price }} TL</span>
+                                                                            <span>{{ p.product.discountprice }} TL</span> {% else %}
+                                                                            {{ p.product.price }} TL{% endif %}
+                                                                    </div>
+                                                                {% else %}
+                                                                    <span>{{ p.product.price }} TL</span>
                                                                 {% endif %}
-                                                            </p>
+                                                            </div>
                                                         </td>
                                                         <td class="w-status">
                                                             <p>
-                                                                {% if p.product.amount == 0 %}
+                                                                {% if p.product.is_publish == False %}
                                                                     Stokta Yok
-                                                                {% else %}
-                                                                    Stokta
+                                                                {% elif p.product.is_publish == True %}
+                                                                    {% if p.product.quantity == 0 %}
+                                                                        Stokta Yok
+                                                                    {% else %}
+                                                                        Stokta
+                                                                    {% endif %}
                                                                 {% endif %}
                                                             </p>
                                                         </td>
                                                         <td class="w-button">
-                                                            <a class="btn-addcart btn-gradient">Sepete Ekle</a>
+                                                            {% if p.product.is_publish == False %}
+
+                                                            {% elif p.product.is_publish == True %}
+                                                                {% if p.product.quantity == 0 %}{% else %}
+                                                                    <a href="#"
+                                                                       class="btn-addcart btn-gradient"
+                                                                       id="addingCard-{{ p.id }}">Sepete Ekle</a>
+                                                                    <span id="waitingCard-{{ p.id }}"
+                                                                          class="btn-addcart btn-success"
+                                                                          style="display: none; justify-content: space-evenly; align-items: center; flex-direction: row;"><i
+                                                                            class="fa-solid fa-check"></i> Sepete Eklendi</span>
+                                                                {% endif %}
+                                                            {% endif %}
                                                         </td>
                                                     </tr>
+
+                                                    <script>
+                                                        $("#addingCard-{{ p.id }}").click(function (e) {
+                                                            e.preventDefault()
+                                                            $.ajax({
+                                                                url: `/urun_ekle/{{ p.product.id }}`,
+                                                                type: 'GET',
+                                                                data: {
+                                                                    'product_id': {{ p.product.id }},
+                                                                    'quantity': 1,
+                                                                },
+                                                                beforeSend: function () {
+                                                                    $("#addingCard-{{ p.id }}").hide()
+                                                                }, success: function (data) {
+                                                                    $("#waitingCard-{{ p.id }}").css("display", "flex")
+                                                                    $("#addingCard-{{ p.id }}").hide()
+
+                                                                    setTimeout(function () {
+                                                                        $.ajax({
+                                                                            url: `{% url 'deleted_favourite' p.product.id %}`,
+                                                                            type: 'GET',
+                                                                            success: function (data) {
+                                                                                window.location.reload();
+                                                                            }
+                                                                        });
+                                                                    }, 2000);
+
+                                                                }
+                                                            })
+                                                        })
+                                                    </script>
+
                                                 {% empty %}
                                                     <div class="d-block">
                                                         <div class="placeholder-message">
@@ -89,14 +141,15 @@
                                                                 eklememişsiniz.
                                                             </p>
                                                             <p>
-                                                                İstek listenize bir ürün eklemek ürün açıklama sayfasında bulunan
+                                                                İstek listenize bir ürün eklemek ürün açıklama
+                                                                sayfasında bulunan
                                                                 <span
-                                                                    class="inline-icon"><svg
-                                                                    xmlns="https://www.w3.org/2000/svg" width="24"
-                                                                    height="24" viewBox="0 0 24 24" fill="none"
-                                                                    stroke="currentColor" stroke-width="2"
-                                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                                    class="feather feather-heart">
+                                                                        class="inline-icon"><svg
+                                                                        xmlns="https://www.w3.org/2000/svg" width="24"
+                                                                        height="24" viewBox="0 0 24 24" fill="none"
+                                                                        stroke="currentColor" stroke-width="2"
+                                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                                        class="feather feather-heart">
                                                             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                                                         </svg></span> butonuna tıklayınız.
                                                             </p>

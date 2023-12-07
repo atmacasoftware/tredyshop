@@ -26,4 +26,5 @@ class TrendyolCommissionAdmin(ImportExportModelAdmin):
 admin.site.register(LogRecords, LogRecordAdmin)
 admin.site.register(TrendyolOrders, TrendyolOrderAdmin)
 admin.site.register(TrendyolCommission, TrendyolCommissionAdmin)
+admin.site.register(TrendyolMoreProductOrder)
 

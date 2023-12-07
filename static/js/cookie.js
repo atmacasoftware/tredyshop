@@ -1,122 +1,68 @@
-const cookieBox = document.querySelector(".cookie-wrapper");
-const acceptBtn = document.getElementById("cookieAcceptBtn");
-const declineBtn = document.getElementById("cookieDeclineBtn");
-const settingBtn = document.getElementById("cookieSettingBtn");
-const cookieWrapper = document.getElementById("cookieWrapper");
-const cookieModal = document.getElementById("cookie-modal");
-const functionalityCheck = document.getElementById("functionalityCheck");
-const marketingCheck = document.getElementById("marketingCheck");
-const performanceCheck = document.getElementById("performanceCheck");
-const settingAcceptBtn = document.getElementById("settingAcceptBtn");
-const modelClose = document.querySelector(".close-btn");
-var isfunctionalityCheck = false
-var ismarketingCheck = false
-var isperformanceCheck = false
+var purecookieTitle = "Çerez Politakası";
+var purecookieDesc = "Daha üstün, daha verimli ve daha iyi bir alışveriş deneyimi yaşamanıza yardımcı\n" +
+    "            olmak amacıyla yasal düzenlemelere uygun bazı çerezler (cookie) kullanılmaktadır. ";
+var purecookieLink = '<a href="https://tredyshop.com/cerez-politikasi" target="_blank">Daha detaylı bilgi</a>';
+var purecookieButton = "Anladım";
 
-settingBtn.addEventListener('click', function () {
-    cookieWrapper.style.display = "block";
-    cookieWrapper.classList.add("open");
-    cookieModal.classList.add("show");
-});
+function pureFadeIn(elem, display){
+  var el = document.getElementById(elem);
+  el.style.opacity = 0;
+  el.style.display = display || "block";
 
+  (function fade() {
+    var val = parseFloat(el.style.opacity);
+    if (!((val += .02) > 1)) {
+      el.style.opacity = val;
+      requestAnimationFrame(fade);
+    }
+  })();
+};
+function pureFadeOut(elem){""
+  var el = document.getElementById(elem);
+  el.style.opacity = 1;
 
-modelClose.addEventListener("click", function () {
-    cookieWrapper.classList.remove("open");
-    cookieModal.classList.remove("show");
-})
+  (function fade() {
+    if ((el.style.opacity -= .02) < 0) {
+      el.style.display = "none";
+    } else {
+      requestAnimationFrame(fade);
+    }
+  })();
+};
 
-if (document.cookie.includes("tredyShop")) {
-    cookieBox.classList.add('hide');
+function setCookie(name,value,days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+function eraseCookie(name) {
+    document.cookie = name+'=; Max-Age=-99999999;';
 }
 
-
-//İşlevsellik Çerezleri
-if (document.cookie.includes("functionalityCheck")) {
-    functionalityCheck.setAttribute("checked", "checked")
-}
-functionalityCheck.addEventListener('change', function () {
-    isfunctionalityCheck = $(this).is(':checked')
-    if (isfunctionalityCheck == true) {
-        document.cookie = "functionalityCheck=True"
-    }
-    if (isfunctionalityCheck == false) {
-        document.cookie = "functionalityCheck=True;expires=sat 1 jan 2000 12:00:00 UTC"
-    }
-
-})
-
-
-//Hedefleme/Pazarlama Çerezleri
-if (document.cookie.includes("marketingCheck")) {
-    marketingCheck.setAttribute("checked", "checked")
-}
-marketingCheck.addEventListener('change', function () {
-    ismarketingCheck = $(this).is(':checked')
-
-    if (ismarketingCheck == true) {
-        document.cookie = "marketingCheck=True"
-    }
-    if (ismarketingCheck == false) {
-        document.cookie = "marketingCheck=True;expires=sat 1 jan 2000 12:00:00 UTC"
-    }
-})
-
-
-//Performans Çerezleri
-if (document.cookie.includes("performanceCheck")) {
-    performanceCheck.setAttribute("checked", "checked")
+function cookieConsent() {
+  if (!getCookie('purecookieDismiss')) {
+    document.body.innerHTML += '<div class="cookieConsentContainer" id="cookieConsentContainer"><div class="cookieTitle"><a>' + purecookieTitle + '</a></div><div class="cookieDesc"><p>' + purecookieDesc + ' ' + purecookieLink + '</p></div><div class="cookieButton"><a onClick="purecookieDismiss();">' + purecookieButton + '</a></div></div>';
+	pureFadeIn("cookieConsentContainer");
+  }
 }
 
-
-if (document.cookie.includes("performanceCheck") == false) {
-    Cookies.remove('_ga_7WERTPZR5T', {path: ''})
-    Cookies.remove('_ga', {path: ''})
-    Cookies.remove('_ga_TJV44SP27Y', {path: ''})
+function purecookieDismiss() {
+  setCookie('purecookieDismiss','1',7);
+  pureFadeOut("cookieConsentContainer");
 }
 
-
-performanceCheck.addEventListener('change', function () {
-    isperformanceCheck = $(this).is(':checked')
-
-    if (isperformanceCheck == true) {
-        document.cookie = "performanceCheck=True"
-    }
-    if (isperformanceCheck == false) {
-        document.cookie = "performanceCheck=True;expires=sat 1 jan 2000 12:00:00 UTC"
-    }
-})
-
-
-if (document.cookie.includes("performanceCheck") && document.cookie.includes("marketingCheck") && document.cookie.includes("functionalityCheck")) {
-    cookieBox.classList.add('hide');
-}
-
-acceptBtn.addEventListener('click', function () {
-    document.cookie = "cookieBy= tredyShop; max-age=" + 60 * 60 * 24 * 30;
-    document.cookie = "performanceCheck=True"
-    document.cookie = "marketingCheck=True"
-    document.cookie = "functionalityCheck=True"
-    cookieBox.classList.add('hide');
-    location.reload();
-});
-
-
-declineBtn.addEventListener('click', function () {
-    document.cookie = "cookieBy= tredyShop;expires=sat 1 jan 2000 12:00:00 UTC";
-    document.cookie = "deneme= deneme;expires=sat 1 jan 2000 12:00:00 UTC";
-    document.cookie = "performanceCheck=True;expires=sat 1 jan 2000 12:00:00 UTC"
-    document.cookie = "marketingCheck=True;expires=sat 1 jan 2000 12:00:00 UTC"
-    document.cookie = "functionalityCheck=True;expires=sat 1 jan 2000 12:00:00 UTC"
-    Cookies.remove('_ga_7WERTPZR5T', {path: ''})
-    Cookies.remove('_ga', {path: ''})
-    Cookies.remove('_ga_TJV44SP27Y', {path: ''})
-    location.reload();
-});
-
-
-settingAcceptBtn.addEventListener('click', function (){
-   location.reload();
-});
-
-
-
+window.onload = function() { cookieConsent(); };

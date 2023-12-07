@@ -59,17 +59,17 @@ $(document).ready(function () {
                     <div class="product-countd pd-bd product-inner">
                     <div class="product-item-countd">
                         <div class="product-head product-img">
-                            <a href="/urun/${item.slug}"><img src="${item.image_url1}" alt=""
+                            <a href="/urun/${item.get_product_slug}"><img src="${item.kapak}" alt="Product"
                                                            class="flash-deals-image"></a>
-                            <div class="ribbon-price v3 red"><span>- ${parseInt(100 - ((parseFloat(item.discountprice) * 100) / parseFloat(item.price)))}% </span></div>
+                            <div class="ribbon-price v3 red"><span>- ${parseInt(100 - ((parseFloat(item.get_product_discountprice) * 100) / parseFloat(item.get_product_price)))}% </span></div>
                         </div>
                         <div class="product-info">
-                            <p class="product-cate text-center">${item.subcategory}</p>
+                            <p class="product-cate text-center">${item.third_category}</p>
                             <div class="product-price thin-price v3">
-                                <span class="red">${item.discountprice} TL</span>
-                                <span class="old">${item.price}</span>
+                                <span class="red">${item.get_product_discountprice} TL</span>
+                                <span class="old">${item.get_product_price}</span>
                             </div>
-                            <h3 class="product-title text-center v2"><a href="{{ p.get_url }}">${item.title}</a></h3>
+                            <h3 class="product-title text-center v2"><a href="/urun/${item.get_product_slug}">${item.get_product_title}</a></h3>
 
                         </div>
                     </div>
@@ -80,7 +80,7 @@ $(document).ready(function () {
             $('.js-owl-cate2').owlCarousel({
                 margin: 30,
                 autoplay: false,
-                autoplayTimeout: 3000,
+                autoplayTimeout: 10000,
                 loop: true,
                 dots: true,
                 nav: false,
@@ -123,10 +123,10 @@ $(document).ready(function () {
                     <div class="product-item">
                 <div class="pd-bd product-inner">
                     <div class="product-img">
-                        <a href="/urun/${item.slug}"
+                        <a href="/urun/${item.get_product_slug}"
                            style="display: flex; justify-content: center; align-items: center;"><img
-                                src="${item.image_url1}"
-                                alt="" class="img-reponsive" style="height: 200px; width: auto;"></a>
+                                src="${item.kapak}"
+                                alt="Product" class="img-reponsive" style="height: 200px; width: auto;"></a>
 
                     </div>
                     <div class="product-info">
@@ -135,18 +135,18 @@ $(document).ready(function () {
                         <div class="element-list element-list-left">
                         </div>
                         <div class="element-list element-list-middle">
-                            <p class="product-cate">${item.subcategory}</p>
-                            <h3 class="product-title"><a href="/urun/${item.slug}">${item.title}</a>
+                            <p class="product-cate">${item.third_category}</p>
+                            <h3 class="product-title"><a href="/urun/${item.get_product_slug}">${item.get_product_title}</a>
                             </h3>
                             <div class="product-bottom">
                                 <div class="product-price">
-                                    <span>${item.is_discountprice == false ? item.price : item.discountprice} TL</span>
+                                    <span>${item.get_product_isdiscount == false ? item.get_product_price : item.get_product_discountprice} TL</span>
                                 </div>
                             </div>
                         </div>
                         <div class="product-button-group"
                              style="display: flex; justify-content: center;align-items: center;">
-                            <a href="/urun/${item.slug}" class="btn btn-gradient">Ürünü Gör
+                            <a href="/urun/${item.get_product_slug}" class="btn btn-gradient">Ürünü Gör
                             </a>
                         </div>
                     </div>
@@ -158,7 +158,7 @@ $(document).ready(function () {
             $('.js-owl-product').owlCarousel({
                 margin: 10,
                 autoplay: true,
-                autoplayTimeout: 3000,
+                autoplayTimeout: 10000,
                 loop: true,
                 dots: false,
                 nav: true,
@@ -191,6 +191,7 @@ $(document).ready(function () {
         success: function (res) {
             $(".top_wear_skeleton").hide()
             var data = res.data
+
             $(".js-owl-product-top-wear").html('')
             data.forEach(function (item, index) {
                 $(".js-owl-product-top-wear").append(
@@ -198,10 +199,10 @@ $(document).ready(function () {
                     <div class="product-item">
                 <div class="pd-bd product-inner">
                     <div class="product-img">
-                        <a href="/urun/${item.slug}"
+                        <a href="/urun/${item.get_product_slug}"
                            style="display: flex; justify-content: center; align-items: center;"><img
-                                src="${item.image_url1}"
-                                alt="" class="img-reponsive" style="height: 200px; width: auto;"></a>
+                                src="${item.kapak}"
+                                alt="Product" class="img-reponsive" style="height: 200px; width: auto;"></a>
 
                     </div>
                     <div class="product-info">
@@ -210,18 +211,18 @@ $(document).ready(function () {
                         <div class="element-list element-list-left">
                         </div>
                         <div class="element-list element-list-middle">
-                            <p class="product-cate">${item.subcategory}</p>
-                            <h3 class="product-title"><a href="/urun/${item.slug}">${item.title}</a>
+                            <p class="product-cate">${item.third_category}</p>
+                            <h3 class="product-title"><a href="/urun/${item.get_product_slug}">${item.get_product_title}</a>
                             </h3>
                             <div class="product-bottom">
                                 <div class="product-price">
-                                    <span>${item.is_discountprice == false ? item.price : item.discountprice} TL</span>
+                                    <span>${item.get_product_isdiscount == false ? item.get_product_price : item.get_product_discountprice} TL</span>
                                 </div>
                             </div>
                         </div>
                         <div class="product-button-group"
                              style="display: flex; justify-content: center;align-items: center;">
-                            <a href="/urun/${item.slug}" class="btn btn-gradient">Ürünü Gör
+                            <a href="/urun/${item.get_product_slug}" class="btn btn-gradient">Ürünü Gör
                             </a>
                         </div>
                     </div>
@@ -233,7 +234,7 @@ $(document).ready(function () {
             $('.js-owl-product-top-wear').owlCarousel({
                 margin: 10,
                 autoplay: true,
-                autoplayTimeout: 3000,
+                autoplayTimeout: 10000,
                 loop: true,
                 dots: false,
                 nav: true,
@@ -254,6 +255,8 @@ $(document).ready(function () {
                 }
             });
 
+        },error: function (e){
+            console.log(e)
         }
     });
 
@@ -266,6 +269,7 @@ $(document).ready(function () {
         success: function (res) {
             $(".bottom_wear_skeleton").hide()
             var data = res.data
+            console.log(data)
             $(".js-owl-product-bottom-wear").html('')
             data.forEach(function (item, index) {
                 $(".js-owl-product-bottom-wear").append(
@@ -273,10 +277,10 @@ $(document).ready(function () {
                     <div class="product-item">
                 <div class="pd-bd product-inner">
                     <div class="product-img">
-                        <a href="/urun/${item.slug}"
+                        <a href="/urun/${item.get_product_slug}"
                            style="display: flex; justify-content: center; align-items: center;"><img
-                                src="${item.image_url1}"
-                                alt="" class="img-reponsive" style="height: 200px; width: auto;"></a>
+                                src="${item.kapak}"
+                                alt="Product" class="img-reponsive" style="height: 200px; width: auto;"></a>
 
                     </div>
                     <div class="product-info">
@@ -285,18 +289,18 @@ $(document).ready(function () {
                         <div class="element-list element-list-left">
                         </div>
                         <div class="element-list element-list-middle">
-                            <p class="product-cate">${item.subcategory}</p>
-                            <h3 class="product-title"><a href="/urun/${item.slug}">${item.title}</a>
+                            <p class="product-cate">${item.third_category}</p>
+                            <h3 class="product-title"><a href="/urun/${item.get_product_slug}">${item.get_product_title}</a>
                             </h3>
                             <div class="product-bottom">
                                 <div class="product-price">
-                                    <span>${item.is_discountprice == false ? item.price : item.discountprice} TL</span>
+                                    <span>${item.get_product_isdiscount == false ? item.get_product_price : item.get_product_discountprice} TL</span>
                                 </div>
                             </div>
                         </div>
                         <div class="product-button-group"
                              style="display: flex; justify-content: center;align-items: center;">
-                            <a href="/urun/${item.slug}" class="btn btn-gradient">Ürünü Gör
+                            <a href="/urun/${item.get_product_slug}" class="btn btn-gradient">Ürünü Gör
                             </a>
                         </div>
                     </div>
@@ -308,7 +312,7 @@ $(document).ready(function () {
             $('.js-owl-product-bottom-wear').owlCarousel({
                 margin: 10,
                 autoplay: true,
-                autoplayTimeout: 3000,
+                autoplayTimeout: 10000,
                 loop: true,
                 dots: false,
                 nav: true,
@@ -348,10 +352,10 @@ $(document).ready(function () {
                     <div class="product-item">
                 <div class="pd-bd product-inner">
                     <div class="product-img">
-                        <a href="/urun/${item.slug}"
+                        <a href="/urun/${item.get_product_slug}"
                            style="display: flex; justify-content: center; align-items: center;"><img
-                                src="${item.image_url1}"
-                                alt="" class="img-reponsive" style="height: 200px; width: auto;"></a>
+                                src="${item.kapak}"
+                                alt="Product" class="img-reponsive" style="height: 200px; width: auto;"></a>
 
                     </div>
                     <div class="product-info">
@@ -360,18 +364,18 @@ $(document).ready(function () {
                         <div class="element-list element-list-left">
                         </div>
                         <div class="element-list element-list-middle">
-                            <p class="product-cate">${item.subcategory}</p>
-                            <h3 class="product-title"><a href="/urun/${item.slug}">${item.title}</a>
+                            <p class="product-cate">${item.third_category}</p>
+                            <h3 class="product-title"><a href="/urun/${item.get_product_slug}">${item.get_product_title}</a>
                             </h3>
                             <div class="product-bottom">
                                 <div class="product-price">
-                                    <span>${item.is_discountprice == false ? item.price : item.discountprice} TL</span>
+                                    <span>${item.get_product_isdiscount == false ? item.get_product_price : item.get_product_discountprice} TL</span>
                                 </div>
                             </div>
                         </div>
                         <div class="product-button-group"
                              style="display: flex; justify-content: center;align-items: center;">
-                            <a href="/urun/${item.slug}" class="btn btn-gradient">Ürünü Gör
+                            <a href="/urun/${item.get_product_slug}" class="btn btn-gradient">Ürünü Gör
                             </a>
                         </div>
                     </div>
@@ -383,7 +387,7 @@ $(document).ready(function () {
             $('.js-owl-product-dress').owlCarousel({
                 margin: 10,
                 autoplay: true,
-                autoplayTimeout: 3000,
+                autoplayTimeout: 10000,
                 loop: true,
                 dots: false,
                 nav: true,
@@ -422,10 +426,10 @@ $(document).ready(function () {
                     <div class="product-item">
                 <div class="pd-bd product-inner">
                     <div class="product-img">
-                        <a href="/urun/${item.slug}"
+                        <a href="/urun/${item.get_product_slug}"
                            style="display: flex; justify-content: center; align-items: center;"><img
-                                src="${item.image_url1}"
-                                alt="" class="img-reponsive" style="height: 200px; width: auto;"></a>
+                                src="${item.kapak}"
+                                alt="Product" class="img-reponsive" style="height: 200px; width: auto;"></a>
 
                     </div>
                     <div class="product-info">
@@ -434,18 +438,18 @@ $(document).ready(function () {
                         <div class="element-list element-list-left">
                         </div>
                         <div class="element-list element-list-middle">
-                            <p class="product-cate">${item.subcategory}</p>
-                            <h3 class="product-title"><a href="/urun/${item.slug}">${item.title}</a>
+                            <p class="product-cate">${item.third_category}</p>
+                            <h3 class="product-title"><a href="/urun/${item.get_product_slug}">${item.get_product_title}</a>
                             </h3>
                             <div class="product-bottom">
                                 <div class="product-price">
-                                    <span>${item.is_discountprice == false ? item.price : item.discountprice} TL</span>
+                                    <span>${item.get_product_isdiscount == false ? item.get_product_price : item.get_product_discountprice} TL</span>
                                 </div>
                             </div>
                         </div>
                         <div class="product-button-group"
                              style="display: flex; justify-content: center;align-items: center;">
-                            <a href="/urun/${item.slug}" class="btn btn-gradient">Ürünü Gör
+                            <a href="/urun/${item.get_product_slug}" class="btn btn-gradient">Ürünü Gör
                             </a>
                         </div>
                     </div>
@@ -457,7 +461,7 @@ $(document).ready(function () {
             $('.js-owl-product-shoes').owlCarousel({
                 margin: 10,
                 autoplay: true,
-                autoplayTimeout: 3000,
+                autoplayTimeout: 10000,
                 loop: true,
                 dots: false,
                 nav: true,
@@ -496,10 +500,10 @@ $(document).ready(function () {
                     <div class="product-item">
                 <div class="pd-bd product-inner">
                     <div class="product-img">
-                        <a href="/urun/${item.slug}"
+                        <a href="/urun/${item.get_product_slug}"
                            style="display: flex; justify-content: center; align-items: center;"><img
-                                src="${item.image_url1}"
-                                alt="" class="img-reponsive" style="height: 200px; width: auto;"></a>
+                                src="${item.kapak}"
+                                alt="Product" class="img-reponsive" style="height: 200px; width: auto;"></a>
 
                     </div>
                     <div class="product-info">
@@ -508,18 +512,18 @@ $(document).ready(function () {
                         <div class="element-list element-list-left">
                         </div>
                         <div class="element-list element-list-middle">
-                            <p class="product-cate">${item.subcategory}</p>
-                            <h3 class="product-title"><a href="/urun/${item.slug}">${item.title}</a>
+                            <p class="product-cate">${item.third_category}</p>
+                            <h3 class="product-title"><a href="/urun/${item.get_product_slug}">${item.get_product_title}</a>
                             </h3>
                             <div class="product-bottom">
                                 <div class="product-price">
-                                    <span>${item.is_discountprice == false ? item.price : item.discountprice} TL</span>
+                                    <span>${item.get_product_isdiscount == false ? item.get_product_price : item.get_product_discountprice} TL</span>
                                 </div>
                             </div>
                         </div>
                         <div class="product-button-group"
                              style="display: flex; justify-content: center;align-items: center;">
-                            <a href="/urun/${item.slug}" class="btn btn-gradient">Ürünü Gör
+                            <a href="/urun/${item.get_product_slug}" class="btn btn-gradient">Ürünü Gör
                             </a>
                         </div>
                     </div>
@@ -531,7 +535,7 @@ $(document).ready(function () {
             $('.js-owl-product-accessories').owlCarousel({
                 margin: 10,
                 autoplay: true,
-                autoplayTimeout: 3000,
+                autoplayTimeout: 10000,
                 loop: true,
                 dots: false,
                 nav: true,
@@ -555,7 +559,7 @@ $(document).ready(function () {
     });
 
     $.ajax({
-        url: `${baseUrl}/apits/aksesuar-urunleri/`,
+        url: `${baseUrl}/apits/ic-giyim-urunleri/`,
         dataType: 'json',
         beforeSend: function () {
             $(".underwear_skeleton").show()
@@ -570,10 +574,10 @@ $(document).ready(function () {
                     <div class="product-item">
                 <div class="pd-bd product-inner">
                     <div class="product-img">
-                        <a href="/urun/${item.slug}"
+                        <a href="/urun/${item.get_product_slug}"
                            style="display: flex; justify-content: center; align-items: center;"><img
-                                src="${item.image_url1}"
-                                alt="" class="img-reponsive" style="height: 200px; width: auto;"></a>
+                                src="${item.kapak}"
+                                alt="Product" class="img-reponsive" style="height: 200px; width: auto;"></a>
 
                     </div>
                     <div class="product-info">
@@ -582,18 +586,18 @@ $(document).ready(function () {
                         <div class="element-list element-list-left">
                         </div>
                         <div class="element-list element-list-middle">
-                            <p class="product-cate">${item.subcategory}</p>
-                            <h3 class="product-title"><a href="/urun/${item.slug}">${item.title}</a>
+                            <p class="product-cate">${item.third_category}</p>
+                            <h3 class="product-title"><a href="/urun/${item.get_product_slug}">${item.get_product_title}</a>
                             </h3>
                             <div class="product-bottom">
                                 <div class="product-price">
-                                    <span>${item.is_discountprice == false ? item.price : item.discountprice} TL</span>
+                                    <span>${item.get_product_isdiscount == false ? item.get_product_price : item.get_product_discountprice} TL</span>
                                 </div>
                             </div>
                         </div>
                         <div class="product-button-group"
                              style="display: flex; justify-content: center;align-items: center;">
-                            <a href="/urun/${item.slug}" class="btn btn-gradient">Ürünü Gör
+                            <a href="/urun/${item.get_product_slug}" class="btn btn-gradient">Ürünü Gör
                             </a>
                         </div>
                     </div>
@@ -605,7 +609,7 @@ $(document).ready(function () {
             $('.js-owl-product-underwear').owlCarousel({
                 margin: 10,
                 autoplay: true,
-                autoplayTimeout: 3000,
+                autoplayTimeout: 10000,
                 loop: true,
                 dots: false,
                 nav: true,
@@ -641,13 +645,13 @@ $(document).ready(function () {
             data.forEach(function (item, index) {
                 $(".js-owl-product-mostLike").append(
                     `
-                    <div class="product-item">
+                   <div class="product-item">
                 <div class="pd-bd product-inner">
                     <div class="product-img">
-                        <a href="/urun/${item.slug}"
+                        <a href="/urun/${item.get_product_slug}"
                            style="display: flex; justify-content: center; align-items: center;"><img
-                                src="${item.image_url1}"
-                                alt="" class="img-reponsive" style="height: 200px; width: auto;"></a>
+                                src="${item.kapak}"
+                                alt="Product" class="img-reponsive" style="height: 200px; width: auto;"></a>
 
                     </div>
                     <div class="product-info">
@@ -656,18 +660,18 @@ $(document).ready(function () {
                         <div class="element-list element-list-left">
                         </div>
                         <div class="element-list element-list-middle">
-                            <p class="product-cate">${item.subcategory}</p>
-                            <h3 class="product-title"><a href="/urun/${item.slug}">${item.title}</a>
+                            <p class="product-cate">${item.third_category}</p>
+                            <h3 class="product-title"><a href="/urun/${item.get_product_slug}">${item.get_product_title}</a>
                             </h3>
                             <div class="product-bottom">
                                 <div class="product-price">
-                                    <span>${item.is_discountprice == false ? item.price : item.discountprice} TL</span>
+                                    <span>${item.get_product_isdiscount == false ? item.get_product_price : item.get_product_discountprice} TL</span>
                                 </div>
                             </div>
                         </div>
                         <div class="product-button-group"
                              style="display: flex; justify-content: center;align-items: center;">
-                            <a href="/urun/${item.slug}" class="btn btn-gradient">Ürünü Gör
+                            <a href="/urun/${item.get_product_slug}" class="btn btn-gradient">Ürünü Gör
                             </a>
                         </div>
                     </div>
@@ -679,7 +683,7 @@ $(document).ready(function () {
             $('.js-owl-product-mostLike').owlCarousel({
                 margin: 10,
                 autoplay: true,
-                autoplayTimeout: 3000,
+                autoplayTimeout: 10000,
                 loop: true,
                 dots: false,
                 nav: true,
@@ -718,10 +722,10 @@ $(document).ready(function () {
                     <div class="product-item">
                 <div class="pd-bd product-inner">
                     <div class="product-img">
-                        <a href="/urun/${item.slug}"
+                        <a href="/urun/${item.get_product_slug}"
                            style="display: flex; justify-content: center; align-items: center;"><img
-                                src="${item.image_url1}"
-                                alt="" class="img-reponsive" style="height: 200px; width: auto;"></a>
+                                src="${item.kapak}"
+                                alt="Product" class="img-reponsive" style="height: 200px; width: auto;"></a>
 
                     </div>
                     <div class="product-info">
@@ -730,18 +734,18 @@ $(document).ready(function () {
                         <div class="element-list element-list-left">
                         </div>
                         <div class="element-list element-list-middle">
-                            <p class="product-cate">${item.subcategory}</p>
-                            <h3 class="product-title"><a href="/urun/${item.slug}">${item.title}</a>
+                            <p class="product-cate">${item.third_category}</p>
+                            <h3 class="product-title"><a href="/urun/${item.get_product_slug}">${item.get_product_title}</a>
                             </h3>
                             <div class="product-bottom">
                                 <div class="product-price">
-                                    <span>${item.is_discountprice == false ? item.price : item.discountprice} TL</span>
+                                    <span>${item.get_product_isdiscount == false ? item.get_product_price : item.get_product_discountprice} TL</span>
                                 </div>
                             </div>
                         </div>
                         <div class="product-button-group"
                              style="display: flex; justify-content: center;align-items: center;">
-                            <a href="/urun/${item.slug}" class="btn btn-gradient">Ürünü Gör
+                            <a href="/urun/${item.get_product_slug}" class="btn btn-gradient">Ürünü Gör
                             </a>
                         </div>
                     </div>
@@ -753,7 +757,7 @@ $(document).ready(function () {
             $('.js-owl-product-mostComment').owlCarousel({
                 margin: 10,
                 autoplay: true,
-                autoplayTimeout: 3000,
+                autoplayTimeout: 10000,
                 loop: true,
                 dots: false,
                 nav: true,

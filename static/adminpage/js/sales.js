@@ -168,7 +168,7 @@ $(document).ready(function () {
                         borderColor: [
                             'rgba(54, 162, 235, 1)',
                         ],
-                    },{
+                    }, {
                         type: 'line',
                         label: "Satış",
                         data: [satislar[0], satislar[1], satislar[2], satislar[3], satislar[4], satislar[5], satislar[6]],
@@ -205,7 +205,7 @@ $(document).ready(function () {
                         backgroundColor: [
                             'rgba(0,0,0,0)',
                         ],
-                         borderColor: [
+                        borderColor: [
                             'rgb(255,251,6)',
                         ],
                     },
@@ -263,6 +263,49 @@ $(document).ready(function () {
                 options: {
                     maintainAspectRatio: true,
                 }
+            });
+
+        },
+        error: (err) => {
+            $("#mostOrderTenCityCard .overlay").show()
+        }
+    })
+    $.ajax({
+        type: 'GET',
+        url: '/yonetim/pazaryerleri-satis-istatistikleri/',
+        beforeSend: function () {
+            $("#marketPlaceStatistics .overlay").show()
+        },
+        success: (res) => {
+            $("#marketPlaceStatistics .overlay").hide()
+            var tredyshopOrdersCount = res[0]
+            var trendyolOrdersCount = res[1]
+            var hepsiburadaOrdersCount = res[2]
+            var amazonOrdersCount = res[3]
+
+            $("#tredyshopOrderCount").html(tredyshopOrdersCount)
+            $("#trendyolOrderCount").html(trendyolOrdersCount)
+            $("#hepsiburadaOrderCount").html(hepsiburadaOrdersCount)
+            $("#amazonOrderCount").html(amazonOrdersCount)
+
+            const marketPlaceStatisticsGraph = document.getElementById('marketPlaceStatisticsGraph');
+
+            new Chart(marketPlaceStatisticsGraph, {
+                type: 'doughnut',
+                data: {
+                    labels: ["TredyShop", "Trendyol", "Hepsiburada", "Amazon"],
+                    datasets: [{
+                        label: "Pazaryerleri Satış İstatistikleri",
+                        data: [tredyshopOrdersCount, trendyolOrdersCount, hepsiburadaOrdersCount, amazonOrdersCount],
+                        backgroundColor: [
+                            '#dc3545',
+                            '#fd7e14',
+                            '#28a745',
+                            '#000',
+                        ],
+                        borderWidth: 1,
+                    }]
+                },
             });
 
         },

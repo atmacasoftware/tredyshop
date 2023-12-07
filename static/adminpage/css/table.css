@@ -7,7 +7,9 @@
 
 .product__info .product__image img {
     width: 50px !important;
-    height: 60px !important;
+    height: 90px !important;
+    border-radius: 10px;
+    border: 1px solid black;
 }
 
 .product__info .product__title {
@@ -16,19 +18,26 @@
     justify-content: start;
     align-items: start;
     flex-direction: column;
+    height: 100%;
 }
 
 .product__info .product__title a {
     color: black;
     transition: .2s all ease;
+    font-weight: bold;
+    text-decoration: underline;
 }
 
 .product__info .product__title a:hover {
     color: #dc3545;
 }
 
-.product__info .product__title span {
-    color: #c7c7c7;
+.product__info .product__title span{
+    font-size: 0.8rem;
+}
+
+table td p{
+    font-size: 0.9rem;
 }
 
 .product__images {

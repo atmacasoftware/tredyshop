@@ -35,6 +35,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/cookie.css' %}">
     <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+
 </head>
 
 <body>
@@ -46,7 +47,7 @@
 {% include 'frontend/partials/messages.html' %}
 {% include 'frontend/partials/_header.html' %}
 <div class="h3-bg">
-    {% include 'frontend/partials/__cookie.html' %}
+
     <div class="wrappage v2">
         {% block mainpage %}
         {% endblock %}
@@ -80,6 +81,11 @@
 
 {% include 'frontend/partials/__feature.html' %}
 {% include 'frontend/partials/_footer.html' %}
+<div class="whatsapp">
+    <a href="https://wa.me/+908503098552" target="_blank" class="header_whatsapp">
+         <i class="fa fa-3x fa-whatsapp" aria-hidden="true"></i>
+    </a>
+</div>
 
 <script src="{% static 'js/jquery.min.js' %}"></script>
 <script src="
@@ -87,7 +93,7 @@ https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js
 "></script>
 <script src="{% static 'js/bootstrap.js' %}"></script>
 {% if request.path != '/checkout' %}
-<script src="{% static 'js/search.js' %}"></script>
+    <script src="{% static 'js/search.js' %}"></script>
 {% endif %}
 <script src="{% static 'js/owl.carousel.min.js' %}"></script>
 <script src="{% static 'js/slick.js' %}"></script>

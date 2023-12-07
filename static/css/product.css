@@ -1,0 +1,26 @@
+table{
+    width: 100%;
+}
+
+table th, td{
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 3px 5px;
+}
+
+table th, td:first-child{
+    width: 50%;
+}
+
+table th, td:last-child{
+    width: 50%;
+}
+
+table tr:nth-child(even){
+    background-color: #BEBEBE;
+}
+
+.size-table button{
+    background: transparent;
+    outline: transparent;
+}

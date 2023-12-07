@@ -98,9 +98,9 @@ class FlashDealProductApiView(APIView):
 class NewProductApiView(APIView):
     def get(self, request):
         try:
-            products = ApiProduct.objects.filter(is_publish=True, subcategory__title__isnull=False, dropshipping="Modaymış").order_by(
-                "-create_at")[:18]
-            serializer = ProductSerializer(products, many=True)
+            products = ProductModelGroup.objects.filter(product__is_publish=True, product__subcategory__title__isnull=False, product__subbottomcategory__title__isnull=False, product__dropshipping="Modaymış").order_by(
+                "-product__create_at")[:18]
+            serializer = ProductModelGroupSerializer(products, many=True)
             return Response({'data': serializer.data})
         except Slider.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
@@ -112,14 +112,14 @@ class NewProductApiView(APIView):
 class MostLikeroductApiView(APIView):
     def get(self, request):
         try:
-            products = ApiProduct.objects.all().filter(is_publish=True, dropshipping="Modaymış",
-                                                       subcategory__title__isnull=False,
-                                                       reviewrating__rating__gte=4, reviewrating__rating__lte=6)[:16]
+            products = ProductModelGroup.objects.all().filter(product__is_publish=True, product__dropshipping="Modaymış",
+                                                       product__subcategory__title__isnull=False, product__subbottomcategory__title__isnull=False,
+                                                       product__reviewrating__rating__gte=4, product__reviewrating__rating__lte=6)[:16]
 
             if products.count() < 4:
-                products = ApiProduct.objects.filter(is_publish=True, subcategory__title__isnull=False, dropshipping="Modaymış").order_by("?")[:16]
+                products = ProductModelGroup.objects.filter(product__is_publish=True, product__subcategory__title__isnull=False,  product__subbottomcategory__title__isnull=False, product__dropshipping="Modaymış").order_by("?")[:16]
 
-            serializer = ProductSerializer(products, many=True)
+            serializer = ProductModelGroupSerializer(products, many=True)
             return Response({'data': serializer.data})
         except Slider.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
@@ -132,17 +132,17 @@ class MostPointProductApiView(APIView):
     def get(self, request):
         try:
             reviewrating = ReviewRating.objects.all()
-            products = ApiProduct.objects.filter(is_publish=True, subcategory__title__isnull=False, dropshipping="Modaymış",
-                                                 reviewrating__in=reviewrating).annotate(
-                rating_count=Count('id')).order_by(
-                '-rating_count')
+            products = ProductModelGroup.objects.filter(product__is_publish=True, product__subcategory__title__isnull=False, product__subbottomcategory__title__isnull=False, product__dropshipping="Modaymış",
+                                                 product__reviewrating__in=reviewrating).annotate(
+                product__rating_count=Count('id')).order_by(
+                '-product__rating_count')
 
             if products.count() < 16:
-                products = ApiProduct.objects.filter(is_publish=True, subcategory__title__isnull=False,  dropshipping="Modaymış").order_by("?")[:16]
+                products = ProductModelGroup.objects.filter(product__is_publish=True, product__subcategory__title__isnull=False, product__subbottomcategory__title__isnull=False,  product__dropshipping="Modaymış").order_by("?")[:16]
             else:
                 products = products[:16]
 
-            serializer = ProductSerializer(products, many=True)
+            serializer = ProductModelGroupSerializer(products, many=True)
             return Response({'data': serializer.data})
         except Slider.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
@@ -154,8 +154,8 @@ class MostPointProductApiView(APIView):
 class UstGiyimUrunleriApiView(APIView):
     def get(self, request):
         try:
-            product = ApiProduct.objects.raw('SELECT * FROM product_apiproduct WHERE subcategory_id = 1 GROUP BY model_code')[1:16]
-            serializer = ProductSerializer(product, many=True)
+            product = ProductModelGroup.objects.filter(product__is_publish=True,product__subcategory_id=1, product__subbottomcategory__title__isnull=False)[1:16]
+            serializer = ProductModelGroupSerializer(product, many=True)
             return Response({'data': serializer.data})
         except Slider.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
@@ -167,9 +167,8 @@ class UstGiyimUrunleriApiView(APIView):
 class AltGiyimUrunleriApiView(APIView):
     def get(self, request):
         try:
-            product = ApiProduct.objects.raw('SELECT * FROM product_apiproduct WHERE subcategory_id = 2 GROUP BY model_code')[1:16]
-
-            serializer = ProductSerializer(product, many=True)
+            product = ProductModelGroup.objects.filter(product__is_publish=True,product__subcategory_id=2, product__subbottomcategory__title__isnull=False)[1:16]
+            serializer = ProductModelGroupSerializer(product, many=True)
             return Response({'data': serializer.data})
         except Slider.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
@@ -181,8 +180,8 @@ class AltGiyimUrunleriApiView(APIView):
 class EsofmanUrunleriApiView(APIView):
     def get(self, request):
         try:
-            product = ApiProduct.objects.raw('SELECT * FROM product_apiproduct WHERE subcategory_id = 3 GROUP BY model_code')[1:16]
-            serializer = ProductSerializer(product, many=True)
+            product = ProductModelGroup.objects.filter(product__is_publish=True,product__subcategory_id=3, product__subbottomcategory__title__isnull=False)[1:16]
+            serializer = ProductModelGroupSerializer(product, many=True)
             return Response({'data': serializer.data})
         except Slider.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
@@ -194,8 +193,8 @@ class EsofmanUrunleriApiView(APIView):
 class ElbiseUrunleriApiView(APIView):
     def get(self, request):
         try:
-            product = ApiProduct.objects.raw('SELECT * FROM product_apiproduct WHERE subcategory_id = 4 GROUP BY model_code')[1:16]
-            serializer = ProductSerializer(product, many=True)
+            product = ProductModelGroup.objects.filter(product__is_publish=True, product__subcategory_id=4, product__subbottomcategory__title__isnull=False)[1:16]
+            serializer = ProductModelGroupSerializer(product, many=True)
             return Response({'data': serializer.data})
         except Slider.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
@@ -207,8 +206,8 @@ class ElbiseUrunleriApiView(APIView):
 class AyakkabiUrunleriApiView(APIView):
     def get(self, request):
         try:
-            product = ApiProduct.objects.raw('SELECT * FROM product_apiproduct WHERE subcategory_id = 5 GROUP BY model_code')[1:16]
-            serializer = ProductSerializer(product, many=True)
+            product = ProductModelGroup.objects.filter(product__is_publish=True, product__subcategory_id=5, product__subbottomcategory__title__isnull=False)[1:16]
+            serializer = ProductModelGroupSerializer(product, many=True)
             return Response({'data': serializer.data})
         except Slider.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
@@ -220,8 +219,8 @@ class AyakkabiUrunleriApiView(APIView):
 class AksesuarUrunleriApiView(APIView):
     def get(self, request):
         try:
-            product = ApiProduct.objects.raw('SELECT * FROM product_apiproduct WHERE subcategory_id = 6 GROUP BY model_code')[1:16]
-            serializer = ProductSerializer(product, many=True)
+            product = ProductModelGroup.objects.filter(product__is_publish=True, product__subcategory_id=6, product__subbottomcategory__title__isnull=False)[1:16]
+            serializer = ProductModelGroupSerializer(product, many=True)
             return Response({'data': serializer.data})
         except Slider.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
@@ -233,8 +232,8 @@ class AksesuarUrunleriApiView(APIView):
 class IcGiyimUrunleriApiView(APIView):
     def get(self, request):
         try:
-            product = ApiProduct.objects.raw('SELECT * FROM product_apiproduct WHERE subcategory_id = 7 GROUP BY model_code')[1:16]
-            serializer = ProductSerializer(product, many=True)
+            product = ProductModelGroup.objects.filter(product__is_publish=True, product__subcategory_id=7, product__subbottomcategory__title__isnull=False,)[1:16]
+            serializer = ProductModelGroupSerializer(product, many=True)
             return Response({'data': serializer.data})
         except Slider.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
@@ -246,8 +245,8 @@ class IcGiyimUrunleriApiView(APIView):
 class MostSellerApiView(APIView):
     def get(self, request):
         try:
-            product = ApiProduct.objects.filter(is_publish=True, subcategory__title__isnull=False, dropshipping="Modaymış").order_by("-sell_count")[:16]
-            serializer = ProductSerializer(product, many=True)
+            product = ProductModelGroup.objects.filter(product__is_publish=True, product__subcategory__title__isnull=False, product__subbottomcategory__title__isnull=False, product__dropshipping="Modaymış").order_by("-product__sell_count")[:16]
+            serializer = ProductModelGroupSerializer(product, many=True)
             return Response({'data': serializer.data})
         except Slider.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
@@ -260,13 +259,13 @@ class FlashDealsApiView(APIView):
     def get(self, request):
         try:
             flash_deals = []
-            products = ApiProduct.objects.filter(is_publish=True, subcategory__title__isnull=False, dropshipping="Modaymış")
+            products = ProductModelGroup.objects.filter(product__is_publish=True, product__subcategory__title__isnull=False, product__subbottomcategory__title__isnull=False, product__dropshipping="Modaymış")
             for product in products:
-                if product.is_discountprice == True:
-                    if 100 - ((product.discountprice * 100) / product.price) >= 0:
+                if product.product.is_discountprice:
+                    if 100 - ((product.get_product_discountprice() * 100) / product.get_product_price()) >= 0:
                         flash_deals.append(product)
 
-            serializer = ProductSerializer(flash_deals, many=True)
+            serializer = ProductModelGroupSerializer(flash_deals, many=True)
             return Response({'data': serializer.data})
         except Slider.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})

@@ -7,13 +7,8 @@
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
                     <div class="footer-block footer-about">
                         <div class="f-logo">
-                            <a href="#"><img src="{% static 'img/logo.png' %}" alt="" class="img-reponsive"></a>
+                            <a href="#"><img src="{% static 'img/logo2.png' %}" alt="" class="img-reponsive"></a>
                         </div>
-                        <ul class="footer-block-content">
-                            <li class="email">
-                                <span>{{ setting.email }}</span>
-                            </li>
-                        </ul>
                         <div class="footer-social social">
                             <h3 class="footer-block-title">Bizi Takip Edin</h3>
                             <a href="{{ setting.instagram }}" target="_blank" class="fa fa-instagram"></a>
@@ -89,12 +84,12 @@
                 <div class="col-xs-6 f-copyright"><span>© 2023 TredyShop. All rights reserved.</span>
                 </div>
                 <div class="col-xs-6 f-payment">
-                    <a href="#"><img src="{% static 'img/payment/mastercard.png' %}" alt="" class="img-reponsive"></a>
-                    <a href="#"><img src="{% static 'img/payment/visa.png' %}" alt="" class="img-reponsive"></a>
-                    <a href="#"><img src="{% static 'img/payment/american-express.png' %}" alt="" class="img-reponsive"></a>
-                    <a href="#"><img src="{% static 'img/payment/unionpay.png' %}" alt="" class="img-reponsive"></a>
-                    <a href="#"><img src="{% static 'img/payment/troy.png' %}" alt="" class="img-reponsive"></a>
-                    <a href="#"><img src="{% static 'img/payment/3dsecure.png' %}" alt="" class="img-reponsive"></a>
+                    <a href="{% url 'mainpage' %}"><img src="{% static 'img/payment/mastercard.webp' %}" alt="MasterCard"></a>
+                    <a href="{% url 'mainpage' %}"><img src="{% static 'img/payment/visa.webp' %}" alt="Visa"></a>
+                    <a href="{% url 'mainpage' %}"><img src="{% static 'img/payment/american-express.webp' %}" alt="American Express"></a>
+                    <a href="{% url 'mainpage' %}"><img src="{% static 'img/payment/unionpay.webp' %}" alt="Union Pay"></a>
+                    <a href="{% url 'mainpage' %}"><img src="{% static 'img/payment/troy.webp' %}" alt="Troy"></a>
+                    <a href="{% url 'mainpage' %}"><img src="{% static 'img/payment/3dsecure.webp' %}" alt="3D Secure"></a>
                 </div>
             </div>
         </div>

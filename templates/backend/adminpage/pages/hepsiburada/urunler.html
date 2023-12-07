@@ -1,0 +1,328 @@
+{% extends 'backend/adminpage/layout.html' %}
+{% load static %}
+
+{% block title %}<title>Trendyol Ürünler</title>{% endblock %}
+
+{% block products %}
+
+    <link rel="stylesheet" href="{% static 'adminpage/css/table.css' %}">
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/css/selectize.default.min.css"
+            integrity="sha512-pTaEn+6gF1IeWv3W1+7X7eM60TFu/agjgoHmYhAfLEU8Phuf6JKiiE8YmsNC0aCgQv4192s4Vai8YZ6VNM6vyQ=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+    />
+
+    <div class="waiting">
+        <div class="spinner-border text-danger" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <h4>Lütfen Bekleyiniz...</h4>
+    </div>
+
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Trendyol Ürünler</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'mainpage' %}">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Trendyol Ürünler</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-outline card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Filtreleme</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                            <!-- /.card-tools -->
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <form action="" method="get" class="productSearchForm">
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <select id="select-approved" name="approved"
+                                                class="demo-default filter-checkbox"
+                                                placeholder="Onay Durumu Seçiniz...">
+                                            <option value="">Onay Durumu Seçiniz...</option>
+                                            <option value="true">Onaylı Ürünler</option>
+                                            <option value="false">Onaylı Olmayan Ürünler</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12 d-flex justify-content-center align-items-center flex-row">
+                                        <input type="search" name="barkod" id="barkod"
+                                               class="form-control float-right filter-checkbox"
+                                               placeholder="Barkod">
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12 d-flex justify-content-center align-items-center flex-row">
+                                        <input type="date" name="startDate" id="startDate"
+                                               class="form-control float-right filter-checkbox"
+                                               placeholder="Başlangıç Tarihi">
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12 d-flex justify-content-center align-items-center flex-row">
+                                        <input type="date" name="endDate" id="endDate"
+                                               class="form-control float-right filter-checkbox"
+                                               placeholder="Bitiş Tarihi">
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-lg-3 col-md-4 col-sm-12 d-flex justify-content-center align-items-center flex-row">
+                                        <input type="number" name="page" id="page"
+                                               class="form-control float-right filter-checkbox"
+                                               placeholder="Sayfa">
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <select id="select-dateQueryType" name="dateQueryType"
+                                                class="demo-default filter-checkbox"
+                                                placeholder="Sıralama Seçiniz...">
+                                            <option value="">Sıralama Seçiniz...</option>
+                                            <option value="CREATED_DATE">Oluşturulma Tarihi</option>
+                                            <option value="LAST_MODIFIED_DATE">Son Güncellenme Tarihi</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12 d-flex justify-content-center align-items-center flex-row">
+                                        <input type="number" name="size" id="size"
+                                               class="form-control float-right filter-checkbox"
+                                               placeholder="Liste Sayısı">
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="btn-group float-right w-100">
+                                        <input type="reset" class="btn btn-dark" value="Sıfırlama">
+                                        <button type="submit" id="filterBtn" class="btn btn-success">Fitreleme</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+
+                </div>
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Analizler</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                            <!-- /.card-tools -->
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <span class="btn btn-default btn-sm w-100">Ürün Sayısı ({{ total_elements }})</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header product-table-header">
+                            <div class="card-process">
+                                <div class="dropdown">
+                                    <button class="btn btn-sm mt-2 btn-secondary dropdown-toggle"
+                                            type="button"
+                                            data-toggle="dropdown" aria-expanded="false">Toplu İşlemler
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <button class="dropdown-item" id="deletingSelect">Seçilileri Sil</button>
+                                        <a class="dropdown-item" href="{% url 'all_delete_product' %}">Tümünü Sil</a>
+                                        <a class="dropdown-item" href="#">Excel İndir</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <div class="custom-control custom-checkbox">
+                                            <input class="custom-control-input custom-control-input-danger custom-control-input-outline row-checkbox "
+                                                   type="checkbox" id="selectAllRow">
+                                            <label for="selectAllRow" class="custom-control-label"></label>
+                                        </div>
+                                    </th>
+                                    <th scope="col">Ürün Bilgisi</th>
+                                    <th scope="col">Barkod</th>
+                                    <th scope="col">Model Kodu</th>
+                                    <th scope="col">Kategori</th>
+                                    <th scope="col">Marka</th>
+                                    <th scope="col">Liste Fiyatı (TL)</th>
+                                    <th scope="col">Satış Fiyatı (TL)</th>
+                                    <th scope="col">Stok</th>
+                                    <th scope="col">İşlemler</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for product in product_data %}
+                                    <tr>
+                                        <td>
+                                            <div class="custom-control custom-checkbox">
+                                                <input class="custom-control-input custom-control-input-danger custom-control-input-outline filter-checkbox"
+                                                       type="checkbox" id="selectRowId-{{ product.id }}"
+                                                       value="{{ product.id }}" data-filter="product">
+                                                <label for="selectRowId-{{ product.id }}"
+                                                       class="custom-control-label"></label>
+                                            </div>
+                                        </td>
+                                        <td data-label="Ürün Bilgisi">
+                                            <div class="product__info">
+                                                    <div class="product__image"><img src="{{ product.images.0.url }}"
+                                                                                     alt="">
+                                                    </div>
+                                                <div class="product__title"><p><b><a
+                                                        href="">{{ product.title }}</a></b>
+                                                </p><span>Stok Kodu: {{ product.stockCode }}</span></div>
+                                            </div>
+                                        </td>
+                                        <td data-label="Barkod">{{ product.barcode }}</td>
+                                        <td data-label="Model Kodu">{{ product.productMainId }}</td>
+                                        <td data-label="Kategori">{{ product.categoryName }}</td>
+                                        <td data-label="Marka">{{ product.brand }}</td>
+                                        <td data-label="Liste Fiyatı (TL)">{{ product.listPrice }}</td>
+                                        <td data-label="Satış Fiyatı (TL)">{{ product.salePrice }}</td>
+                                        <td data-label="Stok">{{ product.quantity }}</td>
+                                        <td data-label="İşlemler">
+                                            <a href=""
+                                               class="btn btn-danger btn-sm">Detaya
+                                                Git</a>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm mt-2 btn-secondary dropdown-toggle"
+                                                        type="button"
+                                                        data-toggle="dropdown" aria-expanded="false">İşlemler
+                                                </button>
+                                                <div class="dropdown-menu"><a class="dropdown-item"
+                                                                              href="#">Action</a><a
+                                                        class="dropdown-item" href="#">Another action</a><a
+                                                        class="dropdown-item" href="#">Something else here</a></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-footer">
+                            <nav aria-label="pagination" class="pagination_area">
+                                <div class="row">
+                                    {% if products.end_index > 0 %}
+                                        <div class="col-sm-12 col-md-5 d-none d-md-block">
+                                            <p>Showing {{ products.start_index }} to {{ products.end_index }}
+                                                of {{ products.paginator.count }}.</p>
+                                        </div>
+                                    {% endif %}
+                                    {% if products.paginator.num_pages > 1 %}
+                                        <div class="col-sm-12 col-md-7 dataTables_pager">
+                                            <ul class="pagination">
+                                                {% if products.has_previous %}
+
+                                                    <li class="page-item">
+                                                        <a class="page-link" data-page="1"
+                                                           href="{{ query }}&page={{ products.previous_page_number }}">
+                                                            <i class="fa fa-angle-double-left"></i>
+                                                        </a>
+                                                    </li>
+                                                    {% if products.previous_page_number > 1 %}
+                                                        <li class="page-item">
+                                                            <a class="page-link "
+                                                               data-page="{{ products.previous_page_number }}"
+                                                               href="{{ query }}&page={{ products.previous_page_number }}">
+                                                                <i class="fa fa-angle-left"></i>
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+
+                                                {% endif %}
+
+                                                {% if products.previous_page_number > 2 %}
+                                                    <li class="page-item">
+                                                        <a class="page-link " data-page="{{ products.number|add:'-2' }}"
+                                                           href="{{ query }}&page={{ products.number|add:'-2' }}"> {{ products.number|add:"-2" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link " data-page="{{ products.number|add:'-1' }}"
+                                                           href="{{ query }}&page={{ products.number|add:'-1' }}"> {{ products.number|add:"-1" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                <li class="page-item active"><span
+                                                        class="page-link ">{{ products.number }}</span></li>
+
+                                                {% if products.paginator.num_pages > products.number|add:"2" %}
+                                                    <li class="page-item">
+                                                        <a class="page-link " data-page="{{ products.number|add:'1' }}"
+                                                           href="{{ query }}&page={{ products.number|add:'1' }}"> {{ products.number|add:"1" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link " data-page="{{ products.number|add:'2' }}"
+                                                           href="{{ query }}&page={{ products.number|add:'2' }}"> {{ products.number|add:"2" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                {% if products.has_next %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ products.next_page_number }}"
+                                                           href="{{ query }}&page={{ products.next_page_number }}">
+                                                            <i class="fa fa-angle-right"></i>
+                                                        </a>
+                                                    </li>
+
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ products.paginator.num_pages }}"
+                                                           href="{{ query }}&page={{ products.paginator.num_pages }}">
+                                                            <i class="fa fa-angle-double-right"></i>
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="{% static 'adminpage/js/product.js' %}"></script>
+    <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/js/selectize.min.js"
+            integrity="sha512-IOebNkvA/HZjMM7MxL0NYeLYEalloZ8ckak+NDtOViP7oiYzG5vn6WVXyrJDiJPhl4yRdmNAG49iuLmhkUdVsQ=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+    ></script>
+
+    <script>
+        $('#select-approved').selectize({sortField: 'text'})
+        $('#select-dateQueryType').selectize({sortField: 'text'})
+    </script>
+
+
+{% endblock %}

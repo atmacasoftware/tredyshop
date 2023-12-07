@@ -219,7 +219,7 @@ class SSS(models.Model):
     class Meta:
         verbose_name = "6) Sıkça Sorulan Sorular"
         verbose_name_plural = "6) Sıkça Sorulan Sorular"
-        ordering = ['created_at']
+        ordering = ['-id']
 
     def __str__(self):
         return f"{self.question}"

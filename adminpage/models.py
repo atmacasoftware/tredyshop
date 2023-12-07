@@ -35,6 +35,22 @@ class Trendyol(models.Model):
         verbose_name_plural = "1) Trendyol Hesap Bilgileri"
 
 
+class Hepsiburada(models.Model):
+    companyname = models.CharField(max_length=255, verbose_name="Firma Adı", null=True, blank=True)
+    kep = models.CharField(max_length=255, verbose_name="KEP Adresi", null=True, blank=True)
+    username = models.CharField(max_length=255, verbose_name="Kullanıcı Adı", null=True, blank=True)
+    password = models.CharField(max_length=255, verbose_name="Şifre", null=True, blank=True)
+    merchantID = models.CharField(max_length=255,verbose_name="Merchant ID", null=True, blank=True)
+    token = models.CharField(max_length=255, verbose_name="Token", null=True, blank=True)
+    firstbarem = models.FloatField(verbose_name="Barem 1. Aralık Maksimum Değeri", null=True)
+    secondbarem = models.FloatField(verbose_name="Barem 2. Aralık Maksimum Değeri", null=True)
+    hizmet_bedeli = models.FloatField(verbose_name="Hizmet Bedeli", null=True, blank=True)
+    islem_bedeli = models.FloatField(verbose_name="İşlem Bedeli", null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Hepsiburada Hesap Bilgileri"
+        verbose_name_plural = "Hepsiburada Hesap Bilgileri"
+
 class IssuedInvoices(models.Model):
     YEAR = (
         ("2023", "2023"),
@@ -317,6 +333,7 @@ class Harcamalar(models.Model):
         ("Ürün Alımı", "Ürün Alımı"),
         ("KDV Ödemesi", "KDV Ödemesi"),
         ("Gelir Geçici Vergi Ödemesi", "Gelir Geçici Vergi Ödemesi"),
+        ("Reklam Harcaması", "Reklam Harcaması"),
         ("Diğer Harcamalar", "Diğer Harcamalar")
     )
 
@@ -326,6 +343,7 @@ class Harcamalar(models.Model):
         ("İade Yapıldı", "İade Yapıldı"),
     )
 
+    siparis_numarasi = models.CharField(null=True, blank=True, max_length=155, verbose_name="Sipariş Numarası")
     harcama_tipi = models.CharField(choices=TYPE, null=True, blank=False, max_length=100, verbose_name="Harcama Tipi")
     harcama_adi = models.CharField(max_length=300, verbose_name="Harcama Adı", null=True)
     harcama_tutari = models.FloatField(verbose_name="Harcama Tutarı", null=True)
@@ -341,7 +359,7 @@ class Harcamalar(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return self.harcama_adi
+        return str(self.harcama_adi)
 
 
 class UpdateHistory(models.Model):
@@ -390,6 +408,8 @@ class Izinler(models.Model):
     gecmis_kayitlar = models.BooleanField(default=False, verbose_name="Geçmiş Kayıt İşlemleri")
     istatistikler = models.BooleanField(default=False, verbose_name="İstatistiki Bilgilere Erişim")
     aksyionlar = models.BooleanField(default=False, verbose_name="Aksiyonlara Erişim")
+    created_at = models.DateField(auto_now_add=True, verbose_name="Oluşturulma Tarihi", null=True)
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi", null=True)
 
     class Meta:
         verbose_name = "İzinler"

@@ -1,0 +1,139 @@
+{% extends 'backend/adminpage/layout.html' %}
+{% load static %}
+
+{% block title %}<title>Trendyol Servis İstekleri</title>{% endblock %}
+
+{% block users %}
+
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Trendyol Servis İstekleri</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'mainpage' %}">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Trendyol Servis İstekleri</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Analizler</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6"><b>Ürün Sayısı: </b> {{ response.itemCount }}</div>
+                                <div class="col-lg-6"><b>Başarısız Ürün Sayısı: </b>{{ response.failedItemCount }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">{{ response.batchRequestId }}</h3>
+                                <div class="card-tools">
+                                    <div class="input-group input-group-sm" style="width: 250px;">
+                                        <input type="text" name="table_search" id="search" onkeyup="searchFunction();"
+                                               class="form-control float-right"
+                                               placeholder="Arama..">
+
+                                        <div class="input-group-append">
+                                            <button type="submit" class="btn btn-default">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                {% for i in items %}
+                                    {{ i }}
+                                {% endfor %}
+                                <div class="card-body table-responsive p-0">
+                                    <table class="table table-hover text-nowrap" id="batchTable">
+                                        <thead>
+                                        <tr>
+                                            <th>Güncelleme Tarihi</th>
+                                            <th>Barkod</th>
+                                            <th>Miktar</th>
+                                            <th>Liste Fiyatı</th>
+                                            <th>Satış Fiyatı</th>
+                                            <th>Status</th>
+                                            <th>Açıklama</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for item in response.items %}
+                                            <tr>
+                                                <td>{% if item.requestItem.updateRequestDate %}
+                                                    {{ item.requestItem.updateRequestDate|slice:"10" }} - {{ item.requestItem.updateRequestDate|slice:"11:19" }}{% else %}-{% endif %}</td>
+                                                <td>{{ item.requestItem.barcode }}</td>
+                                                <td>{{ item.requestItem.quantity }}</td>
+                                                <td>{{ item.requestItem.listPrice }}</td>
+                                                <td>{{ item.requestItem.salePrice }}</td>
+                                                <td>{{ item.status }}</td>
+                                                <td>{% if item.failureReasons %}{{ item.failureReasons }}{% else %}
+                                                    -{% endif %}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <div id="no-data"
+                                         style="width: 100%; text-align: center; margin-top: 5px; margin-bottom: 5px;"></div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    </section>
+
+    <script>
+
+        function searchFunction() {
+            let input, filter, table, tr, td, j;
+            input = document.getElementById("search");
+            filter = input.value.toLowerCase();
+            table = document.getElementById("batchTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (j = 0; j < tr.length; j++) {
+                td = tr[j].getElementsByTagName("td");
+                msg = document.getElementById("no-data");
+
+                if (td.length > 0) {
+                    if (td[0].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[1].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[2].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[3].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[4].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[5].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[6].innerHTML.toLocaleLowerCase().indexOf(filter) > -1) {
+                        tr[j].style.display = ""
+                        msg.innerHTML = ""
+                    } else {
+                        tr[j].style.display = "none"
+                    }
+                }
+
+                if (td.length == 0) {
+                    msg.innerHTML = "Aramanızla eşleşen kayıt bulunamadı."
+                }
+
+            }
+        }
+
+    </script>
+{% endblock %}

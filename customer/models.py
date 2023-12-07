@@ -33,7 +33,7 @@ class CustomerAddress(models.Model):
     company_name = models.CharField(verbose_name="Şirket Adı", max_length=255, null=True, blank=True)
     tax_number = models.CharField(null=True, blank=True, max_length=10, verbose_name="Vergi Numarası")
     tax_administration = models.CharField(null=True, blank=True, verbose_name="Vergi Dairesi", max_length=255)
-    is_active = models.CharField(choices=CURRENT_ADDRES, max_length=20, null=True, blank=True, default="Hayır",
+    is_active = models.CharField(choices=CURRENT_ADDRES, max_length=20, null=True, blank=False, default="Evet",
                                  verbose_name="Geçerli Adres Yap")
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
@@ -44,6 +44,17 @@ class CustomerAddress(models.Model):
 
     def __str__(self):
         return f"{self.title}"
+
+    def save(self, *args, **kwargs):
+        another_address = CustomerAddress.objects.filter(user=self.user).exclude(id=self.id)
+        if another_address.count() > 0:
+            for a in another_address:
+                if self.is_active == "Evet":
+                    if a.is_active == "Evet":
+                        a.is_active = "Hayır"
+                        a.save()
+
+        super(CustomerAddress, self).save(*args, **kwargs)
 
 class Subscription(models.Model):
     email = models.EmailField(max_length=300, verbose_name="Email Adresi", null=True, blank=False)
@@ -99,3 +110,4 @@ class Coupon(models.Model):
         if gecen_gun >= 0:
             self.is_completed = True
             self.save()
+

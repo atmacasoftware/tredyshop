@@ -1,184 +1,240 @@
 {% load static %}
 {% if request.path != '/checkout' %}
-<header id="header" class="{% if request.path == '/' %}header-v3 bg-w{% else %}header-v5{% endif %}">
-    <div class="topbar">
-        <div class="container container-240">
-            <div class="row flex">
-                <div class="col-md-6 col-sm-6 col-xs-12 flex-left">
-                    <div class="topbar-left">
 
-                        <div class="element hidden-xs hidden-sm">
-                            <a href="#"><i class="fa fa-truck"></i><span>Sipariş Takibi</span></a>
-                        </div>
-                        <div class="element element-account hidden-md hidden-lg" style=" width: 100%; display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
-                            <a href="{% url 'profile_mainpage' %}"><i class="fa fa-user" style="margin-right: 10px;"></i><span>Hesabım</span></a>
-                            <a href="{% url 'wishlist' %}"><i class="fa fa-heart" style="margin-right: 10px;"></i><span>Favorilerim</span></a>
-                            <a href="{% url 'cart' %}"><i class="fa fa-shopping-bag" style="margin-right: 10px;"></i><span>Sepetim</span></a>
+    <header id="header" class="{% if request.path == '/' %}header-v3 bg-w{% else %}header-v5{% endif %}">
+        <div class="topbar">
+            <div class="container container-240">
+                <div class="row flex">
+                    <div class="col-md-6 col-sm-6 col-xs-12 flex-left">
+                        <div class="topbar-left">
+
+                            <div class="element hidden-xs hidden-sm">
+                                <a href="#"><i class="fa fa-truck"></i><span>Sipariş Takibi</span></a>
+                            </div>
+                            <div class="element element-account hidden-md hidden-lg"
+                                 style=" width: 100%; display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+                                <a href="{% url 'profile_mainpage' %}"><i class="fa-solid fa-user"
+                                                                          style="margin-right: 10px;"></i><span>Hesabım</span></a>
+                                <a href="{% url 'wishlist' %}"><i class="fa-solid fa-heart"
+                                                                  style="margin-right: 10px;"></i><span>Favorilerim</span></a>
+                                <a href="{% url 'cart' %}"><i class="fa-solid fa-shopping-cart"
+                                                              style="margin-right: 10px;"></i><span>Sepetim</span></a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-8 flex-right">
-                    <div class="topbar-right">
-                        <div class="element hidden-xs hidden-sm">
-                            <a href="{% url 'aboutus' %}">Hakkımızda</a>
-                        </div>
-                        <div class="element hidden-xs hidden-sm">
-                            <a href="{% url 'faq' %}">SSS</a>
-                        </div>
-                        <div class="element hidden-xs hidden-sm">
-                            <a href="https://wa.me/08503098552" target="_blank">Canlı Yardım</a>
+                    <div class="col-md-6 col-sm-6 col-xs-8 flex-right">
+                        <div class="topbar-right">
+                            <div class="element hidden-xs hidden-sm">
+                                <a href="{% url 'aboutus' %}">Hakkımızda</a>
+                            </div>
+                            <div class="element hidden-xs hidden-sm">
+                                <a href="{% url 'faq' %}">SSS</a>
+                            </div>
+                            <div class="element hidden-xs hidden-sm">
+                                <a href="https://wa.me/08503098552" target="_blank">Canlı Yardım</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="header-center">
-        <div class="container container-240">
-            <div class="row flex">
-                <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6 v-center header-logo">
-                    <a href="{% url 'mainpage' %}"><img src="{% static 'img/logo2.png' %}" alt=""
-                                                        class="img-reponsive" style="height: auto;"></a>
-                </div>
-                <div class="col-lg-7 col-md-7 v-center header-search hidden-xs hidden-sm">
-                    <form method="get" class="searchform ajax-search" role="search" action="{% url 'search' %}"
-                          id="generalSearchForm">
-                        <input type="hidden" name="type" value="product">
-                        <input type="text" id="generalSearch" name="q"
-                               class="form-control" placeholder="Keşfetmeye başla...">
-                        <ul class="list-product-search hidden-xs hidden-sm">
+        <div class="header-center">
+            <div class="container container-240">
+                <div class="row flex">
+                    <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6 v-center header-logo">
+                        <a href="{% url 'mainpage' %}"><img src="{% static 'img/logo2.png' %}" alt=""
+                                                            class="img-reponsive" style="height: auto;"></a>
+                    </div>
+                    <div class="col-lg-7 col-md-7 v-center header-search hidden-xs hidden-sm">
+                        <form method="get" class="searchform ajax-search" role="search" action="{% url 'search' %}"
+                              id="generalSearchForm">
+                            <input type="hidden" name="type" value="product">
+                            <input type="text" id="generalSearch" name="q"
+                                   class="form-control" placeholder="Keşfetmeye başla...">
+                            <ul class="list-product-search hidden-xs hidden-sm">
 
-                        </ul>
-                        <span class="input-group-btn">
+                            </ul>
+                            <span class="input-group-btn">
                                           <button class="button_search" type="submit"><i
                                                   class="fa fa-search"></i></button>
                                 </span>
-                    </form>
-                    <div class="tags">
-                        <span>En çok arananlar :</span>
-                        {% for keyword in search_keywords %}
-                            <a href="#">{{ keyword.keyword }}</a>
-                        {% endfor %}
+                        </form>
+                    </div>
+                    <div class="col-lg-3  col-md-3 col-sm-6 col-xs-6 v-center header-sub">
+                        <div class="right-panel">
+                            <div class="header-sub-element row">
+                                <div class="account-dropdown hidden-xs hidden-sm">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                       aria-haspopup="true" aria-expanded="false">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             xmlns:xlink="http://www.w3.org/1999/xlink" width="30" zoomAndPan="magnify"
+                                             viewBox="0 0 30 30.000001" height="30" preserveAspectRatio="xMidYMid meet"
+                                             version="1.0">
+                                            <defs>
+                                                <clipPath id="5035f4b82c">
+                                                    <path d="M 0.484375 15 L 29.515625 15 L 29.515625 29 L 0.484375 29 Z M 0.484375 15 "
+                                                          clip-rule="nonzero"/>
+                                                </clipPath>
+                                            </defs>
+                                            <path fill="#000000"
+                                                  d="M 15 1.507812 C 11.21875 1.507812 8.152344 4.570312 8.152344 8.355469 C 8.152344 12.136719 11.21875 15.199219 15 15.199219 C 18.78125 15.199219 21.847656 12.136719 21.847656 8.355469 C 21.847656 4.570312 18.78125 1.507812 15 1.507812 Z M 6.785156 8.355469 C 6.785156 3.816406 10.460938 0.136719 15 0.136719 C 19.539062 0.136719 23.214844 3.816406 23.214844 8.355469 C 23.214844 12.890625 19.539062 16.570312 15 16.570312 C 10.460938 16.570312 6.785156 12.890625 6.785156 8.355469 Z M 6.785156 8.355469 "
+                                                  fill-opacity="1" fill-rule="evenodd"/>
+                                            <g clip-path="url(#5035f4b82c)">
+                                                <path fill="#000000"
+                                                      d="M 15 16.570312 C 8.746094 16.570312 3.589844 20.503906 2.300781 25.664062 C 2.074219 26.582031 2.847656 27.527344 4.042969 27.527344 L 25.957031 27.527344 C 27.152344 27.527344 27.925781 26.582031 27.695312 25.664062 C 26.410156 20.503906 21.253906 16.570312 15 16.570312 Z M 0.972656 25.332031 C 2.429688 19.488281 8.195312 15.199219 15 15.199219 C 21.800781 15.199219 27.566406 19.488281 29.027344 25.332031 C 29.527344 27.347656 27.785156 28.894531 25.957031 28.894531 L 4.042969 28.894531 C 2.214844 28.894531 0.46875 27.347656 0.972656 25.332031 Z M 0.972656 25.332031 "
+                                                      fill-opacity="1" fill-rule="evenodd"/>
+                                            </g>
+                                        </svg>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-account">
+                                        {% if request.user.is_authenticated %}
+                                            <ul class="mini-products-list">
+                                                <li class="item-cart">
+                                                    <a href="{% url 'profile_mainpage' %}"><i
+                                                            class="fa fa-user"></i>{{ request.user.get_full_name }}
+                                                    </a>
+                                                </li>
+                                                <li class="item-cart">
+                                                    <a href="{% url 'order_page' %}"><i class="fa fa-truck"></i>Siparişlerim</a>
+                                                </li>
+                                                <li class="item-cart">
+                                                    <a href="{% url 'coupon_page' %}"><i class="fa fa-gift"></i>Kuponlarım</a>
+                                                </li>
+                                                <li class="item-cart">
+                                                    <a href=""><i class="fa fa-life-ring"></i>Soru ve Taleplerim</a>
+                                                </li>
+                                                <li class="item-cart">
+                                                    <a href="{% url 'reviews' %}"><i class="fa fa-commenting"></i>Değerlendirmelerim</a>
+                                                </li>
+                                                <li class="item-cart">
+                                                    <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i>Çıkış
+                                                        Yap</a>
+                                                </li>
+                                            </ul>
+                                        {% else %}
+                                            <ul class="not-authentication">
+                                                <li style="height: 30px;"><a href="{% url 'login' %}">
+                                                    <div>Giriş Yap</div>
+                                                </a></li>
+                                                <li style="height: 30px;"><a href="{% url 'register' %}">
+                                                    <div>Kayıt Ol</div>
+                                                </a></li>
+                                            </ul>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <a href="{% url 'wishlist' %}" class="hidden-xs hidden-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                         width="30" zoomAndPan="magnify"
+                                         viewBox="0 0 30 30.000001" height="30" preserveAspectRatio="xMidYMid meet"
+                                         version="1.0">
+                                        <defs>
+                                            <clipPath id="5eb2aac91f">
+                                                <path d="M 0.484375 1.996094 L 29.515625 1.996094 L 29.515625 25.949219 L 0.484375 25.949219 Z M 0.484375 1.996094 "
+                                                      clip-rule="nonzero"/>
+                                            </clipPath>
+                                        </defs>
+                                        <g clip-path="url(#5eb2aac91f)">
+                                            <path fill="#000000"
+                                                  d="M 15 6.316406 C 15.6875 5.117188 16.441406 4.171875 17.324219 3.457031 C 18.535156 2.484375 19.976562 1.996094 21.875 1.996094 C 23.972656 1.996094 25.871094 2.839844 27.28125 4.207031 C 28.65625 5.570312 29.507812 7.457031 29.507812 9.566406 C 29.507812 13.175781 28.425781 15.90625 26.066406 18.40625 C 23.777344 20.84375 20.273438 23.085938 15.359375 25.816406 C 15.097656 25.949219 14.804688 25.914062 14.574219 25.785156 C 10.152344 23.121094 6.683594 20.910156 4.292969 18.472656 C 1.804688 15.9375 0.492188 13.207031 0.492188 9.566406 C 0.492188 7.488281 1.34375 5.601562 2.71875 4.207031 C 4.097656 2.808594 5.996094 1.996094 8.125 1.996094 C 11.464844 1.996094 13.328125 3.425781 15 6.316406 Z M 18.242188 4.597656 C 17.257812 5.375 16.472656 6.578125 15.65625 8.203125 C 15.589844 8.332031 15.457031 8.464844 15.328125 8.527344 C 14.96875 8.722656 14.507812 8.5625 14.34375 8.203125 C 12.773438 5.050781 11.203125 3.492188 8.125 3.492188 C 6.421875 3.492188 4.882812 4.171875 3.769531 5.277344 C 2.65625 6.382812 1.96875 7.910156 1.96875 9.601562 C 1.96875 12.785156 3.144531 15.222656 5.339844 17.464844 C 7.566406 19.742188 10.839844 21.820312 15 24.355469 C 19.585938 21.789062 22.859375 19.707031 24.988281 17.433594 C 27.082031 15.191406 28.03125 12.785156 28.03125 9.566406 C 28.03125 7.878906 27.34375 6.351562 26.230469 5.246094 C 25.117188 4.140625 23.578125 3.457031 21.875 3.457031 C 20.335938 3.457031 19.191406 3.847656 18.242188 4.597656 Z M 18.242188 4.597656 "
+                                                  fill-opacity="1" fill-rule="nonzero"/>
+                                        </g>
+                                    </svg>
+                                </a>
+                                <div class="cart hidden-xs hidden-sm">
+                                    <a href="{% url 'cart' %}" class="dropdown-toggle" id="label5">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             xmlns:xlink="http://www.w3.org/1999/xlink" width="30" zoomAndPan="magnify"
+                                             viewBox="0 0 30 30.000001" height="30" preserveAspectRatio="xMidYMid meet"
+                                             version="1.0">
+                                            <defs>
+                                                <clipPath id="2db1bdfedc">
+                                                    <path d="M 0.484375 0 L 29.515625 0 L 29.515625 23 L 0.484375 23 Z M 0.484375 0 "
+                                                          clip-rule="nonzero"/>
+                                                </clipPath>
+                                                <clipPath id="3d41c946bd">
+                                                    <path d="M 7 23 L 14 23 L 14 29.03125 L 7 29.03125 Z M 7 23 "
+                                                          clip-rule="nonzero"/>
+                                                </clipPath>
+                                                <clipPath id="7f6171d252">
+                                                    <path d="M 18 23 L 25 23 L 25 29.03125 L 18 29.03125 Z M 18 23 "
+                                                          clip-rule="nonzero"/>
+                                                </clipPath>
+                                            </defs>
+                                            <g clip-path="url(#2db1bdfedc)">
+                                                <path fill="#000000"
+                                                      d="M 8.226562 18.386719 L 23.082031 18.386719 C 23.558594 18.390625 24.019531 18.3125 24.464844 18.15625 C 24.914062 18 25.324219 17.773438 25.695312 17.480469 C 26.066406 17.183594 26.375 16.835938 26.628906 16.433594 C 26.882812 16.035156 27.058594 15.601562 27.164062 15.140625 L 29.492188 5.054688 C 29.523438 4.914062 29.527344 4.769531 29.492188 4.625 C 29.460938 4.480469 29.398438 4.351562 29.304688 4.234375 C 29.214844 4.121094 29.101562 4.03125 28.96875 3.96875 C 28.835938 3.902344 28.695312 3.871094 28.546875 3.871094 L 6.03125 3.871094 L 5.296875 0.746094 C 5.246094 0.527344 5.132812 0.347656 4.957031 0.207031 C 4.78125 0.0703125 4.578125 0 4.355469 0 L 1.453125 0 C 1.324219 0 1.199219 0.0234375 1.082031 0.0742188 C 0.960938 0.121094 0.859375 0.191406 0.765625 0.285156 C 0.675781 0.375 0.605469 0.480469 0.558594 0.597656 C 0.507812 0.714844 0.484375 0.839844 0.484375 0.96875 C 0.484375 1.097656 0.507812 1.21875 0.558594 1.339844 C 0.605469 1.457031 0.675781 1.5625 0.765625 1.652344 C 0.859375 1.742188 0.960938 1.8125 1.082031 1.863281 C 1.199219 1.910156 1.324219 1.933594 1.453125 1.933594 L 3.589844 1.933594 L 7.066406 16.699219 C 6.761719 16.832031 6.488281 17.015625 6.246094 17.242188 C 6.003906 17.472656 5.808594 17.734375 5.65625 18.027344 C 5.503906 18.324219 5.40625 18.636719 5.359375 18.964844 C 5.316406 19.296875 5.328125 19.625 5.394531 19.949219 C 5.464844 20.273438 5.585938 20.578125 5.757812 20.863281 C 5.929688 21.148438 6.144531 21.394531 6.402344 21.605469 C 6.660156 21.8125 6.945312 21.976562 7.257812 22.085938 C 7.570312 22.199219 7.894531 22.257812 8.226562 22.257812 L 26.613281 22.257812 C 26.742188 22.257812 26.863281 22.234375 26.984375 22.183594 C 27.101562 22.136719 27.207031 22.066406 27.296875 21.976562 C 27.386719 21.882812 27.457031 21.777344 27.507812 21.660156 C 27.554688 21.542969 27.582031 21.417969 27.582031 21.289062 C 27.582031 21.160156 27.554688 21.039062 27.507812 20.921875 C 27.457031 20.800781 27.386719 20.695312 27.296875 20.605469 C 27.207031 20.515625 27.101562 20.445312 26.984375 20.394531 C 26.863281 20.347656 26.742188 20.324219 26.613281 20.324219 L 8.226562 20.324219 C 8.097656 20.324219 7.972656 20.296875 7.855469 20.25 C 7.738281 20.199219 7.632812 20.128906 7.542969 20.039062 C 7.449219 19.949219 7.378906 19.84375 7.332031 19.726562 C 7.28125 19.605469 7.257812 19.484375 7.257812 19.355469 C 7.257812 19.226562 7.28125 19.101562 7.332031 18.984375 C 7.378906 18.867188 7.449219 18.761719 7.542969 18.671875 C 7.632812 18.578125 7.738281 18.511719 7.855469 18.460938 C 7.972656 18.410156 8.097656 18.386719 8.226562 18.386719 Z M 27.332031 5.804688 L 25.277344 14.703125 C 25.222656 14.953125 25.125 15.183594 24.992188 15.402344 C 24.855469 15.617188 24.6875 15.804688 24.488281 15.964844 C 24.289062 16.121094 24.066406 16.242188 23.828125 16.328125 C 23.585938 16.410156 23.335938 16.453125 23.082031 16.453125 L 8.992188 16.453125 L 6.484375 5.804688 Z M 27.332031 5.804688 "
+                                                      fill-opacity="1" fill-rule="nonzero"/>
+                                            </g>
+                                            <g clip-path="url(#3d41c946bd)">
+                                                <path fill="#000000"
+                                                      d="M 10.160156 23.226562 C 9.777344 23.226562 9.40625 23.300781 9.050781 23.445312 C 8.695312 23.59375 8.378906 23.804688 8.109375 24.074219 C 7.835938 24.347656 7.625 24.664062 7.480469 25.019531 C 7.332031 25.375 7.257812 25.742188 7.257812 26.128906 C 7.257812 26.515625 7.332031 26.882812 7.480469 27.238281 C 7.625 27.597656 7.835938 27.910156 8.109375 28.183594 C 8.378906 28.453125 8.695312 28.664062 9.050781 28.8125 C 9.40625 28.957031 9.777344 29.03125 10.160156 29.03125 C 10.546875 29.03125 10.917969 28.957031 11.273438 28.8125 C 11.628906 28.664062 11.941406 28.453125 12.214844 28.183594 C 12.488281 27.910156 12.695312 27.597656 12.84375 27.238281 C 12.992188 26.882812 13.066406 26.515625 13.066406 26.128906 C 13.066406 25.742188 12.992188 25.375 12.84375 25.019531 C 12.695312 24.664062 12.488281 24.347656 12.214844 24.074219 C 11.941406 23.804688 11.628906 23.59375 11.273438 23.445312 C 10.917969 23.300781 10.546875 23.226562 10.160156 23.226562 Z M 10.160156 27.097656 C 10.03125 27.097656 9.910156 27.070312 9.789062 27.023438 C 9.671875 26.972656 9.566406 26.902344 9.476562 26.8125 C 9.386719 26.722656 9.316406 26.617188 9.265625 26.5 C 9.21875 26.378906 9.195312 26.257812 9.195312 26.128906 C 9.195312 26 9.21875 25.878906 9.265625 25.757812 C 9.316406 25.640625 9.386719 25.535156 9.476562 25.445312 C 9.566406 25.355469 9.671875 25.285156 9.789062 25.234375 C 9.910156 25.1875 10.03125 25.160156 10.160156 25.160156 C 10.289062 25.160156 10.414062 25.1875 10.53125 25.234375 C 10.648438 25.285156 10.753906 25.355469 10.84375 25.445312 C 10.9375 25.535156 11.007812 25.640625 11.054688 25.757812 C 11.105469 25.878906 11.128906 26 11.128906 26.128906 C 11.128906 26.257812 11.105469 26.378906 11.054688 26.5 C 11.007812 26.617188 10.9375 26.722656 10.84375 26.8125 C 10.753906 26.902344 10.648438 26.972656 10.53125 27.023438 C 10.414062 27.070312 10.289062 27.097656 10.160156 27.097656 Z M 10.160156 27.097656 "
+                                                      fill-opacity="1" fill-rule="nonzero"/>
+                                            </g>
+                                            <g clip-path="url(#7f6171d252)">
+                                                <path fill="#000000"
+                                                      d="M 21.773438 23.226562 C 21.390625 23.226562 21.019531 23.300781 20.664062 23.445312 C 20.308594 23.59375 19.992188 23.804688 19.722656 24.074219 C 19.449219 24.347656 19.238281 24.664062 19.09375 25.019531 C 18.945312 25.375 18.871094 25.742188 18.871094 26.128906 C 18.871094 26.515625 18.945312 26.882812 19.09375 27.238281 C 19.238281 27.597656 19.449219 27.910156 19.722656 28.183594 C 19.992188 28.453125 20.308594 28.664062 20.664062 28.8125 C 21.019531 28.957031 21.390625 29.03125 21.773438 29.03125 C 22.160156 29.03125 22.53125 28.957031 22.886719 28.8125 C 23.242188 28.664062 23.554688 28.453125 23.828125 28.183594 C 24.097656 27.910156 24.308594 27.597656 24.457031 27.238281 C 24.605469 26.882812 24.675781 26.515625 24.675781 26.128906 C 24.675781 25.742188 24.605469 25.375 24.457031 25.019531 C 24.308594 24.664062 24.097656 24.347656 23.828125 24.074219 C 23.554688 23.804688 23.242188 23.59375 22.886719 23.445312 C 22.53125 23.300781 22.160156 23.226562 21.773438 23.226562 Z M 21.773438 27.097656 C 21.644531 27.097656 21.523438 27.070312 21.402344 27.023438 C 21.285156 26.972656 21.179688 26.902344 21.089844 26.8125 C 21 26.722656 20.929688 26.617188 20.878906 26.5 C 20.832031 26.378906 20.804688 26.257812 20.804688 26.128906 C 20.804688 26 20.832031 25.878906 20.878906 25.757812 C 20.929688 25.640625 21 25.535156 21.089844 25.445312 C 21.179688 25.355469 21.285156 25.285156 21.402344 25.234375 C 21.523438 25.1875 21.644531 25.160156 21.773438 25.160156 C 21.902344 25.160156 22.027344 25.1875 22.144531 25.234375 C 22.261719 25.285156 22.367188 25.355469 22.457031 25.445312 C 22.550781 25.535156 22.621094 25.640625 22.667969 25.757812 C 22.71875 25.878906 22.742188 26 22.742188 26.128906 C 22.742188 26.257812 22.71875 26.378906 22.667969 26.5 C 22.621094 26.617188 22.550781 26.722656 22.457031 26.8125 C 22.367188 26.902344 22.261719 26.972656 22.144531 27.023438 C 22.027344 27.070312 21.902344 27.097656 21.773438 27.097656 Z M 21.773438 27.097656 "
+                                                      fill-opacity="1" fill-rule="nonzero"/>
+                                            </g>
+                                        </svg>
+                                        <span class="count cart-count">{{ cart_count }}</span>
+                                    </a>
+
+                                </div>
+                                <a href="#" class="hidden-md hidden-lg icon-pushmenu js-push-menu">
+                                    <i class="fa fa-bars f-15"></i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-lg-3  col-md-3 col-sm-6 col-xs-6 v-center header-sub">
-                    <div class="right-panel">
-                        <div class="header-sub-element hidden-xs hidden-sm">
-                            <a href="https://wa.me/{{ setting.whatsapp }}" target="_blank" class="header_whatsapp">
-                                <div class="sub-left">
-                                    <i class="fa fa-4x fa-whatsapp" style="color: #25D366;"></i>
-                                </div>
-                                <div class="sub-right">
-                                    <span>Whatsapp Destek</span>
-                                    <div class="phone">0(850) 309 8552</div>
-                                </div>
-                            </a>
+            </div>
+        </div>
+        <div class="header-bottom hidden-xs hidden-sm">
+            <div class="container container-240">
+                <div class="flex lr">
+                    <nav class="main-menu">
+                        <div class="collapse navbar-collapse" id="myNavbar">
+                            <ul class="nav navbar-nav js-menubar">
+                                <li class="level1 active hassub"><a href="{% url 'new_product' %}">Yeni Ürünler</a></li>
+                                <li class="level1 active hassub"><a href="{% url 'most_sell_product' %}">En Çok
+                                    Satılan</a></li>
+                                <li class="level1 dropdown hassub"><a href="{% url 'most_discount_product' %}">Süper
+                                    Fırsatlar</a>
+                                </li>
+                                <li class="level1 active dropdown">
+                                    <a href="#">Blog</a>
+                                </li>
+                            </ul>
                         </div>
-                        <div class="header-sub-element row">
-                            <div class="account-dropdown hidden-xs hidden-sm">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                   aria-haspopup="true" aria-expanded="false">
-                                    <i class="fa-regular fa-2x fa-user"></i>
-                                </a>
-                                <div class="dropdown-menu dropdown-account">
-                                    {% if request.user.is_authenticated %}
-                                        <ul class="mini-products-list">
-                                            <li class="item-cart">
-                                                <a href="{% url 'profile_mainpage' %}"><i
-                                                        class="fa fa-user"></i>{{ request.user.get_full_name }}
-                                                </a>
-                                            </li>
-                                            <li class="item-cart">
-                                                <a href="{% url 'order_page' %}"><i class="fa fa-truck"></i>Siparişlerim</a>
-                                            </li>
-                                            <li class="item-cart">
-                                                <a href="{% url 'coupon_page' %}"><i class="fa fa-gift"></i>Kuponlarım</a>
-                                            </li>
-                                            <li class="item-cart">
-                                                <a href=""><i class="fa fa-life-ring"></i>Soru ve Taleplerim</a>
-                                            </li>
-                                            <li class="item-cart">
-                                                <a href="{% url 'reviews' %}"><i class="fa fa-commenting"></i>Değerlendirmelerim</a>
-                                            </li>
-                                            <li class="item-cart">
-                                                <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i>Çıkış
-                                                    Yap</a>
-                                            </li>
-                                        </ul>
-                                    {% else %}
-                                        <ul>
-                                            <li style="height: 30px;"><a href="{% url 'login' %}">Giriş Yap</a></li>
-                                            <li style="height: 30px;"><a href="{% url 'register' %}">Kayıt Ol</a></li>
-                                        </ul>
+                    </nav>
+                    <div class="header-bottom-right hidden-xs hidden-sm">
+                        <img src="{% static 'img/icon-ship.png' %}" alt="" class="img-reponsive">
+                        <span>{{ setting.free_shipping }} TL ve üzeri alışverişlerde ücretsiz kargo</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="header-cate e-gradient hidden-xs hidden-sm">
+            <ul class="category-menu">
+                {% for sc in subcategories %}
+                    {% if sc.maincategory.id == 1 %}
+                        <li class="menu-dropdown">
+                            <a href="{{ sc.get_url }}" class="menu-1"><img src="{{ sc.get_image }}"
+                                                                           alt="">{{ sc.title }}
+                            </a>
+                            <ul>
+                                {% for sbc in subbottomcategories %}
+                                    {% if sbc.subcategory.id == sc.id %}
+                                        <li><a href="{{ sbc.get_url }}">{{ sbc.title }}</a></li>
                                     {% endif %}
-                                </div>
-                            </div>
-                            <a href="{% url 'wishlist' %}" class="hidden-xs hidden-sm">
-                                <i class="fa-regular fa-2x fa-heart"></i>
-                            </a>
-                            <div class="cart hidden-xs hidden-sm">
-                                <a href="{% url 'cart' %}" class="dropdown-toggle" id="label5">
-                                    <i class="fa-solid fa-2x fa-bag-shopping" style="color: #D31027;"></i>
-                                    <span class="count cart-count">{{ cart_count }}</span>
-                                </a>
-
-                            </div>
-                            <a href="#" class="hidden-md hidden-lg icon-pushmenu js-push-menu">
-                                <i class="fa fa-bars f-15"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
         </div>
-    </div>
-    <div class="header-bottom hidden-xs hidden-sm">
-        <div class="container container-240">
-            <div class="flex lr">
-                <nav class="main-menu">
-                    <div class="collapse navbar-collapse" id="myNavbar">
-                        <ul class="nav navbar-nav js-menubar">
-                            <li class="level1 active hassub"><a href="{% url 'new_product' %}">Yeni Ürünler<span
-                                    class="h-ribbon h-pos e-red">HOT</span></a></li>
-                            <li class="level1 active hassub"><a href="{% url 'most_sell_product' %}">En Çok
-                                Satılan<span
-                                        class="h-ribbon h-pos e-skyblue">MOST</span></a></li>
-                            <li class="level1 dropdown hassub"><a href="{% url 'most_discount_product' %}">Süper
-                                Fırsatlar<span
-                                        class="h-ribbon h-pos e-green">sale</span></a>
-                            </li>
-                            <li class="level1 active dropdown">
-                                <a href="#">Blog</a>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-                <div class="header-bottom-right hidden-xs hidden-sm">
-                    <img src="{% static 'img/icon-ship.png' %}" alt="" class="img-reponsive">
-                    <span>{{ setting.free_shipping }} TL ve üzeri alışverişlerde ücretsiz kargo</span>
-                </div>
-            </div>
-
-        </div>
-    </div>
-    <div class="header-cate e-gradient hidden-xs hidden-sm">
-        <ul class="category-menu">
-            {% for sc in subcategories %}
-                {% if sc.maincategory.id == 1 %}
-                    <li class="menu-dropdown">
-                        <a href="{{ sc.get_url }}" class="menu-1"><img src="{{ sc.get_image }}" alt="">{{ sc.title }}
-                        </a>
-                        <ul>
-                            {% for sbc in subbottomcategories %}
-                                {% if sbc.subcategory.id == sc.id %}
-                                    <li><a href="{{ sbc.get_url }}">{{ sbc.title }}</a></li>
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
-                    </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    </div>
-</header>
+    </header>
 {% endif %}

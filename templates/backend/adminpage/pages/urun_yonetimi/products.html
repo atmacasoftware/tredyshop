@@ -1,0 +1,386 @@
+{% extends 'backend/adminpage/layout.html' %}
+{% load static %}
+
+{% block title %}<title>Tüm Ürünler</title>{% endblock %}
+
+{% block products %}
+
+    <link rel="stylesheet" href="{% static 'adminpage/css/table.css' %}">
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/css/selectize.default.min.css"
+            integrity="sha512-pTaEn+6gF1IeWv3W1+7X7eM60TFu/agjgoHmYhAfLEU8Phuf6JKiiE8YmsNC0aCgQv4192s4Vai8YZ6VNM6vyQ=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+    />
+
+    <div class="waiting">
+        <div class="spinner-border text-danger" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <h4>Lütfen Bekleyiniz...</h4>
+    </div>
+
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Ürünler</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'mainpage' %}">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Ürünler</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-outline card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Filtreleme</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                            <!-- /.card-tools -->
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <form action="" method="get" class="productSearchForm">
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 col-sm-12 d-flex justify-content-center align-items-center flex-row">
+                                        <input type="search" name="baslik" id="baslik"
+                                               class="form-control float-right filter-checkbox"
+                                               placeholder="Ürün Adı" value="{% if baslik %}{{ baslik }}{% endif %}">
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12 d-flex justify-content-center align-items-center flex-row">
+                                        <input type="search" name="barkod" id="barkod"
+                                               class="form-control float-right filter-checkbox"
+                                               placeholder="Barkod" value="{% if barkod %}{{ barkod }}{% endif %}">
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12 d-flex justify-content-center align-items-center flex-row">
+                                        <input type="search" name="modelKodu" id="modelKodu"
+                                               class="form-control float-right filter-checkbox"
+                                               placeholder="Model Kodu"
+                                               value="{% if modelKodu %}{{ modelKodu }}{% endif %}">
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12 d-flex justify-content-center align-items-center flex-row">
+                                        <input type="search" name="stokKodu" id="stokKodu"
+                                               class="form-control float-right filter-checkbox"
+                                               placeholder="Stok Kodu"
+                                               value="{% if stokKodu %}{{ stokKodu }}{% endif %}">
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <select id="select-category" name="kategori"
+                                                class="demo-default filter-checkbox"
+                                                placeholder="Kategori Seçiniz...">
+                                            <option value="">Kategori Seçiniz...</option>
+                                            <option value="None">Yok</option>
+                                            {% for c in categories %}
+                                                <option value="{{ c.id }}">{{ c.title }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <select id="select-platform" name="dropshipping"
+                                                class="demo-default filter-checkbox"
+                                                placeholder="Platform Seçiniz...">
+                                            <option value="">Platform Seçiniz...</option>
+                                            <option value="modaymis">Modaymış</option>
+                                            <option value="tahtakale">Tahtakale</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <select id="select-publish" name="publish" class="demo-default filter-checkbox"
+                                                placeholder="Satış Durumu Seçiniz...">
+                                            <option value="">Satış Durumu Seçiniz...</option>
+                                            <option value="True">Satışta</option>
+                                            <option value="False">Satışta Değil</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <select id="select-stock" name="stock" class="demo-default filter-checkbox"
+                                                placeholder="Stok Durumu Seçiniz...">
+                                            <option value="">Stok Durumu Seçiniz...</option>
+                                            <option value="True">Stokta Mevcut</option>
+                                            <option value="False">Stok Biten</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <select id="select-desc" name="desc"
+                                                class="demo-default filter-checkbox"
+                                                placeholder="Sıralama...">
+                                            <option value="">Sıralama Seçiniz...</option>
+                                            <option value="-create_at">En Yeni Tarih</option>
+                                            <option value="create_at">En Eski Tarih</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="btn-group float-right w-100">
+                                        <input type="reset" class="btn btn-dark" value="Sıfırlama">
+                                        <button type="submit" id="filterBtn" class="btn btn-success">Fitreleme</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+
+                </div>
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Analizler</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                            <!-- /.card-tools -->
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <span class="btn btn-default btn-sm w-100">Aktif Ürün ({{ active_product_count }})</span>
+                                </div>
+                                <div class="col-lg-3">
+                                    <span class="btn btn-default btn-sm w-100">Aktif Olmayan Ürün ({{ not_active_product_count }})</span>
+                                </div>
+                                <div class="col-lg-3">
+                                    <span class="btn btn-default btn-sm w-100">Stok Biten ({{ insufficient_count }})</span>
+                                </div>
+                                <div class="col-lg-3">
+                                    <span class="btn btn-default btn-sm w-100">Trendyol Yüklü ({{ upload_trendyol_count }})</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header product-table-header">
+                            <div class="card-process">
+                                <div class="dropdown">
+                                    <button class="btn btn-sm mt-2 btn-secondary dropdown-toggle"
+                                            type="button"
+                                            data-toggle="dropdown" aria-expanded="false">Toplu İşlemler
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <button class="dropdown-item" id="deletingSelect">Seçilileri Sil</button>
+                                        <a class="dropdown-item" href="{% url 'all_delete_product' %}">Tümünü Sil</a>
+                                        <a class="dropdown-item" href="{% url 'product_export_excel' %}">Excel İndir</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <div class="custom-control custom-checkbox">
+                                            <input class="custom-control-input custom-control-input-danger custom-control-input-outline row-checkbox "
+                                                   type="checkbox" id="selectAllRow">
+                                            <label for="selectAllRow" class="custom-control-label"></label>
+                                        </div>
+                                    </th>
+                                    <th scope="col">Ürün Bilgisi</th>
+                                    <th scope="col">Kategori</th>
+                                    <th scope="col">Marka</th>
+                                    <th scope="col">Fiyat Bilgisi</th>
+                                    <th scope="col">Stok</th>
+                                    <th scope="col">Satışta Mı?</th>
+                                    <th scope="col">Oluşturulma Tarihi</th>
+                                    <th scope="col">İşlemler</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for product in products %}
+                                    <tr>
+                                        <td>
+                                            <div class="custom-control custom-checkbox">
+                                                <input class="custom-control-input custom-control-input-danger custom-control-input-outline filter-checkbox"
+                                                       type="checkbox" id="selectRowId-{{ product.id }}"
+                                                       value="{{ product.id }}" data-filter="product">
+                                                <label for="selectRowId-{{ product.id }}"
+                                                       class="custom-control-label"></label>
+                                            </div>
+                                        </td>
+                                        <td data-label="Ürün Bilgisi">
+                                            <div class="product__info">
+                                                <div class="product__image"><img src="{% if product.kapak %}{{ product.kapak.url }}{% endif %}" alt="">
+                                                </div>
+                                                <div class="product__title">
+                                                    <a href="{% url 'products_detail' product.slug %}">{{ product.title|truncatechars_html:35 }}</a>
+                                                    <span>Stok Kodu: {{ product.stock_code }}</span>
+                                                    <span>Barkod: {{ product.barcode }}</span>
+                                                    <span>Renk: {% if product.color %}{{ product.color.name }}{% else %}
+                                                        -{% endif %}</span>
+                                                    <span>Beden: {% if product.size %}{{ product.size.name }}{% else %}
+                                                        -{% endif %}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td data-label="Kategori">
+                                            <p>{% if product.category %}{{ product.category.title }}{% else %}
+                                                -{% endif %}</p>
+                                            <p>{% if product.subcategory %}{{ product.subcategory.title }}{% else %}
+                                                -{% endif %}</p>
+                                            <p>{% if product.subbottomcategory %}
+                                                {{ product.subbottomcategory.title }}{% else %}-{% endif %}</p>
+                                        </td>
+                                        <td data-label="Marka">{{ product.brand.title }}</td>
+                                        <td data-label="Fiyat Bilgisi">
+                                            <p><b>Satış Fiyatı: </b>{{ product.price }} TL</p>
+                                            <p><b>İndirimli Fiyatı: </b>{% if product.discountprice %}{{ product.discountprice }} TL{% else %}
+                                                -{% endif %}</p>
+                                        </td>
+
+                                        <td data-label="Stok">{{ product.quantity }}</td>
+                                        <td data-label="Satışta Mı?">
+                                            <p>TredyShop: {% if product.is_publish %}Evet{% else %}Hayır{% endif %}</p>
+                                            <p>Trendyol: {% if product.is_publish_trendyol %}Evet{% else %}
+                                                Hayır{% endif %}</p>
+                                        </td>
+                                        <td data-label="Oluşturuma Tarihi">{{ product.create_at|date:'d-m-Y H:i' }}</td>
+                                        <td data-label="İşlemler">
+                                            <a href="{% url 'product_detail' product.id %}"
+                                               class="btn btn-danger btn-sm">Detaya
+                                                Git</a>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm mt-2 btn-secondary dropdown-toggle"
+                                                        type="button"
+                                                        data-toggle="dropdown" aria-expanded="false">İşlemler
+                                                </button>
+                                                <div class="dropdown-menu"><a class="dropdown-item"
+                                                                              href="#">Action</a><a
+                                                        class="dropdown-item" href="#">Another action</a><a
+                                                        class="dropdown-item" href="#">Something else here</a></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-footer">
+                            <nav aria-label="pagination" class="pagination_area">
+                                <div class="row">
+                                    {% if products.end_index > 0 %}
+                                        <div class="col-sm-12 col-md-5 d-none d-md-block">
+                                            <p>Showing {{ products.start_index }} to {{ products.end_index }}
+                                                of {{ products.paginator.count }}.</p>
+                                        </div>
+                                    {% endif %}
+                                    {% if products.paginator.num_pages > 1 %}
+                                        <div class="col-sm-12 col-md-7 dataTables_pager">
+                                            <ul class="pagination">
+                                                {% if products.has_previous %}
+
+                                                    <li class="page-item">
+                                                        <a class="page-link" data-page="1"
+                                                           href="{{ query }}&page={{ products.previous_page_number }}">
+                                                            <i class="fa fa-angle-double-left"></i>
+                                                        </a>
+                                                    </li>
+                                                    {% if products.previous_page_number > 1 %}
+                                                        <li class="page-item">
+                                                            <a class="page-link "
+                                                               data-page="{{ products.previous_page_number }}"
+                                                               href="{{ query }}&page={{ products.previous_page_number }}">
+                                                                <i class="fa fa-angle-left"></i>
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+
+                                                {% endif %}
+
+                                                {% if products.previous_page_number > 2 %}
+                                                    <li class="page-item">
+                                                        <a class="page-link " data-page="{{ products.number|add:'-2' }}"
+                                                           href="{{ query }}&page={{ products.number|add:'-2' }}"> {{ products.number|add:"-2" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link " data-page="{{ products.number|add:'-1' }}"
+                                                           href="{{ query }}&page={{ products.number|add:'-1' }}"> {{ products.number|add:"-1" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                <li class="page-item active"><span
+                                                        class="page-link ">{{ products.number }}</span></li>
+
+                                                {% if products.paginator.num_pages > products.number|add:"2" %}
+                                                    <li class="page-item">
+                                                        <a class="page-link " data-page="{{ products.number|add:'1' }}"
+                                                           href="{{ query }}&page={{ products.number|add:'1' }}"> {{ products.number|add:"1" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link " data-page="{{ products.number|add:'2' }}"
+                                                           href="{{ query }}&page={{ products.number|add:'2' }}"> {{ products.number|add:"2" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                {% if products.has_next %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ products.next_page_number }}"
+                                                           href="{{ query }}&page={{ products.next_page_number }}">
+                                                            <i class="fa fa-angle-right"></i>
+                                                        </a>
+                                                    </li>
+
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ products.paginator.num_pages }}"
+                                                           href="{{ query }}&page={{ products.paginator.num_pages }}">
+                                                            <i class="fa fa-angle-double-right"></i>
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="{% static 'adminpage/js/product.js' %}"></script>
+    <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/js/selectize.min.js"
+            integrity="sha512-IOebNkvA/HZjMM7MxL0NYeLYEalloZ8ckak+NDtOViP7oiYzG5vn6WVXyrJDiJPhl4yRdmNAG49iuLmhkUdVsQ=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+    ></script>
+
+    <script>
+        $('#select-category').selectize({sortField: 'text'})
+        $('#select-platform').selectize({sortField: 'text'})
+        $('#select-publish').selectize({sortField: 'text'})
+        $('#select-stock').selectize({sortField: 'text'})
+        $('#select-desc').selectize({sortField: 'text'})
+
+    </script>
+
+
+{% endblock %}

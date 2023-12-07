@@ -1,0 +1,324 @@
+{% extends 'backend/adminpage/layout.html' %}
+{% load static %}
+
+
+{% block title %}<title>E-Posta Pazarlama</title>{% endblock %}
+
+{% block pazarlama %}
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/css/selectize.default.min.css"
+            integrity="sha512-pTaEn+6gF1IeWv3W1+7X7eM60TFu/agjgoHmYhAfLEU8Phuf6JKiiE8YmsNC0aCgQv4192s4Vai8YZ6VNM6vyQ=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+    />
+
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">E-Posta Pazarlama</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'mainpage' %}">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">E-Posta Pazarlama</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-outline card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Filtreleme</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                            <!-- /.card-tools -->
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <form action="" method="get" class="productSearchForm">
+
+                                <div class="row mt-3">
+                                    <div class="col-lg-3 col-md-4 col-sm-12 d-flex justify-content-center align-items-center flex-row">
+                                        <input type="search" name="fatura_adi" id="fatura_adi"
+                                               class="form-control float-right filter-checkbox"
+                                               placeholder="Fatura Adı"
+                                               value="{% if fatura_adi %}{{ fatura_adi }}{% endif %}">
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <select id="select-ay" name="ay"
+                                                class="demo-default filter-checkbox"
+                                                placeholder="Ay Seçiniz...">
+                                            <option value="">Ay Seçiniz...</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <select id="select-yil" name="yil"
+                                                class="demo-default filter-checkbox"
+                                                placeholder="Yıl Seçiniz...">
+                                            <option value="">Yıl Seçiniz...</option>
+                                            <option value="2022">2022</option>
+                                            <option value="2023">2023</option>
+                                            <option value="2024">2024</option>
+                                            <option value="2025">2025</option>
+                                            <option value="2026">2026</option>
+                                            <option value="2027">2027</option>
+                                            <option value="2028">2028</option>
+                                            <option value="2029">2029</option>
+                                            <option value="2030">2030</option>
+                                            <option value="2031">2031</option>
+                                            <option value="2032">2032</option>
+                                            <option value="2033">2033</option>
+                                            <option value="2034">2034</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <select id="select-desc" name="desc"
+                                                class="demo-default filter-checkbox"
+                                                placeholder="Sıralama...">
+                                            <option value="">Sıralama Seçiniz...</option>
+                                            <option value="-created_at">En Yeni Tarih</option>
+                                            <option value="created_at">En Eski Tarih</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <div class="btn-group float-right w-100">
+                                        <input type="reset" class="btn btn-dark" value="Sıfırlama">
+                                        <button type="submit" id="filterBtn" class="btn btn-success">Fitreleme</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center flex-row mb-5">
+                                <form action="" method="post">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <input type="email" name="single_email" class="form-control" placeholder="E-Posta Adresi">
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <button type="submit" class="btn btn-primary" name="single_send_mail">Mail Gönder</button>
+                                        </div>
+                                        <div class="col-lg-6"></div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="card">
+                                <div class="card-body table-responsive p-0">
+                                    <table class="table table-hover text-nowrap" id="paymentTable">
+                                        <thead>
+                                        <tr>
+                                            <th>Ad-Soyad</th>
+                                            <th>E-Posta</th>
+                                            <th>Telefon</th>
+                                            <th>Cinsiyet</th>
+                                            <th>Doğum Tarihi</th>
+                                            <th>Kayıt Tarihi</th>
+                                            <th>İşlemler</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for kullanici in kullanicilar %}
+                                            <tr>
+                                                <td>{{ kullanici.get_full_name }}</td>
+                                                <td>{{ kullanici.email }}</td>
+                                                <td>{{ kullanici.mobile }}</td>
+                                                <td>{% if kullanici.gender == True %}
+                                                    Erkek{% elif kullanici.gender == False %}Kadın{% else %}
+                                                    -{% endif %}</td>
+                                                <td>{% if kullanici.birthday %}{{ kullanici.birthday }}{% else %}
+                                                    -{% endif %}</td>
+                                                <td>{{ kullanici.created_date }}</td>
+                                                <td>
+                                                    <a href="{% url 'kullanici_goruntule' kullanici.id %}"
+                                                       class="btn btn-primary btn-sm btn-block">Kullanıcı Gör</a>
+                                                    <a href="{% url 'kullanici_goruntule' kullanici.id %}"
+                                                       class="btn btn-dark btn-sm btn-block">Mail Gönder</a>
+                                                </td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr>
+                                                <td colspan="8">
+                                                    <span
+                                                            style="display: block; text-align: center;padding-top: 10px; padding-bottom: 10px;">Herhangi bir veri bulunmamaktadır.</span>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <span id="no-data"
+                                          style="display: block; text-align: center;padding-top: 10px; padding-bottom: 10px;"></span>
+                                </div>
+                                <div class="card-footer">
+                                    <nav aria-label="pagination" class="pagination_area">
+                                        <div class="row">
+                                            {% if kullanicilar.end_index > 0 %}
+                                                <div class="col-sm-12 col-md-5 d-none d-md-block">
+                                                    <p>Showing {{ kullanicilar.start_index }}
+                                                        to {{ kullanicilar.end_index }}
+                                                        of {{ kullanicilar.paginator.count }}.</p>
+                                                </div>
+                                            {% endif %}
+                                            {% if kullanicilar.paginator.num_pages > 1 %}
+                                                <div class="col-sm-12 col-md-7 dataTables_pager">
+                                                    <ul class="pagination" style="float: right;">
+                                                        {% if kullanicilar.has_previous %}
+
+                                                            <li class="page-item">
+                                                                <a class="page-link" data-page="1"
+                                                                   href="{{ query }}&page={{ kullanicilar.previous_page_number }}">
+                                                                    <i class="fa fa-angle-double-left"></i>
+                                                                </a>
+                                                            </li>
+                                                            {% if kullanicilar.previous_page_number > 1 %}
+                                                                <li class="page-item">
+                                                                    <a class="page-link "
+                                                                       data-page="{{ kullanicilar.previous_page_number }}"
+                                                                       href="{{ query }}&page={{ kullanicilar.previous_page_number }}">
+                                                                        <i class="fa fa-angle-left"></i>
+                                                                    </a>
+                                                                </li>
+                                                            {% endif %}
+
+                                                        {% endif %}
+
+                                                        {% if kullanicilar.previous_page_number > 2 %}
+                                                            <li class="page-item">
+                                                                <a class="page-link "
+                                                                   data-page="{{ kullanicilar.number|add:'-2' }}"
+                                                                   href="{{ query }}&page={{ kullanicilar.number|add:'-2' }}"> {{ kullanicilar.number|add:"-2" }} </a>
+                                                            </li>
+                                                            <li class="page-item">
+                                                                <a class="page-link "
+                                                                   data-page="{{ kullanicilar.number|add:'-1' }}"
+                                                                   href="{{ query }}&page={{ kullanicilar.number|add:'-1' }}"> {{ kullanicilar.number|add:"-1" }} </a>
+                                                            </li>
+                                                        {% endif %}
+
+                                                        <li class="page-item active"><span
+                                                                class="page-link ">{{ kullanicilar.number }}</span></li>
+
+                                                        {% if kullanicilar.paginator.num_pages > kullanicilar.number|add:"2" %}
+                                                            <li class="page-item">
+                                                                <a class="page-link "
+                                                                   data-page="{{ kullanicilar.number|add:'1' }}"
+                                                                   href="{{ query }}&page={{ kullanicilar.number|add:'1' }}"> {{ kullanicilar.number|add:"1" }} </a>
+                                                            </li>
+                                                            <li class="page-item">
+                                                                <a class="page-link "
+                                                                   data-page="{{ kullanicilar.number|add:'2' }}"
+                                                                   href="{{ query }}&page={{ kullanicilar.number|add:'2' }}"> {{ kullanicilar.number|add:"2" }} </a>
+                                                            </li>
+                                                        {% endif %}
+
+                                                        {% if kullanicilar.has_next %}
+                                                            <li class="page-item">
+                                                                <a class="page-link "
+                                                                   data-page="{{ kullanicilar.next_page_number }}"
+                                                                   href="{{ query }}&page={{ kullanicilar.next_page_number }}">
+                                                                    <i class="fa fa-angle-right"></i>
+                                                                </a>
+                                                            </li>
+
+                                                            <li class="page-item">
+                                                                <a class="page-link "
+                                                                   data-page="{{ kullanicilar.paginator.num_pages }}"
+                                                                   href="{{ query }}&page={{ kullanicilar.paginator.num_pages }}">
+                                                                    <i class="fa fa-angle-double-right"></i>
+                                                                </a>
+                                                            </li>
+                                                        {% endif %}
+                                                    </ul>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.15.2/js/selectize.min.js"
+            integrity="sha512-IOebNkvA/HZjMM7MxL0NYeLYEalloZ8ckak+NDtOViP7oiYzG5vn6WVXyrJDiJPhl4yRdmNAG49iuLmhkUdVsQ=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+    ></script>
+
+    <script>
+        $('#select-ay').selectize({sortField: 'number'})
+        $('#select-yil').selectize({sortField: 'number'})
+        $('#select-desc').selectize({sortField: 'text'})
+
+        function searchFunction() {
+            let input, filter, table, tr, td, j;
+            input = document.getElementById("search");
+            filter = input.value.toLowerCase();
+            table = document.getElementById("paymentTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (j = 0; j < tr.length; j++) {
+                td = tr[j].getElementsByTagName("td");
+                msg = document.getElementById("no-data");
+
+                if (td.length > 0) {
+                    if (td[0].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[1].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[2].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[3].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[4].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[5].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[6].innerHTML.toLocaleLowerCase().indexOf(filter) > -1 ||
+                        td[7].innerHTML.toLocaleLowerCase().indexOf(filter) > -1) {
+                        tr[j].style.display = ""
+                        msg.innerHTML = ""
+                    } else {
+                        tr[j].style.display = "none"
+                    }
+                }
+
+                if (td.length == 0) {
+                    msg.innerHTML = "Aramanızla eşleşen kayıt bulunamadı."
+                }
+
+            }
+        }
+    </script>
+
+{% endblock %}

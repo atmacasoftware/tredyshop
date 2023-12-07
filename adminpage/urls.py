@@ -22,9 +22,10 @@ urlpatterns = [
 
     ##Kullanıcı Yönetimi
     path('kullanici-yonetimi/kullanicilar/', kullanicilar, name='kullanicilar'),
-    path('kullanici-yonetimi/kullanici-ekle/', kullanici_ekle, name='kullanici_ekle'),
+    path('kullanici-yonetimi/kullanici-islemleri/', kullanici_ekle, name='kullanici_ekle'),
     path('kullanicilar/kullanici-goruntule/kullanici_id=<int:id>/', kullanici_goruntule, name='kullanici_goruntule'),
     path('kullanicilar/kullanici-sil/kullanici_id=<int:id>/', kullanici_sil, name='kullanici_sil'),
+    path('kullanici-yonetimi/kullanici-islemleri/kullanici-yetkilendir/kullanici_id=<int:id>/', kullanici_izinleri, name='kullanici_izinleri'),
 
     ##Kategori Yönetimi
     path('kategoriler/birinci-seviye-kategoriler/', kategoriler_seviye1, name='kategoriler_seviye1'),
@@ -78,6 +79,8 @@ urlpatterns = [
          name='kategoriler3_secilileri_sil'),
     path('kategoriler/secili-kategori-sil/', kategoriler_secilileri_sil, name='kategoriler_secilileri_sil'),
 
+    ## Urun Yonetimi
+
     path('urunler/', products, name='admin_product'),
     path('urunler/sil/json/', ajax_select_delete_product, name='ajax_select_delete_product'),
     path('urunler/sil/', all_delete_product, name='all_delete_product'),
@@ -85,6 +88,15 @@ urlpatterns = [
     path('urunler/kampanyali-urunlar/', kampanyali_urunler, name='kampanyali_urunler'),
     path('urunler/excel-indir/', product_export_excel, name='product_export_excel'),
     path('urunler/ozellik-guncelleme/', urun_ozellik_guncelleme, name='urun_ozellik_guncelleme'),
+    path('urunler/beden-tablosu/', beden_tablosu, name='beden_tablosu'),
+    path('urunler/beden-tablosu/kadin-ust-beden-tablosu/id=<int:id>/sil/', kadin_ust_beden_sil, name='kadin_ust_beden_sil'),
+    path('urunler/beden-tablosu/kadin-ust-buyuk-beden-tablosu/id=<int:id>/sil/', kadin_ust_buyuk_beden_sil, name='kadin_ust_buyuk_beden_sil'),
+    path('urunler/beden-tablosu/kadin-alt-beden-tablosu/id=<int:id>/sil/', kadin_alt_beden_sil, name='kadin_alt_beden_sil'),
+    path('urunler/beden-tablosu/kadin-alt-buyuk-beden-tablosu/id=<int:id>/sil/', kadin_alt_buyuk_beden_sil, name='kadin_alt_buyuk_beden_sil'),
+    path('urunler/beden-tablosu/kadin-jean-beden-tablosu/id=<int:id>/sil/', kadin_jean_beden_sil, name='kadin_jean_beden_sil'),
+
+    ## Siparis Yonetimi
+
     path('siparis-yonetimi/siparisler/', orders, name='admin_orders'),
     path('siparis-yonetimi/trendyol-siparisleri/', trendyol_orders, name='trendyol_orders'),
     path('siparis-yonetimi/siparisler/siparis_no=<str:order_number>/', order_detail, name='admin_order_detail'),
@@ -96,6 +108,9 @@ urlpatterns = [
     path('siparis-yonetimi/iade-talepleri/', iade_talepleri, name='iade_talepleri'),
     path('siparis-yonetimi/iade-talepleri/siparis_no=<str:order_number>/<int:product_id>/', iade_talepleri_detay,
          name='iade_talepleri_detay'),
+    path('siparis-yonetimi/siparisler/siparis_no=<str:order_number>/isleme-al/', order_isleme_al, name='order_isleme_al'),
+    path('siparis-yonetimi/siparisler/siparis_no=<str:order_number>/kargo-bildir/', order_kargo_bildir, name='order_kargo_bildir'),
+    path('siparis-yonetimi/siparisler/siparis_no=<str:order_number>/mail-gonder/', order_mail_gonder, name='order_mail_gonder'),
 
     path('xml-yonetimi/tahtakale/veri-yukle-guncelle/', tahtakale_product, name="tahtakale_product"),
     path('xml-yonetimi/tahtakale/veri-yukle/', tahtakale_product_load, name="tahtakale_product_load"),
@@ -140,6 +155,15 @@ urlpatterns = [
     path('trendyol/komisyon-oranlari/secili-komisyon-sil/', trendyol_komisyon_secilileri_sil,
          name='trendyol_komisyon_secilileri_sil'),
 
+    ## Hepsiburada
+    path('hepsiburada/hesap-bilgileri/', hepsiburada_hesap_bilgileri, name="hepsiburada_hesap_bilgileri"),
+    path('hepsiburada/urun-giris/', hepsiburada_add_product, name="hepsiburada_add_product"),
+    path('hepsiburada/urun-giris/giyim/', hepsiburada_add_product_giyim, name="hepsiburada_add_product_giyim"),
+    path('hepsiburada/urun-giris/giyim/kategori_no=<category_no>/', hepsiburada_add_product_giyim_category,
+         name="hepsiburada_add_product_giyim_category"),
+    path('hepsiburada/urun-giris/giyim/kategori_id=<int:id>/hepsiburada/urun-gonder/',
+         hepsiburada_add_product_giyim_send, name="hepsiburada_add_product_giyim_send"),
+
     # muhasebe
     path('kesilen-faturalar/fatura-ekle/', kesilen_fatura_ekle, name="kesilen_fatura_ekle"),
     path('kesilen-faturalar/tum-faturalar/', kesilen_faturalar, name="kesilen_faturalar"),
@@ -159,6 +183,7 @@ urlpatterns = [
     path('alinan-faturalar/tum-faturalar/excel/', alinan_faturalar_export_excel,
          name="alinan_faturalar_export_excel"),
     path('harcamalar/', harcamalar, name="harcamalar"),
+    path('ajax-urun-alimi/harcama/ekle/', urun_maliyeti_ekle, name="urun_maliyeti_ekle"),
     path('harcamalar/harcama_id=<int:id>/', harcama_detay, name="harcama_detay"),
     path('harcamalar/hepsini-sil/', harcamalar_hepsini_sil,
          name='harcamalar_hepsini_sil'),
@@ -172,8 +197,12 @@ urlpatterns = [
     path('kar-api/', kar_api, name="kar_api"),
     path('son-yedi-gun-kar-api/', yedi_gunluk_kar, name="yedi_gunluk_kar"),
     path('en-cok-siparis-gelen-10-sehir/', en_cok_siparis_gelen_10_sehir, name="en_cok_siparis_gelen_10_sehir"),
+    path('pazaryerleri-satis-istatistikleri/', pazaryerleri_istatistikler, name="pazaryerleri_istatistikler"),
 
     path('arama/', ajax_search, name="ajax_search"),
+
+    ##Pazarlama
+    path('pazarlama-yonetimi/email-pazarlama/', email_pazarlama, name="email_pazarlama"),
 
     path('hesap-bilgilerim/', user_info, name='user_info'),
     path('sifre-degistir/', change_password, name='admin_change_password'),

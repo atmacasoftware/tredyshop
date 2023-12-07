@@ -49,11 +49,12 @@ INSTALLED_APPS = [
     'customer',
     "import_export",
     'accounting',
-    'waitingdeploy',
     'carts',
     'mathfilters',
     'orders',
     'trendyol',
+    'hepsiburada',
+    'amazon',
     'adminpage',
     'apis',
 

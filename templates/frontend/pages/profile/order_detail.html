@@ -583,7 +583,7 @@
                                                                                     Vade Farkı
                                                                                 </span>
                                                                                 <span class="info-line__value">
-                                                                                    {{ order.order_total|sub:order.order_amount }} TL
+                                                                                    {{ order.order_total|sub:order.order_amount|floatformat:2 }} TL
                                                                                 </span>
                                                                             </div>
                                                                         {% endif %}

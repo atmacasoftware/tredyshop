@@ -12,6 +12,11 @@ from django.core import serializers
 from django.http import JsonResponse
 from django.shortcuts import render
 
+import urllib.request
+from PIL import Image
+from io import BytesIO
+from django.core.files.images import ImageFile
+
 
 # Create your views here.
 
@@ -25,8 +30,27 @@ def products_detail(request, product_slug):
         product.image_url6, product.image_url7, product.image_url8
     ]
 
-    all_taksit_data = paytr_taksit_sorgu()
-    print(all_taksit_data)
+    beden_title = None
+    beden_tablosu = None
+
+    if product.subcategory.title == "Üst Giyim":
+        if "büyük beden" in product.title:
+            beden_tablosu = KadinUstBuyukBedenTablosu.objects.all()
+            beden_title = "Kadın Üst Büyük Beden Tablosu"
+        else:
+            beden_tablosu = KadinUstBedenTablosu.objects.all()
+            beden_title = "Kadın Üst Beden Tablosu"
+
+    elif product.subcategory.title == "Alt Giyim":
+        if "büyük beden" in product.title:
+            beden_tablosu = KadinAltBuyukBedenTablosu.objects.all()
+            beden_title = "Kadın Alt Büyük Beden Tablosu"
+        else:
+            beden_tablosu = KadinAltBedenTablosu.objects.all()
+            beden_title = "Kadın Alt Beden Tablosu"
+
+    else:
+        beden_tablosu = None
 
     same_products = ApiProduct.objects.filter(model_code=product.model_code).order_by('-size__name')
     similar_product = ApiProduct.objects.filter(subcategory=product.subcategory).exclude(slug=product.slug).order_by(
@@ -106,7 +130,9 @@ def products_detail(request, product_slug):
         'similar_product': similar_product,
         'question_obj':question_obj,
         'product_question_count':product_question_count,
-        'reviews_obj':reviews_obj
+        'reviews_obj':reviews_obj,
+        'beden_tablosu': beden_tablosu,
+        'beden_title':beden_title
     })
 
     return render(request, 'frontend/pages/product_detail.html', context)
@@ -145,6 +171,13 @@ def ajax_favourite(request):
     else:
         Favorite.objects.create(customer=request.user, product=product)
         data = {'favourite': 'added'}
+    return JsonResponse({'data': data})
+
+
+def deleted_favourite(request, product_id):
+    product = ApiProduct.objects.get(id=product_id)
+    Favorite.objects.get(customer=request.user, product=product).delete()
+    data = {'favourite': 'deleted'}
     return JsonResponse({'data': data})
 
 

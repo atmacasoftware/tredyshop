@@ -3,7 +3,7 @@ from adminpage.models import *
 from categorymodel.models import *
 from mainpage.models import Slider
 from orders.models import Order, ExtraditionRequestResult
-from product.models import ApiProduct
+from product.models import *
 from trendyol.models import TrendyolOrders, TrendyolCommission
 
 
@@ -189,6 +189,19 @@ class TrendyolUpdateForm(forms.ModelForm):
                 field.widget.attrs['class'] = 'form-control'
 
 
+class HepsiburadaForm(forms.ModelForm):
+    class Meta:
+        model = Hepsiburada
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(HepsiburadaForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field.widget.attrs.get('class'):
+                field.widget.attrs['class'] += ' form-control'
+            else:
+                field.widget.attrs['class'] = 'form-control'
+
 class AboutUsForm(forms.ModelForm):
     class Meta:
         model = Hakkimizda
@@ -238,7 +251,7 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = ApiProduct
         fields = ['title', 'model_code','barcode', 'stock_code', 'xml_id', 'dropshipping', 'category','subcategory', 'subbottomcategory', 'brand',
-                  'description', 'trendyol_category_id', 'image_url1', 'image_url2', 'image_url3', 'image_url4', 'image_url5',
+                  'description', 'trendyol_category_id','image_url1', 'image_url2', 'image_url3', 'image_url4', 'image_url5',
                   'image_url6', 'image_url7', 'image_url8', 'price', 'discountprice', 'quantity', 'trendyol_price', 'hepsiburada_price', 'pttavm_price',
                   'is_discountprice', 'color', 'size', 'fabrictype', 'height','waist','pattern','armtype', 'collartype',
                   'weavingtype', 'material', 'environment','legtype','pocket','heeltype','heelsize', 'age_group', 'sextype', 'is_publish', 'is_publish_trendyol', 'sell_count', 'slug', 'detail'
@@ -276,6 +289,24 @@ class ProductForm(forms.ModelForm):
             else:
                 field.widget.attrs['class'] = 'form-control'
 
+class ErrorProductForm(forms.ModelForm):
+    class Meta:
+        model = ApiProduct
+        fields = ['title', 'model_code','barcode', 'stock_code', 'xml_id', 'dropshipping', 'category','subcategory', 'subbottomcategory', 'brand',
+                  'description', 'trendyol_category_id', 'image_url1', 'image_url2', 'image_url3', 'image_url4', 'image_url5',
+                  'image_url6', 'image_url7', 'image_url8', 'price', 'discountprice', 'quantity', 'trendyol_price', 'hepsiburada_price', 'pttavm_price',
+                  'is_discountprice', 'color', 'size', 'fabrictype', 'height','waist','pattern','armtype', 'collartype',
+                  'weavingtype', 'material', 'environment','legtype','pocket','heeltype','heelsize', 'age_group', 'sextype', 'is_publish', 'is_publish_trendyol', 'sell_count', 'slug', 'detail'
+                  ]
+        exclude = ['created_at', 'updated_at','status']
+
+    def __init__(self, *args, **kwargs):
+        super(ErrorProductForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field.widget.attrs.get('class'):
+                field.widget.attrs['class'] += 'form-control'
+            else:
+                field.widget.attrs['class'] = 'form-control'
 
 class TrendyolOrderForm(forms.ModelForm):
     order_date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}),label="Sipariş Tarihi")
@@ -340,3 +371,18 @@ class TrendyolCommissionForm(forms.ModelForm):
                 field.widget.attrs['class'] += ' form-control'
             else:
                 field.widget.attrs['class'] = 'form-control'
+
+
+class IzinForm(forms.ModelForm):
+    class Meta:
+        model = Izinler
+        fields = '__all__'
+        exclude = ['user', 'created_at', 'updated_at']
+
+    def __init__(self, *args, **kwargs):
+        super(IzinForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field.widget.attrs.get('class'):
+                field.widget.attrs['class'] += 'custom-control-input'
+            else:
+                field.widget.attrs['class'] = 'custom-control-input'

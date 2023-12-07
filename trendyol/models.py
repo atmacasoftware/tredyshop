@@ -13,6 +13,7 @@ class TrendyolOrders(models.Model):
         ('İptal Edildi', 'İptal Edildi'),
         ('İade Edildi', 'İade Edildi'),
         ('Ödeme Yapılmadı', 'Ödeme Yapılmadı'),
+        ('Birden Fazla', 'Birden Fazla'),
     )
 
     order_number = models.CharField(max_length=255, verbose_name="Sipariş Numarası", null=True, blank=False)
@@ -40,6 +41,39 @@ class TrendyolOrders(models.Model):
         verbose_name = "Trendyol Siparişler"
         verbose_name_plural = "Trendyol Siparişler"
         ordering = ['-order_date']
+
+    def __str__(self):
+        return f"{self.order_number}"
+
+
+class TrendyolMoreProductOrder(models.Model):
+    STATUS = (
+        ('Yeni', 'Yeni'),
+        ('Onaylandı', 'Onaylandı'),
+        ('Hazırlanıyor', 'Hazırlanıyor'),
+        ('Kargolandı', 'Kargolandı'),
+        ('Tamamlandı', 'Tamamlandı'),
+        ('İptal Edildi', 'İptal Edildi'),
+        ('İade Edildi', 'İade Edildi'),
+        ('Ödeme Yapılmadı', 'Ödeme Yapılmadı'),
+        ('Birden Fazla', 'Birden Fazla'),
+    )
+
+    order_number = models.CharField(max_length=255, verbose_name="Sipariş Numarası", null=True, blank=False)
+    packet_number = models.CharField(max_length=255, verbose_name="Paket Numarası", null=True, blank=False)
+    quantity = models.BigIntegerField(null=True, verbose_name="Adet")
+    title = models.CharField(verbose_name="Ürün Adı", max_length=500, null=True)
+    barcode = models.CharField(verbose_name="Barkod", max_length=100, null=True)
+    color = models.CharField(verbose_name="Renk", max_length=100, null=True, blank=True)
+    size = models.CharField(verbose_name="Beden", max_length=100, null=True, blank=True)
+    stock_code = models.CharField(verbose_name="Stok Kodu", max_length=100, null=True, blank=True)
+    unit_price = models.FloatField(verbose_name="Birim Fiyat", null=True, blank=False)
+    sales_amount = models.FloatField(verbose_name="Satış Tutarı", null=True, blank=False)
+    discount_amount = models.FloatField(verbose_name="İndirim Tutarı", null=True, blank=True)
+    status = models.CharField(choices=STATUS, verbose_name="Durum", null=True, max_length=255)
+
+    class Meta:
+        ordering = ['-title']
 
     def __str__(self):
         return f"{self.order_number}"

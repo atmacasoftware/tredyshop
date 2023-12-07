@@ -1,17 +1,15 @@
-from django.contrib.auth.tokens import default_token_generator
-from django.contrib.sites.shortcuts import get_current_site
+import math
+import random
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import check_password, make_password
 from django.contrib import messages
 from django.contrib.auth import login as auth_login, authenticate
 from django.contrib.auth import logout as auth_logout
-from django.template.loader import render_to_string
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.core.mail import EmailMessage
 
+
+from adminpage.custom import sendAccountVerificationEmail
 from adminpage.models import Notification
 from carts.models import Cart, CartItem
 from customer.forms import *
@@ -20,7 +18,7 @@ from ecommerce.settings import EMAIL_HOST_USER
 from orders.models import Order, OrderProduct, ExtraditionRequest, ExtraditionRequestResult, \
     CancellationRequest
 from user_accounts.models import User
-from product.models import Favorite, ReviewRating, Question, ApiProduct
+from product.models import Favorite, ReviewRating, Question, ApiProduct, ProductKapak, ProductModelGroup
 
 
 # Create your views here.
@@ -70,72 +68,67 @@ def login(request):
     except Exception as e:
         return redirect('login')
 
+def generateOTP():
+    digits = "0123456789"
+    otp = ""
+    for i in range(6):
+        otp += digits[math.floor(random.random() * 10)]
+    return otp
 
 def register(request):
     try:
         if request.user.is_authenticated:
             messages.success(request, 'Giriş yapıldı')
             return redirect('mainpage')
-        if 'register_btn' in request.POST:
-            if request.method == 'POST':
-                first_name = request.POST.get('first_name')
-                last_name = request.POST.get('last_name')
-                email = request.POST.get('email')
-                mobile = request.POST.get('mobile')
-                password = request.POST.get('password')
-                user_obj = User.objects.filter(email=email)
-                if user_obj.exists():
-                    messages.error(request, 'Bu kullanıcı zaten mevcuttur!')
-                    return redirect('login')
-                if first_name != '' and last_name != '' and email != '' and mobile != '' and password != '':
-                    user = User.objects.create_user(first_name=first_name, last_name=last_name, email=email,
-                                                    password=password,
-                                                    mobile=mobile, is_customer=True)
-                    try:
-                        current_site = get_current_site(request)
-                        from_email = EMAIL_HOST_USER
-                        mail_subject = "Lütfen hesabınızı aktif ediniz."
-                        message = render_to_string("frontend/acccounts/account_verification_email.html", {
-                            'user': user,
-                            'domain': current_site,
-                            'uid': urlsafe_base64_encode(force_bytes(user.id)),
-                            'token': default_token_generator.make_token(user),
-                        })
-                        to_email = email
-                        send_email = EmailMessage(mail_subject, message, to=[to_email])
-                        send_email.send()
-                    except Exception as e:
-                        pass
-
-                    notify = Notification.objects.create(noti_type="8", customer=user,
-                                                         title="Yeni müşteri kaydı yapıldı.",
-                                                         detail="Yeni müşteri kaydı yapıldı.")
-                    messages.success(request,
-                                     'Tebrikler üyeliğiniz başarıyla oluşturuldu. E-Posta adresinize gelen link üzerinden üyeliğinizi aktif edebilirsiniz. Spam klasörünü kontrol etmeyi unutmayınız. Keyifli alışverişler dileriz.')
-                    return redirect('login')
-                messages.warning(request, 'Yanlış şifre!')
-                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        if request.is_ajax():
+            otp = generateOTP()
+            return JsonResponse(data=otp, safe=False)
         return render(request, 'frontend/pages/register.html')
     except Exception as e:
-        print(e)
         messages.warning(request, 'Bir hata meydana geldi!')
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
-def activate(request, uidb64, token):
-    try:
-        uid = urlsafe_base64_decode(uidb64).decode()
-        user = User._default_manager.get(id=uid)
-    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
-    if user is not None and default_token_generator.check_token(user, token):
-        user.is_activated = True
-        user.save()
-        messages.success(request, "Tebrikler! Hesabınız aktif edilmiştir. Keyifli alışverişler dileriz.")
+def register_ajax(request):
+    data = 'error'
+
+    first_name = request.POST.get('first_name')
+    last_name = request.POST.get('last_name')
+    email = request.POST.get('email')
+    mobile = request.POST.get('mobile')
+    password = request.POST.get('password')
+    otp = request.POST.get('otp')
+    user_obj = User.objects.filter(email=email)
+
+    if user_obj.exists():
+        messages.error(request, 'Bu kullanıcı zaten mevcuttur!')
         return redirect('login')
+    if first_name != '' and last_name != '' and email != '' and mobile != '' and password != '':
+        data = 'success'
+        sendAccountVerificationEmail(request=request, first_name=first_name, last_name=last_name, email=email, otp=otp)
     else:
-        messages.error(request, "Geçersiz aktivasyon linki!")
-        return redirect('register')
+        data = 'error'
+
+    return JsonResponse(data=data, safe=False)
+
+def createUser(request):
+    first_name = request.POST.get('first_name')
+    last_name = request.POST.get('last_name')
+    email = request.POST.get('email')
+    mobile = request.POST.get('mobile')
+    password = request.POST.get('password')
+
+    hass_pass = make_password(password)
+
+    user = User.objects.create(first_name=first_name, last_name=last_name, email=email,
+                                    password=hass_pass,
+                                    mobile=mobile, is_customer=True, is_staff=False, is_activated=True)
+    notify = Notification.objects.create(noti_type="8", customer=user,
+                                         title="Yeni müşteri kaydı yapıldı.",
+                                         detail="Yeni müşteri kaydı yapıldı.")
+
+    data = 'success'
+    return JsonResponse(data=data, safe=False)
 
 
 @login_required(login_url="/giris-yap")
@@ -155,6 +148,32 @@ def validate_email(request, *args, **kwargs):
 @login_required(login_url="/giris-yap")
 def profile_mainpage(request):
     user = request.user
+
+    a = ApiProduct.objects.all().values('model_code','image_url1', 'barcode').distinct()
+
+    from PIL import Image
+    from io import BytesIO
+    from django.core.files.images import ImageFile
+    import requests
+
+    for b in a:
+        if b['image_url1'] != None:
+
+            try:
+                if ProductKapak.objects.filter(modal_code=b['model_code']).count() < 1:
+
+                    img_url = str(b['image_url1'])
+
+                    res = Image.open(requests.get(img_url, stream=True).raw)
+                    filename = str(b['model_code'])
+
+                    img_object = ImageFile(BytesIO(res.fp.getvalue()), name=filename)
+                    ProductModelGroup.objects.create(kapak=img_object, modal_code=b['model_code'], product=ApiProduct.objects.get(barcode=b['barcode']))
+
+            except:
+                pass
+
+
 
     if 'userInfoBtn' in request.POST:
         if request.method == "POST":
@@ -199,6 +218,7 @@ def address(request):
     context = {}
     user = request.user
     all_address = CustomerAddress.objects.filter(user=user)
+
     add_form = AddressForm(data=request.POST or None, files=request.FILES or None)
     context.update({'all_address': all_address, 'add_form': add_form})
 
@@ -251,7 +271,7 @@ def load_counties(request):
 @login_required(login_url="/giris-yap")
 def update_address(request, id):
     context = {}
-    address = CustomerAddress.objects.get(id=id)
+    address = get_object_or_404(CustomerAddress, id=id)
     update_form = AddressForm(instance=address, data=request.POST or None, files=request.FILES or None)
     context.update({'address': address, 'update_form': update_form})
 
@@ -279,8 +299,16 @@ def update_address(request, id):
 
 
 @login_required(login_url="/giris-yap")
+def is_active_address(request, id):
+    address = get_object_or_404(CustomerAddress, id=id)
+    address.is_active = "Evet"
+    address.save()
+    messages.success(request, f'{address.title} aktif adres olarak seçildi.')
+    return redirect('address')
+
+@login_required(login_url="/giris-yap")
 def delete_address(request, id):
-    address = CustomerAddress.objects.get(id=id)
+    address = get_object_or_404(CustomerAddress, id=id)
     address.delete()
     messages.success(request, 'Adres başarıyla silindi.')
     return redirect('address')

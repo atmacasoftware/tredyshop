@@ -1,0 +1,53 @@
+{% extends 'backend/adminpage/layout.html' %}
+{% load static %}
+
+{% block title %}<title>Trendyol Hesap Yönetimi - Bilgi Güncelleme</title>{% endblock %}
+
+{% block trendyol %}
+
+    {% include 'backend/adminpage/partials/__loadData.html' %}
+
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Trendyol Hesap Yönetimi - Bilgi Güncelleme</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'mainpage' %}">Anasayfa</a></li>
+                        <li class="breadcrumb-item active">Bilgi Güncelleme</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    Henüz aktif değildir.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        var trendyolUpdate = document.getElementById("updateTrendyolBtn");
+        var dataloader = document.getElementById("dataloader");
+        //console.log(btn);
+        setInterval(function () {
+            trendyolUpdate.click();
+        }, 1000 * 60 * 45);
+
+        trendyolUpdate.addEventListener("click", function () {
+            dataloader.style.display = "flex";
+            window.addEventListener("load", function () {
+                dataloader.style.display = "none";
+            })
+        })
+    </script>
+
+{% endblock %}

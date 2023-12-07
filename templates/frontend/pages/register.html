@@ -7,19 +7,10 @@
 
 {% block account %}
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
 
     <div class="container container-240 page-container profile mt-20">
         <div class="page-container auth">
-
-            <div class="page-margin">
-                <div class="page-margin__content">
-                    <ul class="breadcrumb">
-                        <li><a href="{% url 'mainpage' %}">Anasayfa</a></li>
-                        <li class="active">Kayıt Ol</li>
-                    </ul>
-                </div>
-            </div>
-
             <div class="page-section">
                 <div class="page-margin">
                     <div class="page-margin__content">
@@ -27,7 +18,7 @@
                             <div class="row"
                                  style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
                                 <div class="col-lg-6 col-md-8 col-sm-12">
-                                    <form action="#" class="form" method="POST">
+                                    <form action="#" class="form" method="POST" autocomplete="off">
                                         {% csrf_token %}
                                         <div class="d-block">
                                             <div class="auth-form">
@@ -94,7 +85,9 @@
                                                                 Şifre
                                                             </label>
                                                             <input name="password" type="password" class="form-control"
-                                                                   id="password">
+                                                                   id="password"
+                                                                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                                                                   title="En az 1 rakam içermeli, en az 1 büyük ve küçük harf içermeli ve en az 8 karakterli olmalıdır.">
 
                                                             <button type="button"
                                                                     class="form-field__password-vctrl vctrl-visible"
@@ -121,6 +114,14 @@
                                                             </span>
                                                             </button>
                                                         </div>
+                                                        <div id="message">
+                                                            <p id="letter" class="invalid">1 <b>küçük</b> harf</p>
+                                                            <p id="capital" class="invalid">1 <b>büyük</b>
+                                                                harf</p>
+                                                            <p id="number" class="invalid">1 <b>sayı</b></p>
+                                                            <p id="length" class="invalid">En az <b>8 karakter</b>
+                                                            </p>
+                                                        </div>
                                                     </div>
                                                     <div class="form-group-text-sep">
                                                     <span>
@@ -128,9 +129,9 @@
                                                     </span>
                                                     </div>
                                                     <div class="form-group">
-                                                        <button type="submit"
+                                                        <button type="button"
                                                                 class="btn btn-gradient  btn-lg btn-block"
-                                                                id="register_btn" name="register_btn">
+                                                                id="register_btn">
                                                             <i class="fas fa-sign-in-alt"
                                                                style="margin-right: 10px;"></i>
                                                             <span>Kayıt Ol</span>
@@ -142,8 +143,10 @@
                                                     </span>
                                                     </div>
                                                     <div class="form-group">
-                                                        <a href="{% provider_login_url "google" %}" class="a-block social-login-btn google">
-                                                            <div class="btn btn-primary btn-icon btn-lg btn-block" style="background: white!important;">
+                                                        <a href="{% provider_login_url "google" %}"
+                                                           class="a-block social-login-btn google">
+                                                            <div class="btn btn-primary btn-icon btn-lg btn-block"
+                                                                 style="background: white!important;">
                                                             <span class="icon">
                                                                 <svg width="24" height="24" viewBox="0 0 24 24"
                                                                      fill="none" xmlns="https://www.w3.org/2000/svg">
@@ -173,15 +176,54 @@
                     </div>
                 </div>
             </div>
-            <!-- ~~~~~~~~~~~~~~~~~ Auth content (Login page) section [END] ~~~~~~~~~~~~~~~~~ -->
         </div>
     </div>
 
+    <div class="loader">
+        <div class="loader-gif">
+            <img src="{% static 'img/loader.gif' %}" alt="">
+        </div>
+    </div>
+
+    <div class="send-email" style="display: none;">
+        <div class="send-email__container">
+            <div class="send-email__header">
+                <img src="{% static 'img/email_otp.png' %}" alt="Send Email">
+            </div>
+            <div class="send-email-body">
+                <h3>E-POSTA DOĞRULAMASI</h3>
+                <p style="text-align: center;">Lütfen mail adresinize gönderilen 6 haneli kodu giriniz. Mail adresinizde mail göremiyorsanız lütfen
+                    "Spam veya Gereksiz E-Posta" klasörünü kontrol ediniz. Eğer bir sorun ile karşılaşırsanız
+                    <a href="https://wa.me/+908503098552" target="_blank" style="color: red;">Canlı Destek</a> üzerinden
+                    bizimle Whatsapp kanalı ile iletişime geçebilirsiniz. Keyifli alışverişler dileriz...</p>
+                <div class="otp-group">
+                    <form method="get" class="digit-group" data-group-name="digits" data-autosubmit="false"
+                          autocomplete="off">
+                        <input type="text" id="digit-1" name="digit-1" data-next="digit-2"/>
+                        <input type="text" id="digit-2" name="digit-2" data-next="digit-3" data-previous="digit-1"/>
+                        <input type="text" id="digit-3" name="digit-3" data-next="digit-4" data-previous="digit-2"/>
+                        <span class="splitter">&ndash;</span>
+                        <input type="text" id="digit-4" name="digit-4" data-next="digit-5" data-previous="digit-3"/>
+                        <input type="text" id="digit-5" name="digit-5" data-next="digit-6" data-previous="digit-4"/>
+                        <input type="text" id="digit-6" name="digit-6" data-previous="digit-5"/>
+                    </form>
+                </div>
+                <span id="errorOtp"></span>
+            </div>
+            <div class="send-email-footer">
+                <button id="confirm-otp" data-target="https://www.tredyshop.com/giris-yap" class="btn btn-gradient btn-block w-100">Onayla</button>
+            </div>
+        </div>
+    </div>
+
+
     <script src="{% static 'js/check_email.js' %}"></script>
+    <script src="{% static 'js/register.js' %}"></script>
     <script>
         document.getElementById('mobile').addEventListener('input', function (e) {
             var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
             e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
         });
     </script>
+
 {% endblock %}

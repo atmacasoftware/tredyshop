@@ -22,7 +22,13 @@
                                     </div>
 
                                     <div class="profile-page__content">
-                                        <div class="form__header" style="display: flex; justify-content: end; margin-bottom: 20px;">
+                                        <div class="form__header"
+                                             style="display: flex; justify-content: end; margin-bottom: 20px;">
+                                            {% if address.is_active == "Hayır" %}
+                                                <a href="{% url 'is_active_address' address.id %}" class="btn btn-primary"
+                                                   style="display: flex; justify-content: center; align-items: center; margin-right: 10px;">Geçerli
+                                                    Adres Yap</a>
+                                            {% endif %}
                                             <button class="btn btn-icon-only" data-toggle="modal"
                                                     data-target="#confirm-delete-address">
                                                 <svg xmlns="https://www.w3.org/2000/svg" width="24"

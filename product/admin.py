@@ -96,6 +96,30 @@ class SexAdmin(ImportExportModelAdmin):
     list_display = ['id','name']
     resource_class = SexResource
 
+class KadinUstBedenAdmin(ImportExportModelAdmin):
+    list_display = ['beden_adi','boyun','gogus','bel']
+    resource_class = KadinUstBedenResource
+
+class KadinUstBuyukAdmin(ImportExportModelAdmin):
+    list_display = ['beden_adi','boyun','gogus','bel']
+    resource_class = KadinUstBuyukBedenResource
+
+class KadinAltBedenAdmin(ImportExportModelAdmin):
+    list_display = ['beden_adi','basen','bel']
+    resource_class = KadinAltBedenResource
+
+class KadinAltBuyukBedenAdmin(ImportExportModelAdmin):
+    list_display = ['beden_adi','basen','bel']
+    resource_class = KadinAltBuyukBedenResource
+
+class KadinJeanBedenAdmin(ImportExportModelAdmin):
+    list_display = ['beden_adi','basen','bel']
+    resource_class = KadinJeanBedenResource
+
+class ProductGroupAdmin(ImportExportModelAdmin):
+    list_display = ['modal_code','product']
+    resource_class = ProductGroupResource
+
 admin.site.register(Brand, BrandAdmin)
 admin.site.register(LikeProduct)
 admin.site.register(DisLikeProduct)
@@ -119,3 +143,10 @@ admin.site.register(Pocket, PocketAdmin)
 admin.site.register(HeelType, HeelTypeAdmin)
 admin.site.register(HeelSize, HeelSizeAdmin)
 admin.site.register(Sex, SexAdmin)
+admin.site.register(KadinUstBedenTablosu, KadinUstBedenAdmin)
+admin.site.register(KadinUstBuyukBedenTablosu, KadinUstBuyukAdmin)
+admin.site.register(KadinAltBedenTablosu, KadinAltBedenAdmin)
+admin.site.register(KadinAltBuyukBedenTablosu, KadinAltBuyukBedenAdmin)
+admin.site.register(KadinJeanBedenTablosu, KadinJeanBedenAdmin)
+admin.site.register(ProductKapak)
+admin.site.register(ProductModelGroup, ProductGroupAdmin)

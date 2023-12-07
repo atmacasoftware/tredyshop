@@ -13,7 +13,7 @@ class AddressForm(forms.ModelForm):
     class Meta:
         model = CustomerAddress
         fields = '__all__'
-        exclude = ['user', 'created_at', 'updated_at']
+        exclude = ['user', 'created_at', 'updated_at', 'is_active']
         widgets = {
             'address': forms.Textarea(attrs={'rows': 2, 'cols': 15}),
         }

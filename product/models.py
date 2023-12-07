@@ -4,6 +4,8 @@ from django.db import models
 from django.db.models import Avg, Count
 from django.utils.safestring import mark_safe
 from django.urls import reverse
+from django_resized import ResizedImageField
+
 from categorymodel.models import MainCategory, SubCategory, SubBottomCategory
 from user_accounts.models import User
 from django_ckeditor_5.fields import CKEditor5Field
@@ -179,6 +181,17 @@ class Sex(models.Model):
     def __str__(self):
         return str(self.name)
 
+
+class ProductKapak(models.Model):
+    def product_photo_directory_path(instance, filename):
+        return f"products/kapak/{filename}"
+
+    kapak = ResizedImageField(force_format="WEBP", quality=50, upload_to=product_photo_directory_path, null=True, blank=True)
+    modal_code = models.CharField(verbose_name="Model Kodu", null=True, blank=False, max_length=150, unique=True)
+
+    def __str__(self):
+        return self.modal_code
+
 class ApiProduct(models.Model):
 
     AGE_GROUP = (
@@ -208,6 +221,7 @@ class ApiProduct(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Marka",
                               related_name="api_brands")
     trendyol_category_id = models.BigIntegerField(null=True, verbose_name="Trendyol Kategori Numarası", blank=True)
+    hepsiburada_category_id = models.BigIntegerField(null=True, verbose_name="Hepsiburada Kategori Numarası", blank=True)
     title = models.CharField(max_length=255, verbose_name="Başlık")
     description = models.CharField(max_length=355, verbose_name="Açıklama")
     image_url1 = models.CharField(max_length=500, verbose_name="Resim Link 1", null=True, blank=False)
@@ -247,6 +261,7 @@ class ApiProduct(models.Model):
     sextype = models.ForeignKey(Sex, verbose_name="Cinsiyet", null=True, blank=True, on_delete=models.CASCADE)
     is_publish = models.BooleanField(default=True, verbose_name="Yayında mı?", null=True)
     is_publish_trendyol = models.BooleanField(default=False, verbose_name="Trendyolda Yayında Mı?", null=True)
+    is_publish_hepsiburada = models.BooleanField(default=False, verbose_name="Hepsiburadada Yayında Mı?", null=True)
     sell_count = models.BigIntegerField(default=0, verbose_name="Toplam Satış Sayısı", null=True, blank=True)
     slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
     status = models.BooleanField(default=True)
@@ -260,7 +275,6 @@ class ApiProduct(models.Model):
 
     def __str__(self):
         return str(self.title)
-
 
     def get_data(self):
         category_title = "Yok"
@@ -412,6 +426,42 @@ class ApiProduct(models.Model):
         super(ApiProduct, self).save(*args, **kwargs)
 
 
+class ProductModelGroup(models.Model):
+    def product_photo_directory_path(instance, filename):
+        return f"products/kapak/{filename}"
+
+    kapak = ResizedImageField(force_format="WEBP", quality=50, upload_to=product_photo_directory_path, null=True, blank=True)
+    modal_code = models.CharField(verbose_name="Model Kodu", null=True, blank=False, max_length=150, unique=True)
+    product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.modal_code
+
+    def get_product_title(self):
+        title = self.product.title
+        return str(title)
+
+    def get_product_slug(self):
+        slug = self.product.slug
+        return str(slug)
+
+    def get_product_price(self):
+        price = self.product.price
+        return price
+
+    def get_product_isdiscount(self):
+        is_discountprice = self.product.is_discountprice
+        return is_discountprice
+
+    def get_product_discountprice(self):
+        discountprice = self.product.discountprice
+        return discountprice
+
+    def third_category(self):
+        category_name = self.product.subbottomcategory.title
+        return str(category_name)
+
+
 class ReviewRating(models.Model):
     product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -554,3 +604,84 @@ class StockAlarm(models.Model):
 
     def __str__(self):
         return str(self.product.title)
+
+
+class KadinUstBedenTablosu(models.Model):
+    beden_adi = models.CharField(max_length=50, verbose_name="Beden Adı", null=True, blank=False)
+    eu_tr = models.IntegerField(verbose_name="EU-TR Beden", null=True, blank=False)
+    boyun = models.CharField(max_length=50, verbose_name="Boyun (cm)", null=True, blank=True)
+    gogus = models.CharField(max_length=50, verbose_name="Göğüs (cm)", null=True, blank=True)
+    bel = models.CharField(max_length=50, verbose_name="Bel (cm)", null=True, blank=True)
+    created_at = models.DateField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
+
+    class Meta:
+        verbose_name = 'Kadın Üst Beden Tablosu'
+        verbose_name_plural = 'Kadın Üst Beden Tablosu'
+
+    def __str__(self):
+        return str(self.beden_adi)
+
+
+class KadinAltBedenTablosu(models.Model):
+    beden_adi = models.CharField(max_length=50, verbose_name="Beden Adı", null=True, blank=False)
+    eu_tr = models.IntegerField(verbose_name="EU-TR Beden", null=True, blank=False)
+    bel = models.CharField(max_length=50, verbose_name="Bel (cm)", null=True, blank=True)
+    basen = models.CharField(max_length=50, verbose_name="Basen (cm)", null=True, blank=True)
+    created_at = models.DateField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
+
+    class Meta:
+        verbose_name = 'Kadın Alt Beden Tablosu'
+        verbose_name_plural = 'Kadın Alt Beden Tablosu'
+
+    def __str__(self):
+        return str(self.beden_adi)
+
+class KadinUstBuyukBedenTablosu(models.Model):
+    beden_adi = models.CharField(max_length=50, verbose_name="Beden Adı", null=True, blank=False)
+    eu_tr = models.IntegerField(verbose_name="EU-TR Beden", null=True, blank=False)
+    boyun = models.CharField(max_length=50, verbose_name="Boyun (cm)", null=True, blank=True)
+    gogus = models.CharField(max_length=50, verbose_name="Göğüs (cm)", null=True, blank=True)
+    bel = models.CharField(max_length=50, verbose_name="Bel (cm)", null=True, blank=True)
+    created_at = models.DateField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
+
+    class Meta:
+        verbose_name = 'Kadın Üst Büyük Beden Tablosu'
+        verbose_name_plural = 'Kadın Üst Büyük Beden Tablosu'
+
+    def __str__(self):
+        return str(self.beden_adi)
+
+
+class KadinAltBuyukBedenTablosu(models.Model):
+    beden_adi = models.CharField(max_length=50, verbose_name="Beden Adı", null=True, blank=False)
+    eu_tr = models.IntegerField(verbose_name="EU-TR Beden", null=True, blank=False)
+    bel = models.CharField(max_length=50, verbose_name="Bel (cm)", null=True, blank=True)
+    basen = models.CharField(max_length=50, verbose_name="Basen (cm)", null=True, blank=True)
+    created_at = models.DateField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
+
+    class Meta:
+        verbose_name = 'Kadın Alt Büyük Beden Tablosu'
+        verbose_name_plural = 'Kadın Alt Büyük Beden Tablosu'
+
+    def __str__(self):
+        return str(self.beden_adi)
+
+
+class KadinJeanBedenTablosu(models.Model):
+    beden_adi = models.CharField(max_length=50, verbose_name="Beden Adı", null=True, blank=False)
+    eu_tr = models.CharField(max_length=50, verbose_name="EU-TR Beden", null=True, blank=False)
+    bel = models.CharField(max_length=50, verbose_name="Bel (cm)", null=True, blank=True)
+    basen = models.CharField(max_length=50, verbose_name="Basen (cm)", null=True, blank=True)
+    created_at = models.DateField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
+
+    class Meta:
+        verbose_name = 'Kadın Jean Beden Tablosu'
+        verbose_name_plural = 'Kadın Jean Beden Tablosu'
+
+    def __str__(self):
+        return str(self.beden_adi)

@@ -56,6 +56,7 @@ class ProductIntegrationService(BaseService):
     def get_categories(self):
         endpoint = "product-categories"
         url = urljoin(self.base_url, endpoint)
+
         data = self._api.call("GET", url, params=None, headers=None, files=None)
         return data
 
