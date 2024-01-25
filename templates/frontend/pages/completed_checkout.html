@@ -1,12 +1,23 @@
-{% extends 'frontend/layout.html' %}
 {% load static %}
-
-{% block title %}<title>Ödemeniz Tamamlandı</title>{% endblock %}
-
-{% block checkout %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% block title %}<title>Ödemeniz Tamamlandı</title>{% endblock %}
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
     <link rel="stylesheet" href="{% static 'css/orders.css' %}">
-    <hr>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+</head>
+<body>
+
+{% include 'frontend/partials/__second_navbar.html' %}
+
+<div class="container">
     <div class="main-content space1">
         <div class="container container-240">
             <div class="row">
@@ -25,7 +36,8 @@
                                 <span></span>
                             </div>
                             <div class="total__price">
-                                <span>Ödeme Şekli: {% if order.is_installment %}{{ order.installment }} Taksit {% else %}Peşin
+                                <span>Ödeme Şekli: {% if order.is_installment %}{{ order.installment }}
+                                    Taksit {% else %}Peşin
                                     Ödeme{% endif %}</span>
                                 <span></span>
                             </div>
@@ -35,9 +47,9 @@
                             </div>
                         </div>
                         <div class="payment_completed__button">
-                            <a href="{% url 'order_page' %}" class="cart-btn btn-viewcart btn-ordering">Siparişlerime
+                            <a href="{% url 'order_page' %}" class="cart-btn btn-viewcart btn-ordering my-2 mx-1" style="text-decoration: none; width: 175px;">Siparişlerime
                                 Git</a>
-                            <a href="{% url 'mainpage' %}" class="cart-btn e-checkout btn-gradient btn-continue">Alışverişe
+                            <a href="{% url 'mainpage' %}" class="cart-btn e-checkout btn-gradient btn-continue my-2 mx-1" style="text-decoration: none; width: 175px;">Alışverişe
                                 Devam
                                 Et</a>
                         </div>
@@ -47,4 +59,16 @@
 
         </div>
     </div>
-{% endblock %}
+</div>
+
+{% include 'frontend/partials/__second_footer.html' %}
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+<script src="https://kit.fontawesome.com/7ffad3a2e0.js" crossorigin="anonymous"></script>
+<script src="{% static 'js/second_navbar.js' %}"></script>
+</body>
+</html>
+
+

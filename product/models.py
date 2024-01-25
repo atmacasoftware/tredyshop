@@ -12,6 +12,8 @@ from django_ckeditor_5.fields import CKEditor5Field
 from unidecode import unidecode
 from django.template import defaultfilters
 from datetime import datetime
+
+
 # Create your models here.
 
 class Brand(models.Model):
@@ -65,6 +67,7 @@ class Brand(models.Model):
                     break
         super(Brand, self).save(*args, **kwargs)
 
+
 class Color(models.Model):
     name = models.CharField(max_length=50, verbose_name="Renk")
     code = models.CharField(max_length=50, blank=True, null=True, verbose_name="Renk Kodu")
@@ -78,10 +81,10 @@ class Color(models.Model):
         else:
             return ""
 
-
     class Meta:
         verbose_name = "9.1) Renk"
         verbose_name_plural = "9.1) Renkler"
+
 
 class Size(models.Model):
     name = models.CharField(max_length=50, verbose_name="Boyut")
@@ -101,11 +104,13 @@ class FabricType(models.Model):
     def __str__(self):
         return str(self.name)
 
+
 class Height(models.Model):
     name = models.CharField(max_length=50, verbose_name="Boy")
 
     def __str__(self):
         return str(self.name)
+
 
 class Pattern(models.Model):
     name = models.CharField(max_length=50, verbose_name="Kalıp")
@@ -113,11 +118,13 @@ class Pattern(models.Model):
     def __str__(self):
         return str(self.name)
 
+
 class ArmType(models.Model):
     name = models.CharField(max_length=50, verbose_name="Kol Tipi")
 
     def __str__(self):
         return str(self.name)
+
 
 class CollerType(models.Model):
     name = models.CharField(max_length=50, verbose_name="Yaka Tipi")
@@ -125,17 +132,20 @@ class CollerType(models.Model):
     def __str__(self):
         return str(self.name)
 
+
 class WeavingType(models.Model):
     name = models.CharField(max_length=50, verbose_name="Dokuma Tipi")
 
     def __str__(self):
         return str(self.name)
 
+
 class MaterialType(models.Model):
     name = models.CharField(max_length=50, verbose_name="Materyal")
 
     def __str__(self):
         return str(self.name)
+
 
 class EnvironmentType(models.Model):
     name = models.CharField(max_length=50, verbose_name="Ortam")
@@ -150,11 +160,13 @@ class LegType(models.Model):
     def __str__(self):
         return str(self.name)
 
+
 class Pocket(models.Model):
     name = models.CharField(max_length=50, verbose_name="Cep")
 
     def __str__(self):
         return str(self.name)
+
 
 class Waist(models.Model):
     name = models.CharField(max_length=50, verbose_name="Bel")
@@ -162,11 +174,13 @@ class Waist(models.Model):
     def __str__(self):
         return str(self.name)
 
+
 class HeelType(models.Model):
     name = models.CharField(max_length=50, verbose_name="Topuk Tipi")
 
     def __str__(self):
         return str(self.name)
+
 
 class HeelSize(models.Model):
     name = models.CharField(max_length=50, verbose_name="Topuk Boyu")
@@ -182,29 +196,89 @@ class Sex(models.Model):
         return str(self.name)
 
 
+class TabletModel(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Tablet Modelleri")
+
+    def __str__(self):
+        return str(self.name)
+
+class TableCaseType(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Kılıf Modeli")
+
+    def __str__(self):
+        return str(self.name)
+
+class SleepMode(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Uyku Modu")
+
+    def __str__(self):
+        return str(self.name)
+
+class BagPattern(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Çanta Deseni")
+
+    def __str__(self):
+        return str(self.name)
+
+
+class BijuteriTheme(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Tema/Stil")
+
+    def __str__(self):
+        return str(self.name)
+
 class ProductKapak(models.Model):
     def product_photo_directory_path(instance, filename):
         return f"products/kapak/{filename}"
 
-    kapak = ResizedImageField(force_format="WEBP", quality=50, upload_to=product_photo_directory_path, null=True, blank=True)
+    kapak = ResizedImageField(force_format="WEBP", quality=50, upload_to=product_photo_directory_path, null=True,
+                              blank=True)
     modal_code = models.CharField(verbose_name="Model Kodu", null=True, blank=False, max_length=150, unique=True)
 
     def __str__(self):
         return self.modal_code
 
-class ApiProduct(models.Model):
 
+class ApiProduct(models.Model):
     AGE_GROUP = (
-        ("Bebek","Bebek"),
-        ("Bebek&Çocuk","Bebek&Çocuk"),
-        ("Çocuk","Çocuk"),
-        ("Genç","Genç"),
-        ("Yetişkin","Yetişkin"),
+        ("Bebek", "Bebek"),
+        ("Bebek&Çocuk", "Bebek&Çocuk"),
+        ("Çocuk", "Çocuk"),
+        ("Genç", "Genç"),
+        ("Yetişkin", "Yetişkin"),
     )
 
     ACVTIVE_STATUS = (
         ("1", "Evet"),
         ("2", "Hayır"),
+    )
+
+    WARRANTY_TYPE = (
+        ('Belirtilmemiş','Belirtilmemiş'),
+        ('1 Yıl','1 Yıl'),
+        ('2 Yıl','2 Yıl'),
+        ('3 Yıl','3 Yıl'),
+        ('4 Yıl','4 Yıl'),
+        ('5 Yıl','5 Yıl'),
+        ('6 Ay','6 Ay'),
+    )
+
+    COMPATİBLE_BRAND = (
+        ("Alcatel Uyumlu","Alcatel Uyumlu"),
+        ("Apple Uyumlu","Apple Uyumlu"),
+        ("Asus Uyumlu","Asus Uyumlu"),
+        ("Casper Uyumlu","Casper Uyumlu"),
+        ("General Mobile Uyumlu","General Mobile Uyumlu"),
+        ("Honor Uyumlu","Honor Uyumlu"),
+        ("Huawei Uyumlu","Huawei Uyumlu"),
+        ("Lenovo Uyumlu","Lenovo Uyumlu"),
+        ("Oppo Uyumlu","Oppo Uyumlu"),
+        ("POCO Uyumlu","POCO Uyumlu"),
+        ("Realme Uyumlu","Realme Uyumlu"),
+        ("Reeder Uyumlu","Reeder Uyumlu"),
+        ("Samsung Uyumlu","Samsung Uyumlu"),
+        ("TCL Uyumlu","TCL Uyumlu"),
+        ("Xiaomi Uyumlu","Xiaomi Uyumlu"),
     )
 
     xml_id = models.CharField(max_length=100, null=True, blank=True, verbose_name="XML ID")
@@ -221,7 +295,8 @@ class ApiProduct(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Marka",
                               related_name="api_brands")
     trendyol_category_id = models.BigIntegerField(null=True, verbose_name="Trendyol Kategori Numarası", blank=True)
-    hepsiburada_category_id = models.BigIntegerField(null=True, verbose_name="Hepsiburada Kategori Numarası", blank=True)
+    hepsiburada_category_id = models.BigIntegerField(null=True, verbose_name="Hepsiburada Kategori Numarası",
+                                                     blank=True)
     title = models.CharField(max_length=255, verbose_name="Başlık")
     description = models.CharField(max_length=355, verbose_name="Açıklama")
     image_url1 = models.CharField(max_length=500, verbose_name="Resim Link 1", null=True, blank=False)
@@ -234,15 +309,19 @@ class ApiProduct(models.Model):
     image_url8 = models.CharField(max_length=500, verbose_name="Resim Link 8", null=True, blank=True)
     color = models.ForeignKey(Color, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Renk")
     size = models.ForeignKey(Size, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Boyut/Beden")
-    fabrictype = models.ForeignKey(FabricType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Kumaş Tipi")
+    fabrictype = models.ForeignKey(FabricType, on_delete=models.CASCADE, null=True, blank=True,
+                                   verbose_name="Kumaş Tipi")
     height = models.ForeignKey(Height, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Boy")
     waist = models.ForeignKey(Waist, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Bel")
     pattern = models.ForeignKey(Pattern, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Kalıp")
     armtype = models.ForeignKey(ArmType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Kol Tipi")
-    collartype = models.ForeignKey(CollerType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Yaka Tipi")
-    weavingtype = models.ForeignKey(WeavingType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Dokuma Tipi")
+    collartype = models.ForeignKey(CollerType, on_delete=models.CASCADE, null=True, blank=True,
+                                   verbose_name="Yaka Tipi")
+    weavingtype = models.ForeignKey(WeavingType, on_delete=models.CASCADE, null=True, blank=True,
+                                    verbose_name="Dokuma Tipi")
     material = models.ForeignKey(MaterialType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Materyal")
-    environment = models.ForeignKey(EnvironmentType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Ortam")
+    environment = models.ForeignKey(EnvironmentType, on_delete=models.CASCADE, null=True, blank=True,
+                                    verbose_name="Ortam")
     legtype = models.ForeignKey(LegType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Paça Tipi")
     pocket = models.ForeignKey(Pocket, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Cep")
     heeltype = models.ForeignKey(HeelType, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Topuk Tipi")
@@ -251,23 +330,25 @@ class ApiProduct(models.Model):
     quantity = models.BigIntegerField(verbose_name="Miktar", null=True, default=0)
     detail = RichTextUploadingField()
     trendyol_price = models.DecimalField(verbose_name="Trendyol Fiyatı", decimal_places=2, max_digits=20, null=True)
-    hepsiburada_price = models.DecimalField(verbose_name="Hepsiburada Fiyatı", decimal_places=2, max_digits=20,
-                                            null=True)
-    pttavm_price = models.DecimalField(verbose_name="PttAvm Fiyatı", decimal_places=2, max_digits=20, null=True)
     discountprice = models.DecimalField(verbose_name="İndirimli Fiyat", decimal_places=2, max_digits=20, null=True,
                                         blank=True)
     is_discountprice = models.BooleanField(default=False, verbose_name="İndirimli Yayınla", null=True, blank=True)
     age_group = models.CharField(choices=AGE_GROUP, max_length=50, verbose_name="Yaş Grubu", null=True, blank=True)
     sextype = models.ForeignKey(Sex, verbose_name="Cinsiyet", null=True, blank=True, on_delete=models.CASCADE)
+    warranty = models.CharField(choices=WARRANTY_TYPE, default="Belirtilmemiş", null=True, blank=True, verbose_name="Garanti Süresi", max_length=100)
+    compatible = models.CharField(choices=COMPATİBLE_BRAND, null=True, blank=True, verbose_name="Uyumlu Marka", max_length=100)
+    tabletmodel = models.ForeignKey(TabletModel, on_delete=models.CASCADE, verbose_name="Elektronik Model", null=True, blank=True)
+    casetype = models.ForeignKey(TableCaseType, on_delete=models.CASCADE, verbose_name="Kılıf Modeli", null=True, blank=True)
+    sleepmode = models.ForeignKey(SleepMode, on_delete=models.CASCADE, verbose_name="Uyku Modu", null=True, blank=True)
+    bag_pattern = models.ForeignKey(BagPattern, on_delete=models.CASCADE, verbose_name="Çanta Deseni", null=True, blank=True)
+    bijuteri_theme = models.ForeignKey(BijuteriTheme, on_delete=models.CASCADE, verbose_name="Tema/Stil", null=True, blank=True)
     is_publish = models.BooleanField(default=True, verbose_name="Yayında mı?", null=True)
     is_publish_trendyol = models.BooleanField(default=False, verbose_name="Trendyolda Yayında Mı?", null=True)
     is_publish_hepsiburada = models.BooleanField(default=False, verbose_name="Hepsiburadada Yayında Mı?", null=True)
-    sell_count = models.BigIntegerField(default=0, verbose_name="Toplam Satış Sayısı", null=True, blank=True)
     slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
     status = models.BooleanField(default=True)
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
-
 
     class Meta:
         verbose_name = '1) Ürünler'
@@ -275,6 +356,9 @@ class ApiProduct(models.Model):
 
     def __str__(self):
         return str(self.title)
+
+    def change_float(self):
+        return float(self.price)
 
     def get_data(self):
         category_title = "Yok"
@@ -430,12 +514,13 @@ class ProductModelGroup(models.Model):
     def product_photo_directory_path(instance, filename):
         return f"products/kapak/{filename}"
 
-    kapak = ResizedImageField(force_format="WEBP", quality=50, upload_to=product_photo_directory_path, null=True, blank=True)
-    modal_code = models.CharField(verbose_name="Model Kodu", null=True, blank=False, max_length=150, unique=True)
+    kapak = ResizedImageField(force_format="WEBP", quality=50, upload_to=product_photo_directory_path, null=True,
+                              blank=True)
+    model_code = models.CharField(verbose_name="Model Kodu", null=True, blank=False, max_length=150, unique=True)
     product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return self.modal_code
+        return self.model_code
 
     def get_product_title(self):
         title = self.product.title
@@ -460,6 +545,18 @@ class ProductModelGroup(models.Model):
     def third_category(self):
         category_name = self.product.subbottomcategory.title
         return str(category_name)
+
+    def total_stok(self):
+        products = ApiProduct.objects.filter(model_code=self.model_code)
+        stok = 0
+
+        for p in products:
+            stok += p.quantity
+        return stok
+
+    def delete(self, using=None, keep_parents=False):
+        self.kapak.delete()
+        super().delete()
 
 
 class ReviewRating(models.Model):
@@ -506,7 +603,8 @@ class ReviewRatingImages(models.Model):
 
 class LikeProduct(models.Model):
     customer = models.ForeignKey(User, null=True, related_name='like_product', on_delete=models.CASCADE)
-    product = models.ForeignKey(ApiProduct, null=True, blank=True, on_delete=models.CASCADE, related_name='like_product')
+    product = models.ForeignKey(ApiProduct, null=True, blank=True, on_delete=models.CASCADE,
+                                related_name='like_product')
     comment = models.ForeignKey(ReviewRating, null=True, on_delete=models.CASCADE)
     ip = models.CharField(max_length=50, blank=True)
     status = models.BooleanField(default=True)
@@ -580,7 +678,7 @@ class Question(models.Model):
     answer = models.CharField(max_length=300, verbose_name="Cevap", null=True, blank=True)
     ip = models.CharField(max_length=50, blank=True)
     status = models.BooleanField(default=True)
-    created_at = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -590,6 +688,22 @@ class Question(models.Model):
     def __str__(self):
         return "%s %s" % (self.user.email, self.product.title)
 
+    def passing_time(self):
+        from datetime import datetime, timezone
+        import math
+        now = datetime.now(timezone.utc)
+        pass_time = now - self.created_at
+        passing = None
+
+        if pass_time.days > 0 and pass_time.days < 31:
+            passing = f"{pass_time.days} g."
+
+        elif pass_time.days < 1:
+            if pass_time.seconds / 60 < 60:
+                passing = f"{math.floor(pass_time.seconds / 60)} dk."
+            elif pass_time.seconds / 60 > 59:
+                passing = f"{math.floor(pass_time.seconds / 3600)} sa."
+        return passing
 
 class StockAlarm(models.Model):
     product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE, null=True, verbose_name="Ürün")
@@ -637,6 +751,7 @@ class KadinAltBedenTablosu(models.Model):
 
     def __str__(self):
         return str(self.beden_adi)
+
 
 class KadinUstBuyukBedenTablosu(models.Model):
     beden_adi = models.CharField(max_length=50, verbose_name="Beden Adı", null=True, blank=False)

@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 import requests
 
+from adminpage.models import Notification
 from carts.helpers import paytr_taksit_sorgu, taksit_hesaplama
 from orders.models import OrderProduct
 from product.models import *
@@ -11,11 +12,6 @@ from django.contrib import messages
 from django.core import serializers
 from django.http import JsonResponse
 from django.shortcuts import render
-
-import urllib.request
-from PIL import Image
-from io import BytesIO
-from django.core.files.images import ImageFile
 
 
 # Create your views here.
@@ -79,6 +75,7 @@ def products_detail(request, product_slug):
 
             if question != '':
                 data = Question.objects.create(user=request.user, product=product, question=question, ip=ip)
+                Notification.objects.create(noti_type="5", customer=request.user, question=data, title="Yeni bir ürün sorusu geldi.")
                 messages.success(request, 'Sorunuz başarıyla iletilmiştir.')
                 return redirect('products_detail', product_slug)
 
@@ -130,6 +127,7 @@ def products_detail(request, product_slug):
         'similar_product': similar_product,
         'question_obj':question_obj,
         'product_question_count':product_question_count,
+        'product_question':product_question,
         'reviews_obj':reviews_obj,
         'beden_tablosu': beden_tablosu,
         'beden_title':beden_title

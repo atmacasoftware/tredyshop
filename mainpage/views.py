@@ -1,3 +1,5 @@
+import json
+
 from django.db.models import Q, Count, Min, Max
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -7,34 +9,22 @@ import requests
 from adminpage.models import *
 from customer.models import Subscription
 from mainpage.models import *
-from product.models import Brand, ReviewRating, ApiProduct, Pattern, EnvironmentType
+from product.models import Brand, ReviewRating, ApiProduct, Pattern, EnvironmentType, ProductModelGroup
 from categorymodel.models import *
-from product.read_xml import tahtakaleSaveXML2db, updateTahtakaleSaveXML2db, customPrice, notActiveModaymisProduct
-from product.update import kalip, kumas
 from store.views import listToString
-from urllib.request import urlopen
-import xml.etree.ElementTree as ET
 
 
 # Create your views here.
 
 def index(request):
     context = {}
-    sliders = Slider.objects.filter(is_publish=True)
     flash_deals = []
     new_release = []
 
-    banner_one = BannerOne.objects.all().last()
-    banner_two = BannerTwo.objects.all().last()
-
-
-
+    banners = Banner.objects.all().order_by('order')
 
     context.update({
-        'sliders': sliders,
-        'banner_one':banner_one,
-        'banner_two':banner_two
-
+        'banners':banners,
     })
     return render(request, 'frontend/pages/mainpage.html', context)
 
@@ -53,27 +43,27 @@ def ajax_search(request):
         else:
             MostSearchingKeyword.objects.create(keyword=series, ip=ip)
 
-    products = ApiProduct.objects.filter(title__icontains=series)[:15]
+    products = ProductModelGroup.objects.filter(product__title__icontains=series, product__is_publish=True)[:15]
 
     if len(products) > 0:
         data = []
         for r in products:
-            if r.image_url1:
+            if r.kapak:
                 item = {
-                    'id': r.id,
-                    'title': r.title,
-                    'slug': r.slug,
-                    'image': r.image_url1,
-                    'get_url': r.get_url(),
+                    'id': r.product.id,
+                    'title': r.product.title,
+                    'slug': r.product.slug,
+                    'image': str(r.kapak.url),
+                    'get_url': r.product.get_url(),
                 }
                 data.append(item)
             else:
                 item = {
-                    'id': r.id,
-                    'title': r.title,
-                    'slug': r.slug,
-                    'image': r.image_url1,
-                    'get_url': r.get_url(),
+                    'id': r.product.id,
+                    'title': r.product.title,
+                    'slug': r.product.slug,
+                    'image': r.product.image_url1,
+                    'get_url': r.product.get_url(),
                 }
                 data.append(item)
         res = data
@@ -102,12 +92,12 @@ def search(request):
     })
 
     if keyword:
-        products = ApiProduct.objects.filter(Q(title__icontains=keyword) | Q(category__title__icontains=keyword) | Q(
-            subcategory__title__icontains=keyword) | Q(brand__title__icontains=keyword))
+        products = ProductModelGroup.objects.filter(Q(product__title__icontains=keyword) | Q(product__category__title__icontains=keyword) | Q(
+            product__subcategory__title__icontains=keyword) | Q(product__subbottomcategory__title__icontains=keyword) | Q(product__brand__title__icontains=keyword), product__is_publish=True)
 
         minMaxPrice = products.aggregate(
-            Min('price'),
-            Max('price'))
+            Min('product__price'),
+            Max('product__price'))
 
         product_count = products.count()
 
@@ -150,38 +140,12 @@ def search_product_filter(request):
     data = []
 
     if keyword:
-        data = ApiProduct.objects.filter(Q(title__icontains=keyword) | Q(category__title__icontains=keyword) | Q(
-            subcategory__title__icontains=keyword) | Q(brand__title__icontains=keyword), price__gte=minPrice,
-                                      price__lte=maxPrice).order_by(order_type)
+        data = ProductModelGroup.objects.filter(Q(product__title__icontains=keyword) | Q(product__category__title__icontains=keyword) | Q(
+            product__subcategory__title__icontains=keyword) | Q(product__brand__title__icontains=keyword), product__price__gte=minPrice,
+                                      product__price__lte=maxPrice, product__is_publish=True).order_by(order_type)
 
     t = render_to_string('frontend/partials/ajax/product-list.html', {'data': data})
     return JsonResponse({'data': t})
-
-
-def slider_info(request, slider_slug):
-    context = {}
-    slider = Slider.objects.get(slug=slider_slug)
-    reviewrating = ReviewRating.objects.all()
-    liked_product = ApiProduct.objects.all().filter(reviewrating__rating__gte=4, reviewrating__rating__lte=6)[:3]
-    if liked_product.exists():
-        liked_product = ApiProduct.objects.all().filter(reviewrating__rating__gte=4, reviewrating__rating__lte=6)[:3]
-    else:
-        liked_product = ApiProduct.objects.all().order_by("?")[:3]
-    most_count = ApiProduct.objects.filter(reviewrating__in=reviewrating).annotate(rating_count=Count('id')).order_by(
-        '-rating_count')[:3]
-    if most_count.exists():
-        most_count = ApiProduct.objects.filter(reviewrating__in=reviewrating).annotate(rating_count=Count('id')).order_by(
-            '-rating_count')[:3]
-    else:
-        most_count = ApiProduct.objects.all().order_by('?')[:3]
-    most_selling = ApiProduct.objects.all().order_by("-sell_count")[:3]
-    context.update({
-        'slider': slider,
-        'liked_product': liked_product,
-        'most_count': most_count,
-        'most_selling': most_selling
-    })
-    return render(request, 'frontend/pages/slider_info.html', context)
 
 
 def sss(request):

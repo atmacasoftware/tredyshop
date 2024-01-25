@@ -1,0 +1,31 @@
+{% load static %}
+
+<table class="table table-bordered table-md">
+    <tbody>
+    <tr>
+        <th>Görsel</th>
+        <th>Ürün Adı</th>
+        <th>Trendyol Fiyatı</th>
+        <th>Miktar</th>
+        <th>Beden</th>
+        <th>Renk</th>
+        <th>Topuk Tipi</th>
+        <th>Topuk Boyu</th>
+        <th>İşlemler</th>
+    </tr>
+
+    {% for d in data %}
+        <tr>
+            <td><img src="{{ d.image_url1 }}" alt="" style="width: 50px; height: auto;"></td>
+            <td>{{ d.title }}</td>
+            <td>{{ d.trendyol_price }}</td>
+            <td>{{ d.quantity }}</td>
+            <td>{% if d.size.name %}{{ d.size.name }}{% else %}<span class="btn btn-icon btn-danger"><i class="fas fa-times"></i></span>{% endif %}</td>
+            <td>{% if d.color.name %}{{ d.color.name }}{% else %}<span class="btn btn-icon btn-danger"><i class="fas fa-times"></i></span>{% endif %}</td>
+            <td>{% if d.heeltype.name %}{{ d.heeltype.name }}{% else %}<span class="btn btn-icon btn-danger"><i class="fas fa-times"></i></span>{% endif %}</td>
+            <td>{% if d.heelsize.name %}{{ d.heelsize.name }}{% else %}<span class="btn btn-icon btn-danger"><i class="fas fa-times"></i></span>{% endif %}</td>
+            <td><a href="{% url 'product_detail' d.id %}" class="btn btn-primary" target="_blank">Ürüne Git</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

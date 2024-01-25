@@ -30,5 +30,5 @@ def top_product(request):
     liked_product = ApiProduct.objects.all().filter(reviewrating__rating__gte=4, reviewrating__rating__lte=6)[:3]
     most_count = ApiProduct.objects.filter(reviewrating__in=reviewrating).annotate(rating_count=Count('id')).order_by(
         '-rating_count')[:3]
-    most_selling = ApiProduct.objects.all().order_by("-sell_count")[:3]
+    most_selling = ApiProduct.objects.all()[:3]
     return dict(liked_product=liked_product, most_count=most_count, most_selling=most_selling)

@@ -1,0 +1,73 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+{% block title %}<title>TredyShop | Bildirim Oku</title>{% endblock %}
+{% block anasayfa %}
+
+
+    <section class="section">
+        <div class="section-header">
+            <h1>Bildirim Oku</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item active"><a href="{% url 'bildirimler' %}">Bildirimlerim</a></div>
+                <div class="breadcrumb-item">Bildirim Oku</div>
+            </div>
+        </div>
+        <div class="section-body">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>{{ bildirim.title }}</h4>
+                            <span class="float-right">({{ bildirim.created_at|date:"d-m-Y" }})</span>
+                        </div>
+                        <div class="card-body">
+
+                            {% if bildirim.noti_type == "5" %}
+                                <a href="{% url 'musteri_sorulari_cevapla' bildirim.question.id %}" class="btn btn-primary">Soruya Git</a>
+                            {% endif %}
+
+                            {% if  bildirim.detail %}
+                            	<p class="mt-5">{{ bildiri.detail }}</p>
+                            {% else %}
+                                <p class="mt-5">Bildirimle ilgili detay yazısı bulunmamaktadır.</p>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer text-right">
+                            <a href="{% url 'bildirim_sil' bildirim.id %}" class="btn btn-danger">Sil</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="modal fade" id="modal-select-delete">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Emin misin?</h4>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Tüm bildirimler silenecektir.</p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <a href="{% url 'tum_bildirimleri_sil' %}" id="deleteNow" class="btn btn-danger"
+                            data-dismiss="modal">
+                        Sil
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+{% endblock %}
+
+{% block extra_script %}
+
+{% endblock %}

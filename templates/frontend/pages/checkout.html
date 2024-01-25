@@ -4,17 +4,15 @@
 
 {% block title %}<title>Ödeme Kontrol</title>{% endblock %}
 
-
-
 {% block checkout %}
-
-    {% include 'frontend/partials/__second_navbar.html' %}
-
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
     <link rel="stylesheet" href="{% static 'css/orders.css' %}">
 
 
-    <div class="main-content space1" style="margin-top: 120px;">
+    {% include 'frontend/partials/__second_navbar.html' %}
+
+
+    <div class="main-content space1" style="margin-top: 50px;">
         <div class="container container-240">
 
             <form action="{{ paytr_form_action }}" name="checkout" method="post" id="checkoutForm" class="co">
@@ -171,7 +169,7 @@
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
-                                            <div class="card installment-card">
+                                            <div class="card installment-card" style="margin-top: 20px;">
                                                 <div class="card-header">
                                                     <h4 class="card-title">
                                                         Taksit Seçenekleri
@@ -449,7 +447,7 @@
     <script src="{% static 'js/load_counties.js' %}"></script>
     <script src="{% static 'js/address.js' %}"></script>
     <script src="{% static 'js/payment.js' %}"></script>
-
+    <script src="{% static 'js/second_navbar.js' %}"></script>
 
     <script>
         document.getElementById('id_mobile').addEventListener('input', function (e) {

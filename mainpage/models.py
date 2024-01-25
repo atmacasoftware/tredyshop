@@ -23,10 +23,7 @@ class Setting(models.Model):
     email = models.CharField(blank=True, max_length=255, verbose_name="Email")
     vkn = models.CharField(blank=True, max_length=50, verbose_name="Vergi Kimlik Numarası")
     mersis = models.CharField(blank=True, max_length=100, verbose_name="Mersis Numarası")
-    smtpserver = models.CharField(max_length=50, verbose_name="Smtp Server", blank=True)
-    smtpemail = models.CharField(max_length=50, verbose_name="Smtp Email", blank=True)
-    smtppassword = models.CharField(max_length=50, verbose_name="Smtp Şifre", blank=True)
-    smtpport = models.CharField(max_length=10, verbose_name="Smtp Port", blank=True)
+    logo = models.ImageField(blank=True, upload_to="img/logo/")
     icon = models.ImageField(blank=True, upload_to="img/favicon/")
     facebook = models.CharField(max_length=255, null=True, blank=True, verbose_name="Facebook")
     instagram = models.CharField(max_length=255, null=True, blank=True, verbose_name="İnstagram")
@@ -110,66 +107,6 @@ class County(models.Model):
                     self.slug = slug
                     break
         super(County, self).save(*args, **kwargs)
-
-
-class Slider(models.Model):
-    TYPE = (
-        ("Ürün", "Ürün"),
-        ("Bilgi", "Bilgi"),
-        ("Duyuru", "Duyuru"),
-    )
-
-    title = models.CharField(max_length=40, null=True, blank=False, verbose_name="Başlık")
-    title_color = models.CharField(max_length=40, verbose_name="Başlık Rengi", null=True, blank=True)
-    subtitle = models.CharField(max_length=40, null=True, blank=True, verbose_name="Alt Başlık")
-    subtitle_color = models.CharField(max_length=40, verbose_name="Alt Başlık Rengi", null=True, blank=True)
-    button = models.CharField(max_length=40, null=True, blank=True, verbose_name="Button Yazısı")
-    button_color = models.CharField(max_length=40, verbose_name="Buton Rengi", null=True, blank=True)
-    button_link = models.CharField(max_length=300, verbose_name="Gideceği Adres", null=True, blank=True)
-    image = models.ImageField(blank=False, upload_to='img/slider/', null=True, verbose_name="Resim",
-                              help_text="1071px x 593px")
-    type = models.CharField(choices=TYPE, max_length=30, verbose_name="Slider Tipi", null=True, default="Bilgi")
-    content = CKEditor5Field('İçerik', config_name='extends', null=True)
-    is_publish = models.BooleanField(default=True, verbose_name="Yayınlansın", null=True)
-    slug = AutoSlugField(populate_from="title", unique=True, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True, null=True, verbose_name="Oluşturulma Tarihi")
-    updated_at = models.DateTimeField(auto_now=True, null=True, verbose_name="Güncellenme Tarihi")
-
-    class Meta:
-        verbose_name = "4) Slider"
-        verbose_name_plural = "4) Slider"
-        ordering = ['id']
-
-    def __str__(self):
-        return f"{str(self.id)}"
-
-    def image_tag(self):
-        return mark_safe('<img src="{}" height="50"/>'.format(self.image.url))
-
-    image_tag.short_description = 'Kapak'
-
-    def get_image(self):
-        if self.image:
-            return self.image.url
-        else:
-            return None
-
-    def save(self, *args, **kwargs):
-        if not self.id and not self.slug and self.title != '':
-            slug = defaultfilters.slugify(unidecode(self.title))
-            slug_exists = True
-            counter = 1
-            self.slug = slug
-            while slug_exists:
-                try:
-                    slug_exits = Slider.objects.get(slug=slug)
-                    if slug_exits:
-                        slug = self.slug + '_' + str(counter)
-                        counter += 1
-                except Slider.DoesNotExist:
-                    self.slug = slug
-                    break
-        super(Slider, self).save(*args, **kwargs)
 
 
 class MostSearchingKeyword(models.Model):

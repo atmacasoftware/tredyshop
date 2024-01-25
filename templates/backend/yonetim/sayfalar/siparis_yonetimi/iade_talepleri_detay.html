@@ -1,0 +1,118 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>{{ extradition.order.order_number }} İade Talebi</title>{% endblock %}
+
+{% block siparisler %}
+    <style>
+        .errorlist{
+            display: none;
+        }
+    </style>
+    <section class="section">
+        <div class="section-header">
+            <h1>İade Talebi</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item active"><a href="{% url 'iade_talepleri' %}">İade Talebi</a></div>
+                <div class="breadcrumb-item">{{ extradition.order.order_number }} İade Talebi</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>{{ extradition.order.order_number }} İade Talebi</h4>
+                        </div>
+                        <div class="card-body p-0">
+                            <table class="table table-striped">
+                                <tbody>
+                                <tr>
+                                    <td>Sipariş Numarası</td>
+                                    <td style="float: right;">SN2312144733741</td>
+                                </tr>
+                                <tr>
+                                    <td>Müşteri</td>
+                                    <td style="float: right;"><a
+                                            href="/yonetim/kullanicilar/kullanici-goruntule/kullanici_id=1/">Ahmet
+                                        Atmaca</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>İade Nedeni</td>
+                                    <td style="float: right;">Hasarlı geldi</td>
+                                </tr>
+                                <tr>
+                                    <td>Açıklama</td>
+                                    <td style="float: right;">sdfgsdfg</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Ürün Bilgileri</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th style="width: 10px">Ürün ID</th>
+                                <th>Miktar</th>
+                                <th>Ürün Görseli</th>
+                                <th>Ürün Adı</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>96773</td>
+                                <td>
+
+
+                                    1
+
+
+                                </td>
+                                <td>
+                                    <img src="https://c7x94nwxkwy6.merlincdn.net/i/l/069/0696078_kemerli-deri-pantolon-siyah-70241289.jpeg"
+                                         alt="" style="height: 150px; width:150px;">
+                                </td>
+                                <td>Kemerli Deri Pantolon Siyah</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form action="" method="post">
+                           {% csrf_token %}
+                            {{ form.as_p }}
+                            <button class="btn btn-primary" type="submit" name="updateBtn">Talep Güncelle</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'backend/js/page/siparisler.js' %}"></script>
+{% endblock %}
+
+
+

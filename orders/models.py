@@ -1,4 +1,5 @@
-from datetime import timedelta
+import datetime
+from datetime import timedelta, timezone
 from django.db import models
 from ckeditor_uploader.fields import RichTextUploadingField
 from carts.models import Cart
@@ -79,7 +80,7 @@ class Order(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
 
     def __str__(self):
-        return self.user.get_full_name()
+        return str(self.order_number)
 
     class Meta:
         verbose_name = "1. Siparişler"
@@ -92,6 +93,14 @@ class Order(models.Model):
     def get_bill(self):
         if self.bill:
             return self.bill.url
+
+    def returnPeriodRequirementTime(self):
+        bugun = datetime.now(timezone.utc)
+        gecen_sure = bugun - self.created_at
+        result = False
+        if gecen_sure.days <= 2:
+            result = True
+        return result
 
 class OrderProduct(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name="Sipariş")

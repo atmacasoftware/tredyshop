@@ -1,0 +1,15 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'backend/modules/izitoast/css/iziToast.min.css' %}">
+<script src="{% static 'backend/modules/jquery.min.js' %}"></script>
+<script src="{% static 'backend/modules/izitoast/js/iziToast.min.js' %}"></script>
+
+{% for message in messages %}
+    <script>
+        $(function () {
+            iziToast.{{ message.tags }}({
+                message: '{{ message }}',
+                position: 'topRight'
+            });
+        });
+    </script>
+{% endfor %}

@@ -1,0 +1,113 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>Trendyol | GSM Ürün Girişi</title>{% endblock %}
+
+{% block trendyol %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>GSM Ürün Girişi</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item">GSM Ürün Girişi</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+                <div class="col-3">
+                    <div class="card card-danger">
+                        <div class="card-header">
+                            <h4>Telefon Kapak & Kılıf</h4>
+                        </div>
+                        <div class="card-body">
+
+                        </div>
+                        <div class="card-footer">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{ telefon_kilif.category_no }}" name="category_no">
+                                <input type="hidden" value="{{ telefon_kilif.title }}" name="category_title">
+                                <button class="btn btn-danger btn-block" name="sendTrendyol" type="submit">
+                                    Yükle
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h4>Tablet Kapak & Kılıf</h4>
+                        </div>
+                        <div class="card-body">
+
+                        </div>
+                        <div class="card-footer">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{ tablet_kilif.category_no }}" name="category_no">
+                                <input type="hidden" value="{{ tablet_kilif.title }}" name="category_title">
+                                <button class="btn btn-primary btn-block" name="sendTrendyol" type="submit">
+                                    Yükle
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card card-success">
+                        <div class="card-header">
+                            <h4>Ekran Koruyucular</h4>
+                        </div>
+                        <div class="card-body">
+
+                        </div>
+                        <div class="card-footer">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{ ekran_koruyucu.category_no }}" name="category_no">
+                                <input type="hidden" value="{{ ekran_koruyucu.title }}" name="category_title">
+                                <button class="btn btn-success btn-block" name="sendTrendyol" type="submit">
+                                    Yükle
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    {% for kategori in kategoriler %}
+        <div class="modal fade" id="modal-select-{{ kategori.category_no }}">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">{{ kategori.title }} Ürünleri</h4>
+                        <button type="button" class="close" data-dismiss="modal"
+                                aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive productTable">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    {% endfor %}
+
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'backend/js/trendyol_ayakkabi_urunleri.js' %}"></script>
+{% endblock %}
+
+
+

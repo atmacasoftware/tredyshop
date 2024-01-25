@@ -1,0 +1,1365 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>Trendyol Özellik Eşleştir</title>{% endblock %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'backend/modules/select2/dist/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'backend/css/table.css' %}">
+{% endblock %}
+{% block trendyol %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>Trendyol Özellik Eşleştir</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item">Trendyol Özellik Eşleştir</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+
+                <div class="col-12">
+                    <form action="" method="get">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label for="select-category">Kategori</label>
+                                    <select class="form-control select2 kategoriSelect filter-checkbox"
+                                            id="select-category" name="kategori" style="width: 100%;">
+                                        <option value="">--------</option>
+                                        {% for c in category %}
+                                            <option value="{{ c.id }}" {% if select_category.id == c.id %}selected{% endif %}>{{ c.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            {% if select_category.title %}
+                                <div class="col-lg-3 col-md-4 col-sm-12">
+                                    <div class="form-group">
+                                        <label for="select-publish_status">Trendyol Yayın Durumu</label>
+                                        <select class="form-control select2 publish_statusSelect filter-checkbox"
+                                                id="select-publish_status" name="publish_status" style="width: 100%;">
+                                            <option value="">--------</option>
+                                            <option value="True" {% if is_publish == "True" %}selected{% endif %}>Yayında</option>
+                                            <option value="False" {% if is_publish == "False" %}selected{% endif %}>Yayında Değil</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <div class="col-lg-{% if select_category.title %}3{% else %}6{% endif %} col-md-4 col-sm-12 mt-1">
+                                <button class="btn btn-lg btn-primary mt-4">Ara</button>
+                            </div>
+                            <div class="col-lg-3 col-md-12 col-sm-12 mt-1">
+                                <span class="badge badge-light mt-4 float-right">{% if select_category.title %}
+                                    {{ select_category.title }}{% else %}Kategori Seçiniz{% endif %}</span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover text-nowrap" id="productTable">
+                                    <thead class="bg-light">
+                                    <tr>
+                                        <th>Görsel</th>
+                                        <th>Ürün Adı</th>
+                                        {% if select_category.title == "Kapak & Kılıf" %}
+                                            <th>Renk <span class="text-danger">*</span></th>
+                                            <th>Uyumlu Marka</th>
+                                        {% elif select_category.title == "Ekran Koruyucu Film" %}
+                                            <th>Uyumlu Marka</th>
+                                            <th>Garanti Süresi <span class="text-danger">*</span></th>
+                                        {% elif select_category.title == "Tablet Kılıfı" %}
+                                            <th>Renk <span class="text-danger">*</span></th>
+                                            <th>Uyumlu Marka <span class="text-danger">*</span></th>
+                                            <th>Uyumlu Model <span class="text-danger">*</span></th>
+                                            <th>Kılıf Tipi <span class="text-danger">*</span></th>
+                                            <th>Uyku Modu <span class="text-danger">*</span></th>
+                                        {% elif select_category.title == "Çanta" %}
+                                            <th>Renk <span class="text-danger">*</span></th>
+                                            <th>Beden <span class="text-danger">*</span></th>
+                                            <th>Desen <span class="text-danger">*</span></th>
+                                            <th>Yaş Grubu <span class="text-danger">*</span></th>
+                                            <th>Cinsiyet <span class="text-danger">*</span></th>
+                                            <th>Ortam <span class="text-danger">*</span></th>
+                                        {% elif select_category.title == "Babet" or select_category.title == "Bot & Bootie" or select_category.title == "Çizme" or select_category.title == "Ev Botu" or select_category.title == "Ev Terliği" or select_category.title == "Panduf" %}
+                                            <th>Renk <span class="text-danger">*</span></th>
+                                            <th>Beden <span class="text-danger">*</span></th>
+                                            <th>Yaş Grubu <span class="text-danger">*</span></th>
+                                            <th>Cinsiyet <span class="text-danger">*</span></th>
+                                            <th>Topuk Tipi <span class="text-danger">*</span></th>
+                                            <th>Topuk Boyu <span class="text-danger">*</span></th>
+                                        {% elif select_category.title == "Atlet-Büstiyer" or select_category.title == "Bluz-Body-Triko" or select_category.title == "Kazak" or select_category.title == "Hırka" or select_category.title == "Süveter" or select_category.title == "Tunik" or select_category.title == "Ceket-Mont-Kaban" or select_category.title == "Yelek" or select_category.title == "Gömlek" or select_category.title == "Kimono" or select_category.title == "Panço" or select_category.title == "Sweat" or select_category.title == "Tişort" or select_category.title == "Yağmurluk" %}
+                                            <th>Renk <span class="text-danger">*</span></th>
+                                            <th>Beden <span class="text-danger">*</span></th>
+                                            <th>Cinsiyet <span class="text-danger">*</span></th>
+                                            <th>Yaş Grubu <span class="text-danger">*</span></th>
+                                            <th>Boy <span class="text-danger">*</span></th>
+                                            <th>Kalıp <span class="text-danger">*</span></th>
+                                            <th>Kumaş Tipi <span class="text-danger">*</span></th>
+                                            <th>Ortam <span class="text-danger">*</span></th>
+                                        {% elif select_category.title == "Etek" %}
+                                            <th>Renk <span class="text-danger">*</span></th>
+                                            <th>Beden <span class="text-danger">*</span></th>
+                                            <th>Cinsiyet <span class="text-danger">*</span></th>
+                                            <th>Yaş Grubu <span class="text-danger">*</span></th>
+                                            <th>Boy <span class="text-danger">*</span></th>
+                                            <th>Kumaş Tipi <span class="text-danger">*</span></th>
+                                        {% elif select_category.title == "Pantolon" or select_category.title == "Kot Pantolon" or select_category.title == "Şort" or select_category.title == "Tayt" or select_category.title == "Eşofman Altı" or select_category.title == "Pijama Altı" %}
+                                            <th>Renk <span class="text-danger">*</span></th>
+                                            <th>Beden <span class="text-danger">*</span></th>
+                                            <th>Cinsiyet <span class="text-danger">*</span></th>
+                                            <th>Yaş Grubu <span class="text-danger">*</span></th>
+                                            <th>Bel <span class="text-danger">*</span></th>
+                                            <th>Boy <span class="text-danger">*</span></th>
+                                            <th>Kumaş Tipi <span class="text-danger">*</span></th>
+                                            <th>Paça Tipi</th>
+                                            <th>Matertal</th>
+                                        {% elif select_category.title == "Eşofman Takımı" or select_category.title == "Pijama Takımı" or select_category.title == "Abiye" or select_category.title == "Elbise" or select_category.title == "Salopet" or select_category.title == "Tulum" %}
+                                            <th>Renk <span class="text-danger">*</span></th>
+                                            <th>Beden <span class="text-danger">*</span></th>
+                                            <th>Cinsiyet <span class="text-danger">*</span></th>
+                                            <th>Yaş Grubu <span class="text-danger">*</span></th>
+                                            <th>Boy <span class="text-danger">*</span></th>
+                                            <th>Kalıp <span class="text-danger">*</span></th>
+                                            <th>Kumaş Tipi <span class="text-danger">*</span></th>
+                                        {% elif select_category.title == "Fantezi Babydoll" or select_category.title == "Fantezi Gecelik" or select_category.title == "Fantezi İç Çamaşır Takımları" or select_category.title == "Fantezi Külot" or select_category.title == "Fantezi Sütyen" or select_category.title == "Gecelik" or select_category.title == "Jartiyer" or select_category.title == "Külot" or select_category.title == "Sütyen" %}
+                                            <th>Renk <span class="text-danger">*</span></th>
+                                            <th>Beden <span class="text-danger">*</span></th>
+                                            <th>Cinsiyet <span class="text-danger">*</span></th>
+                                            <th>Yaş Grubu <span class="text-danger">*</span></th>
+                                            <th>Kumaş Tipi <span class="text-danger">*</span></th>
+                                        {% elif select_category.title == "Fantezi Kostüm" %}
+                                            <th>Renk <span class="text-danger">*</span></th>
+                                            <th>Beden <span class="text-danger">*</span></th>
+                                            <th>Cinsiyet <span class="text-danger">*</span></th>
+                                            <th>Yaş Grubu <span class="text-danger">*</span></th>
+                                        {% elif select_category.title == "Kolye" or select_category.title == "Bileklik" or select_category.title == "Küpe" %}
+                                            <th>Renk <span class="text-danger">*</span></th>
+                                            <th>Beden <span class="text-danger">*</span></th>
+                                            <th>Cinsiyet <span class="text-danger">*</span></th>
+                                            <th>Yaş Grubu <span class="text-danger">*</span></th>
+                                            <th>Tema/Stil</th>
+                                        {% endif %}
+                                        <th>İşlemler</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for product in products %}
+                                        <tr>
+                                            <form action="" method="get">
+                                                <td>
+                                                    <img src="{{ product.image_url1 }}" alt=""
+                                                         style="width: 50px; height: auto;">
+                                                </td>
+                                                <td>
+                                                    <p style="line-height: 0.2px;"><strong>{{ product.title }}</strong>
+                                                    </p>
+                                                    <span id="{{ product.barcode }}">Barcode: {{ product.barcode }}</span>
+                                                    <span id="copy-{{ product.id }}"
+                                                          onclick="copyFunction({{ product.barcode }})"
+                                                          style="background: none; outline: none; border: none; cursor:pointer;">
+                                                        <i class="fa fa-copy"></i></span>
+                                                </td>
+                                                {% if select_category.title == "Kapak & Kılıf" %}
+                                                    <td>
+                                                        <select class="form-control select2 renkSelect filter-checkbox"
+                                                                id="select-category1" name="renk-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in colors %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.color.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 renkSelect filter-checkbox"
+                                                                id="select-category1" name="compatible-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            <option value="Alcatel Uyumlu"
+                                                                    {% if product.compatible == "Alcatel Uyumlu" %}selected{% endif %}>
+                                                                Alcatel Uyumlu
+                                                            </option>
+                                                            <option value="Apple Uyumlu"
+                                                                    {% if product.compatible == "Apple Uyumlu" %}selected{% endif %}>
+                                                                Apple Uyumlu
+                                                            </option>
+                                                            <option value="Asus Uyumlu"
+                                                                    {% if product.compatible == "Asus Uyumlu" %}selected{% endif %}>
+                                                                Asus Uyumlu
+                                                            </option>
+                                                            <option value="General Mobile Uyumlu"
+                                                                    {% if product.compatible == "General Mobile Uyumlu" %}selected{% endif %}>
+                                                                General Mobile Uyumlu
+                                                            </option>
+                                                            <option value="Honor Uyumlu"
+                                                                    {% if product.compatible == "Honor Uyumlu" %}selected{% endif %}>
+                                                                Honor Uyumlu
+                                                            </option>
+                                                            <option value="Huawei Uyumlu"
+                                                                    {% if product.compatible == "Huawei Uyumlu" %}selected{% endif %}>
+                                                                Huawei Uyumlu
+                                                            </option>
+                                                            <option value="Lenovo Uyumlu"
+                                                                    {% if product.compatible == "Lenovo Uyumlu" %}selected{% endif %}>
+                                                                Lenovo Uyumlu
+                                                            </option>
+                                                            <option value="Oppo Uyumlu"
+                                                                    {% if product.compatible == "Oppo Uyumlu" %}selected{% endif %}>
+                                                                Oppo Uyumlu
+                                                            </option>
+                                                            <option value="POCO Uyumlu"
+                                                                    {% if product.compatible == "POCO Uyumlu" %}selected{% endif %}>
+                                                                POCO Uyumlu
+                                                            </option>
+                                                            <option value="Realme Uyumlu"
+                                                                    {% if product.compatible == "Realme Uyumlu" %}selected{% endif %}>
+                                                                Realme Uyumlu
+                                                            </option>
+                                                            <option value="Reeder Uyumlu"
+                                                                    {% if product.compatible == "Reeder Uyumlu" %}selected{% endif %}>
+                                                                Reeder Uyumlu
+                                                            </option>
+                                                            <option value="Samsung Uyumlu"
+                                                                    {% if product.compatible == "Samsung Uyumlu" %}selected{% endif %}>
+                                                                Samsung Uyumlu
+                                                            </option>
+                                                            <option value="TCL Uyumlu"
+                                                                    {% if product.compatible == "TCL Uyumlu" %}selected{% endif %}>
+                                                                TCL Uyumlu
+                                                            </option>
+                                                            <option value="Xiaomi Uyumlu"
+                                                                    {% if product.compatible == "Xiaomi Uyumlu" %}selected{% endif %}>
+                                                                Xiaomi Uyumlu
+                                                            </option>
+                                                        </select>
+                                                    </td>
+                                                {% elif select_category.title == "Ekran Koruyucu Film" %}
+                                                    <td>
+                                                        <select class="form-control select2 renkSelect filter-checkbox"
+                                                                id="select-category1" name="compatible-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            <option value="Alcatel Uyumlu"
+                                                                    {% if product.compatible == "Alcatel Uyumlu" %}selected{% endif %}>
+                                                                Alcatel Uyumlu
+                                                            </option>
+                                                            <option value="Apple Uyumlu"
+                                                                    {% if product.compatible == "Apple Uyumlu" %}selected{% endif %}>
+                                                                Apple Uyumlu
+                                                            </option>
+                                                            <option value="Asus Uyumlu"
+                                                                    {% if product.compatible == "Asus Uyumlu" %}selected{% endif %}>
+                                                                Asus Uyumlu
+                                                            </option>
+                                                            <option value="General Mobile Uyumlu"
+                                                                    {% if product.compatible == "General Mobile Uyumlu" %}selected{% endif %}>
+                                                                General Mobile Uyumlu
+                                                            </option>
+                                                            <option value="Honor Uyumlu"
+                                                                    {% if product.compatible == "Honor Uyumlu" %}selected{% endif %}>
+                                                                Honor Uyumlu
+                                                            </option>
+                                                            <option value="Huawei Uyumlu"
+                                                                    {% if product.compatible == "Huawei Uyumlu" %}selected{% endif %}>
+                                                                Huawei Uyumlu
+                                                            </option>
+                                                            <option value="Lenovo Uyumlu"
+                                                                    {% if product.compatible == "Lenovo Uyumlu" %}selected{% endif %}>
+                                                                Lenovo Uyumlu
+                                                            </option>
+                                                            <option value="Oppo Uyumlu"
+                                                                    {% if product.compatible == "Oppo Uyumlu" %}selected{% endif %}>
+                                                                Oppo Uyumlu
+                                                            </option>
+                                                            <option value="POCO Uyumlu"
+                                                                    {% if product.compatible == "POCO Uyumlu" %}selected{% endif %}>
+                                                                POCO Uyumlu
+                                                            </option>
+                                                            <option value="Realme Uyumlu"
+                                                                    {% if product.compatible == "Realme Uyumlu" %}selected{% endif %}>
+                                                                Realme Uyumlu
+                                                            </option>
+                                                            <option value="Reeder Uyumlu"
+                                                                    {% if product.compatible == "Reeder Uyumlu" %}selected{% endif %}>
+                                                                Reeder Uyumlu
+                                                            </option>
+                                                            <option value="Samsung Uyumlu"
+                                                                    {% if product.compatible == "Samsung Uyumlu" %}selected{% endif %}>
+                                                                Samsung Uyumlu
+                                                            </option>
+                                                            <option value="TCL Uyumlu"
+                                                                    {% if product.compatible == "TCL Uyumlu" %}selected{% endif %}>
+                                                                TCL Uyumlu
+                                                            </option>
+                                                            <option value="Xiaomi Uyumlu"
+                                                                    {% if product.compatible == "Xiaomi Uyumlu" %}selected{% endif %}>
+                                                                Xiaomi Uyumlu
+                                                            </option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 warrantyTypeSelect filter-checkbox"
+                                                                id="select-category1"
+                                                                name="warrantytype-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            <option value="Belirtilmemiş"
+                                                                    {% if product.warranty == "Belirtilmemiş" %}selected{% endif %}>
+                                                                Belirtilmemiş
+                                                            </option>
+                                                            <option value="1 Yıl"
+                                                                    {% if product.warranty == "1 Yıl" %}selected{% endif %}>
+                                                                1 Yıl
+                                                            </option>
+                                                            <option value="2 Yıl"
+                                                                    {% if product.warranty == "2 Yıl" %}selected{% endif %}>
+                                                                2 Yıl
+                                                            </option>
+                                                            <option value="3 Yıl"
+                                                                    {% if product.warranty == "3 Yıl" %}selected{% endif %}>
+                                                                3 Yıl
+                                                            </option>
+                                                            <option value="4 Yıl"
+                                                                    {% if product.warranty == "4 Yıl" %}selected{% endif %}>
+                                                                4 Yıl
+                                                            </option>
+                                                            <option value="5 Yıl"
+                                                                    {% if product.warranty == "5 Yıl" %}selected{% endif %}>
+                                                                5 Yıl
+                                                            </option>
+                                                            <option value="6 Ay"
+                                                                    {% if product.warranty == "6 Ay" %}selected{% endif %}>
+                                                                6 Ay
+                                                            </option>
+                                                        </select>
+                                                    </td>
+                                                {% elif select_category.title == "Tablet Kılıfı" %}
+                                                    <td>
+                                                        <select class="form-control select2 renkSelect filter-checkbox"
+                                                                id="select-category1" name="renk-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in colors %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.color.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 renkSelect filter-checkbox"
+                                                                id="select-compatible"
+                                                                name="compatible-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            <option value="Alcatel Uyumlu"
+                                                                    {% if product.compatible == "Alcatel Uyumlu" %}selected{% endif %}>
+                                                                Alcatel Uyumlu
+                                                            </option>
+                                                            <option value="Apple Uyumlu"
+                                                                    {% if product.compatible == "Apple Uyumlu" %}selected{% endif %}>
+                                                                Apple Uyumlu
+                                                            </option>
+                                                            <option value="Asus Uyumlu"
+                                                                    {% if product.compatible == "Asus Uyumlu" %}selected{% endif %}>
+                                                                Asus Uyumlu
+                                                            </option>
+                                                            <option value="General Mobile Uyumlu"
+                                                                    {% if product.compatible == "General Mobile Uyumlu" %}selected{% endif %}>
+                                                                General Mobile Uyumlu
+                                                            </option>
+                                                            <option value="Honor Uyumlu"
+                                                                    {% if product.compatible == "Honor Uyumlu" %}selected{% endif %}>
+                                                                Honor Uyumlu
+                                                            </option>
+                                                            <option value="Huawei Uyumlu"
+                                                                    {% if product.compatible == "Huawei Uyumlu" %}selected{% endif %}>
+                                                                Huawei Uyumlu
+                                                            </option>
+                                                            <option value="Lenovo Uyumlu"
+                                                                    {% if product.compatible == "Lenovo Uyumlu" %}selected{% endif %}>
+                                                                Lenovo Uyumlu
+                                                            </option>
+                                                            <option value="Oppo Uyumlu"
+                                                                    {% if product.compatible == "Oppo Uyumlu" %}selected{% endif %}>
+                                                                Oppo Uyumlu
+                                                            </option>
+                                                            <option value="POCO Uyumlu"
+                                                                    {% if product.compatible == "POCO Uyumlu" %}selected{% endif %}>
+                                                                POCO Uyumlu
+                                                            </option>
+                                                            <option value="Realme Uyumlu"
+                                                                    {% if product.compatible == "Realme Uyumlu" %}selected{% endif %}>
+                                                                Realme Uyumlu
+                                                            </option>
+                                                            <option value="Reeder Uyumlu"
+                                                                    {% if product.compatible == "Reeder Uyumlu" %}selected{% endif %}>
+                                                                Reeder Uyumlu
+                                                            </option>
+                                                            <option value="Samsung Uyumlu"
+                                                                    {% if product.compatible == "Samsung Uyumlu" %}selected{% endif %}>
+                                                                Samsung Uyumlu
+                                                            </option>
+                                                            <option value="TCL Uyumlu"
+                                                                    {% if product.compatible == "TCL Uyumlu" %}selected{% endif %}>
+                                                                TCL Uyumlu
+                                                            </option>
+                                                            <option value="Xiaomi Uyumlu"
+                                                                    {% if product.compatible == "Xiaomi Uyumlu" %}selected{% endif %}>
+                                                                Xiaomi Uyumlu
+                                                            </option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 modelSelect filter-checkbox"
+                                                                id="select-compatibleModel"
+                                                                name="compatibleModel-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in tablet_models %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.tabletmodel.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 caseTypeSelect filter-checkbox"
+                                                                id="select-caseType" name="caseType-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">------</option>
+                                                            {% for c in case_type %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.casetype.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 sleepTypeSelect filter-checkbox"
+                                                                id="select-sleepType" name="sleepType-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">------</option>
+                                                            {% for c in sleep_mode %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.sleepmode.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                {% elif select_category.title == "Çanta" %}
+                                                    <td>
+                                                        <select class="form-control select2 renkSelect filter-checkbox"
+                                                                id="select-category1" name="renk-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in colors %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.color.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 bedenSelect filter-checkbox"
+                                                                id="select-beden" name="beden-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in beden %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.size.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 canta-desenSelect filter-checkbox"
+                                                                id="select-canta-desen"
+                                                                name="canta_desen-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in bag_pattern %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.bag_pattern.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 agegroupSelect filter-checkbox"
+                                                                id="select-agegroup" name="agegroup-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            <option value="Bebek"
+                                                                    {% if product.age_group == "Bebek" %}selected{% endif %}>
+                                                                Bebek
+                                                            </option>
+                                                            <option value="Bebek&Çocuk"
+                                                                    {% if product.age_group == "Bebek&Çocuk" %}selected{% endif %}>
+                                                                Bebek&Çocuk
+                                                            </option>
+                                                            <option value="Çocuk"
+                                                                    {% if product.age_group == "Çocuk" %}selected{% endif %}>
+                                                                Çocuk
+                                                            </option>
+                                                            <option value="Genç"
+                                                                    {% if product.age_group == "Genç" %}selected{% endif %}>
+                                                                Genç
+                                                            </option>
+                                                            <option value="Yetişkin"
+                                                                    {% if product.age_group == "Yetişkin" %}selected{% endif %}>
+                                                                Yetişkin
+                                                            </option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 sexSelect filter-checkbox"
+                                                                id="select-sex" name="sex-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in sex %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.sextype.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 ortamSelect filter-checkbox"
+                                                                id="select-ortam" name="ortam-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in environment %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.environment.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                {% elif select_category.title == "Babet" or select_category.title == "Bot & Bootie" or select_category.title == "Çizme" or select_category.title == "Ev Botu" or select_category.title == "Ev Terliği" or select_category.title == "Panduf" %}
+                                                    <td>
+                                                        <select class="form-control select2 renkSelect filter-checkbox"
+                                                                id="select-category1" name="renk-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in colors %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.color.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 renkSelect filter-checkbox"
+                                                                id="select-category1" name="beden-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in beden %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.size.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 agegroupSelect filter-checkbox"
+                                                                id="select-agegroup" name="agegroup-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            <option value="Bebek"
+                                                                    {% if product.age_group == "Bebek" %}selected{% endif %}>
+                                                                Bebek
+                                                            </option>
+                                                            <option value="Bebek&Çocuk"
+                                                                    {% if product.age_group == "Bebek&Çocuk" %}selected{% endif %}>
+                                                                Bebek&Çocuk
+                                                            </option>
+                                                            <option value="Çocuk"
+                                                                    {% if product.age_group == "Çocuk" %}selected{% endif %}>
+                                                                Çocuk
+                                                            </option>
+                                                            <option value="Genç"
+                                                                    {% if product.age_group == "Genç" %}selected{% endif %}>
+                                                                Genç
+                                                            </option>
+                                                            <option value="Yetişkin"
+                                                                    {% if product.age_group == "Yetişkin" %}selected{% endif %}>
+                                                                Yetişkin
+                                                            </option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 sexSelect filter-checkbox"
+                                                                id="select-sex" name="sex-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in sex %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.sextype.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 topuktipiSelect filter-checkbox"
+                                                                id="select-topuktipi" name="topuktipi-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in heel_type %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.heeltype.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 topukboyuSelect filter-checkbox"
+                                                                id="select-topukboyu" name="topukboyu-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in heel_size %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.heelsize.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                {% elif select_category.title == "Atlet-Büstiyer" or select_category.title == "Bluz-Body-Triko" or select_category.title == "Kazak" or select_category.title == "Hırka" or select_category.title == "Süveter" or select_category.title == "Tunik" or select_category.title == "Ceket-Mont-Kaban" or select_category.title == "Yelek" or select_category.title == "Gömlek" or select_category.title == "Kimono" or select_category.title == "Panço" or select_category.title == "Sweat" or select_category.title == "Tişort" or select_category.title == "Yağmurluk" %}
+                                                    <td>
+                                                        <select class="form-control select2 renkSelect filter-checkbox"
+                                                                id="select-category1" name="renk-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in colors %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.color.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 renkSelect filter-checkbox"
+                                                                id="select-category1" name="beden-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in beden %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.size.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 sexSelect filter-checkbox"
+                                                                id="select-sex" name="sex-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in sex %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.sextype.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 agegroupSelect filter-checkbox"
+                                                                id="select-agegroup" name="agegroup-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            <option value="Bebek"
+                                                                    {% if product.age_group == "Bebek" %}selected{% endif %}>
+                                                                Bebek
+                                                            </option>
+                                                            <option value="Bebek&Çocuk"
+                                                                    {% if product.age_group == "Bebek&Çocuk" %}selected{% endif %}>
+                                                                Bebek&Çocuk
+                                                            </option>
+                                                            <option value="Çocuk"
+                                                                    {% if product.age_group == "Çocuk" %}selected{% endif %}>
+                                                                Çocuk
+                                                            </option>
+                                                            <option value="Genç"
+                                                                    {% if product.age_group == "Genç" %}selected{% endif %}>
+                                                                Genç
+                                                            </option>
+                                                            <option value="Yetişkin"
+                                                                    {% if product.age_group == "Yetişkin" %}selected{% endif %}>
+                                                                Yetişkin
+                                                            </option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 heightSelect filter-checkbox"
+                                                                id="select-height" name="height-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in height %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.height.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 patternSelect filter-checkbox"
+                                                                id="select-pattern" name="pattern-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in pattern %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.pattern.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 fabrictypeSelect filter-checkbox"
+                                                                id="select-fabrictype"
+                                                                name="fabrictype-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in fabrictype %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.fabrictype.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 ortamSelect filter-checkbox"
+                                                                id="select-ortam" name="ortam-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in environment %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.environment.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                {% elif select_category.title == "Etek" %}
+                                                    <td>
+                                                        <select class="form-control select2 renkSelect filter-checkbox"
+                                                                id="select-category1" name="renk-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in colors %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.color.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 renkSelect filter-checkbox"
+                                                                id="select-category1" name="beden-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in beden %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.size.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 sexSelect filter-checkbox"
+                                                                id="select-sex" name="sex-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in sex %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.sextype.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 agegroupSelect filter-checkbox"
+                                                                id="select-agegroup" name="agegroup-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            <option value="Bebek"
+                                                                    {% if product.age_group == "Bebek" %}selected{% endif %}>
+                                                                Bebek
+                                                            </option>
+                                                            <option value="Bebek&Çocuk"
+                                                                    {% if product.age_group == "Bebek&Çocuk" %}selected{% endif %}>
+                                                                Bebek&Çocuk
+                                                            </option>
+                                                            <option value="Çocuk"
+                                                                    {% if product.age_group == "Çocuk" %}selected{% endif %}>
+                                                                Çocuk
+                                                            </option>
+                                                            <option value="Genç"
+                                                                    {% if product.age_group == "Genç" %}selected{% endif %}>
+                                                                Genç
+                                                            </option>
+                                                            <option value="Yetişkin"
+                                                                    {% if product.age_group == "Yetişkin" %}selected{% endif %}>
+                                                                Yetişkin
+                                                            </option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 heightSelect filter-checkbox"
+                                                                id="select-height" name="height-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in height %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.height.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 fabrictypeSelect filter-checkbox"
+                                                                id="select-fabrictype"
+                                                                name="fabrictype-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in fabrictype %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.fabrictype.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                {% elif select_category.title == "Pantolon" or select_category.title == "Kot Pantolon" or select_category.title == "Şort" or select_category.title == "Tayt" or select_category.title == "Eşofman Altı" or select_category.title == "Pijama Altı" %}
+                                                    <td>
+                                                        <select class="form-control select2 renkSelect filter-checkbox"
+                                                                id="select-category1" name="renk-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in colors %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.color.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 renkSelect filter-checkbox"
+                                                                id="select-category1" name="beden-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in beden %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.size.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 sexSelect filter-checkbox"
+                                                                id="select-sex" name="sex-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in sex %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.sextype.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 agegroupSelect filter-checkbox"
+                                                                id="select-agegroup" name="agegroup-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            <option value="Bebek"
+                                                                    {% if product.age_group == "Bebek" %}selected{% endif %}>
+                                                                Bebek
+                                                            </option>
+                                                            <option value="Bebek&Çocuk"
+                                                                    {% if product.age_group == "Bebek&Çocuk" %}selected{% endif %}>
+                                                                Bebek&Çocuk
+                                                            </option>
+                                                            <option value="Çocuk"
+                                                                    {% if product.age_group == "Çocuk" %}selected{% endif %}>
+                                                                Çocuk
+                                                            </option>
+                                                            <option value="Genç"
+                                                                    {% if product.age_group == "Genç" %}selected{% endif %}>
+                                                                Genç
+                                                            </option>
+                                                            <option value="Yetişkin"
+                                                                    {% if product.age_group == "Yetişkin" %}selected{% endif %}>
+                                                                Yetişkin
+                                                            </option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 waistSelect filter-checkbox"
+                                                                id="select-waist" name="waist-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in waist %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.waist.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 heightSelect filter-checkbox"
+                                                                id="select-height" name="height-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in height %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.height.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 fabrictypeSelect filter-checkbox"
+                                                                id="select-fabrictype"
+                                                                name="fabrictype-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in fabrictype %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.fabrictype.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 pacatipiSelect filter-checkbox"
+                                                                id="select-pacatipi"
+                                                                name="pacatipi-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in legtype %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.legtype.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 materyal filter-checkbox"
+                                                                id="select-materyal"
+                                                                name="materyal-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in material %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.material.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                {% elif select_category.title == "Eşofman Takımı" or select_category.title == "Pijama Takımı" or select_category.title == "Abiye" or select_category.title == "Elbise" or select_category.title == "Salopet" or select_category.title == "Tulum" %}
+                                                    <td>
+                                                        <select class="form-control select2 renkSelect filter-checkbox"
+                                                                id="select-category1" name="renk-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in colors %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.color.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 renkSelect filter-checkbox"
+                                                                id="select-category1" name="beden-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in beden %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.size.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 sexSelect filter-checkbox"
+                                                                id="select-sex" name="sex-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in sex %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.sextype.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 agegroupSelect filter-checkbox"
+                                                                id="select-agegroup" name="agegroup-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            <option value="Bebek"
+                                                                    {% if product.age_group == "Bebek" %}selected{% endif %}>
+                                                                Bebek
+                                                            </option>
+                                                            <option value="Bebek&Çocuk"
+                                                                    {% if product.age_group == "Bebek&Çocuk" %}selected{% endif %}>
+                                                                Bebek&Çocuk
+                                                            </option>
+                                                            <option value="Çocuk"
+                                                                    {% if product.age_group == "Çocuk" %}selected{% endif %}>
+                                                                Çocuk
+                                                            </option>
+                                                            <option value="Genç"
+                                                                    {% if product.age_group == "Genç" %}selected{% endif %}>
+                                                                Genç
+                                                            </option>
+                                                            <option value="Yetişkin"
+                                                                    {% if product.age_group == "Yetişkin" %}selected{% endif %}>
+                                                                Yetişkin
+                                                            </option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 heightSelect filter-checkbox"
+                                                                id="select-height" name="height-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in height %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.height.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 patternSelect filter-checkbox"
+                                                                id="select-pattern" name="pattern-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in pattern %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.pattern.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 fabrictypeSelect filter-checkbox"
+                                                                id="select-fabrictype"
+                                                                name="fabrictype-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in fabrictype %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.fabrictype.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                {% elif select_category.title == "Fantezi Babydoll" or select_category.title == "Fantezi Gecelik" or select_category.title == "Fantezi İç Çamaşır Takımları" or select_category.title == "Fantezi Külot" or select_category.title == "Fantezi Sütyen" or select_category.title == "Gecelik" or select_category.title == "Jartiyer" or select_category.title == "Külot" or select_category.title == "Sütyen" %}
+                                                    <td>
+                                                        <select class="form-control select2 renkSelect filter-checkbox"
+                                                                id="select-category1" name="renk-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in colors %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.color.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 renkSelect filter-checkbox"
+                                                                id="select-category1" name="beden-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in beden %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.size.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 sexSelect filter-checkbox"
+                                                                id="select-sex" name="sex-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in sex %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.sextype.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 agegroupSelect filter-checkbox"
+                                                                id="select-agegroup" name="agegroup-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            <option value="Yetişkin"
+                                                                    {% if product.age_group == "Yetişkin" %}selected{% endif %}>
+                                                                Yetişkin
+                                                            </option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 fabrictypeSelect filter-checkbox"
+                                                                id="select-fabrictype"
+                                                                name="fabrictype-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in fabrictype %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.fabrictype.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                {% elif select_category.title == "Fantezi Kostüm" %}
+                                                    <td>
+                                                        <select class="form-control select2 renkSelect filter-checkbox"
+                                                                id="select-category1" name="renk-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in colors %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.color.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 renkSelect filter-checkbox"
+                                                                id="select-category1" name="beden-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in beden %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.size.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 sexSelect filter-checkbox"
+                                                                id="select-sex" name="sex-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in sex %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.sextype.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 agegroupSelect filter-checkbox"
+                                                                id="select-agegroup" name="agegroup-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            <option value="Yetişkin"
+                                                                    {% if product.age_group == "Yetişkin" %}selected{% endif %}>
+                                                                Yetişkin
+                                                            </option>
+                                                        </select>
+                                                    </td>
+                                                {% elif select_category.title == "Kolye" or select_category.title == "Bileklik" or select_category.title == "Küpe" %}
+                                                    <td>
+                                                        <select class="form-control select2 renkSelect filter-checkbox"
+                                                                id="select-category1" name="renk-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in colors %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.color.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 renkSelect filter-checkbox"
+                                                                id="select-category1" name="beden-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in beden %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.size.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 sexSelect filter-checkbox"
+                                                                id="select-sex" name="sex-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in sex %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.sextype.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 agegroupSelect filter-checkbox"
+                                                                id="select-agegroup" name="agegroup-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            <option value="Bebek"
+                                                                    {% if product.age_group == "Bebek" %}selected{% endif %}>
+                                                                Bebek
+                                                            </option>
+                                                            <option value="Bebek&Çocuk"
+                                                                    {% if product.age_group == "Bebek&Çocuk" %}selected{% endif %}>
+                                                                Bebek&Çocuk
+                                                            </option>
+                                                            <option value="Çocuk"
+                                                                    {% if product.age_group == "Çocuk" %}selected{% endif %}>
+                                                                Çocuk
+                                                            </option>
+                                                            <option value="Genç"
+                                                                    {% if product.age_group == "Genç" %}selected{% endif %}>
+                                                                Genç
+                                                            </option>
+                                                            <option value="Yetişkin"
+                                                                    {% if product.age_group == "Yetişkin" %}selected{% endif %}>
+                                                                Yetişkin
+                                                            </option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control select2 bijuteritemaSelect filter-checkbox"
+                                                                id="select-bijuteritema" name="bijuteritema-{{ product.id }}"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                            {% for c in bijuteri_tema %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if c.id == product.bijuteri_theme.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                {% endif %}
+                                                <td>
+                                                    <div class="btn-group-vertical" role="group"
+                                                         aria-label="Basic example">
+                                                        <button class="btn btn-success" id="update-{{ product.id }}">
+                                                            Güncelle
+                                                        </button>
+                                                        <a href="{% url 'product_detail' product.id %}"
+                                                           class="btn btn-primary">Ürüne Git</a>
+                                                        <script>
+
+                                                            $("#update-{{ product.id }}").on('click', function (e) {
+                                                                e.preventDefault();
+                                                                $.ajax({
+                                                                    type: "GET",
+                                                                    url: `/yonetim/trendyol/ozellik-eslestir/ozellik-kaydet/`,
+                                                                    data: {
+                                                                        'productID': {{ product.id }},
+                                                                        'renk': $("select[name='renk-{{ product.id }}']").val(),
+                                                                        'marka': $("select[name='compatible-{{ product.id }}']").val(),
+                                                                        'garanti_suresi': $("select[name='warrantytype-{{ product.id }}']").val(),
+                                                                        'compatible_model': $("select[name='compatibleModel-{{ product.id }}']").val(),
+                                                                        'case_type': $("select[name='caseType-{{ product.id }}']").val(),
+                                                                        'sleep_type': $("select[name='sleepType-{{ product.id }}']").val(),
+                                                                        'beden': $("select[name='beden-{{ product.id }}']").val(),
+                                                                        'canta_desen': $("select[name='canta_desen-{{ product.id }}']").val(),
+                                                                        'agegroup': $("select[name='agegroup-{{ product.id }}']").val(),
+                                                                        'sex': $("select[name='sex-{{ product.id }}']").val(),
+                                                                        'ortam': $("select[name='ortam-{{ product.id }}']").val(),
+                                                                        'topuk_tipi': $("select[name='topuktipi-{{ product.id }}']").val(),
+                                                                        'topuk_boyu': $("select[name='topukboyu-{{ product.id }}']").val(),
+                                                                        'height': $("select[name='height-{{ product.id }}']").val(),
+                                                                        'pattern': $("select[name='pattern-{{ product.id }}']").val(),
+                                                                        'fabrictype': $("select[name='fabrictype-{{ product.id }}']").val(),
+                                                                        'waist': $("select[name='waist-{{ product.id }}']").val(),
+                                                                        'bijuteri_tema': $("select[name='bijuteritema-{{ product.id }}']").val(),
+                                                                        'pacatipi': $("select[name='pacatipi-{{ product.id }}']").val(),
+                                                                        'materyal': $("select[name='materyal-{{ product.id }}']").val(),
+                                                                    },
+                                                                    dataType: 'json',
+                                                                    beforeSend: function () {
+                                                                        $(".waiting").css('display', 'flex')
+                                                                        $(".waiting").css('visibility', 'visible')
+                                                                    },
+                                                                    success: function (data) {
+                                                                        $(".waiting").css('display', 'none')
+                                                                        $(".waiting").css('visibility', 'hidden')
+                                                                        swal('Özellik Güncellendi', '', 'success');
+                                                                    },
+                                                                    error: function (e) {
+                                                                        iziToast.error({
+                                                                            title: 'Hata !',
+                                                                            message: `Bir hata meydana geldi. ${e}.`,
+                                                                            position: 'topRight'
+                                                                        });
+                                                                    }
+                                                                });
+                                                            })
+                                                        </script>
+                                                    </div>
+                                                </td>
+                                            </form>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="6" class="text-center">
+                                                <div style="width: 100%; height: 250px; display:flex; justify-content: center; align-items: center; flex-direction: column;">
+                                                    <i class="fa fa-2x fa-computer-mouse mb-3"></i>
+                                                    <h5>Kategori seçmeniz gerekmektedir.</h5>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <nav aria-label="pagination" class="pagination_area">
+                                <div class="row">
+                                    {% if products.end_index > 0 %}
+                                        <div class="col-sm-12 col-md-5 d-none d-md-block">
+                                            <p>Showing {{ products.start_index }} to {{ products.end_index }}
+                                                of {{ products.paginator.count }}.</p>
+                                        </div>
+                                    {% endif %}
+                                    {% if products.paginator.num_pages > 1 %}
+                                        <div class="col-sm-12 col-md-7 dataTables_pager">
+                                            <ul class="pagination">
+                                                {% if products.has_previous %}
+                                                    <li class="page-item">
+                                                        <a class="page-link" data-page="1"
+                                                           href="{{ query }}&page=1">
+                                                            <i class="fa fa-angle-double-left"></i>
+                                                        </a>
+                                                    </li>
+                                                    {% if products.previous_page_number > 1 %}
+                                                        <li class="page-item">
+                                                            <a class="page-link "
+                                                               data-page="{{ products.previous_page_number }}"
+                                                               href="{{ query }}&page={{ products.previous_page_number }}">
+                                                                <i class="fa fa-angle-left"></i>
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+
+                                                {% endif %}
+
+                                                {% if products.previous_page_number > 2 %}
+                                                    <li class="page-item">
+                                                        <a class="page-link " data-page="{{ products.number|add:'-1' }}"
+                                                           href="{{ query }}&page={{ products.number|add:'-1' }}"> {{ products.number|add:"-1" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                <li class="page-item active"><span
+                                                        class="page-link ">{{ products.number }}</span></li>
+
+                                                {% if products.paginator.num_pages > products.number|add:"1" %}
+                                                    <li class="page-item">
+                                                        <a class="page-link " data-page="{{ products.number|add:'1' }}"
+                                                           href="{{ query }}&page={{ products.number|add:'1' }}"> {{ products.number|add:"1" }} </a>
+                                                    </li>
+
+                                                {% endif %}
+
+                                                {% if products.has_next %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ products.next_page_number }}"
+                                                           href="{{ query }}&page={{ products.next_page_number }}">
+                                                            <i class="fa fa-angle-right"></i>
+                                                        </a>
+                                                    </li>
+
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ products.paginator.num_pages }}"
+                                                           href="{{ query }}&page={{ products.paginator.num_pages }}">
+                                                            <i class="fa fa-angle-double-right"></i>
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'backend/js/product.js' %}"></script>
+    <script src="{% static 'backend/modules/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'backend/modules/sweetalert/sweetalert.min.js' %}"></script>
+    <script>
+        function copyFunction(element) {
+            navigator.clipboard.writeText(element);
+        }
+    </script>
+{% endblock %}

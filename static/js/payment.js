@@ -121,12 +121,13 @@ $cc.validate = function (e) {
                         $("#resultInstallmentCount").val($(this).attr("data-installment"))
                     }
 
-                    var vade_farki = (parseFloat($(this).val()) - tek_cekim).toFixed(2)
-                    $("#maturity_difference1").text(vade_farki + ' Tl')
-                    $("#maturity_difference2").text(vade_farki + ' TL')
-                    $("#maturity_difference3").text(vade_farki + ' TL')
-                    $("#maturity_difference4").text(vade_farki + ' TL')
 
+                    var vade_farki = (parseFloat($(this).val()) - tek_cekim).toFixed(2)
+                    $(".maturity_difference1").text(vade_farki + ' TL')
+                    $(".maturity_difference2").text(vade_farki + ' TL')
+                    $(".maturity_difference3").text(vade_farki + ' TL')
+                    $(".maturity_difference4").text(vade_farki + ' TL')
+                    $(".paymentTypeAndPlan").text($(this).attr("data-installment") === "Tek Çekim" ? "Peşin Ödeme" : $(this).attr("data-installment") + "Taksit")
 
                     $("#preliminaryForm").text($(".preliminary_form_body").html())
                     $("#distanceSellingForm").text($(".distance_selling_form_body").html())
@@ -178,7 +179,7 @@ $cc.validate = function (e) {
                         },
                         dataType: 'json',
                         success: function (res) {
-                            console.log(res)
+
                         }
                     });
 
@@ -343,10 +344,3 @@ $("input[name='expiry_year']").keyup(function (){
     }
 
 })
-
-/*
-window.onload = () => {
- const myInput = document.getElementById('cardnumber');
- myInput.onpaste = e => e.preventDefault();
-}
-*/

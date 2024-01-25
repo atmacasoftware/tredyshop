@@ -1,7 +1,7 @@
 from django.db import models
-
+from user_accounts.models import User
 from customer.models import CustomerAddress
-from product.models import *
+from product.models import ApiProduct
 # Create your models here.
 
 class Cart(models.Model):

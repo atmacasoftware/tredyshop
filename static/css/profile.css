@@ -1,3 +1,5 @@
+@import url("../css/color.css");
+
 @charset "UTF-8";
 ::-moz-selection {
     color: #fff;
@@ -7093,7 +7095,7 @@ header.main-header-section div.main-header-section__midline div.flex-item:nth-ch
     -ms-flex-align: center;
     align-items: center;
     border: none;
-    background: #067aff;
+    background: var(--primary-color);
     height: 48px;
     padding: 0 15px;
     margin: 0;

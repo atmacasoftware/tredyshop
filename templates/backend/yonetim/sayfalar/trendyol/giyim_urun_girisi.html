@@ -1,0 +1,238 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>Trendyol | Giyim Ürün Girişi</title>{% endblock %}
+
+{% block trendyol %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>Ürün Girişi</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item">Giyim Ürün Girişi</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="card card-danger">
+                        <div class="card-header">
+                            <h4>Üst Giyim</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="category_no" value="1">
+                                <button type="submit" class="btn btn-danger btn-block" name="ustGiyim">Ürün Gönder
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h4>Alt Giyim</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="category_no" value="2">
+                                <button type="submit" class="btn btn-primary btn-block" name="altGiyim">Ürün Gönder
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="card card-warning">
+                        <div class="card-header">
+                            <h4>Eşofman-Pijama</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="category_no" value="3">
+                                <button type="submit" class="btn btn-warning btn-block" name="esofmanGiyim">Ürün
+                                    Gönder
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="card card-dark">
+                        <div class="card-header">
+                            <h4>Elbise-Tulum</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="category_no" value="4">
+                                <button type="submit" class="btn btn-dark btn-block" name="elbiseTrendyol">Ürün Gönder
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="card card-success">
+                        <div class="card-header">
+                            <h4>İç Giyim</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="hidden" name="category_no" value="7">
+                                <button type="submit" class="btn btn-success btn-block" name="icGiyimTrendyol">Ürün
+                                    Gönder
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <div class="section-title mt-0">Log Kayıtları</div>
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Tip</th>
+                                        <th scope="col">Batch Request ID</th>
+                                        <th scope="col">Oluşturulma Tarihi</th>
+                                        <th scope="col">İşlem</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for kayit in log_kayitlari %}
+                                        <tr>
+                                            <th scope="row">{{ kayit.id }}</th>
+                                            <td>
+                                                {{ kayit.get_log_type_display }}
+                                            </td>
+                                            <td>{{ kayit.batch_id }}</td>
+                                            <td>{{ kayit.create_at|date:"d-m-Y H:i:s" }}
+                                            </td>
+                                            <td>
+                                                <div class="btn-group mb-3" role="group" aria-label="Basic example">
+                                                    <a href="{% url 'trendyol_batch_request_detail' kayit.batch_id %}"
+                                                       class="btn btn-primary"><i class="fa fa-eye"></i></a>
+                                                    <a href="{% url 'trendyol_batch_request_delete' kayit.id %}"
+                                                       class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <td colspan="5" style="text-align: center;height: 200px;">
+                                            <i class="fa fa-4x fa-sad-cry mb-3"></i>
+                                            <h5>Herhangi bir kayıt bulunmamaktadır.</h5>
+                                        </td>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <nav aria-label="pagination" class="pagination_area">
+                                <div class="row">
+                                    {% if log_kayitlari.end_index > 0 %}
+                                        <div class="col-sm-12 col-md-5 d-none d-md-block">
+                                            <p>Showing {{ log_kayitlari.start_index }} to {{ log_kayitlari.end_index }}
+                                                of {{ log_kayitlari.paginator.count }}.</p>
+                                        </div>
+                                    {% endif %}
+                                    {% if log_kayitlari.paginator.num_pages > 1 %}
+                                        <div class="col-sm-12 col-md-7 dataTables_pager">
+                                            <ul class="pagination">
+                                                {% if log_kayitlari.has_previous %}
+
+                                                    <li class="page-item">
+                                                        <a class="page-link" data-page="1"
+                                                           href="?page=1">
+                                                            <i class="fa fa-angle-double-left"></i>
+                                                        </a>
+                                                    </li>
+                                                    {% if log_kayitlari.previous_page_number > 1 %}
+                                                        <li class="page-item">
+                                                            <a class="page-link "
+                                                               data-page="{{ log_kayitlari.previous_page_number }}"
+                                                               href="?page={{ log_kayitlari.previous_page_number }}">
+                                                                <i class="fa fa-angle-left"></i>
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+
+                                                {% endif %}
+
+                                                {% if log_kayitlari.previous_page_number > 2 %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ log_kayitlari.number|add:'-2' }}"
+                                                           href="?page={{ log_kayitlari.number|add:'-2' }}"> {{ log_kayitlari.number|add:"-2" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ log_kayitlari.number|add:'-1' }}"
+                                                           href="?page={{ log_kayitlari.number|add:'-1' }}"> {{ log_kayitlari.number|add:"-1" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                <li class="page-item active"><span
+                                                        class="page-link ">{{ log_kayitlari.number }}</span></li>
+
+                                                {% if log_kayitlari.paginator.num_pages > log_kayitlari.number|add:"2" %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ log_kayitlari.number|add:'1' }}"
+                                                           href="?page={{ log_kayitlari.number|add:'1' }}"> {{ log_kayitlari.number|add:"1" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ log_kayitlari.number|add:'2' }}"
+                                                           href="?page={{ log_kayitlari.number|add:'2' }}"> {{ log_kayitlari.number|add:"2" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                {% if log_kayitlari.has_next %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ log_kayitlari.next_page_number }}"
+                                                           href="?page={{ log_kayitlari.next_page_number }}">
+                                                            <i class="fa fa-angle-right"></i>
+                                                        </a>
+                                                    </li>
+
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ log_kayitlari.paginator.num_pages }}"
+                                                           href="?page={{ log_kayitlari.paginator.num_pages }}">
+                                                            <i class="fa fa-angle-double-right"></i>
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_script %}
+
+{% endblock %}
+
+
+

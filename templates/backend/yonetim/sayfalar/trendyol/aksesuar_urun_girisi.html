@@ -1,0 +1,111 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>Trendyol | Aksesuar Ürün Girişi</title>{% endblock %}
+
+{% block trendyol %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>Aksesuar Ürün Girişi</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item">Aksesuar Ürün Girişi</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="card card-danger">
+                        <div class="card-header">
+                            <h4>Çanta</h4>
+                        </div>
+                        <div class="card-body">
+                            <p>Çanta kategorisindeki ürünleri yüklemek için tıklayınız.</p>
+                        </div>
+                        <div class="card-footer">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" value="3000" name="category_no">
+                                <input type="hidden" value="Omuz Çantası" name="category_title">
+                                <button class="btn btn-danger btn-block" name="cantaGonder" type="submit">
+                                    Yükle
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h4>Kolye</h4>
+                        </div>
+                        <div class="card-body">
+                            <p>Kolye kategorisindeki ürünleri yüklemek için tıklayınız.</p>
+                        </div>
+                        <div class="card-footer">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" value="2000" name="category_no">
+                                <input type="hidden" value="Bijuteri Kolye" name="category_title">
+                                <button class="btn btn-primary btn-block" name="kolyeGonder" type="submit">
+                                    Yükle
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="card card-success">
+                        <div class="card-header">
+                            <h4>Bileklik</h4>
+                        </div>
+                        <div class="card-body">
+                            <p>Bileklik kategorisindeki ürünleri yüklemek için tıklayınız.</p>
+                        </div>
+                        <div class="card-footer">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" value="2001" name="category_no">
+                                <input type="hidden" value="Bijuteri Bileklik" name="category_title">
+                                <button class="btn btn-success btn-block" name="bileklikGonder" type="submit">
+                                    Yükle
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="card card-info">
+                        <div class="card-header">
+                            <h4>Küpe</h4>
+                        </div>
+                        <div class="card-body">
+                            <p>Küpe kategorisindeki ürünleri yüklemek için tıklayınız.</p>
+                        </div>
+                        <div class="card-footer">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" value="2001" name="category_no">
+                                <input type="hidden" value="Bijuteri Küpe" name="category_title">
+                                <button class="btn btn-info btn-block" name="kupeGonder" type="submit">
+                                    Yükle
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'backend/js/trendyol_ayakkabi_urunleri.js' %}"></script>
+{% endblock %}
+
+
+

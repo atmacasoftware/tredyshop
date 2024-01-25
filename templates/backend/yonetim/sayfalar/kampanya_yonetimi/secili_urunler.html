@@ -1,0 +1,322 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+{% load mathfilters %}
+
+{% block title %}<title>Kampanya Yönetimi | Seçili Ürünler</title>{% endblock %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'backend/css/table_select.css' %}">
+{% endblock %}
+{% block kampanya_yonetimi %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>Seçili Ürünler</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item active"><a href="{% url 'kampanyalar' %}">Kampanyalar</a></div>
+                <div class="breadcrumb-item active"><a href="{% url 'kampanyalar' %}">Kampanyalar</a></div>
+                <div class="breadcrumb-item">Seçili Ürünler</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>{{ kampanya.name }}</h4>
+                            <div class="card-header-action">
+                                <a href="{% url 'kampanya_urun_ekle' kampanya.slug %}" class="btn btn-warning">Ürün
+                                    Seç</a>
+                                <a href="#" class="btn btn-primary">Seçili Ürünler ({{ kampanya.urun_sayisi }})</a>
+                                <a href="{% url 'kampanya_secili_urunler_excel' kampanya.id %}" class="btn btn-success"><i class="fa fa-file-excel"></i> Excel İndir</a>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-head-fixed text-nowrap">
+                                    <thead>
+                                    <tr>
+                                        <th style="text-align: start; vertical-align: middle"><span class="text-danger">Ürün Görseli</span>
+                                        </th>
+                                        <th style="text-align: start; vertical-align: middle">Ürün Adı</th>
+                                        <th style="text-align: start; vertical-align: middle">Stok</th>
+                                        <th style="text-align: start; vertical-align: middle">Fiyat (TL)</th>
+                                        <th style="text-align: start; vertical-align: middle">Kampanyalı Fiyatı (TL)
+                                        </th>
+                                        <th style="text-align: start; vertical-align: middle">İşlemler</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for product in products %}
+                                        <tr>
+
+                                            <td>
+                                                <img src="{{ product.product.image_url1 }}" alt="" width="50"
+                                                     class="my-2"
+                                                     style="border: 1px solid; border-radius: 12px;">
+                                            </td>
+                                            <td style="text-align: start; vertical-align: middle">
+                                                <span
+                                                        class="font-weight-bold">{{ product.product.title }}</span>
+                                                <span class="d-block"><b>Renk:</b> {{ product.product.color.name }} - <b>Beden:</b> {{ product.product.size.name }}</span>
+                                            </td>
+                                            <td style="text-align: start; vertical-align: middle">{{ product.product.quantity }}</td>
+                                            <td style="text-align: start; vertical-align: middle">{{ product.product.change_float|floatformat:2 }}</td>
+                                            <td style="text-align: start; vertical-align: middle"><span
+                                                    class="badge badge-warning">{{ product.product.discountprice|floatformat:2 }}</span>
+                                            </td>
+                                            <td>
+
+                                                <button id="delete-{{ product.id }}" class="btn btn-secondary">Kaldır
+                                                </button>
+                                                <script>
+                                                    $("#delete-{{ product.id }}").on('click', function () {
+                                                        $.ajax({
+                                                            url: `/yonetim/kampanya-yonetimi/kampanyalar/secili-kampanya/id={{ kampanya.id }}/urun-kaldir/`,
+                                                            data: {
+                                                                'product_id': '{{ product.product.id }}',
+                                                            },
+                                                            dataType: 'json',
+                                                            beforeSend: function () {
+                                                                $(".waiting").css('display', 'flex')
+                                                                $(".waiting").css('visibility', 'visible')
+                                                            },
+                                                            success: function (data) {
+                                                                $(".waiting").css('display', 'none')
+                                                                $(".waiting").css('visibility', 'hidden')
+                                                                window.location.reload();
+                                                            }
+                                                        });
+                                                    })
+                                                </script>
+
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <nav aria-label="pagination" class="pagination_area">
+                                <div class="row">
+                                    {% if products.end_index > 0 %}
+                                        <div class="col-sm-12 col-md-5 d-none d-md-block">
+                                            <p>Showing {{ products.start_index }} to {{ products.end_index }}
+                                                of {{ products.paginator.count }}.</p>
+                                        </div>
+                                    {% endif %}
+                                    {% if products.paginator.num_pages > 1 %}
+                                        <div class="col-sm-12 col-md-7 dataTables_pager">
+                                            <ul class="pagination float-right">
+                                                {% if products.has_previous %}
+
+                                                    <li class="page-item">
+                                                        <a class="page-link" data-page="1"
+                                                           href="{{ query }}&page={{ products.previous_page_number }}">
+                                                            <i class="fa fa-angle-double-left"></i>
+                                                        </a>
+                                                    </li>
+                                                    {% if products.previous_page_number > 1 %}
+                                                        <li class="page-item">
+                                                            <a class="page-link "
+                                                               data-page="{{ products.previous_page_number }}"
+                                                               href="{{ query }}&page={{ products.previous_page_number }}">
+                                                                <i class="fa fa-angle-left"></i>
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+
+                                                {% endif %}
+
+                                                {% if products.previous_page_number > 2 %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ products.number|add:'-2' }}"
+                                                           href="{{ query }}&page={{ products.number|add:'-2' }}"> {{ products.number|add:"-2" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ products.number|add:'-1' }}"
+                                                           href="{{ query }}&page={{ products.number|add:'-1' }}"> {{ products.number|add:"-1" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                <li class="page-item active"><span
+                                                        class="page-link ">{{ products.number }}</span></li>
+
+                                                {% if products.paginator.num_pages > products.number|add:"2" %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ products.number|add:'1' }}"
+                                                           href="{{ query }}&page={{ products.number|add:'1' }}"> {{ products.number|add:"1" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ products.number|add:'2' }}"
+                                                           href="{{ query }}&page={{ products.number|add:'2' }}"> {{ products.number|add:"2" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                {% if products.has_next %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ products.next_page_number }}"
+                                                           href="{{ query }}&page={{ products.next_page_number }}">
+                                                            <i class="fa fa-angle-right"></i>
+                                                        </a>
+                                                    </li>
+
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ products.paginator.num_pages }}"
+                                                           href="{{ query }}&page={{ products.paginator.num_pages }}">
+                                                            <i class="fa fa-angle-double-right"></i>
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="modal-select-delete">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Emin misin?</h4>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Seçili banner silinecektir.</p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button id="deleteNow" class="btn btn-danger"
+                            data-dismiss="modal">
+                        Sil
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" id="modal-all-delete">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Emin misin?</h4>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Tüm bannerlar silinecektir.</p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <a href="{% url 'kampanya_hepsini_sil' %}" class="btn btn-danger">Tümünü Sil</a>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" id="modal-kampanya-banner">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Kampanya Ekle</h4>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="post" id="kampanyaForm" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        {% for field in form %}
+                            {% if field.name != 'is_publish' %}
+                                <div class="form-group">
+                                    <label>{{ field.label }}</label>
+                                    {% if field.field.required %}
+                                        <span style="color: red;" class="required">*</span>
+                                    {% endif %}
+
+                                    {{ field }}
+                                    {% if field.help_text %}
+                                        <small style="color: grey">{{ field.help_text }}</small>
+                                    {% endif %}
+                                    {% for error in field.errors %}
+                                        <p style="color: red">{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if field.name == 'is_publish' %}
+                                <div class="form-group">
+                                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                        {{ field }}
+                                        <label class="custom-control-label" for="{{ field.id_for_label }}">Yayında
+                                            mı?</label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+
+                        <button type="submit" name="addForm" class="btn btn-block btn-primary rounded-5">
+                            Oluştur
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+    <script>
+        $("#deleteRow").hide();
+        $("#cancelRow").hide()
+        $("#selectRow").on('click', function () {
+            $("#cancelRow").show()
+            $(".select-row").css('display', 'block')
+            $("#selectRow").hide()
+            $("#deleteRow").show();
+            $("#cancelRow").on('click', function () {
+                $("#selectRow").show();
+                $("#cancelRow").hide();
+                $("#deleteRow").hide();
+                $(".select-row").css('display', 'none')
+            })
+        })
+
+        $("#addProductBtn").on('click', function () {
+            var _filterObj = {};
+            $(".select-checkbox").each(function (index, ele) {
+                var _filterVal = $(this).val();
+                var _filterKey = $(this).data('filter');
+                _filterObj[_filterKey] = Array.from(document.querySelectorAll('input[data-filter=' + _filterKey + ']:checked')).map(function (el) {
+                    return el.value;
+                });
+            });
+
+        })
+    </script>
+{% endblock %}
+

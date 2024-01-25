@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.template.loader import render_to_string
 import random
 
-from adminpage.custom import customerTredyShopCreateOrder
+from adminpage.custom import customerTredyShopCreateOrder, sendOrderInfoEmail, productStatistic
 from adminpage.models import Notification
 from carts.helpers import paytr_api, card_type, paytr_sorgu, paytr_taksit_sorgu, taksit_hesaplama, \
     bin_sorgu, paytr_post, create_order_token
@@ -174,6 +174,10 @@ def cart(request, total=0, general_total=0, quantity=0, cart_items=None):
 
         if request.user.is_authenticated:
             cart_items = CartItem.objects.filter(user=request.user, is_active=True)
+            for c in cart_items:
+                if c.product.is_publish == False or c.product.quantity == 0:
+                    c.delete()
+                    return redirect('cart')
             cartitem_count = cart_items.count()
             coupon_exist = Coupon.objects.filter(user=request.user, is_active=True).exists()
             try:
@@ -212,15 +216,16 @@ def cart(request, total=0, general_total=0, quantity=0, cart_items=None):
             d = date(yr, mt, dt)
             current_date = d.strftime("%y%m%d")
             order_number = 'SN' + current_date + random.randint(1, 9999999).__str__()
+            delivery_price = request.POST.get('delivery_price')
 
             if PreOrder.objects.filter(user=request.user, cart=cart).count() < 1:
                 if coupon:
                     pre_order = PreOrder.objects.create(user=request.user, order_number=order_number,
                                                         coupon=coupon,
-                                                        cart=cart)
+                                                        cart=cart, delivery_price=delivery_price)
                 else:
                     pre_order = PreOrder.objects.create(user=request.user, order_number=order_number,
-                                                        cart=cart)
+                                                        cart=cart, delivery_price=delivery_price)
             else:
                 pre_order = PreOrder.objects.get(user=request.user, cart=cart)
             return redirect("checkout")
@@ -336,13 +341,14 @@ def createOrder(request, address, order_number, order_amount, order_total, is_in
 
         product = ApiProduct.objects.get(id=item.product.id)
         product.quantity -= item.quantity
-        product.sell_count += item.quantity
+        productStatistic(barcode=orderproduct.product.barcode, title=orderproduct.title, orderNumber=str(order_number), quantity=orderproduct.quantity, satis=orderproduct.product_price)
         if product.quantity <= 0:
             product.is_publish = False
         product.save()
-    cart = Cart.objects.get(cart_id=pre_order.user.id)
-    cart.delete()
-    return data
+
+    result = ['success', data]
+
+    return result
 
 
 @login_required(login_url="/giris-yap")
@@ -550,22 +556,24 @@ def completed_checkout(request, order_number):
                             order_number=str(order_number),
                             order_total=float(sorgu_durum['payment_total']),
                             is_installment=taksit_durum, installment=int(sorgu_durum['taksit']), status="Yeni")
-
         total = 0
-        order_list = OrderProduct.objects.filter(order=order)
-
+        order_list = OrderProduct.objects.filter(order=order[1])
         for p in order_list:
             total += (float(p.quantity * p.product_price))
 
-        customerTredyShopCreateOrder(request=request, email=request.user.email, address=pre_order.address.address, order=order, order_list=order_list,
+        customerTredyShopCreateOrder(request=request, email=request.user.email, address=pre_order.address.address, order=order[1], order_list=order_list,
                                      total=total, grand_total=float(sorgu_durum['payment_total']))
-        cart.delete()
-        try:
-            pre_order.delete()
-        except:
-            pass
+        sendOrderInfoEmail(email="atmacaahmet5261@hotmail.com", platform="TredyShop", order=order[1])
+
+        if order[0] == 'success':
+            cart.delete()
+            try:
+                pre_order.delete()
+            except:
+                pass
+
         context.update({
-            'order': order,
+            'order': order[1],
         })
 
     return render(request, 'frontend/pages/completed_checkout.html', context)

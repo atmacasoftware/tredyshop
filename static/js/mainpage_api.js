@@ -2,46 +2,26 @@ $(document).ready(function () {
 
     var baseUrl = 'http://127.0.0.1:8000'
 
-    $.ajax({
-        url: `${baseUrl}/apits/slider/`,
-        dataType: 'json',
-        beforeSend: function () {
-            $(".slider_skeleton").show()
-        },
-        success: function (res) {
-            $(".slider_skeleton").hide()
-            var data = res.data
+    const allBannerCards = document.querySelectorAll('.banner-card')
 
-            $(".js-slider-3items").html('')
-            data.forEach(function (item, index) {
-                $(".js-slider-3items").append(
-                    `
-                    <div class="e-slide-img">
-            <a href="${item.type == 'Ürün' ? item.button_link : `${baseUrl}/bilgi-duyuru/${item.slug}`}"><img
-                    src="${baseUrl}/${item.image}" alt="" style="height: 614px;width: 100%;"></a>
-            <div class="slide-content v2">
-                
-                    ${item.subtitle != null ? `<p className="cate v2">${item.subtitle}</p>` : ''}
-              
-                
-                    ${item.button != null ? `<a href="{% if ms.type == 'Bilgi' or ms.type == 'Duyuru' %}{% url 'slider_info' ms.slug %}{% elif ms.type == 'Ürün' %}{{ ms.button_link }}{% endif %}"
-                       class="slide-btn e-yl-gradient">{{ ms.button }}<i
-                            class="ion-ios-arrow-forward"></i></a>` : ''}
-             
-            </div>
-        </div>
-                    `
-                )
-            });
-            $('.js-slider-3items').slick({
-                autoplay: false,
-                infinite: false,
-                arrows: false,
-                dots: true
+    allBannerCards.forEach((item) => {
+        item.addEventListener('click', function (e) {
+            e.preventDefault();
+            var target = item.querySelector('.banner-href').getAttribute('href');
+            var banner_id = item.querySelector('.banner-href').getAttribute('data-banner-id');
+
+            $.ajax({
+                url: `/yonetim/sayfalar/banner/secili-banner/id=${banner_id}/goruntulenme-yukselt/`,
+                dataType: 'json',
+                success: function (res) {
+                    if (res === 'success'){
+                        window.location.href = target
+                    }
+                }
             });
 
-        }
-    });
+        })
+    })
 
     $.ajax({
         url: `${baseUrl}/apits/super-firsatlar/`,
@@ -255,7 +235,7 @@ $(document).ready(function () {
                 }
             });
 
-        },error: function (e){
+        }, error: function (e) {
             console.log(e)
         }
     });
@@ -269,7 +249,7 @@ $(document).ready(function () {
         success: function (res) {
             $(".bottom_wear_skeleton").hide()
             var data = res.data
-            console.log(data)
+
             $(".js-owl-product-bottom-wear").html('')
             data.forEach(function (item, index) {
                 $(".js-owl-product-bottom-wear").append(

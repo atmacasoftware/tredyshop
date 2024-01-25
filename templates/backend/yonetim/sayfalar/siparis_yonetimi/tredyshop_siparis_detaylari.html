@@ -1,0 +1,523 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>{{ order.order_number }} Numaralı Sipariş</title>{% endblock %}
+
+{% block siparisler %}
+
+
+
+    <section class="section">
+        <div class="section-header">
+            <h1>{{ order.order_number }} Numaralı Sipariş</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item "><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item"><a href="{% url 'admin_siparisler' %}">Siparişler</a></div>
+                <div class="breadcrumb-item active">{{ order.order_number }} Numaralı Sipariş</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-danger shadow-lg">
+                        <div class="card-header">
+                            <h4>Müşteri Bilgileri</h4>
+                            <div class="card-header-action">
+                                <a data-collapse="#card1" class="btn btn-icon btn-info" href="#"><i
+                                        class="fas fa-minus"></i></a>
+                            </div>
+                        </div>
+                        <div class="collapse show" id="card1" style="">
+                            <div class="card-body">
+                                <table class="table table-sm">
+                                    <thead>
+                                    <tr>
+                                        <th>Ad-Soyad</th>
+                                        <th>Email</th>
+                                        <th>Telefon</th>
+                                        <th>İp Adresi</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>{{ order.user.get_full_name }}</td>
+                                        <td>{{ order.user.email }}</td>
+                                        <td>{{ order.user.mobile }}</td>
+                                        <td>{{ order.ip }}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-danger shadow-lg">
+                        <div class="card-header">
+                            <h4>Sipariş Bilgileri</h4>
+                            <div class="card-header-action">
+                                <a data-collapse="#card2" class="btn btn-icon btn-info" href="#"><i
+                                        class="fas fa-minus"></i></a>
+                            </div>
+                        </div>
+                        <div class="collapse show" id="card2" style="">
+                            <div class="card-body table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                    <tr>
+                                        <th>Sipariş Numarası</th>
+                                        <th>Sipariş Tutarı</th>
+                                        <th>Toplam Ödenen Tutar</th>
+                                        <th>Sipariş Durumu</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td id="orderNumber">{{ order.order_number }}</td>
+                                        <td>{{ order.order_amount }}</td>
+                                        <td>{{ order.order_total }}</td>
+                                        <td>{{ order.status }}</td>
+                                        <td>
+                                            {% if order.status == "Hazırlanıyor" %}
+                                                <button
+                                                        class="btn btn-primary btn-block btn-sm" data-toggle="modal"
+                                                        data-target="#cargoStatus">
+                                                    Kargo Bildir
+                                                </button>
+                                            {% elif order.status == "Yeni" %}
+                                                <a href="{% url 'order_isleme_al' order.order_number %}"
+                                                   class="btn btn-primary btn-block btn-sm">İşleme Al</a>
+                                            {% elif order.status == "Kargolandı" %}
+                                                <a href="{% url 'order_tamamla' order.order_number %}"
+                                                   class="btn btn-primary btn-block btn-sm">Siparişi Tamamla</a>
+                                            {% elif order.status == "Tamamlandı" %}
+                                                <span class="badge badge-success">Sipariş Tamamlandı</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-danger shadow-lg">
+                        <div class="card-header">
+                            <h4>Sipariş Ürünleri</h4>
+                            <div class="card-header-action">
+                                <a data-collapse="#card3" class="btn btn-icon btn-info" href="#"><i
+                                        class="fas fa-minus"></i></a>
+                            </div>
+                        </div>
+                        <div class="collapse show" id="card3" style="">
+                            <div class="card-body table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                    <tr>
+                                        <th>Ürün Bilgileri</th>
+                                        <th>Adet</th>
+                                        <th>Ürün Fiyatı</th>
+                                        <th>Kullanılan Kupon</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for product in orderproducts %}
+                                        <tr>
+                                            <td>
+                                                <div class="product__info_container"
+                                                     style="display: flex; flex-direction: row;">
+                                                    <div class="product__image">
+                                                        <img src="{{ product.product.image_url1 }}" alt="Product"
+                                                             style="height: 130px;width: 90px;">
+                                                    </div>
+                                                    <div class="product__info ml-2">
+                                                        <h5 class="font-weight-bold"><a
+                                                                href="{% url 'product_detail' product.product.id %}">{{ product.title }}</a>
+                                                        </h5>
+                                                        <span class="d-block">Barcode: {{ product.product.barcode }}</span>
+                                                        <span class="d-block">Stok Kodu: {{ product.product.stock_code }}</span>
+                                                        <span class="d-block">Renk: {{ product.color }}</span>
+                                                        <span class="d-block">Beden: {{ product.size }}</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td style="text-align: start; vertical-align: middle;">{{ product.quantity }}</td>
+                                            <td style="text-align: start; vertical-align: middle;">{{ product.product_price|floatformat:2 }}
+                                                TL
+                                            </td>
+                                            <td style="text-align: start; vertical-align: middle;">
+                                                {% if product.used_coupon %}{{ product.used_coupon|floatformat:2 }}
+                                                    TL{% else %}0.00 TL{% endif %}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if order.status == "Kargolandı" %}
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card card-danger shadow-lg">
+                            <div class="card-header">
+                                <h4>Kargo Durumu</h4>
+                                <div class="card-header-action">
+                                    <a data-collapse="#card4" class="btn btn-icon btn-info" href="#"><i
+                                            class="fas fa-minus"></i></a>
+                                </div>
+                            </div>
+                            <div class="collapse show" id="card4" style="">
+                                <div class="card-body table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                        <tr>
+                                            <th>Kargo Firması</th>
+                                            <th>Takip Numarası</th>
+                                            <th>Kargo Takibi</th>
+                                            <th>Kargo Ücreti</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>{{ order.delivery_name }}</td>
+                                            <td>{{ order.delivery_track }}</td>
+                                            <td><a href="{{ order.delivery_track }}" class="btn btn-dark btn-sm"
+                                                   target="_blank">Kargo Takibi</a></td>
+                                            <td>{{ order.delivery_price }}</td>
+                                            <td>
+                                                <button data-toggle="modal"
+                                                        data-target="#shippingInformationUpdate"
+                                                        class="btn btn-sm btn-primary">Kargo Güncelle
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-danger shadow-lg">
+                        <div class="card-header">
+                            <h4>Adres Bilgileri</h4>
+                            <div class="card-header-action">
+                                <a data-collapse="#card5" class="btn btn-icon btn-info" href="#"><i
+                                        class="fas fa-minus"></i></a>
+                            </div>
+                        </div>
+                        <div class="collapse show" id="card5" style="">
+                            <div class="card-body">
+                                <p><strong>Ad-Soyad: </strong>
+                                    <span>{{ order.address.first_name }} - {{ order.address.last_name }}</span></p>
+                                <p><strong>Adres: </strong> <span>{{ order.address.address }}</span></p>
+                                <p><strong>Fatura Tipi: </strong> <span>{{ order.address.bill_type }}</span></p>
+                                {% if order.address.bill_type == "Bireysel" %}
+                                    <p><strong>T.C.: </strong> <span>{{ order.address.tc }}</span></p>
+                                {% elif order.address.bill_type == "Kurumsal" %}
+                                    <p><strong>Şirket Adı: </strong> <span>{{ order.address.company_name }}</span></p>
+                                    <p><strong>Vergi Numarası: </strong> <span>{{ order.address.tax_number }}</span></p>
+                                    <p><strong>Vergi Dairesi: </strong>
+                                        <span>{{ order.address.tax_administration }}</span>
+                                    </p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-danger shadow-lg">
+                        <div class="card-header">
+                            <h4>Fatura</h4>
+                            <div class="card-header-action">
+                                <a data-collapse="#card6" class="btn btn-icon btn-info" href="#"><i
+                                        class="fas fa-minus"></i></a>
+                            </div>
+                        </div>
+                        <div class="collapse show" id="card6" style="">
+                            <div class="card-body">
+                                {% if order.bill %}
+                                    <a href="{{ order.get_bill }}" download="download"
+                                       class="btn bg-success mb-3 text-white">
+                                        <i class="fas fa-download"></i> Fatura İndir
+                                    </a>
+                                {% else %}
+                                    <form action="" method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <div class="col-lg-9">
+                                                <div class="custom-file">
+                                                    <input type="file" name="bill" required class="custom-file-input"
+                                                           id="billFile">
+                                                    <label class="custom-file-label" for="billFile">Fatura Seç</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <button id="uploadFaturaBtn" name="uploadFaturaBtn"
+                                                        class="btn btn-primary float-right">Fatura Yükle
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                {% endif %}
+
+                            </div>
+                            <div class="card-footer">
+                                <a href="{% url 'order_mail_gonder' order.order_number %}"
+                                   class="btn bg-gradient-fuchsia">
+                                    <i class="fa-solid fa-envelope fa-bounce"></i>
+                                    Mail Gönder
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-danger shadow-lg">
+                        <div class="card-header">
+                            <h4>Maliyet</h4>
+                            <div class="card-header-action">
+                                <a data-collapse="#card7" class="btn btn-icon btn-info" href="#"><i
+                                        class="fas fa-minus"></i></a>
+                            </div>
+                        </div>
+                        <div class="collapse show" id="card7" style="">
+                            <div class="card-body">
+                                <form action="" method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <table class="table table-sm">
+                                        <thead>
+                                        <tr>
+                                            <th>Harcama Adı</th>
+                                            <th>Harcama Tutarı (TL)</th>
+                                            <th>Harcama Notu</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="hidden" name="statisticBarcode" value="{{ order.barcode }}">
+                                                <input type="hidden" name="siparisNo" value="{{ order.order_number }}">
+                                                <input type="text" step="any" class="form-control" name="harcamaAdi">
+                                            </td>
+                                            <td>
+                                                <input type="number" step="any" class="form-control"
+                                                       name="harcamaTutari">
+                                            </td>
+                                            <td>
+                                                <input type="text" step="any" class="form-control" name="harcamaNot">
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-primary btn-sm" id="coastAdd">Ekle
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        {% for h in harcamalar %}
+                                            <tr>
+                                                <td>{{ h.harcama_adi }}</td>
+                                                <td>{{ h.harcama_tutari }}</td>
+                                                <td>{{ h.harcama_notu }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-danger shadow-lg">
+                        <div class="card-header">
+                            <h4>Ödeme Sorgusu Sonucu</h4>
+                            <div class="card-header-action">
+                                <a data-collapse="#card7" class="btn btn-icon btn-info" href="#"><i
+                                        class="fas fa-minus"></i></a>
+                            </div>
+                        </div>
+                        <div class="collapse show" id="card7" style="">
+                            <div class="card-body">
+                                <table class="table table-sm">
+                                    <thead>
+                                    <tr>
+                                        <th>Sipariş Tutarı</th>
+                                        <th>Ödenen Tutar</th>
+                                        <th>Ödeme Tipi</th>
+                                        <th>Taksit Sayısı</th>
+                                        <th>Kart Marka</th>
+                                        <th>Kesinti Tutarı</th>
+                                        <th>Net Tutarı</th>
+                                        <th>Ödeme Tarihi</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>{{ sorgu_durum.payment_amount }}</td>
+                                        <td>{{ sorgu_durum.payment_total }}</td>
+                                        <td>{{ sorgu_durum.odeme_tipi }}</td>
+                                        <td>{{ sorgu_durum.taksit }}</td>
+                                        <td>{{ sorgu_durum.kart_marka }}</td>
+                                        <td>{{ sorgu_durum.kesinti_tutari }}</td>
+                                        <td>{{ sorgu_durum.net_tutar }}</td>
+                                        <td>{{ sorgu_durum.payment_date }}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <div style="display: none;" id="harcamaList">
+        <table class="table table-sm">
+            <thead>
+            <tr>
+                <th>Harcama Adı</th>
+                <th>Harcama Tutarı</th>
+                <th>Harcama Tipi</th>
+                <th>Harcama Durumu</th>
+                <th>Harcama Tarihi</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for harcama in harcamalar %}
+                <tr>
+                    <td>{{ harcama.harcama_adi }}</td>
+                    <td>{{ harcama.harcama_tutari }}</td>
+                    <td>{{ harcama.harcama_tipi }}</td>
+                    <td>{{ harcama.durum }}</td>
+                    <td>{{ harcama.created_at|date:'m-d-Y' }}</td>
+                    <td>
+                        <a href="{% url 'harcama_detay' harcama.id %}" target="_blank"
+                           class="btn btn-sm btn-success"><i class="fa-solid fa-edit"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+
+    <div class="modal fade" id="cargoStatus" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="">
+                        <div class="form-group">
+                            <label>Kargo Firması</label>
+                            <select class="form-control" name="deliveryCompany">
+                                <option>-----------</option>
+                                <option value="Aras Kargo">Aras Kargo</option>
+                                <option value="MNG Kargo">MNG Kargo</option>
+                                <option value="Yurtiçi Kargo">Yurtiçi Kargo</option>
+                                <option value="Sürat Kargo">Sürat Kargo</option>
+                                <option value="PTT Kargo">PTT Kargo</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Takip Numarası</label>
+                            <input type="text" class="form-control" name="trackNumber">
+                        </div>
+                        <div class="form-group">
+                            <label>Takip Linki</label>
+                            <input type="text" class="form-control" name="takipLinki">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="shippingInformationBtn" class="btn btn-primary">Kargo Bildir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="shippingInformationUpdate" tabindex="-1"
+         aria-labelledby="shippingInformationUpdateLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="shippingInformationUpdateLabel">Kargo Bilgileri</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="">
+                        <div class="form-group">
+                            <label>Kargo Firması</label>
+                            <select class="form-control" required name="deliveryUpdateCompany">
+                                <option>-----------</option>
+                                <option {% if order.delivery_name == "Aras Kargo" %}selected{% endif %} value="Aras Kargo">Aras Kargo</option>
+                                <option {% if order.delivery_name == "MNG Kargo" %}selected{% endif %} value="MNG Kargo">MNG Kargo</option>
+                                <option {% if order.delivery_name == "Yurtiçi Kargo" %}selected{% endif %} value="Yurtiçi Kargo">Yurtiçi Kargo</option>
+                                <option {% if order.delivery_name == "Sürat Kargo" %}selected{% endif %} value="Sürat Kargo">Sürat Kargo</option>
+                                <option {% if order.delivery_name == "PTT Kargo" %}selected{% endif %} value="PTT Kargo">PTT Kargo</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Takip Numarası</label>
+                            <input type="text" class="form-control" required name="trackNumberUpdate" value="{{ order.delivery_track }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Takip Linki</label>
+                            <input type="text" class="form-control" required name="takipLinkiUpdate" value="{{ order.track_link }}">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="shippingInformationUpdateBtn" class="btn btn-primary">Kargo Güncelle
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block extra_script %}
+
+    <script src="{% static 'backend/js/order_detail.js' %}"></script>
+    <script src="{% static 'backend/js/urun_maliyeti_ekle.js' %}"></script>
+{% endblock %}
+
+
+

@@ -1,0 +1,234 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>E-Posta Pazarlama</title>{% endblock %}
+
+{% block pazarlama_yonetimi %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>E-Posta Pazarlama</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item">E-Posta Pazarlama</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Filtreleme</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="" method="get" class="">
+                                <div class="row my-2">
+                                    <div class="col-3">
+                                        <div class="form-group">
+                                            <label for="musteriAdi">Müşteri Adı</label>
+                                            <input id="musteriAdi" type="text" name="musteri_adi" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="form-group">
+                                            <label for="eposta">E-Posta</label>
+                                            <input id="eposta" type="text" name="eposta" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="form-group">
+                                            <label for="mobile">Telefon</label>
+                                            <input id="mobile" type="text" name="mobile" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="form-group">
+                                            <label for="sex">Cinsiyet</label>
+                                            <select id="sex" name="sex" class="form-control">
+                                                <option value="">------</option>
+                                                <option value="None">Hepsi</option>
+                                                <option value="erkek">Erkek</option>
+                                                <option value="kadın">Kadın</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row my-2" style="display: flex; flex-direction: row;align-items: center;">
+                                    <div class="col-12">
+                                        <div class="buttons float-right">
+                                            <button type="submit" class="btn btn-warning" name="queryBtn">Sorgula
+                                            </button>
+                                            <button type="reset" class="btn btn-light">Sıfırla</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <form action="" method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <input type="email" name="single_email" class="form-control"
+                                               placeholder="E-Posta Adresi">
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <button type="submit" class="btn btn-primary" name="single_send_mail">Mail
+                                            Gönder
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover text-nowrap" id="paymentTable">
+                                    <thead>
+                                    <tr>
+                                        <th>Ad-Soyad</th>
+                                        <th>E-Posta</th>
+                                        <th>Telefon</th>
+                                        <th>Cinsiyet</th>
+                                        <th>Doğum Tarihi</th>
+                                        <th>Kayıt Tarihi</th>
+                                        <th>İşlemler</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for kullanici in kullanicilar %}
+                                        <tr>
+                                            <td>{{ kullanici.get_full_name }}</td>
+                                            <td>{{ kullanici.email }}</td>
+                                            <td>{{ kullanici.mobile }}</td>
+                                            <td>{% if kullanici.gender == True %}
+                                                Erkek{% elif kullanici.gender == False %}Kadın{% else %}
+                                                -{% endif %}</td>
+                                            <td>{% if kullanici.birthday %}{{ kullanici.birthday }}{% else %}
+                                                -{% endif %}</td>
+                                            <td>{{ kullanici.created_date }}</td>
+                                            <td class="py-2">
+                                                <div class="btn-group-vertical" role="group" aria-label="Basic example">
+                                                    <a href="{% url 'kullanici_goruntule' kullanici.id %}"
+                                                   class="btn btn-primary btn-sm btn-block">Kullanıcı Gör</a>
+                                                    <a href=""
+                                                   class="btn btn-dark btn-sm btn-block">Mail Gönder</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="8">
+                                                    <span
+                                                            style="display: block; text-align: center;padding-top: 10px; padding-bottom: 10px;">Herhangi bir veri bulunmamaktadır.</span>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <nav aria-label="pagination" class="pagination_area">
+                                <div class="row">
+                                    {% if kullanicilar.end_index > 0 %}
+                                        <div class="col-sm-12 col-md-5 d-none d-md-block">
+                                            <p>Showing {{ kullanicilar.start_index }} to {{ kullanicilar.end_index }}
+                                                of {{ kullanicilar.paginator.count }}.</p>
+                                        </div>
+                                    {% endif %}
+                                    {% if kullanicilar.paginator.num_pages > 1 %}
+                                        <div class="col-sm-12 col-md-7 dataTables_pager">
+                                            <ul class="pagination float-right">
+                                                {% if kullanicilar.has_previous %}
+
+                                                    <li class="page-item">
+                                                        <a class="page-link" data-page="1"
+                                                           href="{{ query }}&page={{ kullanicilar.previous_page_number }}">
+                                                            <i class="fa fa-angle-double-left"></i>
+                                                        </a>
+                                                    </li>
+                                                    {% if kullanicilar.previous_page_number > 1 %}
+                                                        <li class="page-item">
+                                                            <a class="page-link "
+                                                               data-page="{{ kullanicilar.previous_page_number }}"
+                                                               href="{{ query }}&page={{ kullanicilar.previous_page_number }}">
+                                                                <i class="fa fa-angle-left"></i>
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+
+                                                {% endif %}
+
+                                                {% if kullanicilar.previous_page_number > 2 %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ kullanicilar.number|add:'-2' }}"
+                                                           href="{{ query }}&page={{ kullanicilar.number|add:'-2' }}"> {{ kullanicilar.number|add:"-2" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ kullanicilar.number|add:'-1' }}"
+                                                           href="{{ query }}&page={{ kullanicilar.number|add:'-1' }}"> {{ kullanicilar.number|add:"-1" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                <li class="page-item active"><span
+                                                        class="page-link ">{{ kullanicilar.number }}</span></li>
+
+                                                {% if kullanicilar.paginator.num_pages > kullanicilar.number|add:"2" %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ kullanicilar.number|add:'1' }}"
+                                                           href="{{ query }}&page={{ kullanicilar.number|add:'1' }}"> {{ kullanicilar.number|add:"1" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ kullanicilar.number|add:'2' }}"
+                                                           href="{{ query }}&page={{ kullanicilar.number|add:'2' }}"> {{ kullanicilar.number|add:"2" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                {% if kullanicilar.has_next %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ kullanicilar.next_page_number }}"
+                                                           href="{{ query }}&page={{ kullanicilar.next_page_number }}">
+                                                            <i class="fa fa-angle-right"></i>
+                                                        </a>
+                                                    </li>
+
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ kullanicilar.paginator.num_pages }}"
+                                                           href="{{ query }}&page={{ kullanicilar.paginator.num_pages }}">
+                                                            <i class="fa fa-angle-double-right"></i>
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_script %}
+
+{% endblock %}
+
+
+

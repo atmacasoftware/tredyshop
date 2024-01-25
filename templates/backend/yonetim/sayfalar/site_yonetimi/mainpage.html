@@ -1,0 +1,407 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>Site Yönetimi | Anasayfa</title>{% endblock %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'backend/css/table_select.css' %}">
+{% endblock %}
+{% block site_yonetimi %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>Site Yönetimi | Anasayfa</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item">Site Yönetimi | Anasayfa</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Filtreleme</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="" method="get" class="">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <div class="form-group">
+                                            <label for="banner_title">Banner Adı</label>
+                                            <input id="banner_title" type="text" name="banner_title"
+                                                   class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="form-group">
+                                            <label for="select-tip">Banner Tipi</label>
+                                            <select id="select-tip" name="tip" class="form-control">
+                                                <option value="">------</option>
+                                                <option value="None">Hepsi</option>
+                                                <option value="Belirli Tutar Altı">Belirli Tutar Altı</option>
+                                                <option value="İndirimli Ürünler">İndirimli Ürünler</option>
+                                                <option value="Kategori Bazlı Ürünler">Kategori Bazlı Ürünler</option>
+                                                <option value="Kampanya Bazlı Ürünler">Kampanya Bazlı Ürünler</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="form-group">
+                                            <label for="select-ispublish">Yayın Durumu</label>
+                                            <select id="select-ispublish" name="status" class="form-control">
+                                                <option value="">------</option>
+                                                <option value="None">Hepsi</option>
+                                                <option value="Yayında">Yayında</option>
+                                                <option value="Yayında Değil">Yayında Değil</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="buttons float-right mt-4">
+                                            <button type="submit" class="btn btn-warning" name="filterBtn">Sorgula
+                                            </button>
+                                            <button type="reset" class="btn btn-light">Sıfırla</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="buttons">
+                                <button class="btn btn-primary" data-toggle="modal"
+                                        data-target="#modal-create-banner"><i class="fa fa-plus"></i> &nbsp;Banner Ekle
+                                </button>
+                                <div class="dropdown d-inline">
+                                    <button class="btn btn-info dropdown-toggle" type="button"
+                                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false">
+                                        İşlemler
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a type="button" id="cancelRow" class="dropdown-item" href="#">İptal Et</a>
+                                        <a type="button" id="selectRow" class="dropdown-item" href="#">Seç</a>
+                                        <a class="dropdown-item" href="#" type="button" data-toggle="modal"
+                                           data-target="#modal-select-delete" id="deleteRow">Seçilileri Sil</a>
+                                        <a class="dropdown-item" href="#" type="button" data-toggle="modal"
+                                           data-target="#modal-all-delete" id="deleteAll">Hepsini Sil</a>
+                                        <a class="dropdown-item" href="{% url 'banner_export_excel' %}">Excel
+                                            İndir</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-head-fixed text-nowrap">
+                                    <thead>
+                                    <tr>
+                                        <th class="select-row" style="text-align: start; vertical-align: middle">
+                                            &nbsp;
+                                        </th>
+                                        <th style="text-align: start; vertical-align: middle">Görsel</th>
+                                        <th style="text-align: start; vertical-align: middle">Banner Tipi</th>
+                                        <th style="text-align: start; vertical-align: middle">Banner Adı</th>
+                                        <th style="text-align: start; vertical-align: middle">Yayın Durumu</th>
+                                        <th style="text-align: start; vertical-align: middle">Görüntülenme Sayısı</th>
+                                        <th style="text-align: start; vertical-align: middle">Sıra Sayısı</th>
+                                        <th style="text-align: start; vertical-align: middle">Oluşturuma Tarihi</th>
+                                        <th style="text-align: start; vertical-align: middle">İşlemler</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for b in banners %}
+                                        <tr>
+                                            <td class="select-row"
+                                                style="text-align: start; vertical-align: middle; border: 0;">
+                                                <div class="form-check">
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" data-filter="banner"
+                                                               class="custom-control-input select-checkbox"
+                                                               id="check-{{ b.id }}" name="banner_secimi"
+                                                               value="{{ b.id }}">
+                                                        <label class="custom-control-label"
+                                                               for="check-{{ b.id }}"></label>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td style="text-align: start; vertical-align: middle"><img
+                                                    src="{{ b.image.url }}" alt="Banner" width="auto" height="75"></td>
+                                            <td style="text-align: start; vertical-align: middle">{{ b.banner_type }}</td>
+                                            <td style="text-align: start; vertical-align: middle">{{ b.banner_title }}</td>
+                                            <td style="text-align: start; vertical-align: middle">{% if b.is_publish %}
+                                                Yayında{% else %}Yayında Değil{% endif %}</td>
+                                            <td style="text-align: start; vertical-align: middle">{{ b.viewd_count }}</td>
+                                            <td style="text-align: start; vertical-align: middle">
+                                                <form action="">
+                                                    <input type="number" class="form-control" value="{{ b.order }}"
+                                                           id="bannerOrder-{{ b.id }}" name="bannerOrder-{{ b.id }}">
+                                                    <script>
+                                                        $("#bannerOrder-{{ b.id }}").on('change', function () {
+                                                            $.ajax({
+                                                                url: `/yonetim/site-yonetimi/banner/secili-banner/id={{ b.id }}/sira-degistir/`,
+                                                                data: {
+                                                                    'order': $("input[name='bannerOrder-{{ b.id }}']").val(),
+                                                                },
+                                                                dataType: 'json',
+                                                                beforeSend: function () {
+                                                                    $(".waiting").css('display', 'flex')
+                                                                    $(".waiting").css('visibility', 'visible')
+                                                                },
+                                                                success: function (data) {
+                                                                    $(".waiting").css('display', 'none')
+                                                                    $(".waiting").css('visibility', 'hidden')
+
+                                                                }
+                                                            });
+                                                        })
+                                                    </script>
+                                                </form>
+                                            </td>
+                                            <td style="text-align: start; vertical-align: middle">{{ b.created_at|date:"d-m-Y H:i" }}</td>
+                                            <td style="text-align: start; vertical-align: middle">
+                                                <a href="{% url 'banner_publish' b.id %}"
+                                                   class="btn btn-block btn-sm btn-primary">{% if b.is_publish %}
+                                                    Yayından
+                                                    Kaldır{% else %}Yayınla{% endif %}</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <nav aria-label="pagination" class="pagination_area">
+                                <div class="row">
+                                    {% if banners.end_index > 0 %}
+                                        <div class="col-sm-12 col-md-5 d-none d-md-block">
+                                            <p>Showing {{ banners.start_index }} to {{ banners.end_index }}
+                                                of {{ banners.paginator.count }}.</p>
+                                        </div>
+                                    {% endif %}
+                                    {% if banners.paginator.num_pages > 1 %}
+                                        <div class="col-sm-12 col-md-7 dataTables_pager">
+                                            <ul class="pagination float-right">
+                                                {% if banners.has_previous %}
+
+                                                    <li class="page-item">
+                                                        <a class="page-link" data-page="1"
+                                                           href="{{ query }}&page={{ banners.previous_page_number }}">
+                                                            <i class="fa fa-angle-double-left"></i>
+                                                        </a>
+                                                    </li>
+                                                    {% if banners.previous_page_number > 1 %}
+                                                        <li class="page-item">
+                                                            <a class="page-link "
+                                                               data-page="{{ banners.previous_page_number }}"
+                                                               href="{{ query }}&page={{ banners.previous_page_number }}">
+                                                                <i class="fa fa-angle-left"></i>
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+
+                                                {% endif %}
+
+                                                {% if banners.previous_page_number > 2 %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ banners.number|add:'-2' }}"
+                                                           href="{{ query }}&page={{ banners.number|add:'-2' }}"> {{ banners.number|add:"-2" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ banners.number|add:'-1' }}"
+                                                           href="{{ query }}&page={{ banners.number|add:'-1' }}"> {{ banners.number|add:"-1" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                <li class="page-item active"><span
+                                                        class="page-link ">{{ banners.number }}</span></li>
+
+                                                {% if banners.paginator.num_pages > banners.number|add:"2" %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ banners.number|add:'1' }}"
+                                                           href="{{ query }}&page={{ banners.number|add:'1' }}"> {{ banners.number|add:"1" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ banners.number|add:'2' }}"
+                                                           href="{{ query }}&page={{ banners.number|add:'2' }}"> {{ banners.number|add:"2" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                {% if banners.has_next %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ banners.next_page_number }}"
+                                                           href="{{ query }}&page={{ banners.next_page_number }}">
+                                                            <i class="fa fa-angle-right"></i>
+                                                        </a>
+                                                    </li>
+
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ banners.paginator.num_pages }}"
+                                                           href="{{ query }}&page={{ banners.paginator.num_pages }}">
+                                                            <i class="fa fa-angle-double-right"></i>
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="modal-select-delete">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Emin misin?</h4>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Seçili banner silinecektir.</p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button id="deleteNow" class="btn btn-danger"
+                            data-dismiss="modal">
+                        Sil
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" id="modal-all-delete">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Emin misin?</h4>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Tüm bannerlar silinecektir.</p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <a href="{% url 'banner_hepsini_sil' %}" class="btn btn-danger">Tümünü Sil</a>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" id="modal-create-banner">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Banner Ekle</h4>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="post" id="bannerForm" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="banner_type">Banner Tipi</label>
+                            <select class="form-control" id="banner_type" required name="banner_type">
+                                <option value="None">----------</option>
+                                <option value="Belirli Tutar Altı">Belirli Tutar Altı</option>
+                                <option value="İndirimli Ürünler">İndirimli Ürünler</option>
+                                <option value="Kategori Bazlı Ürünler">Kategori Bazlı Ürünler</option>
+                                <option value="Kampanya Bazlı Ürünler">Kampanya Bazlı Ürünler</option>
+                            </select>
+                        </div>
+                        <div class="change-form">
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'backend/js/banner.js' %}"></script>
+    <script>
+
+
+        $(document).ready(function () {
+            $(".waiting").hide()
+            $("#deleteRow").hide();
+            $("#cancelRow").hide()
+            $("#selectRow").on('click', function () {
+                $("#cancelRow").show()
+                $(".select-row").css('display', 'block')
+                $("#selectRow").hide()
+                $("#deleteRow").show();
+                $("#cancelRow").on('click', function () {
+                    $("#selectRow").show();
+                    $("#cancelRow").hide();
+                    $("#deleteRow").hide();
+                    $(".select-row").css('display', 'none')
+                })
+            })
+        });
+
+        $("#deleteRow").on('click', function () {
+            var _filterObj = {};
+            $(".select-checkbox").each(function (index, ele) {
+                var _filterVal = $(this).val();
+                var _filterKey = $(this).data('filter');
+                _filterObj[_filterKey] = Array.from(document.querySelectorAll('input[data-filter=' + _filterKey + ']:checked')).map(function (el) {
+                    return el.value;
+                });
+            });
+
+
+            $("#deleteNow").on('click', function () {
+                $.ajax({
+                    url: `/yonetim/site-yonetimi/banner/secili-harcama-sil/`,
+                    data: _filterObj,
+                    dataType: 'json',
+                    beforeSend: function () {
+                        $(".waiting").css('display', 'flex')
+                        $(".waiting").css('visibility', 'visible')
+                    },
+                    success: function (data) {
+                        $(".waiting").css('display', 'none')
+                        $(".waiting").css('visibility', 'hidden')
+                        location.reload();
+                    }
+                });
+            });
+        })
+
+    </script>
+{% endblock %}
+
+
+

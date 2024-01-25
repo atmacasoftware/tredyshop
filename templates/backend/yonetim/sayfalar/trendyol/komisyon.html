@@ -1,0 +1,89 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>Trendyol | Komisyon Tarifesi</title>{% endblock %}
+
+{% block trendyol %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>Trendyol Komisyon Tarifesi</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item">Trendyol Komisyon Tarifesi</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+                <div class="col-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <form action="" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {% for field in form %}
+                                    <div class="form-group">
+                                        <label for="{{ field.id_for_label }}"
+                                               class="col-form-label">{{ field.label }}
+                                            {% if field.field.required %}
+                                                <span style="color: red;" class="required">*</span>
+                                            {% endif %}
+                                        </label>
+                                        {{ field }}
+                                    </div>
+                                {% endfor %}
+                                <input type="submit" class="btn btn-primary" value="Ekle/Güncelle">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="responsive-table">
+                                <table class="table table-head-fixed text-nowrap" id="categoryTable">
+                                    <thead>
+                                    <tr>
+                                        <th style="text-align: start; vertical-align: middle">Kategori Adı</th>
+                                        <th style="text-align: start; vertical-align: middle">Komisyon Tutarı</th>
+                                        <th style="text-align: start; vertical-align: middle">Oluşturulma Tarihi</th>
+                                        <th style="text-align: start; vertical-align: middle">Güncellenme Tarihi</th>
+                                        <th style="text-align: start; vertical-align: middle">İşlemler</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for komisyon in komisyonlar %}
+                                        <tr>
+
+                                            <td style="text-align: start; vertical-align: middle">
+                                                <b>{{ komisyon.kategori_adi }}</b>
+                                            </td>
+                                            <td style="text-align: start; vertical-align: middle">{{ komisyon.komisyon_tutari }}
+                                            <td style="text-align: start; vertical-align: middle">{{ komisyon.create_at }}
+                                            <td style="text-align: start; vertical-align: middle">{{ komisyon.update_at }}
+                                            </td>
+                                            <td style="text-align: start; vertical-align: middle">
+                                                <div class="btn-group mb-3" role="group" aria-label="Basic example">
+                                                    <a href="{% url 'trendyol_komisyon_detay' komisyon.id %}" class="btn btn-primary"><i class="fa fa-eye"></i></a>
+                                                    <a href="{% url 'trendyol_komisyon_sil' komisyon.id %}" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_script %}
+
+{% endblock %}
+
+
+

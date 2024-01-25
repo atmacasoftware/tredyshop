@@ -1,0 +1,159 @@
+.table-responsive::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+
+.table-responsive::-webkit-scrollbar {
+    width: 12px;
+	background-color: #F5F5F5;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: #555;
+}
+
+.table-responsive {
+    height: 450px;
+}
+
+table {
+    position: relative;
+}
+
+thead {
+    overflow: scroll;
+}
+
+th {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 999;
+    background-color: #e3eaef !important;
+}
+
+.product__info {
+    display: flex;
+    justify-content: start;
+    flex-direction: row;
+    align-items: center;
+}
+
+.product__info .product__image img {
+    width: 60px !important;
+    height: 90px !important;
+    border-radius: 10px;
+    border: 1px solid black;
+}
+
+.product__info .product__title {
+    margin-left: 10px;
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    flex-direction: column;
+    height: 100%;
+}
+
+.product__info .product__title a {
+    color: black;
+    transition: .2s all ease;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.product__info .product__title a:hover {
+    color: #dc3545;
+}
+
+.product__info .product__title span {
+    font-size: 0.8rem;
+}
+
+table td p {
+    font-size: 0.9rem;
+}
+
+.product__images {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer__button_group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+table.dataTable tbody tr.selected > * {
+    box-shadow: inset 0 0 0 9999px rgb(239, 134, 134) !important;
+}
+
+@media screen and (max-width: 600px) {
+
+}
+
+
+table caption {
+    font-size: 1.5em;
+    margin: .5em 0 .75em;
+}
+
+
+table th {
+    font-size: .85em;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+.pagination {
+    float: right;
+}
+
+.card-process {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+}
+
+
+.product-table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.selected {
+    box-shadow: inset 0 0 0 9999px rgb(239, 134, 134) !important;
+    color: white;
+}
+
+
+.select-box {
+    display: flex;
+    width: auto;
+    flex-direction: column;
+}
+
+.select-box .option-container {
+    max-height: 0;
+    width: 100%;
+    opacity: 0;
+    transition: all 0.4s;
+    border-radius: 8px;
+    overflow: hidden;
+    order: 1;
+}
+
+.selected {
+    border-radius: 8px;
+    margin-bottom: 8px;
+    position: relative;
+    order: 0;
+}

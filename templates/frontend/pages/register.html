@@ -114,12 +114,14 @@
                                                             </span>
                                                             </button>
                                                         </div>
-                                                        <div id="message">
-                                                            <p id="letter" class="invalid">1 <b>küçük</b> harf</p>
-                                                            <p id="capital" class="invalid">1 <b>büyük</b>
-                                                                harf</p>
-                                                            <p id="number" class="invalid">1 <b>sayı</b></p>
-                                                            <p id="length" class="invalid">En az <b>8 karakter</b>
+                                                        <div class="info-password">
+                                                            <span style="margin-right: 10px;"><i class="fa fa-exclamation-circle"
+                                                                     aria-hidden="true"></i></span>
+                                                            <p>
+                                                                Şifreniz en az bir harf, rakam veya özel karakter
+                                                                içermeli. Ayrıca
+                                                                şifreniz en az 8
+                                                                karakterden oluşmalı.
                                                             </p>
                                                         </div>
                                                     </div>
@@ -192,7 +194,8 @@
             </div>
             <div class="send-email-body">
                 <h3>E-POSTA DOĞRULAMASI</h3>
-                <p style="text-align: center;">Lütfen mail adresinize gönderilen 6 haneli kodu giriniz. Mail adresinizde mail göremiyorsanız lütfen
+                <p style="text-align: center;">Lütfen mail adresinize gönderilen 6 haneli kodu giriniz. Mail adresinizde
+                    mail göremiyorsanız lütfen
                     "Spam veya Gereksiz E-Posta" klasörünü kontrol ediniz. Eğer bir sorun ile karşılaşırsanız
                     <a href="https://wa.me/+908503098552" target="_blank" style="color: red;">Canlı Destek</a> üzerinden
                     bizimle Whatsapp kanalı ile iletişime geçebilirsiniz. Keyifli alışverişler dileriz...</p>
@@ -211,7 +214,10 @@
                 <span id="errorOtp"></span>
             </div>
             <div class="send-email-footer">
-                <button id="confirm-otp" data-target="https://www.tredyshop.com/giris-yap" class="btn btn-gradient btn-block w-100">Onayla</button>
+                <button id="confirm-otp" data-target="https://www.tredyshop.com/giris-yap"
+                        class="btn btn-gradient w-100 btn-block">Onayla
+                </button>
+                <button id="againBtn" class="btn btn-secondary w-100 btn-block" disabled></button>
             </div>
         </div>
     </div>

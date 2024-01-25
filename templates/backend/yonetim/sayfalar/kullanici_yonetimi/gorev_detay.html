@@ -1,0 +1,181 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>Görev Detay</title>{% endblock %}
+{% block extra_style %}
+
+{% endblock %}
+{% block kullanici_yonetimi %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>Görev Detay</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item active"><a href="{% url 'gorevler' %}">Görevler</a></div>
+                <div class="breadcrumb-item">Görev Detay</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="badge badge-{% if task.is_completed == True %}success{% else %}warning{% endif %}">
+                                {% if task.is_completed == True %}Tamamlandı{% else %}Devam Ediyor{% endif %}</div>
+                        </div>
+                        <div class="card-body">
+                            <h5>{{ task.name }}</h5>
+                            <form action="" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                {{ form.media }}
+                                {{ form }}
+                                <button type="submit" name="saveBtn" class="btn btn-primary mt-3">Kaydet</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block extra_script %}
+    <script>
+        $(document).ready(function () {
+            $(".task_time_form").hide()
+            $("#tasktime").on('change', function (e) {
+                if (e.target.value == "Belirli Gün") {
+                    $(".task_time_form").show()
+                    $("#task_date").attr("required", true)
+                } else {
+                    $(".task_time_form").hide()
+                    $("#task_date").attr("required", false)
+                }
+            })
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            const csrftoken = getCookie('csrftoken');
+
+            $(".waiting").hide();
+
+            $("#createButton").on('click', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    headers: {'X-CSRFToken': csrftoken},
+                    url: `/yonetim/kullanici-yonetimi/gorevler/gorev-ekle/`,
+                    data: {
+                        'task_name': $("input[name='task_name']").val(),
+                        'tasktime': $("select[name='tasktime']").val(),
+                        'task_date': $("input[name='task_date']").val(),
+                    },
+                    dataType: 'json',
+                    beforeSend: function () {
+                        $(".waiting").css('display', 'flex')
+                        $(".waiting").css('visibility', 'visible')
+                    },
+                    success: function (data) {
+                        console.log(data)
+                        $(".waiting").css('display', 'none')
+                        $(".waiting").css('visibility', 'hidden')
+                        if (data == "success") {
+                            iziToast.error({
+                                title: 'Başarılı !',
+                                message: `Görev başarıyla eklendi.`,
+                                position: 'topRight'
+                            });
+                            window.location.reload();
+                        } else {
+                            iziToast.error({
+                                title: 'Hata !',
+                                message: `Bir hata meydana geldi.`,
+                                position: 'topRight'
+                            });
+                        }
+                    },
+                    error: function (e) {
+                        iziToast.error({
+                            title: 'Hata !',
+                            message: `Bir hata meydana geldi. ${e}.`,
+                            position: 'topRight'
+                        });
+                    }
+                });
+            });
+            $("#userTaskBtn").on('click', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    headers: {'X-CSRFToken': csrftoken},
+                    url: `/yonetim/kullanici-yonetimi/gorevler/kullanici-gorevlendir/`,
+                    data: {
+                        'task_id': $("select[name='selectTask']").val(),
+                        'user_id': $("select[name='selectUser']").val(),
+                    },
+                    dataType: 'json',
+                    beforeSend: function () {
+                        $(".waiting").css('display', 'flex')
+                        $(".waiting").css('visibility', 'visible')
+                    },
+                    success: function (data) {
+                        console.log(data)
+                        $(".waiting").css('display', 'none')
+                        $(".waiting").css('visibility', 'hidden')
+                        if (data == "success") {
+                            iziToast.success({
+                                title: 'Başarılı !',
+                                message: `Kullanıcı başarıyla görevlendirildi.`,
+                                position: 'topRight'
+                            });
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 2000)
+
+                        } else if (data == "error") {
+                            iziToast.error({
+                                title: 'Hata !',
+                                message: `Bir hata meydana geldi.`,
+                                position: 'topRight'
+                            });
+                        } else {
+                            iziToast.info({
+                                title: 'Hata !',
+                                message: `İlgili kullanıcı zaten bu görevde!`,
+                                position: 'topRight'
+                            });
+                        }
+                    },
+                    error: function (e) {
+                        iziToast.error({
+                            title: 'Hata !',
+                            message: `Bir hata meydana geldi. ${e}.`,
+                            position: 'topRight'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+    <script src="{% static 'backend/modules/sweetalert/sweetalert.min.js' %}"></script>
+{% endblock %}
+
+
+

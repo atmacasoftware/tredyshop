@@ -47,67 +47,19 @@ $(document).ready(function () {
         });
     });
 
-    //$(".filter-checkbox").on('click', function () {
-//
-    //    var _filterObj = {};
-//
-    //    $(".filter-checkbox").each(function (index, ele) {
-    //        var _filterVal = $(this).val();
-//
-    //        var _filterKey = $(this).data('filter');
-    //        _filterObj[_filterKey] = Array.from(document.querySelectorAll('input[data-filter=' + _filterKey + ']:checked')).map(function (el) {
-    //            return el.value;
-    //        });
-//
-    //    });
-//
-    //    $("#loadMore").attr("data-filter-desc", _filterObj['desc'])
-//
-    //    $.ajax({
-    //        url: `/yonetim/urunler/json/`,
-    //        data: _filterObj,
-    //        dataType: 'json',
-//
-    //        success: function (res) {
-    //            console.log(res.data)
-    //            $("tbody").html('')
-    //            $("tbody").append(res.data)
-    //        },
-//
-    //    });
-//
-//
-    //});
-//
-    //$("#loadMore").on('click', function () {
-    //    var _currentProducts = $("tbody tr").length;
-    //    var _page = $(this).attr("data-page");
-    //    var _total = $(this).attr("data-total");
-//
-//
-    //    $.ajax({
-    //        url: `/yonetim/urunler/json/yukle/`,
-    //        data: {
-    //            page: _page,
-    //            offset: _currentProducts,
-    //            desc: $("#loadMore").attr('data-filter-desc').split(','),
-    //        },
-    //        dataType: 'json',
-    //        success: function (res) {
-    //            var previous_page = parseInt(_page)
-    //            var current_page = previous_page + 1
-    //            console.log(current_page)
-    //            $("tbody").html('')
-    //            $("tbody").append(res.data)
-    //            $("#loadMore").attr("data-page", current_page)
-    //            $(".current__page").text(current_page)
-//
-    //            if (current_page == _total) {
-    //                $("#loadMore").attr("disabled", true)
-    //            }
-//
-    //        }
-    //    })
-//
-    //});
+    $("#deleteNotActiveProduct").on('click', function () {
+        $.ajax({
+            url: $(this).attr('data-target'),
+            dataType: 'json',
+            beforeSend: function () {
+                $(".waiting").show()
+            },
+            success: function (data) {
+                $(".waiting").hide()
+                if (data === 'success'){
+                    window.location.reload()
+                }
+            }
+        });
+    });
 });

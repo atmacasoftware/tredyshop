@@ -9,7 +9,8 @@ from django.contrib.auth import login as auth_login, authenticate
 from django.contrib.auth import logout as auth_logout
 
 
-from adminpage.custom import sendAccountVerificationEmail
+from adminpage.custom import sendAccountVerificationEmail, customerTredyShopExtraditionRequestOrder, \
+    sendExtraditionRequestInfoEmail
 from adminpage.models import Notification
 from carts.models import Cart, CartItem
 from customer.forms import *
@@ -18,7 +19,7 @@ from ecommerce.settings import EMAIL_HOST_USER
 from orders.models import Order, OrderProduct, ExtraditionRequest, ExtraditionRequestResult, \
     CancellationRequest
 from user_accounts.models import User
-from product.models import Favorite, ReviewRating, Question, ApiProduct, ProductKapak, ProductModelGroup
+from product.models import Favorite, ReviewRating, Question, ApiProduct
 
 
 # Create your views here.
@@ -53,8 +54,6 @@ def login(request):
                         auth_login(request, user_obj)
                         if not remember_me:
                             request.session.set_expiry(18000)
-                        messages.success(request,
-                                         f'Hoşgeldin {request.user.get_full_name()}. Alışveriş keyfini çıkarın.')
                         return redirect('mainpage')
 
                     else:
@@ -87,7 +86,6 @@ def register(request):
     except Exception as e:
         messages.warning(request, 'Bir hata meydana geldi!')
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
 
 def register_ajax(request):
     data = 'error'
@@ -149,32 +147,6 @@ def validate_email(request, *args, **kwargs):
 def profile_mainpage(request):
     user = request.user
 
-    a = ApiProduct.objects.all().values('model_code','image_url1', 'barcode').distinct()
-
-    from PIL import Image
-    from io import BytesIO
-    from django.core.files.images import ImageFile
-    import requests
-
-    for b in a:
-        if b['image_url1'] != None:
-
-            try:
-                if ProductKapak.objects.filter(modal_code=b['model_code']).count() < 1:
-
-                    img_url = str(b['image_url1'])
-
-                    res = Image.open(requests.get(img_url, stream=True).raw)
-                    filename = str(b['model_code'])
-
-                    img_object = ImageFile(BytesIO(res.fp.getvalue()), name=filename)
-                    ProductModelGroup.objects.create(kapak=img_object, modal_code=b['model_code'], product=ApiProduct.objects.get(barcode=b['barcode']))
-
-            except:
-                pass
-
-
-
     if 'userInfoBtn' in request.POST:
         if request.method == "POST":
             first_name = request.POST.get('first_name')
@@ -197,6 +169,16 @@ def profile_mainpage(request):
             messages.success(request, 'Tebrikler üyeliğiniz başarıyla güncellendi.')
             return redirect('profile_mainpage')
 
+    if 'createPasswordBtn' in request.POST:
+        password = request.POST.get('new_password')
+        hasspass = make_password(password)
+        user.password = hasspass
+        user.username = None
+        user.is_activated = True
+        user.save()
+        messages.success(request, 'Şifreniz başarıyla oluşturuldu.')
+        return redirect('profile_mainpage')
+
     if 'changePasswordBtn' in request.POST:
         current_password = request.POST.get('current_password')
         new_password = request.POST.get('new_password')
@@ -208,7 +190,11 @@ def profile_mainpage(request):
             request.user.password = haspass
             request.user.save()
             messages.success(request, 'Şifreniz başarıyla değiştirildi. Tekrar giriş yapmanız gerekmektedir.')
-            return redirect('authenticated_page')
+            return redirect('logout')
+
+        else:
+            messages.error(request, 'Mevcut şifreniz doğru değil!')
+            return redirect('profile_mainpage')
 
     return render(request, 'frontend/pages/profile/mainpage.html')
 
@@ -391,6 +377,8 @@ def order_detail(request, order_number):
                                                         product=product)
         orderproduct.is_extradation = True
         orderproduct.save()
+        customerTredyShopExtraditionRequestOrder(request=request, email=request.user.email, order_number=order.order_number)
+        sendExtraditionRequestInfoEmail(request=request, email="atmacaahmet5261@hotmail.com", order_number=order.order_number, siparis_tarihi=order.created_at, iade_tarihi=extradition.created_at, urun_id=product_id)
         messages.success(request, 'Ürün iade talebi iletildi.')
         return redirect('order_detail', order_number)
     return render(request, 'frontend/pages/profile/order_detail.html', context)

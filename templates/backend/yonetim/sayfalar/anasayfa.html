@@ -1,0 +1,553 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+{% block title %}<title>TredyShop Yönetim Paneli</title>{% endblock %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'backend/css/mainpage.css' %}">
+{% endblock %}
+{% block anasayfa %}
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="card card-statistic-2">
+                    <div class="card-stats">
+                        <div class="card-stats-title" id="siparisIstatistikleri">
+                            Sipariş İstatistikleri ({{ bu_yil }}) -
+                            <div class="dropdown d-inline">
+                                <a class="font-weight-600 dropdown-toggle" data-toggle="dropdown" href="#"
+                                   id="orders-month">
+                                    {{ ay }}
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-sm">
+                                    <li class="dropdown-title">Ay Seçiniz</li>
+                                    <li><a href="#"
+                                           class="dropdown-item order-dropdown {% if ay == "Ocak" %}active{% endif %}"
+                                           data-value="1">Ocak</a></li>
+                                    <li><a href="#"
+                                           class="dropdown-item order-dropdown {% if ay == "Şubat" %}active{% endif %}"
+                                           data-value="2">Şubat</a></li>
+                                    <li><a href="#"
+                                           class="dropdown-item order-dropdown {% if ay == "Mart" %}active{% endif %}"
+                                           data-value="3">Mart</a></li>
+                                    <li><a href="#"
+                                           class="dropdown-item order-dropdown {% if ay == "Nisan" %}active{% endif %}"
+                                           data-value="4">Nisan</a></li>
+                                    <li><a href="#"
+                                           class="dropdown-item order-dropdown {% if ay == "Mayıs" %}active{% endif %}"
+                                           data-value="5">Mayıs</a></li>
+                                    <li><a href="#"
+                                           class="dropdown-item order-dropdown {% if ay == "Haziran" %}active{% endif %}"
+                                           data-value="6">Haziran</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item order-dropdown {% if ay == "Temmuz" %}active{% endif %}"
+                                           data-value="7">Temmuz</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item order-dropdown {% if ay == "Ağustos" %}active{% endif %}"
+                                           data-value="8">Ağustos</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item order-dropdown {% if ay == "Eylül" %}active{% endif %}"
+                                           data-value="9">Eylül</a></li>
+                                    <li><a href="#"
+                                           class="dropdown-item order-dropdown {% if ay == "Ekim" %}active{% endif %}"
+                                           data-value="10">Ekim</a></li>
+                                    <li><a href="#"
+                                           class="dropdown-item order-dropdown {% if ay == "Kasım" %}active{% endif %}"
+                                           data-value="11">Kasım</a></li>
+                                    <li><a href="#"
+                                           class="dropdown-item order-dropdown {% if ay == "Aralık" %}active{% endif %}"
+                                           data-value="12">Aralık</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-stats-items">
+                            <div class="card-stats-item">
+                                <div class="card-stats-item-count order-new-count">{{ yeni_siparis_sayisi }}</div>
+                                <div class="card-stats-item-label">Yeni</div>
+                            </div>
+                            <div class="card-stats-item">
+                                <div class="card-stats-item-count order-delivery-count">{{ kargolanmis_siparis_sayisi }}</div>
+                                <div class="card-stats-item-label">Kargolanmış</div>
+                            </div>
+                            <div class="card-stats-item">
+                                <div class="card-stats-item-count order-complated-count">{{ tamamlanmis_siparis_sayisi }}</div>
+                                <div class="card-stats-item-label">Tamamlanmış</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-icon shadow-primary bg-primary">
+                        <i class="fas fa-archive"></i>
+                    </div>
+                    <div class="card-wrap">
+                        <div class="card-header">
+                            <h4>Tüm Siparişler</h4>
+                        </div>
+                        <div class="card-body">
+                            {{ toplam_siparis_sayisi }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="card card-statistic-2">
+                    <div class="card-stats">
+                        <div class="card-stats-title">Kar İstatistikleri ({{ bu_yil }}) -
+                            <div class="dropdown d-inline">
+                                <a class="font-weight-600 dropdown-toggle" data-toggle="dropdown" href="#"
+                                   id="profit-month">
+                                    {{ ay }}
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-sm">
+                                    <li class="dropdown-title">Ay Seçiniz</li>
+                                    <li><a href="#"
+                                           class="dropdown-item profit-dropdown {% if ay == "Ocak" %}active{% endif %}"
+                                           data-value="1">Ocak</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item profit-dropdown {% if ay == "Şubat" %}active{% endif %}"
+                                           data-value="2">Şubat</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item profit-dropdown {% if ay == "Mart" %}active{% endif %}"
+                                           data-value="3">Mart</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item profit-dropdown {% if ay == "Nisan" %}active{% endif %}"
+                                           data-value="4">Nisan</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item profit-dropdown {% if ay == "Mayıs" %}active{% endif %}"
+                                           data-value="5">Mayıs</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item profit-dropdown {% if ay == "Haziran" %}active{% endif %}"
+                                           data-value="6">Haziran</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item profit-dropdown {% if ay == "Temmuz" %}active{% endif %}"
+                                           data-value="7">Temmuz</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item profit-dropdown {% if ay == "Ağustos" %}active{% endif %}"
+                                           data-value="8">Ağustos</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item profit-dropdown {% if ay == "Eylül" %}active{% endif %}"
+                                           data-value="9">Eylül</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item profit-dropdown {% if ay == "Ekim" %}active{% endif %}"
+                                           data-value="10">Ekim</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item profit-dropdown {% if ay == "Kasım" %}active{% endif %}"
+                                           data-value="11">Kasım</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item profit-dropdown {% if ay == "Aralık" %}active{% endif %}"
+                                           data-value="12">Aralık</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-stats-items">
+                            <div class="card-stats-item">
+                                <div class="card-stats-item-count month-profit-count"></div>
+                                <div class="card-stats-item-label">İlgili Ay (TL)</div>
+                            </div>
+                            <div class="card-stats-item">
+                                <div class="card-stats-item-count month-sales-count"></div>
+                                <div class="card-stats-item-label">Satış (TL)</div>
+                            </div>
+                            <div class="card-stats-item">
+                                <div class="card-stats-item-count month-expenses-count"></div>
+                                <div class="card-stats-item-label">Maliyet (TL)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-icon shadow-primary bg-primary">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="card-wrap">
+                        <div class="card-header">
+                            <h4>Toplam Kar (TL)</h4>
+                        </div>
+                        <div class="card-body total-profit">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="card card-statistic-2">
+                    <div class="card-stats">
+                        <div class="card-stats-title">Platform Satış İstatistikleri ({{ bu_yil }}) -
+                            <div class="dropdown d-inline">
+                                <a class="font-weight-600 dropdown-toggle" data-toggle="dropdown" href="#"
+                                   id="platform-month">{{ ay }}</a>
+                                <ul class="dropdown-menu dropdown-menu-sm">
+                                    <li class="dropdown-title">Ay Seçiniz</li>
+                                    <li><a href="#"
+                                           class="dropdown-item platform-dropdown {% if ay == "Ocak" %}active{% endif %}"
+                                           data-value="1">Ocak</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item platform-dropdown {% if ay == "Şubat" %}active{% endif %}"
+                                           data-value="2">Şubat</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item platform-dropdown {% if ay == "Mart" %}active{% endif %}"
+                                           data-value="3">Mart</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item platform-dropdown {% if ay == "Nisan" %}active{% endif %}"
+                                           data-value="4">Nisan</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item platform-dropdown {% if ay == "Mayıs" %}active{% endif %}"
+                                           data-value="5">Mayıs</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item platform-dropdown {% if ay == "Haziran" %}active{% endif %}"
+                                           data-value="6">Haziran</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item platform-dropdown {% if ay == "Temmuz" %}active{% endif %}"
+                                           data-value="7">Temmuz</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item platform-dropdown {% if ay == "Ağustos" %}active{% endif %}"
+                                           data-value="8">Ağustos</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item platform-dropdown {% if ay == "Eylül" %}active{% endif %}"
+                                           data-value="9">Eylül</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item platform-dropdown {% if ay == "Ekim" %}active{% endif %}"
+                                           data-value="10">Ekim</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item platform-dropdown {% if ay == "Kasım" %}active{% endif %}"
+                                           data-value="11">Kasım</a>
+                                    </li>
+                                    <li><a href="#"
+                                           class="dropdown-item platform-dropdown {% if ay == "Aralık" %}active{% endif %}"
+                                           data-value="12">Aralık</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card-stats-items">
+                            <div class="card-stats-item">
+                                <div class="card-stats-item-count platform-month-count">{{ ilgili_ay_satis_sayisi }}</div>
+                                <div class="card-stats-item-label">İlgili Ay</div>
+                            </div>
+                            <div class="card-stats-item">
+                                <div class="card-stats-item-count platform-tredyshop-count">{{ tredyshop_satis_sayisi }}</div>
+                                <div class="card-stats-item-label">TredyShop</div>
+                            </div>
+                            <div class="card-stats-item">
+                                <div class="card-stats-item-count platform-pazaryeri-count">{{ pazaryeri_satis_sayisi }}</div>
+                                <div class="card-stats-item-label">Pazaryeri</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-icon shadow-primary bg-primary">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="card-wrap">
+                        <div class="card-header">
+                            <h4>Toplam Satış</h4>
+                        </div>
+                        <div class="card-body">
+                            {{ toplam_siparis_sayisi }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Son 7 Günlük Performans</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="generalPerformance" height="158"></canvas>
+                        <div class="statistic-details mt-sm-4">
+                            <div class="statistic-details-item">
+                                <span class="text-muted" id="dailyStatistic"><span class="text-primary"><i
+                                        class="fas fa-caret-up"></i></span> 0%</span>
+                                <div class="detail-value" id="dailySales">0 TL</div>
+                                <div class="detail-name">Bugünkü Satışlar</div>
+                            </div>
+                            <div class="statistic-details-item">
+                                <span class="text-muted" id="mountlyStatistic"><span class="text-primary"><i
+                                        class="fas fa-caret-up"></i></span>0%</span>
+                                <div class="detail-value" id="mountlySales">0 TL</div>
+                                <div class="detail-name">{{ ay }} Satışları</div>
+                            </div>
+                            <div class="statistic-details-item">
+                                <span class="text-muted" id="mountlyStatistic"><span class="text-primary"><i
+                                        class="fas fa-caret-up"></i></span> 0%</span>
+                                <div class="detail-value" id="yearlySales">0 TL</div>
+                                <div class="detail-name">{{ bu_yil }} Satışları</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card gradient-bottom">
+                    <div class="card-header">
+                        <h4>Popüler 5 Ürün</h4>
+                    </div>
+                    <div class="card-body" id="top-5-scroll">
+                        <ul class="list-unstyled list-unstyled-border">
+                            {% for product in top_five_products %}
+                                <li class="media">
+                                    <img class="mr-3 rounded" width="55" src="{{ product.image }}"
+                                         alt="Product">
+                                    <div class="media-body">
+                                        <div class="float-right">
+                                            <div class="font-weight-600 text-muted text-small">{{ product.satis_sayisi }}
+                                                Satış
+                                            </div>
+                                        </div>
+                                        <div class="media-title">{{ product.title|truncatechars_html:22 }}</div>
+                                        <div class="mt-1">
+                                            <div class="budget-price">
+                                                <div class="budget-price-square bg-primary w-75"
+                                                     data-width="{{ product.satisOrani }}%"></div>
+                                                <div class="budget-price-label">{{ product.satis|floatformat:0 }} TL
+                                                </div>
+                                            </div>
+                                            <div class="budget-price">
+                                                <div class="budget-price-square bg-danger w-25"
+                                                     data-width="{{ product.maliyetOrani }}%"></div>
+                                                <div class="budget-price-label">{{ product.maliyet|floatformat:0 }} TL
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="card-footer pt-3 d-flex justify-content-center">
+                        <div class="budget-price justify-content-center">
+                            <div class="budget-price-square bg-primary" data-width="20"></div>
+                            <div class="budget-price-label">Satış Fiyatı</div>
+                        </div>
+                        <div class="budget-price justify-content-center">
+                            <div class="budget-price-square bg-danger" data-width="20"></div>
+                            <div class="budget-price-label">Ürün Maliyeti</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>En Çok Sipariş Gelen 10 Şehir</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="cityGraph" height="158"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Pazaryeri Satış İstatistikleri</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="marketPlaceStatisticsGraph" height="158"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Siparişler</h4>
+                        <div class="card-header-action">
+                            <a href="{% url 'admin_siparisler' %}" class="btn btn-danger">Hepsini Gör <i
+                                    class="fas fa-chevron-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="card-body p-0" style="height: 300px; overflow-y: auto;">
+                        <div class="table-responsive table-invoice">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th>Sipariş Numarası</th>
+                                    <th>Müşteri</th>
+                                    <th>Durum</th>
+                                    <th>Sipariş Tarihi</th>
+                                    <th>İşlem</th>
+                                </tr>
+                                {% for siparis in son_siparisler %}
+                                    <tr>
+                                        <td><a href="#">{{ siparis.siparis_no }}</a></td>
+                                        <td class="font-weight-600">
+                                            {% if siparis.müsteri.first_name %}{{ siparis.müsteri.first_name }}
+                                                {{ siparis.müsteri.last_name }}{% else %}
+                                                {{ siparis.müsteri }}{% endif %}</td>
+                                        <td>
+                                            <div class="badge badge-{% if siparis.durum == "Yeni" %}warning{% elif siparis.durum == "Kargolandı" %}primary{% elif siparis.durum == "Tamamlandı" %}success{% elif siparis.durum == "Hazırlanıyor" %}dark{% else %}danger{% endif %}">{{ siparis.durum }}</div>
+                                        </td>
+                                        <td>{{ siparis.siparis_tarihi|date:"d-m-Y H:i" }}</td>
+                                        <td>
+                                            <a href="
+
+                                                    {% if siparis.platform == "tredyshop" %}{% url 'admin_order_detail' siparis.siparis_no %}{% else %}{% url 'trendyol_order_detail' siparis.id %}{% endif %}"
+                                               class="btn btn-primary">Detay</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card card-hero">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="far fa-question-circle"></i>
+                        </div>
+                        <h4>{{ cevaplanmamis_soru }}</h4>
+                        <div class="card-description">Müşteri Soruları</div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="tickets-list">
+                            {% for soru in sorular %}
+                                <a href="#" class="ticket-item">
+                                    <div class="ticket-title">
+                                        <h4>{{ soru.question }}</h4>
+                                    </div>
+                                    <div class="ticket-info">
+                                        <div>{{ soru.user.get_full_name }}</div>
+                                        <div class="bullet"></div>
+                                        <div class="text-primary">{{ soru.passing_time }} önce</div>
+                                    </div>
+                                </a>
+                            {% empty %}
+                            {% endfor %}
+                            <a href="{% url 'musteri_sorulari' %}" class="ticket-item ticket-more">
+                                Tümünü Gör <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="calendar-header">
+                            <p class="current-date">Ocak 2023</p>
+                            <div class="icons">
+                                <i id="prev" class="fa fa-chevron-left"></i>
+                                <i id="next" class="fa fa-chevron-right"></i>
+                            </div>
+                        </div>
+                        <div class="calendar">
+                            <ul class="weeks">
+                                <li>Pt</li>
+                                <li>Sa</li>
+                                <li>Ça</li>
+                                <li>Pe</li>
+                                <li>Cu</li>
+                                <li>Ct</li>
+                                <li>Pa</li>
+                            </ul>
+                            <ul class="days"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="d-inline">Görevler</h4>
+                        <div class="card-header-action">
+                            <a href="{% url 'gorevler' %}" class="btn btn-primary">Hepsini Görüntüle</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled list-unstyled-border">
+                            {% for task in tasks %}
+                                <li class="media">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" {% if task.is_completed %}checked{% endif %} id="cbx-{{ task.id }}">
+                                        <label class="custom-control-label" for="cbx-{{ task.id }}"></label>
+                                        <script>
+                                            $("#cbx-{{ task.id }}").on('change', function () {
+                                                var result = false
+                                                if ($(this).is(':checked')) {
+                                                    result = true
+                                                } else {
+                                                    result = false
+                                                }
+                                                $.ajax({
+                                                    type: "GET",
+                                                    url: '{% url 'gorev_yapilma_durumu' %}',
+                                                    data: {
+                                                        'task_id': {{ task.id }},
+                                                        'durum': result,
+                                                    },
+                                                    dataType: 'json',
+                                                    beforeSend: function () {
+                                                        $(".waiting").css('display', 'flex')
+                                                        $(".waiting").css('visibility', 'visible')
+                                                    },
+                                                    success: function (data) {
+                                                        $(".waiting").css('display', 'none')
+                                                        $(".waiting").css('visibility', 'hidden')
+                                                        if (data == "success"){
+                                                            window.location.reload()
+                                                        }
+                                                    },
+                                                    error: function (e) {
+                                                        iziToast.error({
+                                                            title: 'Hata !',
+                                                            message: `Bir hata meydana geldi. ${e}.`,
+                                                            position: 'topRight'
+                                                        });
+                                                    }
+                                                });
+                                            })
+                                        </script>
+                                    </div>
+                                    <div class="media-body">
+                                        <div class="badge badge-pill badge-{% if task.is_completed == True %}success{% else %}warning{% endif %} mb-1 float-right">
+                                            {% if task.is_completed == True %}Tamamlandı{% else %}
+                                                Tamamlanmadı{% endif %}</div>
+                                        <h6 class="media-title"><a href="#">{{ task.name }}</a></h6>
+                                        <div class="text-small text-muted">
+                                            <div class="bullet"></div>
+                                            <span class="text-primary">{{ task.task_time }}</span></div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'backend/js/mainpage.js' %}"></script>
+    <script src="{% static 'backend/js/page/index.js' %}"></script>
+{% endblock %}

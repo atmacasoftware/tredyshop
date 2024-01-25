@@ -1,39 +1,72 @@
 import decimal
 import xml.etree.ElementTree as ET
-from urllib.request import urlopen
+from urllib.request import urlopen, Request, FancyURLopener
+from xml.dom import minidom
+
 from unidecode import unidecode
 from categorymodel.models import SubCategory, SubBottomCategory, MainCategory
 from product.models import Color, Size, ApiProduct
 from django.contrib import messages
-from adminpage.models import UpdateHistory
-from PIL import Image
-from io import BytesIO
-from django.core.files.images import ImageFile
-import requests
+from adminpage.models import *
 
-def convert_webp(slug, image_url):
-    try:
-        img_url = f'{image_url}'
-
-        res = Image.open(requests.get(img_url, stream=True).raw)
-        try:
-            filename = f'{slug}'
-        except:
-            filename = "urun_fotografi"
-
-        img_object = ImageFile(BytesIO(res.fp.getvalue()), name=filename)
-        return img_object
-    except:
-        pass
 
 def customPrice(starter, finish, price):
-    while finish < 10000:
+    while finish < 15000:
         if float(price) >= starter and float(price) < finish:
             price = finish - 0.10
             return decimal.Decimal(price)
 
         starter += 10
         finish += 10
+
+
+def tredyshopPrice(urun_maliyeti, kdv):
+    tredyshop = TredyShopFiyatAyarla.objects.all().last()
+    kar_marjlari = TredyShopKarMarji.objects.filter(tredyshop=tredyshop)
+    duzeltilmis_satis_fiyati = 0
+    for kar_marji in kar_marjlari:
+        if urun_maliyeti >= kar_marji.baslangic and urun_maliyeti <= kar_marji.bitis:
+            maliyet = 0
+            kdv_hesabi = 0
+            marj = 1 + (kar_marji.kar_maji / 100)
+            if kdv == "Giyim":
+                kdv_hesabi = tredyshop.kdv1 / 100 * marj
+            else:
+                kdv_hesabi = tredyshop.kdv2 / 100 * marj
+            urun = urun_maliyeti * marj
+            komisyon_hesabi = tredyshop.commission / 100 * marj
+            kargo_hesabi = tredyshop.kargo * marj
+            satis_fiyati = kargo_hesabi + (urun * kdv_hesabi) + (urun * komisyon_hesabi) + urun
+            duzeltilmis_satis_fiyati = customPrice(0, 10, satis_fiyati)
+    return duzeltilmis_satis_fiyati
+
+
+def trendyolPrice(urun_maliyeti, kdv, indirim=False):
+    trendyol = TrendyolFiyatAyarla.objects.all().last()
+    kar_marjlari = TrendyolKarMarji.objects.filter(trendyol=trendyol)
+    duzeltilmis_satis_fiyati = 0
+
+    indirim = 0
+    if indirim == True:
+        indirim = trendyol.indirim
+
+    for kar_marji in kar_marjlari:
+        if urun_maliyeti >= kar_marji.baslangic and urun_maliyeti <= kar_marji.bitis:
+            maliyet = 0
+            kdv_hesabi = 0
+            marj = 1 + (kar_marji.kar_maji / 100)
+            if kdv == "Giyim":
+                kdv_hesabi = trendyol.kdv1 / 100 * marj
+            else:
+                kdv_hesabi = trendyol.kdv2 / 100 * marj
+            urun = urun_maliyeti * marj
+            komisyon_hesabi = trendyol.commission / 100 * marj
+            hizmet_bedeli = trendyol.service * marj
+            kargo_hesabi = trendyol.kargo * marj
+            satis_fiyati = kargo_hesabi + (urun * kdv_hesabi) + (
+                    urun * komisyon_hesabi) + urun + hizmet_bedeli - indirim
+            duzeltilmis_satis_fiyati = customPrice(0, 10, satis_fiyati)
+    return duzeltilmis_satis_fiyati
 
 
 def modaymissaveXML2db():
@@ -71,69 +104,8 @@ def modaymissaveXML2db():
                     combination_stock_array.append(combination_stock)
 
                     if ApiProduct.objects.filter(barcode=combination_gtin).count() < 1:
-                        if float(price) < 50.00:
-                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(90)
-                            tredyshop_price = customPrice(0, 10, tredyshop_price)
-                            pttavm_price = tredyshop_price
-                            trendyol_price = tredyshop_price + decimal.Decimal(20)
-                            trendyol_price = customPrice(0, 10, trendyol_price)
-                        if float(price) >= 50.00 and float(price) < 100.00:
-                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(115)
-                            tredyshop_price = customPrice(0, 10, tredyshop_price)
-                            pttavm_price = tredyshop_price
-                            trendyol_price = tredyshop_price + decimal.Decimal(20)
-                            trendyol_price = customPrice(0, 10, trendyol_price)
-                        if float(price) >= 100.00 and float(price) < 150.00:
-                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(130)
-                            tredyshop_price = customPrice(0, 10, tredyshop_price)
-                            pttavm_price = tredyshop_price
-                            trendyol_price = tredyshop_price + decimal.Decimal(20)
-                            trendyol_price = customPrice(0, 10, trendyol_price)
-                        if float(price) >= 150.00 and float(price) < 200.00:
-                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(120)
-                            tredyshop_price = customPrice(0, 10, tredyshop_price)
-                            pttavm_price = tredyshop_price
-                            trendyol_price = tredyshop_price + decimal.Decimal(45) + decimal.Decimal(20)
-                            trendyol_price = customPrice(0, 10, trendyol_price)
-                        if float(price) >= 200.00 and float(price) < 300.00:
-                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(140)
-                            tredyshop_price = customPrice(0, 10, tredyshop_price)
-                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(75) + decimal.Decimal(20)
-                            trendyol_price = customPrice(0, 10, trendyol_price)
-                        if float(price) >= 300.00 and float(price) < 400.00:
-                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(145)
-                            tredyshop_price = customPrice(0, 10, tredyshop_price)
-                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(95) + + decimal.Decimal(20)
-                            trendyol_price = customPrice(0, 10, trendyol_price)
-                        if float(price) >= 400.00 and float(price) < 500.00:
-                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(140)
-                            tredyshop_price = customPrice(0, 10, tredyshop_price)
-                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(130) + decimal.Decimal(20)
-                            trendyol_price = customPrice(0, 10, trendyol_price)
-                        if float(price) >= 500.00 and float(price) < 600.00:
-                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(150)
-                            tredyshop_price = customPrice(0, 10, tredyshop_price)
-                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(175) + decimal.Decimal(20)
-                            trendyol_price = customPrice(0, 10, trendyol_price)
-                        if float(price) >= 600.00 and float(price) < 700.00:
-                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(170)
-                            tredyshop_price = customPrice(0, 10, tredyshop_price)
-                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(195) + decimal.Decimal(20)
-                            trendyol_price = customPrice(0, 10, trendyol_price)
-                        if float(price) >= 700.00:
-                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(190)
-                            tredyshop_price = customPrice(0, 10, tredyshop_price)
-                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(260) + decimal.Decimal(20)
-                            trendyol_price = customPrice(0, 10, trendyol_price)
-
-                        hepsiburada_price = tredyshop_price + decimal.Decimal(25.00)
-                        hepsiburada_price = customPrice(0, 10, hepsiburada_price)
+                        tredyshop_price = tredyshopPrice(float(price), "Giyim")
+                        trendyol_price = trendyolPrice(float(price), "Giyim")
 
                         for a in c.iter("Attributes"):
                             for ac in a.iter("Attribute"):
@@ -202,7 +174,6 @@ def modaymissaveXML2db():
                                                          brand_id=9, title=title, description=name,
                                                          price=tredyshop_price,
                                                          trendyol_price=trendyol_price,
-                                                         hepsiburada_price=hepsiburada_price, pttavm_price=pttavm_price,
                                                          quantity=combination_stock, detail=description,
                                                          status=True, color_id=renk_id, size_id=beden_id,
                                                          age_group="Yetişkin")
@@ -224,9 +195,6 @@ def modaymissaveXML2db():
                         for p in product.iter('Pictures'):
                             for i in p.iter("Picture"):
                                 image_list.append(i.get("Path"))
-
-                        kapak = convert_webp(data.slug, image_list[0])
-                        data.kapak = kapak
 
                         if len(image_list) > 0 and len(image_list) <= 1:
                             data.image_url1 = image_list[0]
@@ -280,6 +248,7 @@ def modaymissaveXML2db():
                             data.image_url7 = image_list[6]
                             data.image_url8 = image_list[7]
                         data.save()
+        UpdateHistory.objects.create(history_type="Modaymış Yeni Ürün Ekleme")
 
 
 def updateModaymisSaveXML2db():
@@ -307,75 +276,14 @@ def updateModaymisSaveXML2db():
                         exist_product.is_publish = True
                         exist_product.save()
                         tredyshop_price = None
-                        pttavm_price = None
                         trendyol_price = None
 
                         renk = exist_product.color.name
+                        tredyshop_price = tredyshopPrice(float(price), "Giyim")
+                        trendyol_price = trendyolPrice(float(price), "Giyim", True)
 
-                        if float(price) < 50.00:
-                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(90)
-                            tredyshop_price = customPrice(0, 10, tredyshop_price)
-                            pttavm_price = tredyshop_price
-                            trendyol_price = tredyshop_price + decimal.Decimal(20)
-                        if float(price) >= 50.00 and float(price) < 100.00:
-                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(115)
-                            tredyshop_price = customPrice(0, 10, tredyshop_price)
-                            pttavm_price = tredyshop_price
-                            trendyol_price = tredyshop_price + decimal.Decimal(20)
-                        if float(price) >= 100.00 and float(price) < 150.00:
-                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(130)
-                            tredyshop_price = customPrice(0, 10, tredyshop_price)
-                            pttavm_price = tredyshop_price
-                            trendyol_price = tredyshop_price + decimal.Decimal(20)
-                        if float(price) >= 150.00 and float(price) < 200.00:
-                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(120)
-                            tredyshop_price = customPrice(0, 10, tredyshop_price)
-                            pttavm_price = tredyshop_price
-                            trendyol_price = tredyshop_price + decimal.Decimal(45) + decimal.Decimal(20)
-                            trendyol_price = customPrice(0, 10, trendyol_price)
-                        if float(price) >= 200.00 and float(price) < 300.00:
-                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(140)
-                            tredyshop_price = customPrice(0, 10, tredyshop_price)
-                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(75) + decimal.Decimal(20)
-                            trendyol_price = customPrice(0, 10, trendyol_price)
-                        if float(price) >= 300.00 and float(price) < 400.00:
-                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(145)
-                            tredyshop_price = customPrice(0, 10, tredyshop_price)
-                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(95) + decimal.Decimal(20)
-                            trendyol_price = customPrice(0, 10, trendyol_price)
-                        if float(price) >= 400.00 and float(price) < 500.00:
-                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(140)
-                            tredyshop_price = customPrice(0, 10, tredyshop_price)
-                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(130) + decimal.Decimal(20)
-                            trendyol_price = customPrice(0, 10, trendyol_price)
-                        if float(price) >= 500.00 and float(price) < 600.00:
-                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(150)
-                            tredyshop_price = customPrice(0, 10, tredyshop_price)
-                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(175) + decimal.Decimal(20)
-                            trendyol_price = customPrice(0, 10, trendyol_price)
-                        if float(price) >= 600.00 and float(price) < 700.00:
-                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(170)
-                            tredyshop_price = customPrice(0, 10, tredyshop_price)
-                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(195) + decimal.Decimal(20)
-                            trendyol_price = customPrice(0, 10, trendyol_price)
-                        if float(price) >= 700.00:
-                            tredyshop_price = decimal.Decimal(price) + decimal.Decimal(190)
-                            tredyshop_price = customPrice(0, 10, tredyshop_price)
-                            pttavm_price = tredyshop_price + decimal.Decimal(20.00)
-                            trendyol_price = tredyshop_price + decimal.Decimal(260) + decimal.Decimal(20)
-                            trendyol_price = customPrice(0, 10, trendyol_price)
-
-                        hepsiburada_price = tredyshop_price + decimal.Decimal(35.00)
-                        hepsiburada_price = customPrice(0, 10, hepsiburada_price)
                         exist_product.price = tredyshop_price
                         exist_product.trendyol_price = trendyol_price
-                        exist_product.hepsiburada_price = hepsiburada_price
-                        exist_product.pttavm_price = pttavm_price
                         exist_product.quantity = combination_stock
                         exist_product.detail = description
                         exist_product.brand.id = 9
@@ -402,8 +310,6 @@ def updateModaymisSaveXML2db():
                                     ",", "."):
                                     beden_id_array.append(s.id)
                                     beden_id = s.id
-                        exist_product.size_id = beden_id
-                        exist_product.color_id = renk_id
                         exist_product.save()
         UpdateHistory.objects.create(history_type="Modaymış Güncelleme")
 
@@ -435,6 +341,794 @@ def notActiveModaymisProduct():
                     ap.save()
         UpdateHistory.objects.create(history_type="Modaymış Aktif Olmayan Ürün")
 
+
+def xml_dunyasi_gsm():
+    site = "https://www.xmldunyasi.com/export/36d3421bd4097179cd37850bbd3a683ajBkRIbLdLW84Po09w=="
+    hdr = {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
+        'Accept-Encoding': 'none',
+        'Accept-Language': 'en-US,en;q=0.8',
+        'Connection': 'keep-alive'}
+
+    req = Request(site, headers=hdr)
+
+    page = urlopen(req)
+    xmldunyasi = ET.parse(page)
+    for p in xmldunyasi.getroot():
+        for product in p.iter('product'):
+            top_category = product.find('top_category').text
+            if top_category == 'Telefon Kılıfı':
+                barcode = product.find('barcode').text
+                if ApiProduct.objects.filter(barcode=barcode).count() < 1:
+                    id = product.find('id').text
+                    name = product.find('name').text
+                    price = float(product.find('price').text)
+                    quantity = int(product.find('quantity').text)
+                    active = product.find('active').text
+                    product_code = product.find('productCode').text
+                    description = product.find('description').text
+                    detail = product.find('detail').text
+                    try:
+                        image1 = product.find('image1').text
+                    except:
+                        image1 = None
+                    try:
+                        image2 = product.find('image2').text
+                    except:
+                        image2 = None
+                    try:
+                        image3 = product.find('image3').text
+                    except:
+                        image3 = None
+                    try:
+                        image4 = product.find('image4').text
+                    except:
+                        image4 = None
+                    try:
+                        image5 = product.find('image5').text
+                    except:
+                        image5 = None
+                    try:
+                        image6 = product.find('image6').text
+                    except:
+                        image6 = None
+                    try:
+                        image7 = product.find('image7').text
+                    except:
+                        image7 = None
+                    try:
+                        image8 = product.find('image8').text
+                    except:
+                        image8 = None
+                    category = MainCategory.objects.get(category_no="4")
+                    subcategory = SubCategory.objects.get(category_no="27")
+                    subbottomcategory = SubBottomCategory.objects.get(category_no="5000")
+                    stock_code = f"TS5000CEP{id}"
+                    tredyshop_price = tredyshopPrice(price, "Diğer")
+                    trendyol_price = trendyolPrice(price, "Diğer")
+                    status = True
+                    if active == "0":
+                        status = False
+                    ApiProduct.objects.create(xml_id=id, barcode=barcode, stock_code=stock_code, title=name, description=description,
+                                              image_url1=image1, image_url2=image2, image_url3=image3, quantity=quantity, detail=detail,
+                                              image_url4=image4, image_url5=image5, image_url6=image6, image_url7=image7, brand_id=10,
+                                              image_url8=image8, is_publish=status, model_code=product_code,
+                                              category=category, subcategory=subcategory, price=tredyshop_price, trendyol_price=trendyol_price,
+                                              subbottomcategory=subbottomcategory, dropshipping="XML Dünyası")
+            if top_category == 'Ekran Koruyucular':
+                barcode = product.find('barcode').text
+                if ApiProduct.objects.filter(barcode=barcode).count() < 1:
+                    id = product.find('id').text
+                    name = product.find('name').text
+                    price = float(product.find('price').text)
+                    quantity = int(product.find('quantity').text)
+                    active = product.find('active').text
+                    product_code = product.find('productCode').text
+                    description = product.find('description').text
+                    detail = product.find('detail').text
+                    try:
+                        image1 = product.find('image1').text
+                    except:
+                        image1 = None
+                    try:
+                        image2 = product.find('image2').text
+                    except:
+                        image2 = None
+                    try:
+                        image3 = product.find('image3').text
+                    except:
+                        image3 = None
+                    try:
+                        image4 = product.find('image4').text
+                    except:
+                        image4 = None
+                    try:
+                        image5 = product.find('image5').text
+                    except:
+                        image5 = None
+                    try:
+                        image6 = product.find('image6').text
+                    except:
+                        image6 = None
+                    try:
+                        image7 = product.find('image7').text
+                    except:
+                        image7 = None
+                    try:
+                        image8 = product.find('image8').text
+                    except:
+                        image8 = None
+                    category = MainCategory.objects.get(category_no="4")
+                    subcategory = SubCategory.objects.get(category_no="26")
+                    subbottomcategory = SubBottomCategory.objects.get(category_no="5050")
+                    stock_code = f"TS5000CEP{id}"
+                    tredyshop_price = tredyshopPrice(price, "Diğer")
+                    trendyol_price = trendyolPrice(price, "Diğer")
+                    status = True
+                    if active == "0":
+                        status = False
+                    ApiProduct.objects.create(xml_id=id, barcode=barcode, stock_code=stock_code, title=name, description=description,
+                                              image_url1=image1, image_url2=image2, image_url3=image3, quantity=quantity, detail=detail,
+                                              image_url4=image4, image_url5=image5, image_url6=image6, image_url7=image7, brand_id=10,
+                                              image_url8=image8, is_publish=status, model_code=product_code,
+                                              category=category, subcategory=subcategory, price=tredyshop_price, trendyol_price=trendyol_price,
+                                              subbottomcategory=subbottomcategory, dropshipping="XML Dünyası")
+            if top_category == 'Tablet Kılıfları':
+                barcode = product.find('barcode').text
+                if ApiProduct.objects.filter(barcode=barcode).count() < 1:
+                    id = product.find('id').text
+                    name = product.find('name').text
+                    price = float(product.find('price').text)
+                    quantity = int(product.find('quantity').text)
+                    active = product.find('active').text
+                    product_code = product.find('productCode').text
+                    description = product.find('description').text
+                    detail = product.find('detail').text
+                    try:
+                        image1 = product.find('image1').text
+                    except:
+                        image1 = None
+                    try:
+                        image2 = product.find('image2').text
+                    except:
+                        image2 = None
+                    try:
+                        image3 = product.find('image3').text
+                    except:
+                        image3 = None
+                    try:
+                        image4 = product.find('image4').text
+                    except:
+                        image4 = None
+                    try:
+                        image5 = product.find('image5').text
+                    except:
+                        image5 = None
+                    try:
+                        image6 = product.find('image6').text
+                    except:
+                        image6 = None
+                    try:
+                        image7 = product.find('image7').text
+                    except:
+                        image7 = None
+                    try:
+                        image8 = product.find('image8').text
+                    except:
+                        image8 = None
+                    category = MainCategory.objects.get(category_no="4")
+                    subcategory = SubCategory.objects.get(category_no="2000")
+                    subbottomcategory = SubBottomCategory.objects.get(category_no="5100")
+                    stock_code = f"TS6000TABLET{id}"
+                    tredyshop_price = tredyshopPrice(price, "Diğer")
+                    trendyol_price = trendyolPrice(price, "Diğer")
+                    status = True
+                    if active == "0":
+                        status = False
+                    ApiProduct.objects.create(xml_id=id, barcode=barcode, stock_code=stock_code, title=name, description=description,
+                                              image_url1=image1, image_url2=image2, image_url3=image3, quantity=quantity, detail=detail,
+                                              image_url4=image4, image_url5=image5, image_url6=image6, image_url7=image7, brand_id=10,
+                                              image_url8=image8, is_publish=status, model_code=product_code,
+                                              category=category, subcategory=subcategory, price=tredyshop_price, trendyol_price=trendyol_price,
+                                              subbottomcategory=subbottomcategory, dropshipping="XML Dünyası")
+    UpdateHistory.objects.create(history_type="XML Dünyası Yeni Ürün Ekleme")
+
+def xml_dunyasi_gsm_update():
+    site = "https://www.xmldunyasi.com/export/36d3421bd4097179cd37850bbd3a683ajBkRIbLdLW84Po09w=="
+    hdr = {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
+        'Accept-Encoding': 'none',
+        'Accept-Language': 'en-US,en;q=0.8',
+        'Connection': 'keep-alive'}
+
+    req = Request(site, headers=hdr)
+
+    page = urlopen(req)
+    xmldunyasi = ET.parse(page)
+    for p in xmldunyasi.getroot():
+        for product in p.iter('product'):
+            top_category = product.find('top_category').text
+            if top_category == 'Telefon Kılıfı':
+                barcode = product.find('barcode').text
+                if ApiProduct.objects.filter(barcode=barcode).count() > 0:
+                    urun = ApiProduct.objects.get(barcode=barcode)
+                    id = product.find('id').text
+                    name = product.find('name').text
+                    price = float(product.find('price').text)
+                    quantity = int(product.find('quantity').text)
+                    if quantity > 20000:
+                        quantity = 100
+                    active = product.find('active').text
+                    product_code = product.find('productCode').text
+                    description = product.find('description').text
+                    detail = product.find('detail').text
+                    try:
+                        image1 = product.find('image1').text
+                    except:
+                        image1 = None
+                    try:
+                        image2 = product.find('image2').text
+                    except:
+                        image2 = None
+                    try:
+                        image3 = product.find('image3').text
+                    except:
+                        image3 = None
+                    try:
+                        image4 = product.find('image4').text
+                    except:
+                        image4 = None
+                    try:
+                        image5 = product.find('image5').text
+                    except:
+                        image5 = None
+                    try:
+                        image6 = product.find('image6').text
+                    except:
+                        image6 = None
+                    try:
+                        image7 = product.find('image7').text
+                    except:
+                        image7 = None
+                    try:
+                        image8 = product.find('image8').text
+                    except:
+                        image8 = None
+
+                    stock_code = f"TS5000CEP{id}"
+                    tredyshop_price = tredyshopPrice(price, "Diğer")
+                    trendyol_price = trendyolPrice(price, "Diğer")
+                    status = True
+                    if active == "0":
+                        status = False
+                    urun.xml_id = id
+                    urun.barcode = barcode
+                    urun.stock_code = stock_code
+                    urun.title = name
+                    urun.description = description
+                    urun.detail = detail
+                    urun.quantity = quantity
+                    urun.image_url1 = image1
+                    urun.image_url2 = image2
+                    urun.image_url3 = image3
+                    urun.image_url4 = image4
+                    urun.image_url5 = image5
+                    urun.image_url6 = image6
+                    urun.image_url7 = image7
+                    urun.image_url8 = image8
+                    urun.is_publish = status
+                    urun.model_code = product_code
+                    urun.price = tredyshop_price
+                    urun.trendyol_price = trendyol_price
+                    urun.save()
+            if top_category == 'Ekran Koruyucular':
+                barcode = product.find('barcode').text
+                if ApiProduct.objects.filter(barcode=barcode).count() > 0:
+                    urun = ApiProduct.objects.get(barcode=barcode)
+                    id = product.find('id').text
+                    name = product.find('name').text
+                    price = float(product.find('price').text)
+                    quantity = int(product.find('quantity').text)
+                    if quantity > 20000:
+                        quantity = 100
+                    active = product.find('active').text
+                    product_code = product.find('productCode').text
+                    description = product.find('description').text
+                    detail = product.find('detail').text
+                    try:
+                        image1 = product.find('image1').text
+                    except:
+                        image1 = None
+                    try:
+                        image2 = product.find('image2').text
+                    except:
+                        image2 = None
+                    try:
+                        image3 = product.find('image3').text
+                    except:
+                        image3 = None
+                    try:
+                        image4 = product.find('image4').text
+                    except:
+                        image4 = None
+                    try:
+                        image5 = product.find('image5').text
+                    except:
+                        image5 = None
+                    try:
+                        image6 = product.find('image6').text
+                    except:
+                        image6 = None
+                    try:
+                        image7 = product.find('image7').text
+                    except:
+                        image7 = None
+                    try:
+                        image8 = product.find('image8').text
+                    except:
+                        image8 = None
+
+                    stock_code = f"TS5000CEP{id}"
+                    tredyshop_price = tredyshopPrice(price, "Diğer")
+                    trendyol_price = trendyolPrice(price, "Diğer")
+                    status = True
+                    if active == "0":
+                        status = False
+
+                    urun.xml_id = id
+                    urun.barcode = barcode
+                    urun.stock_code = stock_code
+                    urun.title = name
+                    urun.description = description
+                    urun.detail = detail
+                    urun.quantity = quantity
+                    urun.image_url1 = image1
+                    urun.image_url2 = image2
+                    urun.image_url3 = image3
+                    urun.image_url4 = image4
+                    urun.image_url5 = image5
+                    urun.image_url6 = image6
+                    urun.image_url7 = image7
+                    urun.image_url8 = image8
+                    urun.is_publish = status
+                    urun.model_code = product_code
+                    urun.price = tredyshop_price
+                    urun.trendyol_price = trendyol_price
+                    urun.save()
+            if top_category == 'Tablet Kılıfları':
+                barcode = product.find('barcode').text
+                if ApiProduct.objects.filter(barcode=barcode).count() > 0:
+                    urun = ApiProduct.objects.get(barcode=barcode)
+                    id = product.find('id').text
+                    name = product.find('name').text
+                    price = float(product.find('price').text)
+                    quantity = int(product.find('quantity').text)
+                    if quantity > 20000:
+                        quantity = 100
+                    active = product.find('active').text
+                    product_code = product.find('productCode').text
+                    description = product.find('description').text
+                    detail = product.find('detail').text
+                    try:
+                        image1 = product.find('image1').text
+                    except:
+                        image1 = None
+                    try:
+                        image2 = product.find('image2').text
+                    except:
+                        image2 = None
+                    try:
+                        image3 = product.find('image3').text
+                    except:
+                        image3 = None
+                    try:
+                        image4 = product.find('image4').text
+                    except:
+                        image4 = None
+                    try:
+                        image5 = product.find('image5').text
+                    except:
+                        image5 = None
+                    try:
+                        image6 = product.find('image6').text
+                    except:
+                        image6 = None
+                    try:
+                        image7 = product.find('image7').text
+                    except:
+                        image7 = None
+                    try:
+                        image8 = product.find('image8').text
+                    except:
+                        image8 = None
+
+                    stock_code = f"TS6000TABLET{id}"
+                    tredyshop_price = tredyshopPrice(price, "Diğer")
+                    trendyol_price = trendyolPrice(price, "Diğer")
+                    status = True
+                    if active == "0":
+                        status = False
+                    urun.xml_id = id
+                    urun.barcode = barcode
+                    urun.stock_code = stock_code
+                    urun.title = name
+                    urun.description = description
+                    urun.detail = detail
+                    urun.quantity = quantity
+                    urun.image_url1 = image1
+                    urun.image_url2 = image2
+                    urun.image_url3 = image3
+                    urun.image_url4 = image4
+                    urun.image_url5 = image5
+                    urun.image_url6 = image6
+                    urun.image_url7 = image7
+                    urun.image_url8 = image8
+                    urun.is_publish = status
+                    urun.model_code = product_code
+                    urun.price = tredyshop_price
+                    urun.trendyol_price = trendyol_price
+                    urun.save()
+    UpdateHistory.objects.create(history_type="XML Dünyası Ürün Güncelleme")
+
+def xml_dunyasi_gsm_not_active():
+    site = "https://www.xmldunyasi.com/export/36d3421bd4097179cd37850bbd3a683ajBkRIbLdLW84Po09w=="
+    hdr = {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
+        'Accept-Encoding': 'none',
+        'Accept-Language': 'en-US,en;q=0.8',
+        'Connection': 'keep-alive'}
+
+    req = Request(site, headers=hdr)
+
+    page = urlopen(req)
+    xmldunyasi = ET.parse(page)
+
+    current_product_list = []
+    combination_gtin_list = []
+    all_products = ApiProduct.objects.filter(dropshipping="XML Dünyası")
+    for ap in all_products:
+        current_product_list.append(ap.barcode)
+
+    for p in xmldunyasi.getroot():
+        for product in p.iter('product'):
+            combination_gtin_list.append(product.find('barcode').text)
+
+    list_a = current_product_list
+    list_b = combination_gtin_list
+    difference = list(set(list_a) - set(list_b))
+
+    for d in difference:
+        for ap in all_products:
+            if ap.barcode == d:
+                ap.is_publish = False
+                ap.quantity = 0
+                ap.save()
+
+    UpdateHistory.objects.create(history_type="XML Dünyası Aktif Olmayan Ürünler Bulundu")
+
+def xml_dunyasi_diger():
+    site = "https://www.xmldunyasi.com/export/354c45c32dbc0bed18387304c07fcb10vLaw1m1QXpuKERPteA=="
+    hdr = {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
+        'Accept-Encoding': 'none',
+        'Accept-Language': 'en-US,en;q=0.8',
+        'Connection': 'keep-alive'}
+
+    req = Request(site, headers=hdr)
+    color_list = Color.objects.all()
+    page = urlopen(req)
+    xmldunyasi = ET.parse(page)
+    for p in xmldunyasi.getroot():
+        for product in p.iter('product'):
+            top_category = product.find('sub_category_').text
+            if top_category == "Bijuteri Bileklik":
+                barcode = product.find('barcode').text
+                if ApiProduct.objects.filter(barcode=barcode).count() < 1:
+                    id = product.find('id').text
+                    name = product.find('name').text
+                    price = float(product.find('price').text)
+                    quantity = int(product.find('quantity').text)
+                    active = product.find('active').text
+                    product_code = product.find('productCode').text
+                    description = product.find('description').text
+                    detail = product.find('detail').text
+                    if detail == '' or detail == None:
+                        detail = name
+                    sex = None
+                    for data in name.lower().split(" "):
+                        if data == "kadın":
+                            sex = 2
+                        if data == "erkek":
+                            sex = 1
+                    size_id = 200
+                    try:
+                        image1 = product.find('image1').text
+                    except:
+                        image1 = None
+                    try:
+                        image2 = product.find('image2').text
+                    except:
+                        image2 = None
+                    try:
+                        image3 = product.find('image3').text
+                    except:
+                        image3 = None
+                    try:
+                        image4 = product.find('image4').text
+                    except:
+                        image4 = None
+                    try:
+                        image5 = product.find('image5').text
+                    except:
+                        image5 = None
+                    try:
+                        image6 = product.find('image6').text
+                    except:
+                        image6 = None
+                    try:
+                        image7 = product.find('image7').text
+                    except:
+                        image7 = None
+                    try:
+                        image8 = product.find('image8').text
+                    except:
+                        image8 = None
+                    category = MainCategory.objects.get(category_no="1")
+                    subcategory = SubCategory.objects.get(category_no="6")
+                    subbottomcategory = SubBottomCategory.objects.get(category_no="2001")
+                    stock_code = f"TS5000AKSESUAR{id}"
+                    tredyshop_price = tredyshopPrice(price, "Diğer")
+                    trendyol_price = trendyolPrice(price, "Diğer")
+                    status = True
+                    if active == "0":
+                        status = False
+                    ApiProduct.objects.create(xml_id=id, barcode=barcode, stock_code=stock_code, title=name,
+                                              description=description, size_id=size_id,
+                                              image_url1=image1, image_url2=image2, image_url3=image3, quantity=quantity,
+                                              detail=detail,
+                                              image_url4=image4, image_url5=image5, image_url6=image6, image_url7=image7,
+                                              brand_id=10, sextype_id=sex,
+                                              image_url8=image8, is_publish=status, model_code=product_code,
+                                              category=category, subcategory=subcategory, price=tredyshop_price,
+                                              trendyol_price=trendyol_price,
+                                              subbottomcategory=subbottomcategory, dropshipping="XML Dünyası Diğer")
+            if top_category == "Bijuteri Kolye":
+                barcode = product.find('barcode').text
+                if ApiProduct.objects.filter(barcode=barcode).count() < 1:
+                    id = product.find('id').text
+                    name = product.find('name').text
+                    price = float(product.find('price').text)
+                    quantity = int(product.find('quantity').text)
+                    active = product.find('active').text
+                    product_code = product.find('productCode').text
+                    description = product.find('description').text
+                    detail = product.find('detail').text
+                    if detail == '' or detail == None:
+                        detail = name
+                    sex = None
+                    for data in name.lower().split(" "):
+                        if data == "kadın":
+                            sex = 2
+                        if data == "erkek":
+                            sex = 1
+                    size_id = 200
+                    try:
+                        image1 = product.find('image1').text
+                    except:
+                        image1 = None
+                    try:
+                        image2 = product.find('image2').text
+                    except:
+                        image2 = None
+                    try:
+                        image3 = product.find('image3').text
+                    except:
+                        image3 = None
+                    try:
+                        image4 = product.find('image4').text
+                    except:
+                        image4 = None
+                    try:
+                        image5 = product.find('image5').text
+                    except:
+                        image5 = None
+                    try:
+                        image6 = product.find('image6').text
+                    except:
+                        image6 = None
+                    try:
+                        image7 = product.find('image7').text
+                    except:
+                        image7 = None
+                    try:
+                        image8 = product.find('image8').text
+                    except:
+                        image8 = None
+                    category = MainCategory.objects.get(category_no="1")
+                    subcategory = SubCategory.objects.get(category_no="6")
+                    subbottomcategory = SubBottomCategory.objects.get(category_no="2000")
+                    stock_code = f"TS5000AKSESUAR{id}"
+                    tredyshop_price = tredyshopPrice(price, "Diğer")
+                    trendyol_price = trendyolPrice(price, "Diğer")
+                    status = True
+                    if active == "0":
+                        status = False
+                    ApiProduct.objects.create(xml_id=id, barcode=barcode, stock_code=stock_code, title=name,
+                                              description=description, size_id=size_id,
+                                              image_url1=image1, image_url2=image2, image_url3=image3, quantity=quantity,
+                                              detail=detail,
+                                              image_url4=image4, image_url5=image5, image_url6=image6, image_url7=image7,
+                                              brand_id=10,sextype_id=sex,
+                                              image_url8=image8, is_publish=status, model_code=product_code,
+                                              category=category, subcategory=subcategory, price=tredyshop_price,
+                                              trendyol_price=trendyol_price,
+                                              subbottomcategory=subbottomcategory, dropshipping="XML Dünyası Diğer")
+            if top_category == "Erkek Küpe":
+                barcode = product.find('barcode').text
+                if ApiProduct.objects.filter(barcode=barcode).count() < 1:
+                    id = product.find('id').text
+                    name = product.find('name').text
+                    price = float(product.find('price').text)
+                    quantity = int(product.find('quantity').text)
+                    active = product.find('active').text
+                    product_code = product.find('productCode').text
+                    description = product.find('description').text
+                    detail = product.find('detail').text
+                    if detail == '' or detail == None:
+                        detail = name
+                    size_id = 200
+                    sex = None
+                    for data in name.lower().split(" "):
+                        if data == "kadın":
+                            sex = 2
+                        if data == "erkek":
+                            sex = 1
+                    try:
+                        image1 = product.find('image1').text
+                    except:
+                        image1 = None
+                    try:
+                        image2 = product.find('image2').text
+                    except:
+                        image2 = None
+                    try:
+                        image3 = product.find('image3').text
+                    except:
+                        image3 = None
+                    try:
+                        image4 = product.find('image4').text
+                    except:
+                        image4 = None
+                    try:
+                        image5 = product.find('image5').text
+                    except:
+                        image5 = None
+                    try:
+                        image6 = product.find('image6').text
+                    except:
+                        image6 = None
+                    try:
+                        image7 = product.find('image7').text
+                    except:
+                        image7 = None
+                    try:
+                        image8 = product.find('image8').text
+                    except:
+                        image8 = None
+                    category = MainCategory.objects.get(category_no="1")
+                    subcategory = SubCategory.objects.get(category_no="6")
+                    subbottomcategory = SubBottomCategory.objects.get(category_no="2002")
+                    stock_code = f"TS5000AKSESUAR{id}"
+                    tredyshop_price = tredyshopPrice(price, "Diğer")
+                    trendyol_price = trendyolPrice(price, "Diğer")
+                    status = True
+                    if active == "0":
+                        status = False
+                    ApiProduct.objects.create(xml_id=id, barcode=barcode, stock_code=stock_code, title=name,
+                                              description=description, size_id=size_id,
+                                              image_url1=image1, image_url2=image2, image_url3=image3, quantity=quantity,
+                                              detail=detail, sextype_id=sex,
+                                              image_url4=image4, image_url5=image5, image_url6=image6, image_url7=image7,
+                                              brand_id=10,
+                                              image_url8=image8, is_publish=status, model_code=product_code,
+                                              category=category, subcategory=subcategory, price=tredyshop_price,
+                                              trendyol_price=trendyol_price,
+                                              subbottomcategory=subbottomcategory, dropshipping="XML Dünyası Diğer")
+    UpdateHistory.objects.create(history_type="XML Dünyası Diğer Ürün Ekleme")
+
+def xml_dunyasi_diger_update():
+    site = "https://www.xmldunyasi.com/export/354c45c32dbc0bed18387304c07fcb10vLaw1m1QXpuKERPteA=="
+    hdr = {
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
+        'Accept-Encoding': 'none',
+        'Accept-Language': 'en-US,en;q=0.8',
+        'Connection': 'keep-alive'}
+
+    req = Request(site, headers=hdr)
+    color_list = Color.objects.all()
+    page = urlopen(req)
+    xmldunyasi = ET.parse(page)
+    for p in xmldunyasi.getroot():
+        for product in p.iter('product'):
+            barcode = product.find('barcode').text
+            if ApiProduct.objects.filter(barcode=barcode).count() > 0:
+                urun = ApiProduct.objects.get(barcode=barcode)
+                id = product.find('id').text
+                name = product.find('name').text
+                price = float(product.find('price').text)
+                quantity = int(product.find('quantity').text)
+                active = product.find('active').text
+                product_code = product.find('productCode').text
+                description = product.find('description').text
+                detail = product.find('detail').text
+                if detail == '' or detail == None:
+                    detail = name
+                try:
+                    image1 = product.find('image1').text
+                except:
+                    image1 = None
+                try:
+                    image2 = product.find('image2').text
+                except:
+                    image2 = None
+                try:
+                    image3 = product.find('image3').text
+                except:
+                    image3 = None
+                try:
+                    image4 = product.find('image4').text
+                except:
+                    image4 = None
+                try:
+                    image5 = product.find('image5').text
+                except:
+                    image5 = None
+                try:
+                    image6 = product.find('image6').text
+                except:
+                    image6 = None
+                try:
+                    image7 = product.find('image7').text
+                except:
+                    image7 = None
+                try:
+                    image8 = product.find('image8').text
+                except:
+                    image8 = None
+                tredyshop_price = tredyshopPrice(price, "Diğer")
+                trendyol_price = trendyolPrice(price, "Diğer")
+                status = True
+                if active == "0":
+                    status = False
+                urun.xml_id = id
+                urun.title = name
+                urun.description = description
+                urun.detail = detail
+                urun.quantity = quantity
+                urun.image_url1 = image1
+                urun.image_url2 = image2
+                urun.image_url3 = image3
+                urun.image_url4 = image4
+                urun.image_url5 = image5
+                urun.image_url6 = image6
+                urun.image_url7 = image7
+                urun.image_url8 = image8
+                urun.is_publish = status
+                urun.model_code = product_code
+                urun.price = tredyshop_price
+                urun.trendyol_price = trendyol_price
+                urun.save()
+    UpdateHistory.objects.create(history_type="XML Dünyası Diğer Ürün Güncelleme")
 
 def tahtakaleSaveXML2db():
     with urlopen('https://www.tahtakaletoptanticaret.com/export.xml') as f:

@@ -1,0 +1,80 @@
+{% extends 'backend/yonetim/base.html' %} {% load static %} {% block title
+%}<title>Blog Yönetimi | Blog Ekle</title>{% endblock %} {% block extra_style %}
+<link
+  rel="stylesheet"
+  href="{% static 'backend/modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.css' %}"
+/>
+{% endblock %} {% block blog %}
+
+<section class="section">
+  <div class="section-header">
+    <h1>Blog Yönetimi | Blog Ekle</h1>
+    <div class="section-header-breadcrumb">
+      <div class="breadcrumb-item active">
+        <a href="{% url 'admin_mainpage' %}">Anasayfa</a>
+      </div>
+      <div class="breadcrumb-item active">
+        <a href="{% url 'blog_yazilari' %}">Blog Yazıları</a>
+      </div>
+      <div class="breadcrumb-item">Blog Ekle</div>
+    </div>
+  </div>
+
+  <div class="section-body">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5>Blog Ekle</h5>
+          </div>
+          <div class="card-body">
+            <form action="" method="post" enctype="multipart/form-data">
+              {% csrf_token %} {{ form.media }} {% for field in form %} {% if
+              field.name != 'is_publish' %}
+              <div class="form-group row">
+                <label
+                  id="{{ field.id_for_label }}"
+                  class="col-sm-12 col-md-3 col-lg-3 col-form-label"
+                  >{{ field.label }}</label
+                >
+                <div class="col-lg-9 col-md-9 col-sm-12">{{ field }}</div>
+              </div>
+              {% elif field.name == 'is_publish' %}
+              <div class="custom-control custom-checkbox mb-5">
+                {{ field }}
+                <label
+                  class="custom-control-label"
+                  for="{{ field.id_for_label }}"
+                  >Yayınlansın mı?</label
+                >
+              </div>
+              {% endif %} {% endfor %}
+              <div class="form-group row">
+                <label class="col-sm-12 col-md-3 col-lg-3 col-form-label"
+                  >Anahtar Kelimeler</label
+                >
+                <div class="col-sm-12 col-md-9 col-lg-9">
+                  <input
+                    type="text"
+                    name="inputtags"
+                    class="form-control inputtags"
+                  />
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary" name="addBtn">
+                Ekle
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %} {% block extra_script %}
+<script src="{% static 'backend/modules/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js' %}"></script>
+<script>
+  $(".inputtags").tagsinput("items");
+</script>
+{% endblock %}

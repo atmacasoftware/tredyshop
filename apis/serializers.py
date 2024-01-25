@@ -1,13 +1,6 @@
 from rest_framework import serializers
-from mainpage.models import Slider
 from product.models import *
 from categorymodel.models import *
-
-
-class SliderSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Slider
-        fields = '__all__'
 
 
 class ProductSerializer(serializers.ModelSerializer):

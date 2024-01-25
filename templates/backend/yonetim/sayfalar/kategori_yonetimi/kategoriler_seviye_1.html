@@ -1,0 +1,247 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>Kategoriler</title>{% endblock %}
+
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'backend/css/table_select.css' %}">
+{% endblock %}
+
+
+{% block kategoriler %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>Kategoriler</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item">Kategoriler</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Filtreleme</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="" method="get" class="">
+                                <div class="row my-2">
+                                    <div class="col-3">
+                                        <div class="form-group">
+                                            <label for="kategoriAdi">Kategori Adı</label>
+                                            <input id="kategoriAdi" type="text" name="kategori_adi"
+                                                   class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-9">
+                                        <div class="buttons float-right mt-4">
+                                            <button type="submit" class="btn btn-warning" name="queryBtn">Sorgula
+                                            </button>
+                                            <button type="reset" class="btn btn-light">Sıfırla</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="buttons">
+                                <div class="dropdown d-inline mr-2">
+                                    <button class="btn btn-info dropdown-toggle" type="button"
+                                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false">
+                                        İşlemler
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a type="button" id="cancelRow" class="dropdown-item" href="#">İptal Et</a>
+                                        <a type="button" id="selectRow" class="dropdown-item" href="#">Seç</a>
+                                        <a class="dropdown-item" href="#" type="button" data-toggle="modal"
+                                           data-target="#modal-select-delete" id="deleteRow">Seçilileri Sil</a>
+                                        <a class="dropdown-item" href="#">Hepsini Sil</a>
+                                        <a class="dropdown-item" href="{% url 'kategoriler_seviye1_export_excel' %}">Excel
+                                            İndir</a>
+                                    </div>
+                                </div>
+                                <a href="#" class="btn btn-warning" data-toggle="modal"
+                                   data-target="#createCategory"><i class="fa fa-plus"></i> Kategori Ekle</a>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <tbody>
+                                    <tr>
+                                        <th class="select-row" style="text-align: start; vertical-align: middle"></th>
+                                        <th>Kategori Adı</th>
+                                        <th>Kategori Sırası</th>
+                                        <th>Kategori Numarası</th>
+                                        <th>Oluşturulma Tarihi</th>
+                                        <th>Güncellenme Tarihi</th>
+                                        <th style="text-align: center;">İşlemler</th>
+                                    </tr>
+                                    {% for mc in category %}
+                                        <tr>
+                                            <td class="select-row"
+                                                style="text-align: center; vertical-align: middle; display: none; justify-content: center; ">
+                                                <div class="form-check">
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" data-filter="seviye1-category"
+                                                               class="custom-control-input select-checkbox"
+                                                               id="check-{{ mc.id }}" name="select_category"
+                                                               value="{{ mc.id }}">
+                                                        <label class="custom-control-label"
+                                                               for="check-{{ mc.id }}"></label>
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                            <td style="text-align: start; vertical-align: middle"><b>{{ mc.title }}</b>
+                                            </td>
+                                            <td style="text-align: start; vertical-align: middle">{{ mc.order }}
+                                            <td style="text-align: start; vertical-align: middle">{{ mc.category_no }}
+                                            </td>
+                                            <td style="text-align: start; vertical-align: middle">{{ mc.created_at|date:'d-m-Y' }}</td>
+                                            <td style="text-align: start; vertical-align: middle">{{ mc.updated_at|date:'d-m-Y' }}</td>
+                                            <td style="text-align: start; vertical-align: middle">
+                                                <a href="{% url 'kategoriler_seviye1_guncelle' mc.id %}" class="btn btn-block btn-primary">Güncelle</a>
+                                                <a
+                                                        href="{% url 'kategoriler_seviye2' mc.slug %}"
+                                                        class="btn btn-success btn-block my-2">Alt Kategorileri</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </section>
+    <div class="modal fade" id="modal-select-delete">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Emin misin?</h4>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Seçili kategoriler silinecektir.</p>
+                    <p>*Secili kategorilere bağlı alt kategorilerde silinecektir.</p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button id="deleteNow" class="btn btn-danger"
+                            data-dismiss="modal">
+                        Sil
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal fade" id="createCategory">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Kategori Ekle</h4>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            {% if field.name != 'is_active' %}
+                                <div class="form-group">
+                                    <label id="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    {% if field.field.required %}
+                                        <span style="color: red;" class="required">*</span>
+                                    {% endif %}
+                                    {{ field }}
+                                </div>
+                            {% elif field.name == 'is_active' %}
+                                <div class="custom-control custom-checkbox mb-5 ">
+                                    {{ field }}
+                                    <label class="custom-control-label" for="{{ field.id_for_label }}">Yayınlansın
+                                        mı?</label>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary btn-block" name="addBtn">Ekle</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+
+    <script>
+        $(document).ready(function () {
+            $(".waiting").hide()
+            $("#deleteRow").hide();
+            $("#cancelRow").hide()
+            $("#selectRow").on('click', function (e) {
+                e.preventDefault();
+                $("#cancelRow").show()
+                $(".select-row").css('display', 'flex')
+                $("#selectRow").hide()
+                $("#deleteRow").show();
+                $("#cancelRow").on('click', function () {
+                    $("#selectRow").show();
+                    $("#cancelRow").hide();
+                    $("#deleteRow").hide();
+                    $(".select-row").css('display', 'none')
+                })
+            })
+        });
+
+        $("#deleteRow").on('click', function () {
+            var _filterObj = {};
+            $(".select-checkbox").each(function (index, ele) {
+                var _filterVal = $(this).val();
+                var _filterKey = $(this).data('filter');
+                _filterObj[_filterKey] = Array.from(document.querySelectorAll('input[data-filter=' + _filterKey + ']:checked')).map(function (el) {
+                    return el.value;
+                });
+            });
+            $("#deleteNow").on('click', function () {
+                console.log(_filterObj)
+                $.ajax({
+                    url: `/yonetim/kategori-yonetimi/secili-kategori-sil/`,
+                    data: _filterObj,
+                    dataType: 'json',
+                    beforeSend: function () {
+                        $(".waiting").show()
+                    },
+                    success: function (data) {
+                        $(".waiting").hide()
+                        location.reload();
+                    }
+                });
+            });
+        })
+    </script>
+
+{% endblock %}
+
+
+

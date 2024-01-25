@@ -1,0 +1,344 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>{{ order.order_number }} Numaralı Sipariş</title>{% endblock %}
+
+{% block siparisler %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>{{ order.order_number }} Numaralı Sipariş</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item "><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item"><a href="{% url 'admin_siparisler' %}">Siparişler</a></div>
+                <div class="breadcrumb-item active">{{ order.order_number }} Numaralı Sipariş</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-danger shadow-lg">
+                        <div class="card-header">
+                            <h4>Sipariş Bilgileri</h4>
+                            <div class="card-header-action">
+                                <a data-collapse="#card1" class="btn btn-icon btn-info" href="#"><i
+                                        class="fas fa-minus"></i></a>
+                            </div>
+                        </div>
+                        <div class="collapse show" id="card1" style="">
+                            <div class="card-body">
+                                <p><strong>Sipariş Numarası: </strong>#{{ order.order_number }}</p>
+                                <p><strong>Paket Numarası: </strong>{{ order.packet_number }}</p>
+                                <p><strong>Sipariş Tarihi: </strong>{{ order.order_date|date:'m-d-Y H:i' }}</p>
+                                <p><strong>Alıcı: </strong>{{ order.buyer }}</p>
+                                <p><strong>Toplam Miktar: </strong>{{ order.quantity }}</p>
+                                <p><strong>Kullanılan İndirim: </strong>{{ order.discount_amount }} TL</p>
+                                <p><strong>Toplam Satış Tutarı: </strong>{{ order.sales_amount }} TL</p>
+                                <p><strong>Teslimat Şehri: </strong>{{ order.shippment_city }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-danger shadow-lg">
+                        <div class="card-header">
+                            <h4>Ürünler</h4>
+                            <div class="card-header-action">
+                                <a data-collapse="#card2" class="btn btn-icon btn-info" href="#"><i
+                                        class="fas fa-minus"></i></a>
+                            </div>
+                        </div>
+                        <div class="collapse show" id="card2" style="">
+                            <div class="card-body table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                    <tr>
+                                        <th>Ürün Adı</th>
+                                        <th>Barkod</th>
+                                        <th>Stok Numarası</th>
+                                        <th>Miktar</th>
+                                        <th>Renk</th>
+                                        <th>Beden</th>
+                                        <th>Birim Fiyat TL</th>
+                                        <th>Durum</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for product in order_products %}
+                                        <tr>
+                                            <td>{{ product.title }}</td>
+                                            <td>{{ product.barcode }}</td>
+                                            <td>{{ product.stock_code }}</td>
+                                            <td>{{ product.quantity }}</td>
+                                            <td>{{ product.color }}</td>
+                                            <td>{{ product.size }}</td>
+                                            <td>{{ product.unit_price }}</td>
+                                            <td>
+                                                <form action="">
+                                                    <select class="custom-select" id="order_status">
+                                                        <option value="Yeni"
+                                                                {% if product.status == "Yeni" %}selected{% endif %}>
+                                                            Yeni
+                                                        </option>
+                                                        <option value="Onaylandı"
+                                                                {% if product.status == "Onaylandı" %}selected{% endif %}>
+                                                            Onaylandı
+                                                        </option>
+                                                        <option value="Hazırlanıyor"
+                                                                {% if product.status == "Hazırlanıyor" %}selected{% endif %}>
+                                                            Hazırlanıyor
+                                                        </option>
+                                                        <option value="Kargolandı"
+                                                                {% if product.status == "Kargolandı" %}selected{% endif %}>
+                                                            Kargolandı
+                                                        </option>
+                                                        <option value="Tamamlandı"
+                                                                {% if product.status == "Tamamlandı" %}selected{% endif %}>
+                                                            Tamamlandı
+                                                        </option>
+                                                        <option value="İptal Edildi"
+                                                                {% if product.status == "İptal Edildi" %}selected{% endif %}>
+                                                            İptal Edildi
+                                                        </option>
+                                                        <option value="İade Edildi"
+                                                                {% if product.status == "İade Edildi" %}selected{% endif %}>
+                                                            İade Edildi
+                                                        </option>
+                                                        <option value="Ödeme Yapılmadı"
+                                                                {% if product.status == "Ödeme Yapılmadı" %}selected{% endif %}>
+                                                            Ödeme Yapılmadı
+                                                        </option>
+                                                    </select>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <td>{{ order.title }}</td>
+                                        <td>{{ order.barcode }}</td>
+                                        <td>{{ order.stock_code }}</td>
+                                        <td>{{ order.quantity }}</td>
+                                        <td>{{ order.color }}</td>
+                                        <td>{{ order.size }}</td>
+                                        <td>{{ order.unit_price }}</td>
+                                        <td>
+                                            <form action="">
+                                                <select class="custom-select" id="order_status">
+                                                    <option value="Yeni"
+                                                            {% if order.status == "Yeni" %}selected{% endif %}>Yeni
+                                                    </option>
+                                                    <option value="Onaylandı"
+                                                            {% if order.status == "Onaylandı" %}selected{% endif %}>
+                                                        Onaylandı
+                                                    </option>
+                                                    <option value="Hazırlanıyor"
+                                                            {% if order.status == "Hazırlanıyor" %}selected{% endif %}>
+                                                        Hazırlanıyor
+                                                    </option>
+                                                    <option value="Kargolandı"
+                                                            {% if order.status == "Kargolandı" %}selected{% endif %}>
+                                                        Kargolandı
+                                                    </option>
+                                                    <option value="Tamamlandı"
+                                                            {% if order.status == "Tamamlandı" %}selected{% endif %}>
+                                                        Tamamlandı
+                                                    </option>
+                                                    <option value="İptal Edildi"
+                                                            {% if order.status == "İptal Edildi" %}selected{% endif %}>
+                                                        İptal Edildi
+                                                    </option>
+                                                    <option value="İade Edildi"
+                                                            {% if order.status == "İade Edildi" %}selected{% endif %}>
+                                                        İade Edildi
+                                                    </option>
+                                                    <option value="Ödeme Yapılmadı"
+                                                            {% if order.status == "Ödeme Yapılmadı" %}selected{% endif %}>
+                                                        Ödeme Yapılmadı
+                                                    </option>
+                                                </select>
+                                            </form>
+                                        </td>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-danger shadow-lg">
+                        <div class="card-header">
+                            <h4>Maliyet</h4>
+                            <div class="card-header-action">
+                                <a data-collapse="#card3" class="btn btn-icon btn-info" href="#"><i
+                                        class="fas fa-minus"></i></a>
+                            </div>
+                        </div>
+                        <div class="collapse show" id="card3" style="">
+                            <div class="card-body table-responsive">
+                                <form action="" method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <table class="table table-sm">
+                                        <thead>
+                                        <tr>
+                                            <th>Kargo Ücreti (TL)</th>
+                                            <th>Komisyon Tutarı (TL)</th>
+                                            <th>Hizmet Bedeli (TL)</th>
+                                            <th>Ürün Maliyeti</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" step="any" class="form-control"
+                                                       name="delivery_price"
+                                                       value="{{ order.delivery_price }}">
+                                            </td>
+                                            <td>
+                                                <input type="number" step="any" class="form-control"
+                                                       name="commission_price"
+                                                       value="{{ order.commission_price }}">
+                                            </td>
+                                            <td>
+                                                <input type="number" step="any" class="form-control"
+                                                       name="service_price"
+                                                       value="{{ order.service_price }}">
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-success trigger--fire-modal-1"
+                                                        id="addProductCost"><i
+                                                        class="fa-solid fa-plus"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-primary trigger--fire-modal-2"
+                                                        id="seeProductCost"><i class="fa-solid fa-eye"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <button type="submit" name="addTrendyolCost" class="btn btn-primary ml-2">
+                                        Ekle/Güncelle
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-danger shadow-lg">
+                        <div class="card-header">
+                            <h4>İade</h4>
+                            <div class="card-header-action">
+                                <a data-collapse="#card4" class="btn btn-icon btn-info" href="#"><i
+                                        class="fas fa-minus"></i></a>
+                            </div>
+                        </div>
+                        <div class="collapse show" id="card4" style="">
+                            <div class="card-body">
+                                <form action="" method="post">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label class="custom-switch mt-2">
+                                            <input type="checkbox" {% if order.is_return == True %}checked{% endif %}
+                                                   name="is_return"
+                                                   class="custom-switch-input">
+                                            <span class="custom-switch-indicator"></span>
+                                            <span class="custom-switch-description">{% if order.is_return == True %}İade
+                                                Edildi{% else %}İade
+                                                Edilmedi{% endif %}</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-danger" name="returnStatusBtn">Durum
+                                            Güncelle
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div style="display: none;" id="harcamaList">
+        <table class="table table-sm">
+            <thead>
+            <tr>
+                <th>Harcama Adı</th>
+                <th>Harcama Tutarı</th>
+                <th>Harcama Tipi</th>
+                <th>Harcama Durumu</th>
+                <th>Harcama Tarihi</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for harcama in harcamalar %}
+                <tr>
+                    <td>{{ harcama.harcama_adi }}</td>
+                    <td>{{ harcama.harcama_tutari }}</td>
+                    <td>{{ harcama.harcama_tipi }}</td>
+                    <td>{{ harcama.durum }}</td>
+                    <td>{{ harcama.created_at|date:'m-d-Y' }}</td>
+                    <td>
+                        <a href="{% url 'harcama_detay' harcama.id %}" target="_blank"
+                           class="btn btn-sm btn-success"><i class="fa-solid fa-edit"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+    <input type="hidden" id="platform" value="trendyol">
+{% endblock %}
+
+{% block extra_script %}
+
+    <script>
+        $("#addProductCost").fireModal({
+            title: 'Ürün Maliyeti Ekle',
+            body: `<form action="" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{ order.barcode }}" name="statisticBarcode">
+                        <input type="hidden" value="{{ order.order_number }}" name="siparisNo">
+                        <div class="form-group">
+                            <label for="harcamaAdi">Harcama Adı</label>
+                            <input type="text" class="form-control" id="harcamaAdi" name="harcamaAdi">
+                        </div>
+                        <div class="form-group">
+                            <label for="harcamaTutari">Harcama Tutarı</label>
+                            <input type="number" class="form-control" id="harcamaTutari" name="harcamaTutari">
+                        </div>
+                        <div class="form-group">
+                            <label for="harcamaNot">Harcama Notu</label>
+                            <input type="text" class="form-control" id="harcamaNot" name="harcamaNot">
+                        </div>
+                    </form>
+                       <button type="button" class="btn btn-primary" id="coastAdd">Ekle</button>`,
+            center: true
+        });
+
+        $("#seeProductCost").fireModal({
+            title: 'Ürün Maliyeti Ekle',
+            body: $("#harcamaList").html(),
+            center: true,
+            size: 'modal-lg',
+        });
+    </script>
+    <script src="{% static 'backend/js/urun_maliyeti_ekle.js' %}"></script>
+    <script src="{% static 'backend/js/order_status.js' %}"></script>
+{% endblock %}
+
+
+

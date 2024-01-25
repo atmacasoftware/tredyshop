@@ -10,37 +10,30 @@
 
 {% block mainpage %}
     <link rel="stylesheet" href="{% static 'css/skeleton.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mainpage.css' %}">
     <section class="all-s">
 
         <div class="ads-group v2 bd-slick">
             <div class="container container-240">
                 <div class="row">
-                    <div class="col-md-8 col-sm-8 col-xs-12">
-                        {% include 'frontend/partials/slider.html' %}
-                    </div>
-                    <div class="col-md-4 col-sm-4 col-xs-12">
-                        <div class="row">
-                            {% if banner_one.is_publish %}
-                                <div class="col-md-12 banner-img-item">
-                                    <div class="banner-img banner-img2">
-                                        <a href="{% url 'banner_one' %}"><img
-                                                src="{{ banner_one.get_image }}"
-                                                alt=""
-                                                class="img-responsive" style="height: 299px!important;"></a>
-                                    </div>
+                    {% for b in banners %}
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <div class="card banner-card">
+                                <div class="card-body">
+                                    <a href="{% url 'product_by_subbottomcategory' b.banner_category.maincategory.slug b.banner_category.subcategory.slug b.banner_category.slug %}" data-banner-id="{{ b.id }}" class="banner-href"><img
+                                            src="{{ b.image.url }}"
+                                            alt="Banner"
+                                            class="img-responsive" style="height: 180px!important;"></a>
                                 </div>
-                            {% endif %}
-                            {% if banner_two.is_publish %}
-                                <div class="col-md-12 banner-img-item">
-                                    <div class="banner-img banner-img2">
-                                        <a href="{% url 'banner_two' %}"><img
-                                                src="{{ banner_two.get_image }}" alt=""
-                                                class="img-responsive" style="height: 299px!important;"></a>
-                                    </div>
+                                <div class="card-footer bg-black">
+                                    <a href="{% url 'product_by_subbottomcategory' b.banner_category.maincategory.slug b.banner_category.subcategory.slug b.banner_category.slug %}">
+                                        <span>{{ b.banner_title }}</span>
+                                        <span><i class="fa-solid fa-arrow-right fa-beat-fade"></i></span>
+                                    </a>
                                 </div>
-                            {% endif %}
+                            </div>
                         </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>

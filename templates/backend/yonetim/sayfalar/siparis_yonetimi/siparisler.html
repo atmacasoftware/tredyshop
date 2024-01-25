@@ -1,0 +1,424 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>Siparişler</title>{% endblock %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'backend/css/table.css' %}">
+{% endblock %}
+{% block siparisler %}
+    <style>
+        .product_list {
+            padding: 0;
+        }
+
+        .product_list li:last-child {
+            border-bottom: none !important;
+        }
+    </style>
+    <section class="section">
+        <div class="section-header">
+            <h1>Siparişler</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item">Siparişler</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Filtreleme</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="" method="get" class="">
+                                <div class="row my-2">
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="musteriAdi">Müşteri Adı</label>
+                                            <input id="musteriAdi" type="text" name="musteri_adi" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="siparisNo">Sipariş Numarası</label>
+                                            <input id="siparisNo" type="text" name="siparis_no" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="barkod">Barkod</label>
+                                            <input id="barkod" type="text" name="barkod" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="urunAdi">Ürün Adı</label>
+                                            <input id="urunAdi" type="text" name="urun_adi" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row my-2" style="display: flex; flex-direction: row;align-items: center;">
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="platform">Platform</label>
+                                            <select id="platform" name="platform" class="form-control">
+                                                <option value="">------</option>
+                                                <option value="tredyshop">TredyShop</option>
+                                                <option value="trendyol">Trendyol</option>
+                                                <option value="hepsiburada">Hepsiburada</option>
+                                                <option value="amazon">Amazon</option>
+                                                <option value="pttavm">PttAvm</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-9 col-md-6 col-sm-12">
+                                        <div class="buttons float-right">
+                                            <button type="submit" class="btn btn-warning" name="queryBtn">Sorgula
+                                            </button>
+                                            <button type="reset" class="btn btn-light">Sıfırla</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="buttons">
+                                <a href="{% url 'get_trendyol_orders' %}" class="btn btn-primary">Trendyol Siparişleri
+                                    Getir</a>
+                                <a href="{% url 'get_trendyol_orders' %}" class="btn btn-success" type="button"
+                                   data-toggle="modal"
+                                   data-target="#modal-add-hepsiburada">Hepsiburada Sipariş Ekle</a>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <tbody>
+                                    <tr>
+                                        <th>Sipariş Bilgileri</th>
+                                        <th>Alıcı</th>
+                                        <th>Ürün Bilgileri</th>
+                                        <th>Fiyat Bilgisi (TL)</th>
+                                        <th>Durum</th>
+                                        <th>İşlem</th>
+                                    </tr>
+                                    {% for siparis in siparisler %}
+                                        <tr>
+
+                                            <td>
+                                                <strong>#{{ siparis.siparis_no }}</strong>
+                                                <p class="mt-2">
+                                                    <span class="d-block">Sipariş Tarihi:</span>
+                                                    <span>{{ siparis.siparis_tarihi|date:"d-m-Y H:i" }}</span>
+                                                </p>
+                                            </td>
+                                            <td>
+                                                {% if siparis.müsteri.first_name %}{{ siparis.müsteri.first_name }}
+                                                    {{ siparis.müsteri.last_name }}{% else %}
+                                                    {{ siparis.müsteri }}{% endif %}</td>
+                                            <td class="pt-2 pb-1">
+
+                                                <ul class="product_list">
+                                                    {% for urun in siparis.product_list %}
+                                                        <li style="{% if siparis.product_list|length > 1 %}border-bottom: 2px solid;{% endif %}list-style-type: none;">
+                                                            <strong class="text-nowrap">{{ urun.urun_adi|truncatechars_html:40 }}</strong>
+                                                            <span class="d-block">Adet: {{ urun.miktar }}</span>
+                                                            <span class="d-block">Barkod: {{ urun.barcode }}</span>
+                                                            <span class="d-block">Stok Kodu: {{ urun.sku }}</span>
+                                                            <span class="d-block">Renk: {{ urun.color }} - Boyut: {{ urun.size }}</span>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+
+
+                                            </td>
+                                            <td>{{ siparis.siparis_tutari|floatformat:2 }}</td>
+                                            <td>
+                                                <div class="badge badge-{% if siparis.durum == "Yeni" %}warning{% elif siparis.durum == "Hazırlanıyor" %}dark{% elif siparis.durum == "Kargolandı" %}primary{% elif siparis.durum == "Tamamlandı" %}success{% else %}danger{% endif %}">{{ siparis.durum }}</div>
+                                            </td>
+                                            <td><a href="
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                    {% if siparis.platform == "tredyshop" %}{% url 'admin_order_detail' siparis.siparis_no %}{% elif siparis.platform == "trendyol" %}{% url 'trendyol_order_detail' siparis.id %}{% elif siparis.platform == "hepsiburada" %}{% url 'hepsiburada_order_detail' siparis.id %}{% endif %}"
+                                                   class="btn btn-secondary">Detay</a></td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="6">
+                                                <div style="width: 100%; display: flex; justify-content: center; margin-top: 50px; flex-direction: column;align-items: center;">
+                                                    <img src="{% static 'img/icon/no_data.png' %}" alt="No Data"
+                                                         style="width: 100px;">
+                                                    <h5 class="mt-4">Herhangi bir sipariş kaydı bulunmamaktadır.</h5>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <nav aria-label="pagination" class="pagination_area">
+                                <div class="row">
+                                    {% if siparisler.end_index > 0 %}
+                                        <div class="col-sm-12 col-md-5 d-none d-md-block">
+                                            <p>Showing {{ siparisler.start_index }} to {{ siparisler.end_index }}
+                                                of {{ siparisler.paginator.count }}.</p>
+                                        </div>
+                                    {% endif %}
+                                    {% if siparisler.paginator.num_pages > 1 %}
+                                        <div class="col-sm-12 col-md-7 dataTables_pager p-0">
+                                            <ul class="pagination float-right">
+                                                {% if siparisler.has_previous %}
+
+                                                    <li class="page-item">
+                                                        <a class="page-link" data-page="1"
+                                                           href="{{ query }}&page=1">
+                                                            <i class="fa fa-angle-double-left"></i>
+                                                        </a>
+                                                    </li>
+                                                    {% if siparisler.previous_page_number > 1 %}
+                                                        <li class="page-item">
+                                                            <a class="page-link "
+                                                               data-page="{{ siparisler.previous_page_number }}"
+                                                               href="{{ query }}&page={{ siparisler.previous_page_number }}">
+                                                                <i class="fa fa-angle-left"></i>
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+
+                                                {% endif %}
+
+
+                                                <li class="page-item active"><span
+                                                        class="page-link ">{{ siparisler.number }}</span></li>
+
+
+                                                {% if siparisler.has_next %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ siparisler.next_page_number }}"
+                                                           href="{{ query }}&page={{ siparisler.next_page_number }}">
+                                                            <i class="fa fa-angle-right"></i>
+                                                        </a>
+                                                    </li>
+
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ siparisler.paginator.num_pages }}"
+                                                           href="{{ query }}&page={{ siparisler.paginator.num_pages }}">
+                                                            <i class="fa fa-angle-double-right"></i>
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="modal-add-hepsiburada">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Hepsiburada Sipariş Ekle</h4>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            <label for="hepsiburadaSiparisNo" class="col-sm-3 col-form-label">Sipariş Numarası</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required name="h_order_number" id="hepsiburadaSiparisNo"
+                                       placeholder="Sipariş Numarası">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="hepsiburadaPaketNo" class="col-sm-3 col-form-label">Paket Numarası</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required name="h_pocket_number" id="hepsiburadaPaketNo"
+                                       placeholder="Paket Numarası">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="hepsiburadaAlici" class="col-sm-3 col-form-label">Alıcı</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" required name="h_buyer" id="hepsiburadaAlici"
+                                       placeholder="Ad-Soyad">
+                            </div>
+                        </div>
+                        <fieldset class="form-group">
+                            <div class="row">
+                                <div class="col-form-label col-sm-3 pt-0">Ürün Sayısı</div>
+                                <div class="col-sm-9">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="productcount" id="oneproduct"
+                                               value="option1" checked="">
+                                        <label class="form-check-label" for="oneproduct">
+                                            Tek Ürün
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="productcount"
+                                               id="moreproduct"
+                                               value="option2">
+                                        <label class="form-check-label" for="moreproduct">
+                                            Birden Fazla Ürün
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="one-product-container">
+                            <div class="form-group row">
+                                <label for="hepsiburadaUrunAdi" class="col-sm-3 col-form-label">Ürün Adı</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" required name="h_title" id="hepsiburadaUrunAdi"
+                                           placeholder="Ürün Adı">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="hepsiburadaBarkod" class="col-sm-3 col-form-label">Barkod</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="h_barcode" required id="hepsiburadaBarkod"
+                                           placeholder="Barkod">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="hepsiburadaStockCode" class="col-sm-3 col-form-label">Stok Kodu</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="h_stock_code"
+                                           id="hepsiburadaStockCode" required
+                                           placeholder="Stok Kodu">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="hepsiburadaColor" class="col-sm-3 col-form-label">Renk</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" required name="h_color" id="hepsiburadaColor"
+                                           placeholder="Renk">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="hepsiburadaSize" class="col-sm-3 col-form-label">Beden/Kapasite</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" required name="h_size" id="hepsiburadaSize"
+                                           placeholder="Beden/Kapasite">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="hepsiburadaQuantity" class="col-sm-3 col-form-label">Adet</label>
+                                <div class="col-sm-9">
+                                    <input type="number" required class="form-control" name="h_quantity"
+                                           id="hepsiburadaQuantity"
+                                           placeholder="Adet">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="hepsiburadaUnitPrice" class="col-sm-3 col-form-label">Birim Fiyatı</label>
+                                <div class="col-sm-9">
+                                    <input type="number" step="any" required class="form-control" name="h_unit_price"
+                                           id="hepsiburadaUnitPrice"
+                                           placeholder="Birim Fiyat (TL)">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="hepsiburadaSalesPrice" class="col-sm-3 col-form-label">Satış Fiyatı</label>
+                                <div class="col-sm-9">
+                                    <input type="number" step="any" required class="form-control" name="h_sales_price"
+                                           id="hepsiburadaSalesPrice"
+                                           placeholder="Satış Fiyatı (TL)">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="hepsiburadaDiscountPrice" class="col-sm-3 col-form-label">İndirim
+                                    Tutarı</label>
+                                <div class="col-sm-9">
+                                    <input type="number" step="any" required class="form-control" name="h_discount_price"
+                                           id="hepsiburadaDiscountPrice"
+                                           placeholder="İndirim Tutarı (TL)">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="hepsiburadaCity" class="col-sm-3 col-form-label">Teslimat Şehri</label>
+                                <div class="col-sm-9">
+                                    <input type="text" step="any" required class="form-control" name="h_city"
+                                           id="hepsiburadaCity"
+                                           placeholder="Teslimat Şehri (Örn; İstanbul)">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="hepsiburadaOrderDate" class="col-sm-3 col-form-label">Sipariş Tarihi</label>
+                                <div class="col-sm-9">
+                                    <input type="datetime-local" step="any" required class="form-control" name="h_order_date"
+                                           id="hepsiburadaOrderDate"
+                                           placeholder="Sipariş Tarihi">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="hepsiburadaStatus" class="col-sm-3 col-form-label">Durum</label>
+                                <div class="col-sm-9">
+                                    <select class="custom-select" required name="h_status" id="hepsiburadaStatus">
+                                        <option selected="">Sipariş Durumu</option>
+                                        <option value="Yeni">Yeni</option>
+                                        <option value="Onaylandı">Onaylandı</option>
+                                        <option value="Hazırlanıyor">Hazırlanıyor</option>
+                                        <option value="Kargolandı">Kargolandı</option>
+                                        <option value="Tamamlandı">Tamamlandı</option>
+                                        <option value="İptal Edildi">İptal Edildi</option>
+                                        <option value="İade Edildi">İade Edildi</option>
+                                        <option value="Ödeme Yapılmadı">Ödeme Yapılmadı</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary float-right" id="hepsiburadaOrderaddBtn">Ekle</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'backend/js/page/siparisler.js' %}"></script>
+    <script src="{% static 'backend/js/hepsiburada.js' %}"></script>
+    <script src="{% static 'backend/modules/sweetalert/sweetalert.min.js' %}"></script>
+{% endblock %}
+
+
+

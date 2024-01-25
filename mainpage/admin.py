@@ -15,10 +15,6 @@ class CountyAdmin(ImportExportModelAdmin):
     list_display = ['city', 'title', 'slug']
     resource_class = CountyResource
 
-class SliderAdmin(admin.ModelAdmin):
-    list_display = ['title','image_tag','is_publish', 'created_at', 'updated_at']
-    readonly_fields = ('image_tag',)
-
 class MostSearchAdmin(admin.ModelAdmin):
     list_display = ['keyword','count', 'created_at', 'updated_at']
     list_filter = ['count']
@@ -42,7 +38,6 @@ class CookieAdmin(ImportExportModelAdmin):
 admin.site.register(Setting)
 admin.site.register(City, CityAdmin)
 admin.site.register(County, CountyAdmin)
-admin.site.register(Slider, SliderAdmin)
 admin.site.register(MostSearchingKeyword, MostSearchAdmin)
 admin.site.register(SSS, SSSAdmin)
 admin.site.register(Contracts, ContractsAdmin)

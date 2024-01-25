@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+    {% block title %}<title></title>{% endblock %}
+
+    <!-- General CSS Files -->
+    <link rel="stylesheet" href="{% static 'backend/modules/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'backend/modules/fontawesome/css/all.min.css' %}">
+
+    <!-- CSS Libraries -->
+    <link rel="stylesheet" href="{% static 'backend/modules/jqvmap/dist/jqvmap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'backend/modules/summernote/summernote-bs4.css' %}">
+    <link rel="stylesheet" href="{% static 'backend/modules/owlcarousel2/dist/assets/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'backend/modules/owlcarousel2/dist/assets/owl.theme.default.min.css' %}">
+
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="{% static 'backend/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'backend/css/components.css' %}">
+
+    {% block extra_style %}
+    {% endblock %}
+</head>
+
+<body style="overflow-x: hidden;">
+<div id="app">
+    <div class="main-wrapper main-wrapper-1">
+        {% include 'backend/yonetim/partials/messages.html' %}
+        {% include 'backend/yonetim/partials/navbar.html' %}
+        {% include 'backend/yonetim/partials/sidebar.html' %}
+        {% include 'backend/yonetim/partials/loader.html' %}
+
+        <!-- Main Content -->
+        <div class="main-content">
+            {% block anasayfa %}
+            {% endblock %}
+            {% block siparisler %}
+            {% endblock %}
+            {% block kategoriler %}
+            {% endblock %}
+            {% block urunler %}
+            {% endblock %}
+            {% block xml_yonetimi %}
+            {% endblock %}
+            {% block kullanici_yonetimi %}
+            {% endblock %}
+            {% block finans_yonetimi %}
+            {% endblock %}
+            {% block pazarlama_yonetimi %}
+            {% endblock %}
+            {% block gecmis_kayitlar %}
+            {% endblock %}
+            {% block trendyol %}
+            {% endblock %}
+            {% block hepsiburada %}
+            {% endblock %}
+            {% block site_yonetimi %}
+            {% endblock %}
+            {% block kampanya_yonetimi %}
+            {% endblock %}
+            {% block hesap_bilgilerim %}
+            {% endblock %}
+            {% block blog %}
+            {% endblock %}
+        </div>
+
+        {% include 'backend/yonetim/partials/footer.html' %}
+    </div>
+</div>
+
+<!-- General JS Scripts -->
+<script src="{% static 'backend/modules/jquery.min.js' %}"></script>
+<script src="{% static 'backend/modules/popper.js' %}"></script>
+<script src="{% static 'backend/modules/tooltip.js' %}"></script>
+<script src="{% static 'backend/modules/bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'backend/modules/nicescroll/jquery.nicescroll.min.js' %}"></script>
+<script src="{% static 'backend/modules/moment.min.js' %}"></script>
+<script src="{% static 'backend/js/tredyshop.js' %}"></script>
+
+<!-- JS Libraies -->
+<script src="{% static 'backend/modules/jquery.sparkline.min.js' %}"></script>
+<script src="{% static 'backend/modules/chart.min.js' %}"></script>
+<script src="{% static 'backend/modules/owlcarousel2/dist/owl.carousel.min.js' %}"></script>
+<script src="{% static 'backend/modules/summernote/summernote-bs4.js' %}"></script>
+
+<!-- Template JS File -->
+<script src="{% static 'backend/js/scripts.js' %}"></script>
+<script src="{% static 'backend/js/custom.js' %}"></script>
+<script src="{% static 'backend/js/search.js' %}"></script>
+<script src="{% static 'backend/js/notification.js' %}"></script>
+<script src="https://kit.fontawesome.com/7ffad3a2e0.js" crossorigin="anonymous"></script>
+
+{% block extra_script %}
+{% endblock %}
+
+</body>
+</html>

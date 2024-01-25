@@ -1,0 +1,387 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>Kampanya Yönetimi | Kampanyalar</title>{% endblock %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'backend/css/table_select.css' %}">
+{% endblock %}
+{% block kampanya_yonetimi %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>Kampanyalar</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item">Kampanyalar</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Filtreleme</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="" method="get" class="">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <div class="form-group">
+                                            <label for="kampanya_adi">Kampanya Adı</label>
+                                            <input id="kampanya_adi" type="text" name="kampanya_adi"
+                                                   class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-9">
+                                        <div class="buttons float-right mt-4">
+                                            <button type="submit" class="btn btn-warning" name="filterBtn">Sorgula
+                                            </button>
+                                            <button type="reset" class="btn btn-light">Sıfırla</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="buttons">
+                                <button class="btn btn-primary" data-toggle="modal"
+                                        data-target="#modal-kampanya-banner"><i class="fa fa-plus"></i> &nbsp;Kampanya
+                                    Ekle
+                                </button>
+                                <div class="dropdown d-inline">
+                                    <button class="btn btn-info dropdown-toggle" type="button"
+                                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false">
+                                        İşlemler
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a type="button" id="cancelRow" class="dropdown-item" href="#">İptal Et</a>
+                                        <a type="button" id="selectRow" class="dropdown-item" href="#">Seç</a>
+                                        <a class="dropdown-item" href="#" type="button" data-toggle="modal"
+                                           data-target="#modal-select-delete" id="deleteRow">Seçilileri Sil</a>
+                                        <a class="dropdown-item" href="#" type="button" data-toggle="modal"
+                                           data-target="#modal-all-delete" id="deleteAll">Hepsini Sil</a>
+                                        <a class="dropdown-item" href="{% url 'kampanya_export_excel' %}">Excel
+                                            İndir</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-head-fixed text-nowrap">
+                                    <thead>
+                                    <tr>
+                                        <th class="select-row" style="text-align: start; vertical-align: middle">
+                                            &nbsp;
+                                        </th>
+                                        <th style="text-align: start; vertical-align: middle"><span class="text-danger">Kampanya Adı</span>
+                                        </th>
+                                        <th style="text-align: start; vertical-align: middle">İndirim Oranı</th>
+                                        <th style="text-align: start; vertical-align: middle">Geçerli Tarih Aralığı</th>
+                                        <th style="text-align: start; vertical-align: middle">Yayında Mı?</th>
+                                        <th style="text-align: start; vertical-align: middle">Ürün Sayısı</th>
+                                        <th style="text-align: start; vertical-align: middle">Oluşturuma Tarihi</th>
+                                        <th style="text-align: start; vertical-align: middle">İşlemler</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for k in kampanya %}
+                                        <tr>
+                                            <td class="select-row"
+                                                style="text-align: start; vertical-align: middle; border: 0;">
+                                                <div class="form-check">
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" data-filter="kampanya"
+                                                               class="custom-control-input select-checkbox"
+                                                               id="check-{{ k.id }}" name="kampanya_secimi"
+                                                               value="{{ k.id }}">
+                                                        <label class="custom-control-label"
+                                                               for="check-{{ k.id }}"></label>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td style="text-align: start; vertical-align: middle"><span
+                                                    class="text-danger font-weight-bold">{{ k.name }}</span></td>
+                                            <td style="text-align: center; vertical-align: middle">{{ k.discountrate }}</td>
+                                            <td style="text-align: center; vertical-align: middle">
+                                                <span class="d-block">{{ k.start_date|date:'d/m/Y' }}</span>
+                                                <span class="d-block">{{ k.end_date|date:'d/m/Y' }}</span>
+                                            </td>
+                                            <td style="text-align: center; vertical-align: middle">
+                                                {% if k.is_publish %}
+                                                    <button class="btn btn-icon btn-success"><i class="fas fa-check"></i></button>
+                                                {% else %}
+                                                    <button class="btn btn-icon btn-danger"><i class="fas fa-times"></i></button>
+                                                {% endif %}</td>
+                                            <td>{{ k.urun_sayisi }}</td>
+                                            <td style="text-align: center; vertical-align: middle">{{ k.created_at|date:"d-m-Y H:i" }}</td>
+                                            <td style="text-align: start; vertical-align: middle">
+                                                <a href="{% url 'kampanya_urun_ekle' k.slug %}"
+                                                   class="btn btn-success btn-block btn-sm">Ürün Ekle</a>
+                                                <a href="{% url 'kampanya_publish' k.id %}"
+                                                   class="btn btn-block btn-sm btn-primary">{% if k.is_publish %}
+                                                    Yayından
+                                                    Kaldır{% else %}Yayınla{% endif %}</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <nav aria-label="pagination" class="pagination_area">
+                                <div class="row">
+                                    {% if kampanya.end_index > 0 %}
+                                        <div class="col-sm-12 col-md-5 d-none d-md-block">
+                                            <p>Showing {{ kampanya.start_index }} to {{ kampanya.end_index }}
+                                                of {{ products.paginator.count }}.</p>
+                                        </div>
+                                    {% endif %}
+                                    {% if kampanya.paginator.num_pages > 1 %}
+                                        <div class="col-sm-12 col-md-7 dataTables_pager">
+                                            <ul class="pagination float-right">
+                                                {% if kampanya.has_previous %}
+
+                                                    <li class="page-item">
+                                                        <a class="page-link" data-page="1"
+                                                           href="{{ query }}&page={{ kampanya.previous_page_number }}">
+                                                            <i class="fa fa-angle-double-left"></i>
+                                                        </a>
+                                                    </li>
+                                                    {% if kampanya.previous_page_number > 1 %}
+                                                        <li class="page-item">
+                                                            <a class="page-link "
+                                                               data-page="{{ kampanya.previous_page_number }}"
+                                                               href="{{ query }}&page={{ kampanya.previous_page_number }}">
+                                                                <i class="fa fa-angle-left"></i>
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+
+                                                {% endif %}
+
+                                                {% if kampanya.previous_page_number > 2 %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ kampanya.number|add:'-2' }}"
+                                                           href="{{ query }}&page={{ kampanya.number|add:'-2' }}"> {{ kampanya.number|add:"-2" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ kampanya.number|add:'-1' }}"
+                                                           href="{{ query }}&page={{ kampanya.number|add:'-1' }}"> {{ kampanya.number|add:"-1" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                <li class="page-item active"><span
+                                                        class="page-link ">{{ kampanya.number }}</span></li>
+
+                                                {% if kampanya.paginator.num_pages > kampanya.number|add:"2" %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ kampanya.number|add:'1' }}"
+                                                           href="{{ query }}&page={{ kampanya.number|add:'1' }}"> {{ kampanya.number|add:"1" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ kampanya.number|add:'2' }}"
+                                                           href="{{ query }}&page={{ kampanya.number|add:'2' }}"> {{ kampanya.number|add:"2" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                {% if kampanya.has_next %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ kampanya.next_page_number }}"
+                                                           href="{{ query }}&page={{ kampanya.next_page_number }}">
+                                                            <i class="fa fa-angle-right"></i>
+                                                        </a>
+                                                    </li>
+
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ kampanya.paginator.num_pages }}"
+                                                           href="{{ query }}&page={{ kampanya.paginator.num_pages }}">
+                                                            <i class="fa fa-angle-double-right"></i>
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="modal-select-delete">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Emin misin?</h4>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Seçili banner silinecektir.</p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button id="deleteNow" class="btn btn-danger"
+                            data-dismiss="modal">
+                        Sil
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" id="modal-all-delete">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Emin misin?</h4>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Tüm bannerlar silinecektir.</p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <a href="{% url 'kampanya_hepsini_sil' %}" class="btn btn-danger">Tümünü Sil</a>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" id="modal-kampanya-banner">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Kampanya Ekle</h4>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="post" id="kampanyaForm" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        {% for field in form %}
+                            {% if field.name != 'is_publish' %}
+                                <div class="form-group">
+                                    <label>{{ field.label }}</label>
+                                    {% if field.field.required %}
+                                        <span style="color: red;" class="required">*</span>
+                                    {% endif %}
+
+                                    {{ field }}
+                                    {% if field.help_text %}
+                                        <small style="color: grey">{{ field.help_text }}</small>
+                                    {% endif %}
+                                    {% for error in field.errors %}
+                                        <p style="color: red">{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if field.name == 'is_publish' %}
+                                <div class="form-group">
+                                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                        {{ field }}
+                                        <label class="custom-control-label" for="{{ field.id_for_label }}">Yayında
+                                            mı?</label>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+
+                        <button type="submit" name="addForm" class="btn btn-block btn-primary rounded-5">
+                            Oluştur
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+
+    <script>
+
+
+        $(document).ready(function () {
+            $(".waiting").hide()
+            $("#deleteRow").hide();
+            $("#cancelRow").hide()
+            $("#selectRow").on('click', function () {
+                $("#cancelRow").show()
+                $(".select-row").css('display', 'block')
+                $("#selectRow").hide()
+                $("#deleteRow").show();
+                $("#cancelRow").on('click', function () {
+                    $("#selectRow").show();
+                    $("#cancelRow").hide();
+                    $("#deleteRow").hide();
+                    $(".select-row").css('display', 'none')
+                })
+            })
+        });
+
+        $("#deleteRow").on('click', function () {
+            var _filterObj = {};
+            $(".select-checkbox").each(function (index, ele) {
+                var _filterVal = $(this).val();
+                var _filterKey = $(this).data('filter');
+                _filterObj[_filterKey] = Array.from(document.querySelectorAll('input[data-filter=' + _filterKey + ']:checked')).map(function (el) {
+                    return el.value;
+                });
+            });
+
+
+            $("#deleteNow").on('click', function () {
+                $.ajax({
+                    url: `/yonetim/kampanya-yonetimi/kampanyalar/secili-kampanyalari-sil/`,
+                    data: _filterObj,
+                    dataType: 'json',
+                    beforeSend: function () {
+                        $(".waiting").css('display', 'flex')
+                        $(".waiting").css('visibility', 'visible')
+                    },
+                    success: function (data) {
+                        $(".waiting").css('display', 'none')
+                        $(".waiting").css('visibility', 'hidden')
+                        location.reload();
+                    }
+                });
+            });
+        })
+
+    </script>
+{% endblock %}
+
+
+

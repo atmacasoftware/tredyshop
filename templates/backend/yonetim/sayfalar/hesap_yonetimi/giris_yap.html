@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TredyShop Yönetim Paneli Giriş Yap</title>
+    <link rel="stylesheet" href="{% static 'backend/css/login.css' %}">
+</head>
+<body>
+
+<section>
+    <div class="imgBx">
+        <img src="{% static 'adminpage/img/admin_login.jpg' %}" alt="">
+    </div>
+    <div class="contentBx">
+        <div class="formBx">
+            <h2>Gİriş Yap</h2>
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="inputBx">
+                    <span>E-Posta</span>
+                    <input type="email" name="email">
+                </div>
+                <div class="inputBx">
+                    <span>Şifre</span>
+                    <input type="password" name="password">
+                </div>
+                <div class="remember">
+                    <label>
+                        <input type="checkbox" checked value="remember" name="remember_me"> Beni Hatırla
+                    </label>
+                </div>
+                <div class="inputBx">
+                    <input type="submit" name="loginBtn" value="Giriş Yap">
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,220 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>Trendyol | Hatalı Ürünler</title>{% endblock %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'backend/modules/select2/dist/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'backend/css/table.css' %}">
+{% endblock %}
+{% block urunler %}
+
+
+    <section class="section">
+        <div class="section-header">
+            <h1>Hatalı Ürünler</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item">Hatalı Ürünler</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Filtreleme</h4>
+                        </div>
+                        <div class="card-body" id="filter-card">
+                            <form action="" method="get" class="productSearchForm">
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="baslik">Barkod</label>
+                                            <input type="search" name="barkod" id="barkod"
+                                                   class="form-control float-right">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="startDate">Başlangıç Tarihi</label>
+                                            <input type="date" name="startDate" id="startDate"
+                                                   class="form-control float-right">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="endDate">Bitiş Tarihi</label>
+                                            <input type="date" name="endDate" id="endDate"
+                                                   class="form-control float-right">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="page">Sayfa</label>
+                                            <input type="text" name="page" id="page"
+                                                   class="form-control float-right">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-4">
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="select-approved">Onay Durumu</label>
+                                            <select class="form-control select2"
+                                                    id="select-approved" name="approved" style="width: 100%;">
+                                                <option value="">--------</option>
+                                                <option value="true">Onaylı Ürünle</option>
+                                                <option value="false">Onaylı Olmayan Ürünler</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="select-dateQueryType">Sıralama</label>
+                                            <select class="form-control select2"
+                                                    id="select-dateQueryType" name="dateQueryType" style="width: 100%;">
+                                                <option value="">--------</option>
+                                                <option value="CREATED_DATE">Oluşturulma Tarihi</option>
+                                                <option value="LAST_MODIFIED_DATE">Son Güncellenme Tarih</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="size">Sıralama</label>
+                                            <select class="form-control select2"
+                                                    id="size" name="size" style="width: 100%;">
+                                                <option value="1000">1000</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                        <div class="row mt-3">
+                                            <div class="col-lg-6 my-2">
+                                                <input type="reset" class="btn btn-lg btn-dark w-100 rounded-3"
+                                                       value="Sıfırla">
+                                            </div>
+                                            <div class="col-lg-6 my-2">
+                                                <button type="submit" id="filterBtn"
+                                                        class="btn btn-lg btn-success w-100 rounded-3">
+                                                    Sorgula
+                                                </button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-process">
+                                <div class="dropdown">
+                                    <button class="btn btn-sm mt-2 btn-secondary dropdown-toggle"
+                                            type="button"
+                                            data-toggle="dropdown" aria-expanded="false">Toplu İşlemler
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <button class="dropdown-item" id="doActive"
+                                                style="font-size: 13px; padding: 10px 20px;">Seçilileri Aktif Yap
+                                        </button>
+                                        <button class="dropdown-item" id="deleteNotActiveProduct"
+                                                style="font-size: 13px; padding: 10px 20px;"
+                                                data-target="{% url 'not_active_product_delete' %}">Excel İndir
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover text-nowrap">
+                                    <thead>
+                                    <tr>
+                                        <th>
+                                            <div class="custom-control custom-checkbox">
+                                                <input class="custom-control-input filter-checkbox custom-control-input-danger custom-control-input-outline row-checkbox "
+                                                       type="checkbox" id="selectAllRow" data-filter="barcode"
+                                                       value="0">
+                                                <label for="selectAllRow" class="custom-control-label"></label>
+                                            </div>
+                                        </th>
+                                        <th scope="col">Ürün Bilgisi</th>
+                                        <th scope="col">Barkod</th>
+                                        <th scope="col">Model Kodu</th>
+                                        <th scope="col">Kategori</th>
+                                        <th scope="col">Marka</th>
+                                        <th scope="col">Liste Fiyatı (TL)</th>
+                                        <th scope="col">Satış Fiyatı (TL)</th>
+                                        <th scope="col">Stok</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for product in product_data %}
+                                        <tr>
+                                            <td>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input class="custom-control-input custom-control-input-danger custom-control-input-outline filter-checkbox"
+                                                           type="checkbox" id="selectRowId-{{ product.id }}"
+                                                           value="{{ product.barcode }}" data-filter="barcode">
+                                                    <label for="selectRowId-{{ product.id }}"
+                                                           class="custom-control-label"></label>
+                                                </div>
+                                            </td>
+                                            <td data-label="Ürün Bilgisi">
+                                                <div class="product__info">
+                                                    <div class="product__image"><img src="{{ product.images.0.url }}"
+                                                                                     alt="">
+                                                    </div>
+                                                    <div class="product__title"><p><b><a
+                                                            href="">{{ product.title }}</a></b>
+                                                    </p><span>Stok Kodu: {{ product.stockCode }}</span></div>
+                                                </div>
+                                            </td>
+                                            <td data-label="Barkod">{{ product.barcode }}</td>
+                                            <td data-label="Model Kodu">{{ product.productMainId }}</td>
+                                            <td data-label="Kategori">{{ product.categoryName }}</td>
+                                            <td data-label="Marka">{{ product.brand }}</td>
+                                            <td data-label="Liste Fiyatı (TL)">{{ product.listPrice }}</td>
+                                            <td data-label="Satış Fiyatı (TL)">{{ product.salePrice }}</td>
+                                            <td data-label="Stok">{{ product.quantity }}</td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="9">
+                                                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                                                    <div><i class="fa-regular fa-face-smile-wink"
+                                                            style="font-size: 3rem; margin-bottom: 20px;"></i></div>
+                                                    <div><h4>Herşey yolunda gözüküyor. Farklı bir ürün bulamadım.</h4>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'backend/js/trendyol_error_product.js' %}"></script>
+    <script src="{% static 'backend/modules/select2/dist/js/select2.full.min.js' %}"></script>
+{% endblock %}
+
+
+

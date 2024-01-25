@@ -2,7 +2,6 @@ from django.urls import path
 from apis.views import *
 
 urlpatterns = [
-    path('apits/slider/', SliderApiView.as_view()),
     path('apits/products/', ProductApiView.as_view()),
     path('apits/all/products/', AllProductApiView.as_view()),
     path('apits/secondcategory/', SecondCategoryApiView.as_view()),

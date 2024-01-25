@@ -101,3 +101,23 @@ class KadinJeanBedenResource(resources.ModelResource):
 class ProductGroupResource(resources.ModelResource):
     class Meta:
         model = ProductModelGroup
+
+class TabletModelResource(resources.ModelResource):
+    class Meta:
+        model = TabletModel
+
+class TableCaseTypeResource(resources.ModelResource):
+    class Meta:
+        model = TableCaseType
+
+class SleepModeResource(resources.ModelResource):
+    class Meta:
+        model = SleepMode
+
+class BagPatternResource(resources.ModelResource):
+    class Meta:
+        model = BagPattern
+
+class BijuteriThemeResource(resources.ModelResource):
+    class Meta:
+        model = BijuteriTheme

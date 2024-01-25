@@ -1,0 +1,80 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>Trendyol | Ürün Girişi</title>{% endblock %}
+
+{% block trendyol %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>Ürün Girişi</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item">Ürün Girişi</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+                <div class="col-3">
+                    <div class="card card-danger">
+                        <div class="card-header">
+                            <h4>Giyim</h4>
+                        </div>
+                        <div class="card-body">
+                            <a href="{% url 'trendyol_giyim_urun_girisi' %}"
+                               class="btn btn-danger btn-block text-white">Giyim Ürün Girişi</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h4>Aksesuar</h4>
+                        </div>
+                        <div class="card-body">
+                            <a href="{% url 'trendyol_aksesuar_urun_girisi' %}" class="btn btn-primary btn-block text-white">Aksesuar Ürün Girişi</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card card-warning">
+                        <div class="card-header">
+                            <h4>Ayakkabı</h4>
+                        </div>
+                        <div class="card-body">
+                            <a href="{% url 'trendyol_ayakkabi_urun_girisi' %}" class="btn btn-warning btn-block text-white">Ayakkabı Ürün Girişi</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card card-dark">
+                        <div class="card-header">
+                            <h4>Kozmetik & Kişisel Bakım</h4>
+                        </div>
+                        <div class="card-body">
+                            <a href="" class="btn btn-dark btn-block text-white">Kozmetik & Kişisel Bakım</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card card-success">
+                        <div class="card-header">
+                            <h4>GSM Ürünleri</h4>
+                        </div>
+                        <div class="card-body">
+                            <a href="{% url 'trendyol_gsm_urun_girisi' %}" class="btn btn-success btn-block text-white">GSM Ürünleri Ürün Girişi</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_script %}
+
+{% endblock %}
+
+
+

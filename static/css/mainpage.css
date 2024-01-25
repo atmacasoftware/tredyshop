@@ -1,0 +1,38 @@
+@import url('color.css');
+
+.banner-card {
+    margin-bottom: 20px;
+    border-radius: 15px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+
+.banner-card .card-body img {
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.banner-card .card-footer {
+    background-color: var(--bg-black);
+    height: 40px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    padding: 10px;
+}
+
+.banner-card .card-footer a {
+    color: var(--text-white);
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    width: 100%;
+}
+
+
+.banner-card:hover .card-footer {
+    background-color: var(--primary-color);
+    transition: .2s linear;
+}

@@ -1,0 +1,177 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>Ürün Özellik Güncelleme</title>{% endblock %}
+{% block extra_style %}
+
+{% endblock %}
+{% block urunler %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>Özellik Güncelleme</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item">Özellik Güncelleme</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-12 col-lg-3">
+                            <div class="card card-dark">
+                                <div class="card-header">
+                                    <h4>Kategori Güncelle</h4>
+                                </div>
+                                <div class="card-body">
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" name="kategori_guncelle"
+                                                class="btn btn-dark font-weight-bold btn-block">Güncelle
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-lg-3">
+                            <div class="card card-info">
+                                <div class="card-header">
+                                    <h4>Cinsiyet Güncelle</h4>
+                                </div>
+                                <div class="card-body">
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" name="cinsiyet_guncelle"
+                                                class="btn btn-info font-weight-bold btn-block">Güncelle
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-lg-3">
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h4>Kalıp Güncelle</h4>
+                                </div>
+                                <div class="card-body">
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" name="kalip_guncelle"
+                                                class="btn btn-primary font-weight-bold btn-block">Güncelle
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-lg-3">
+                            <div class="card card-success">
+                                <div class="card-header">
+                                    <h4>Kumaş Güncelle</h4>
+                                </div>
+                                <div class="card-body">
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <form action="" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" name="kumas_guncelle"
+                                                    class="btn btn-success font-weight-bold btn-block">Kumaş Güncelle
+                                            </button>
+                                        </form>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-lg-3">
+                            <div class="card card-warning">
+                                <div class="card-header">
+                                    <h4>Ortam Güncelle</h4>
+                                </div>
+                                <div class="card-body">
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" name="ortam_guncelle"
+                                                class="btn btn-warning font-weight-bold btn-block">Güncelle
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-lg-3">
+                            <div class="card card-danger">
+                                <div class="card-header">
+                                    <h4>Yaka Güncelle</h4>
+                                </div>
+                                <div class="card-body">
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" name="yaka_guncelle"
+                                                class="btn btn-danger font-weight-bold btn-block">Güncelle
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-sm-12 col-lg-3">
+                            <div class="card card-dark">
+                                <div class="card-header">
+                                    <h4>Bel Güncelle</h4>
+                                </div>
+                                <div class="card-body">
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" name="bel_guncelle"
+                                                class="btn btn-dark font-weight-bold btn-block">Güncelle
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-sm-12 col-lg-3">
+                            <div class="card card-info">
+                                <div class="card-header">
+                                    <h4>Boy Güncelle</h4>
+                                </div>
+                                <div class="card-body">
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" name="boy_guncelle"
+                                                class="btn btn-info font-weight-bold btn-block">Güncelle
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-sm-12 col-lg-3">
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h4>Paça Güncelle</h4>
+                                </div>
+                                <div class="card-body">
+                                    <form action="" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" name="paca_guncelle"
+                                                class="btn btn-primary font-weight-bold btn-block">Güncelle
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'backend/js/product.js' %}"></script>
+    <script src="{% static 'backend/modules/select2/dist/js/select2.full.min.js' %}"></script>
+{% endblock %}
+
+
+

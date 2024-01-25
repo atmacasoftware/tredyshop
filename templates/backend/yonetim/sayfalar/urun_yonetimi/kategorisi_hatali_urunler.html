@@ -1,0 +1,240 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>Kategorisi Hatalı Ürünler</title>{% endblock %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'backend/modules/select2/dist/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'backend/css/table.css' %}">
+{% endblock %}
+{% block urunler %}
+
+
+    <section class="section">
+        <div class="section-header">
+            <h1>Kategorisi Hatalı Ürünler</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item active"><a href="{% url 'admin_product' %}">Tüm Ürünler</a></div>
+                <div class="breadcrumb-item">Kategorisi Hatalı Ürünler</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover text-nowrap" id="productTable">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Görsel</th>
+                                        <th scope="col">Ürün Adı</th>
+                                        <th scope="col">1. Seviye Kategori</th>
+                                        <th scope="col">2. Seviye Kategori</th>
+                                        <th scope="col">3. Seviye Kategori</th>
+                                        <th scope="col">İşlemler</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for product in products %}
+                                        <tr>
+                                            <form action="" method="get">
+
+                                                <td>
+                                                    <img src="{{ product.image_url1 }}" alt=""
+                                                         style="width: 50px; height: auto;">
+                                                </td>
+                                                <td>{{ product.title }}</td>
+                                                <td>
+                                                    <select class="form-control select2 kategoriSelect filter-checkbox"
+                                                            id="select-category1" name="kategori1-{{ product.id }}"
+                                                            style="width: 100%;">
+                                                        <option value="">--------</option>
+                                                        {% for c in seviye_1 %}
+                                                            <option value="{{ c.id }}"
+                                                                    {% if c.id == product.category.id %}selected{% endif %}>{{ c.title }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control select2 kategoriSelect filter-checkbox"
+                                                            id="select-category2" name="kategori2-{{ product.id }}"
+                                                            style="width: 100%;">
+                                                        <option value="">--------</option>
+                                                        {% for c in seviye_2 %}
+                                                            <option value="{{ c.id }}"
+                                                                    {% if c.id == product.subcategory.id %}selected{% endif %}>{{ c.title }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control select2 kategoriSelect filter-checkbox"
+                                                            id="select-category2" name="kategori3-{{ product.id }}"
+                                                            style="width: 100%;">
+                                                        <option value="">--------</option>
+                                                        {% for c in seviye_3 %}
+                                                            <option value="{{ c.id }}"
+                                                                    {% if c.id == product.subbottomcategory.id %}selected{% endif %}>{{ c.title }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group-vertical" role="group"
+                                                         aria-label="Basic example">
+                                                        <button class="btn btn-success" id="update-{{ product.id }}">
+                                                            Güncelle
+                                                        </button>
+                                                        <a href="{% url 'product_detail' product.id %}"
+                                                           class="btn btn-primary">Ürüne Git</a>
+                                                        <script>
+
+                                                            $("#update-{{ product.id }}").on('click', function (e) {
+                                                                e.preventDefault();
+                                                                $.ajax({
+                                                                    type: "GET",
+                                                                    url: `/yonetim/urunler/kategorisi-hatali-urunler/kategori-duzelt/`,
+                                                                    data: {
+                                                                        'productID': {{ product.id }},
+                                                                        'kategori1': $("select[name='kategori1-{{ product.id }}']").val(),
+                                                                        'kategori2': $("select[name='kategori2-{{ product.id }}']").val(),
+                                                                        'kategori3': $("select[name='kategori3-{{ product.id }}']").val(),
+                                                                    },
+                                                                    dataType: 'json',
+                                                                    beforeSend: function () {
+                                                                        $(".waiting").css('display', 'flex')
+                                                                        $(".waiting").css('visibility', 'visible')
+                                                                    },
+                                                                    success: function (data) {
+                                                                        $(".waiting").css('display', 'none')
+                                                                        $(".waiting").css('visibility', 'hidden')
+                                                                        swal('Kategori Güncellendi', '', 'success');
+                                                                        if (data === 'success') {
+                                                                            window.location.reload()
+                                                                        }
+                                                                    },
+                                                                    error: function (e) {
+                                                                        iziToast.error({
+                                                                            title: 'Hata !',
+                                                                            message: `Bir hata meydana geldi. ${e}.`,
+                                                                            position: 'topRight'
+                                                                        });
+                                                                    }
+                                                                });
+                                                            })
+                                                        </script>
+                                                    </div>
+                                                </td>
+                                            </form>
+
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="6" class="text-center">
+                                                <div style="width: 100%; height: 100%; display:flex; justify-content: center; align-items: center; flex-direction: column;">
+                                                    <i class="fa fa-2x fa-smile mb-3"></i>
+                                                    <h5>Tebrikler, kategorisi hatalı ürün bulamadım.</h5>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <nav aria-label="pagination" class="pagination_area">
+                                <div class="row">
+                                    {% if products.end_index > 0 %}
+                                        <div class="col-sm-12 col-md-5 d-none d-md-block">
+                                            <p>Showing {{ products.start_index }} to {{ products.end_index }}
+                                                of {{ products.paginator.count }}.</p>
+                                        </div>
+                                    {% endif %}
+                                    {% if products.paginator.num_pages > 1 %}
+                                        <div class="col-sm-12 col-md-7 dataTables_pager">
+                                            <ul class="pagination">
+                                                {% if products.has_previous %}
+
+                                                    <li class="page-item">
+                                                        <a class="page-link" data-page="1"
+                                                           href="?page=1">
+                                                            <i class="fa fa-angle-double-left"></i>
+                                                        </a>
+                                                    </li>
+                                                    {% if products.previous_page_number > 1 %}
+                                                        <li class="page-item">
+                                                            <a class="page-link "
+                                                               data-page="{{ products.previous_page_number }}"
+                                                               href="?page={{ products.previous_page_number }}">
+                                                                <i class="fa fa-angle-left"></i>
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+
+                                                {% endif %}
+
+                                                {% if products.previous_page_number > 2 %}
+                                                    <li class="page-item">
+                                                        <a class="page-link " data-page="{{ products.number|add:'-2' }}"
+                                                           href="?page={{ products.number|add:'-2' }}"> {{ products.number|add:"-2" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link " data-page="{{ products.number|add:'-1' }}"
+                                                           href="?page={{ products.number|add:'-1' }}"> {{ products.number|add:"-1" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                <li class="page-item active"><span
+                                                        class="page-link ">{{ products.number }}</span></li>
+
+                                                {% if products.paginator.num_pages > products.number|add:"2" %}
+                                                    <li class="page-item">
+                                                        <a class="page-link " data-page="{{ products.number|add:'1' }}"
+                                                           href="?page={{ products.number|add:'1' }}"> {{ products.number|add:"1" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link " data-page="{{ products.number|add:'2' }}"
+                                                           href="?page={{ products.number|add:'2' }}"> {{ products.number|add:"2" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                {% if products.has_next %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ products.next_page_number }}"
+                                                           href="?page={{ products.next_page_number }}">
+                                                            <i class="fa fa-angle-right"></i>
+                                                        </a>
+                                                    </li>
+
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ products.paginator.num_pages }}"
+                                                           href="?&page={{ products.paginator.num_pages }}">
+                                                            <i class="fa fa-angle-double-right"></i>
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'backend/js/product.js' %}"></script>
+    <script src="{% static 'backend/modules/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'backend/modules/sweetalert/sweetalert.min.js' %}"></script>
+{% endblock %}
+
+
+

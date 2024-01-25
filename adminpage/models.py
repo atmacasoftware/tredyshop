@@ -1,9 +1,14 @@
+from ckeditor_uploader.fields import RichTextUploadingField
 from django.db import models
 from django.template import defaultfilters
 from django_ckeditor_5.fields import CKEditor5Field
+from django_resized import ResizedImageField
 from unidecode import unidecode
 
-from categorymodel.models import MainCategory
+from categorymodel.models import MainCategory, SubBottomCategory
+from orders.models import Order
+from product.models import ApiProduct, Question
+from trendyol.models import TrendyolOrders
 from user_accounts.models import User
 
 
@@ -40,7 +45,7 @@ class Hepsiburada(models.Model):
     kep = models.CharField(max_length=255, verbose_name="KEP Adresi", null=True, blank=True)
     username = models.CharField(max_length=255, verbose_name="Kullanıcı Adı", null=True, blank=True)
     password = models.CharField(max_length=255, verbose_name="Şifre", null=True, blank=True)
-    merchantID = models.CharField(max_length=255,verbose_name="Merchant ID", null=True, blank=True)
+    merchantID = models.CharField(max_length=255, verbose_name="Merchant ID", null=True, blank=True)
     token = models.CharField(max_length=255, verbose_name="Token", null=True, blank=True)
     firstbarem = models.FloatField(verbose_name="Barem 1. Aralık Maksimum Değeri", null=True)
     secondbarem = models.FloatField(verbose_name="Barem 2. Aralık Maksimum Değeri", null=True)
@@ -50,6 +55,7 @@ class Hepsiburada(models.Model):
     class Meta:
         verbose_name = "Hepsiburada Hesap Bilgileri"
         verbose_name_plural = "Hepsiburada Hesap Bilgileri"
+
 
 class IssuedInvoices(models.Model):
     YEAR = (
@@ -185,6 +191,7 @@ class Notification(models.Model):
         ("6", "6"),
         ("7", "7"),
         ("8", "8"),
+        ("9", "9"),
     )
 
     # 1: Ürünler pazaryerlerine yüklendi.
@@ -195,12 +202,17 @@ class Notification(models.Model):
     # 6: Ürün iade talebi geldi.
     # 7: Ürün yorumu yapıldı.
     # 8: Yeni müşteri kaydı.
+    # 9: Görev ataması
 
     noti_type = models.CharField(choices=TYPE, max_length=20, verbose_name="Bildirim Tipi")
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Kullanıcı",
                              related_name="noti_user")
     customer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Müşteri",
                                  related_name="noti_customer")
+    trendyol_orders = models.ForeignKey(TrendyolOrders, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Trendyol Siparişi")
+    tredyshop_orders = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Tredyshop Siparişi")
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Soru")
+    task_id = models.BigIntegerField(verbose_name="Task ID", blank=True, null=True)
     title = models.CharField(max_length=255, verbose_name="Bildirim Başlığı", null=True, blank=False)
     detail = models.TextField(max_length=1000, verbose_name="Bildirim İçeriği", null=True, blank=True)
     is_read = models.BooleanField(default=False, verbose_name="Okundu mu?")
@@ -220,13 +232,13 @@ class Notification(models.Model):
         passing = None
 
         if pass_time.days > 0 and pass_time.days < 31:
-            passing = f"{pass_time.days} g."
+            passing = f"{pass_time.days} gn."
 
         elif pass_time.days < 1:
             if pass_time.seconds / 60 < 60:
-                passing = f"{math.floor(pass_time.seconds / 60)} d."
+                passing = f"{math.floor(pass_time.seconds / 60)} dk."
             elif pass_time.seconds / 60 > 59:
-                passing = f"{math.floor(pass_time.seconds / 3600)} s."
+                passing = f"{math.floor(pass_time.seconds / 3600)} sa."
         return passing
 
 
@@ -246,28 +258,71 @@ class Hakkimizda(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
 
 
-class BannerOne(models.Model):
-    TYPE = (
-        ("Belirli Tutar Altı", "Belirli Tutar Altı"),
-        ("İndirimli Ürünler", "İndirimli Ürünler"),
-    )
-
-    banner_type = models.CharField(max_length=100, choices=TYPE, verbose_name="Tip", null=True, blank=False)
-    banner_title = models.CharField(max_length=255, verbose_name="Banner Başlık", null=True, blank=False)
-    banner_minprice = models.IntegerField(verbose_name="En Düşük Fiyat", null=True, blank=True)
-    banner_maxprice = models.IntegerField(verbose_name="En Yüksek Fiyat", null=True, blank=True)
-    banner_discountrate = models.IntegerField(null=True, verbose_name="İndirim Oranı", blank=True)
-    image = models.FileField(upload_to="adminpage/bannerone/", verbose_name="Görsel Seç", null=True, blank=True)
-    is_publish = models.BooleanField(default=False, verbose_name="Yayında Mı?")
+class Campaign(models.Model):
+    name = models.CharField(max_length=255, verbose_name="Kampanya Adı", null=True)
+    description = models.TextField(verbose_name="Açıklama", null=True, blank=True, max_length=1000)
+    discountrate = models.PositiveIntegerField(default=0, verbose_name="İndirim Oranı")
+    image = models.FileField(upload_to='adminpage/campaign', verbose_name="Kampanya Resmi", null=True, blank=True)
+    start_date = models.DateField(verbose_name="Başlangıç Tarihi", null=True, blank=True)
+    end_date = models.DateField(verbose_name="Bitiş Tarihi", null=True, blank=True)
+    is_publish = models.BooleanField(default=False, verbose_name="Yayında mı?")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
     slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
 
-    def get_image(self):
-        if self.image:
-            return self.image.url
-        else:
-            return None
+    class Meta:
+        ordering = ["created_at"]
+
+    def urun_sayisi(self):
+        urunler = CampaingProduct.objects.filter(campaign=self)
+        return urunler.count()
+
+    def save(self, *args, **kwargs):
+        if not self.id and not self.slug:
+            slug = defaultfilters.slugify(unidecode(self.name))
+            slug_exists = True
+            counter = 1
+            self.slug = slug
+            while slug_exists:
+                try:
+                    slug_exits = Campaign.objects.get(slug=slug)
+                    if slug_exits:
+                        slug = self.slug + '_' + str(counter)
+                        counter += 1
+                except Campaign.DoesNotExist:
+                    self.slug = slug
+                    break
+        super(Campaign, self).save(*args, **kwargs)
+
+class CampaingProduct(models.Model):
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name="campaing_products")
+    product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE, null=True, verbose_name="Kampanya Ürünü")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
+
+class Banner(models.Model):
+    TYPE = (
+        ("Belirli Tutar Altı", "Belirli Tutar Altı"),
+        ("İndirimli Ürünler", "İndirimli Ürünler"),
+        ("Kategori Bazlı Ürünler", "Kategori Bazlı Ürünler"),
+        ("Kampanya Bazlı Ürünler", "Kampanya Bazlı Ürünler"),
+    )
+
+    banner_type = models.CharField(max_length=100, choices=TYPE, verbose_name="Tip", null=True, blank=False)
+    banner_title = models.CharField(max_length=255, verbose_name="Banner Başlık", null=True, blank=False)
+    banner_maxprice = models.IntegerField(verbose_name="En Yüksek Fiyat", null=True, blank=True)
+    banner_discountrate = models.IntegerField(null=True, verbose_name="İndirim Oranı", blank=True)
+    banner_category = models.ForeignKey(SubBottomCategory, on_delete=models.CASCADE, max_length=255, verbose_name="Kategori Seçiniz", null=True, blank=True)
+    image = ResizedImageField(force_format="WEBP", quality=50, upload_to="adminpage/banner", null=True, blank=True)
+    is_publish = models.BooleanField(default=False, verbose_name="Yayında Mı?")
+    order = models.PositiveIntegerField(null=True, blank=False, verbose_name="Sıra Sayısı")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
+    viewd_count = models.BigIntegerField(default=0, null=True, blank=True, verbose_name="Görüntülenme Sayısı")
+    slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
+
+    class Meta:
+        ordering = ["created_at"]
 
     def save(self, *args, **kwargs):
         if not self.id and not self.slug:
@@ -277,55 +332,14 @@ class BannerOne(models.Model):
             self.slug = slug
             while slug_exists:
                 try:
-                    slug_exits = BannerOne.objects.get(slug=slug)
+                    slug_exits = Banner.objects.get(slug=slug)
                     if slug_exits:
                         slug = self.slug + '_' + str(counter)
                         counter += 1
-                except BannerOne.DoesNotExist:
+                except Banner.DoesNotExist:
                     self.slug = slug
                     break
-        super(BannerOne, self).save(*args, **kwargs)
-
-
-class BannerTwo(models.Model):
-    TYPE = (
-        ("Belirli Tutar Altı", "Belirli Tutar Altı"),
-        ("İndirimli Ürünler", "İndirimli Ürünler"),
-    )
-
-    banner_type = models.CharField(max_length=100, choices=TYPE, verbose_name="Tip", null=True, blank=False)
-    banner_title = models.CharField(max_length=255, verbose_name="Banner Başlık", null=True, blank=False)
-    banner_minprice = models.IntegerField(verbose_name="En Düşük Fiyat", null=True, blank=True)
-    banner_maxprice = models.IntegerField(verbose_name="En Yüksek Fiyat", null=True, blank=True)
-    banner_discountrate = models.IntegerField(null=True, verbose_name="İndirim Oranı", blank=True)
-    image = models.FileField(upload_to="adminpage/bannerone/", verbose_name="Görsel Seç", null=True, blank=True)
-    is_publish = models.BooleanField(default=False, verbose_name="Yayında Mı?")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
-    slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
-
-    def get_image(self):
-        if self.image:
-            return self.image.url
-        else:
-            return None
-
-    def save(self, *args, **kwargs):
-        if not self.id and not self.slug:
-            slug = defaultfilters.slugify(unidecode(self.banner_title))
-            slug_exists = True
-            counter = 1
-            self.slug = slug
-            while slug_exists:
-                try:
-                    slug_exits = BannerTwo.objects.get(slug=slug)
-                    if slug_exits:
-                        slug = self.slug + '_' + str(counter)
-                        counter += 1
-                except BannerTwo.DoesNotExist:
-                    self.slug = slug
-                    break
-        super(BannerTwo, self).save(*args, **kwargs)
+        super(Banner, self).save(*args, **kwargs)
 
 
 class Harcamalar(models.Model):
@@ -364,10 +378,16 @@ class Harcamalar(models.Model):
 
 class UpdateHistory(models.Model):
     TYPE = (
-        ("Modaymış Güncelleme","Modaymış Güncelleme"),
-        ("Modaymış Aktif Olmayan Ürün","Modaymış Aktif Olmayan Ürün"),
-        ("Tahtakale Güncelleme","Tahtakale Güncelleme"),
-        ("Trendyol Stok&Fiyat Güncelleme","Trendyol Stok&Fiyat Güncelleme"),
+        ("Modaymış Yeni Ürün Ekleme", "Modaymış Yeni Ürün Ekleme"),
+        ("Modaymış Güncelleme", "Modaymış Güncelleme"),
+        ("Modaymış Aktif Olmayan Ürün", "Modaymış Aktif Olmayan Ürün"),
+        ("Tahtakale Güncelleme", "Tahtakale Güncelleme"),
+        ("Trendyol Stok&Fiyat Güncelleme", "Trendyol Stok&Fiyat Güncelleme"),
+        ("XML Dünyası Yeni Ürün Ekleme", "XML Dünyası Yeni Ürün Ekleme"),
+        ("XML Dünyası Güncelleme", "XML Dünyası Güncelleme"),
+        ("XML Dünyası Aktif Olmayan Ürün", "XML Dünyası Aktif Olmayan Ürün"),
+        ("XML Dünyası Diğer Ürün Ekleme", "XML Dünyası Diğer Ürün Ekleme"),
+        ("XML Dünyası Ürün Diğer", "XML Dünyası Ürün Diğer"),
     )
     history_type = models.CharField(choices=TYPE, max_length=100, null=True, verbose_name="Geçmiş Tipi")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
@@ -417,3 +437,184 @@ class Izinler(models.Model):
 
     def __str__(self):
         return str(self.user.first_name) + str(self.user.last_name)
+
+class TredyShopFiyatAyarla(models.Model):
+    kdv1 = models.FloatField(verbose_name="KDV Oranı 1", blank=False, null=True)
+    kdv2 = models.FloatField(verbose_name="KDV Oranı 2", blank=False, null=True)
+    commission = models.FloatField(verbose_name="Sanal POS Komisyon Oranı", blank=False, null=True)
+    kargo = models.FloatField(verbose_name="Kargo Maliyeti (KDV Dahil)", null=True, blank=False)
+    created_at = models.DateField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
+    update_at = models.DateField(auto_now=True, verbose_name="Güncellenme Tarihi")
+
+
+class TredyShopKarMarji(models.Model):
+    tredyshop = models.ForeignKey(TredyShopFiyatAyarla, on_delete=models.CASCADE, null=True, blank=False)
+    baslangic = models.FloatField(verbose_name="Başlangıç Fiyatı", null=True, blank=False)
+    bitis = models.FloatField(verbose_name="Bitiş Fiyatı", null=True, blank=False)
+    kar_maji = models.FloatField(verbose_name="Kar Marjı", null=True, blank=False)
+    created_at = models.DateField(auto_now_add=True, verbose_name="Oluşturulma Tarihi", null=True)
+    update_at = models.DateField(auto_now=True, verbose_name="Güncellenme Tarihi", null=True)
+
+class TrendyolFiyatAyarla(models.Model):
+    kdv1 = models.FloatField(verbose_name="KDV Oranı 1", blank=False, null=True)
+    kdv2 = models.FloatField(verbose_name="KDV Oranı 2", blank=False, null=True)
+    commission = models.FloatField(verbose_name="Trendyol Komisyonu", blank=False, null=True)
+    service = models.FloatField(verbose_name="Hizmet Bedeli (KDV Dahil)", blank=False, null=True)
+    kargo = models.FloatField(verbose_name="Kargo Maliyeti (KDV Dahil)", null=True, blank=False)
+    indirim = models.FloatField(verbose_name="İndirim Tutarı", null=True, blank=False)
+    created_at = models.DateField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
+    update_at = models.DateField(auto_now=True, verbose_name="Güncellenme Tarihi")
+
+
+class TrendyolKarMarji(models.Model):
+    trendyol = models.ForeignKey(TrendyolFiyatAyarla, on_delete=models.CASCADE, null=True, blank=False)
+    baslangic = models.FloatField(verbose_name="Başlangıç Fiyatı", null=True, blank=False)
+    bitis = models.FloatField(verbose_name="Bitiş Fiyatı", null=True, blank=False)
+    kar_maji = models.FloatField(verbose_name="Kar Marjı", null=True, blank=False)
+    created_at = models.DateField(auto_now_add=True, verbose_name="Oluşturulma Tarihi", null=True)
+    update_at = models.DateField(auto_now=True, verbose_name="Güncellenme Tarihi", null=True)
+
+class HepsiburadaFiyatAyarla(models.Model):
+    kdv1 = models.FloatField(verbose_name="KDV Oranı 1", blank=False, null=True)
+    kdv2 = models.FloatField(verbose_name="KDV Oranı 2", blank=False, null=True)
+    commission = models.FloatField(verbose_name="Hepsiburada Komisyonu", blank=False, null=True)
+    service = models.FloatField(verbose_name="Hizmet Bedeli (KDV Dahil)", blank=False, null=True)
+    process = models.FloatField(verbose_name="İşlem Bedeli (KDV Dahil)", blank=False, null=True)
+    kargo = models.FloatField(verbose_name="Kargo Maliyeti (KDV Dahil)", null=True, blank=False)
+    indirim = models.FloatField(verbose_name="İndirim Tutarı", null=True, blank=False)
+    created_at = models.DateField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
+    update_at = models.DateField(auto_now=True, verbose_name="Güncellenme Tarihi")
+
+class HepsiburadaKarMarji(models.Model):
+    hepsiburada = models.ForeignKey(HepsiburadaFiyatAyarla, on_delete=models.CASCADE, null=True, blank=False)
+    baslangic = models.FloatField(verbose_name="Başlangıç Fiyatı", null=True, blank=False)
+    bitis = models.FloatField(verbose_name="Bitiş Fiyatı", null=True, blank=False)
+    kar_maji = models.FloatField(verbose_name="Kar Marjı", null=True, blank=False)
+    created_at = models.DateField(auto_now_add=True, verbose_name="Oluşturulma Tarihi", null=True)
+    update_at = models.DateField(auto_now=True, verbose_name="Güncellenme Tarihi", null=True)
+
+class AmazonFiyatAyarla(models.Model):
+    kdv1 = models.FloatField(verbose_name="KDV Oranı 1", blank=False, null=True)
+    kdv2 = models.FloatField(verbose_name="KDV Oranı 2", blank=False, null=True)
+    commission = models.FloatField(verbose_name="Amazon Komisyonu", blank=False, null=True)
+    service = models.FloatField(verbose_name="Hizmet Bedeli (KDV Dahil)", blank=False, null=True)
+    kargo = models.FloatField(verbose_name="Kargo Maliyeti (KDV Dahil)", null=True, blank=False)
+    indirim = models.FloatField(verbose_name="İndirim Tutarı", null=True, blank=False)
+    created_at = models.DateField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
+    update_at = models.DateField(auto_now=True, verbose_name="Güncellenme Tarihi")
+
+class AmazonKarMarji(models.Model):
+    amazon = models.ForeignKey(AmazonFiyatAyarla, on_delete=models.CASCADE, null=True, blank=False)
+    baslangic = models.FloatField(verbose_name="Başlangıç Fiyatı", null=True, blank=False)
+    bitis = models.FloatField(verbose_name="Bitiş Fiyatı", null=True, blank=False)
+    kar_maji = models.FloatField(verbose_name="Kar Marjı", null=True, blank=False)
+    created_at = models.DateField(auto_now_add=True, verbose_name="Oluşturulma Tarihi", null=True)
+    update_at = models.DateField(auto_now=True, verbose_name="Güncellenme Tarihi", null=True)
+
+class PttAvmFiyatAyarla(models.Model):
+    kdv1 = models.FloatField(verbose_name="KDV Oranı 1", blank=False, null=True)
+    kdv2 = models.FloatField(verbose_name="KDV Oranı 2", blank=False, null=True)
+    commission = models.FloatField(verbose_name="PTT Avm Komisyonu", blank=False, null=True)
+    service = models.FloatField(verbose_name="Hizmet Bedeli (KDV Dahil)", blank=False, null=True)
+    kargo = models.FloatField(verbose_name="Kargo Maliyeti (KDV Dahil)", null=True, blank=False)
+    indirim = models.FloatField(verbose_name="İndirim Tutarı", null=True, blank=False)
+    created_at = models.DateField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
+    update_at = models.DateField(auto_now=True, verbose_name="Güncellenme Tarihi")
+
+class PttAvmKarMarji(models.Model):
+    pttavm = models.ForeignKey(PttAvmFiyatAyarla, on_delete=models.CASCADE, null=True, blank=False)
+    baslangic = models.FloatField(verbose_name="Başlangıç Fiyatı", null=True, blank=False)
+    bitis = models.FloatField(verbose_name="Bitiş Fiyatı", null=True, blank=False)
+    kar_maji = models.FloatField(verbose_name="Kar Marjı", null=True, blank=False)
+    created_at = models.DateField(auto_now_add=True, verbose_name="Oluşturulma Tarihi", null=True)
+    update_at = models.DateField(auto_now=True, verbose_name="Güncellenme Tarihi", null=True)
+
+
+class ProductSellStatistic(models.Model):
+    name = models.CharField(max_length=255, verbose_name="Ürün Adı", null=True)
+    barcode = models.CharField(max_length=255, verbose_name="Ürün Barkodu", unique=True, null=True)
+    image_url = models.CharField(max_length=500, verbose_name="Ürün Linki", null=True, blank=True)
+    sell_count = models.BigIntegerField(default=0, verbose_name="Toplam Satış Sayısı", null=True, blank=True)
+    satis = models.FloatField(default=0.0, verbose_name="Satış Fiyatı", blank=True)
+    maliyet = models.FloatField(default=0.0, verbose_name="Maliyet Fiyatı", null=True, blank=True)
+    created_at = models.DateField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
+
+    def __str__(self):
+        return str(self.name)
+
+    def satisOrani(self):
+        maliyet = 0.0
+        if self.maliyet != None:
+            maliyet = self.maliyet
+        tumu = self.satis + maliyet
+        oran = 0
+        if tumu != 0:
+            oran = 100 * self.satis / tumu
+        return oran
+
+    def maliyetOrani(self):
+        maliyet = 0
+        if self.maliyet != None:
+            maliyet = self.maliyet
+        tumu = self.satis + maliyet
+        oran = 0
+        if tumu != 0:
+            oran = 100 * maliyet / tumu
+        return oran
+
+class SiteSetting(models.Model):
+    title = models.CharField(max_length=255, verbose_name="Başlık", blank=True, null=True)
+    free_shipping = models.BigIntegerField(verbose_name="Ücretsiz Kargo Tutarı", null=True, blank=True)
+    shipping_company = models.CharField(max_length=100, verbose_name="Kargo Firması", null=True, blank=True)
+    shipping_price = models.DecimalField(max_digits=20, decimal_places=2, verbose_name="Kargo Ücreti", null=True,
+                                         blank=True)
+    keywords = models.CharField(max_length=255, verbose_name="Anahtar Kelime", blank=True, null=True)
+    description = models.CharField(max_length=255, verbose_name="Açıklama", null=True, blank=True)
+    company = models.CharField(max_length=255, verbose_name="Şirket Adı", null=True, blank=True)
+    address = models.CharField(max_length=500, blank=True, null=True, verbose_name="Şirket Adresi")
+    phone = models.CharField(blank=True, null=True, max_length=15, verbose_name="Telefon Numarası")
+    fax = models.CharField(blank=True, max_length=15, verbose_name="Fax")
+    email = models.CharField(blank=True, max_length=255, verbose_name="Email")
+    vkn = models.CharField(blank=True, max_length=50, verbose_name="Vergi Kimlik Numarası")
+    mersis = models.CharField(blank=True, max_length=100, verbose_name="Mersis Numarası")
+    logo = models.ImageField(blank=True, upload_to="img/logo/", verbose_name="Site Logosu")
+    favicon = models.ImageField(blank=True, upload_to="img/favicon/", verbose_name="Site Faviconu")
+    facebook = models.CharField(max_length=255, null=True, blank=True, verbose_name="Facebook")
+    instagram = models.CharField(max_length=255, null=True, blank=True, verbose_name="İnstagram")
+    twitter = models.CharField(max_length=255, null=True, blank=True, verbose_name="Twitter")
+    youtube = models.CharField(max_length=255, null=True, blank=True, verbose_name="Youtube")
+    tiktok = models.CharField(max_length=255, null=True, blank=True, verbose_name="Tiktok")
+    linkedin = models.CharField(max_length=255, null=True, blank=True, verbose_name="Linkedin")
+    whatsapp = models.CharField(max_length=255, null=True, blank=True, verbose_name="Whatsapp")
+    google_analytics = models.TextField(max_length=255, null=True, blank=True, verbose_name="Google Analytics Kodu")
+    create_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
+
+class Task(models.Model):
+
+    TASK_TIME = (
+        ("Her Gün","Her Gün"),
+        ("Belirli Gün","Belirli Gün"),
+    )
+
+    name = models.CharField(max_length=500, null=True, blank=True, verbose_name="Görev Adı")
+    task_time = models.CharField(choices=TASK_TIME, max_length=500, null=True, blank=True, verbose_name="Görev Zamanı")
+    task_date = models.DateField(null=True, blank=True, verbose_name="Görev Zamanı")
+    detail = RichTextUploadingField(null=True, blank=True, verbose_name="Görev Açıklaması")
+    is_completed = models.BooleanField(default=False, verbose_name="Tamamlandı Mı")
+    create_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-create_at"]
+
+    def get_users(self):
+        return UserTask.objects.filter(task=self)
+
+class UserTask(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=False, verbose_name="Kullanıcı")
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, null=True, blank=False, verbose_name="Görev")
+    all_completed = models.BooleanField(default=False, verbose_name="Hepsi Tamamladı Mı?")
+    create_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)

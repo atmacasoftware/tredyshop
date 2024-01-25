@@ -1,0 +1,84 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>{{ request.user.get_full_name }} | Şifre Değiştir</title>{% endblock %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'backend/css/password_validation.css' %}">
+{% endblock %}
+{% block hesap_bilgilerim %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>{{ request.user.get_full_name }} Şifre Değiştir</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item">{{ request.user.get_full_name }} Şifre Değiştir</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="post" id="changePasswordForm">
+                                {% csrf_token %}
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="current_password">Mevcut Şifre</label>
+                                        <input type="password" class="form-control" id="current_password" required
+                                               name="current_password">
+                                    </div>
+                                    <div class="form-group ">
+                                        <label for="new_password">Yeni Şifre</label>
+                                        <div class="show-password">
+                                            <input type="password" class="form-control" id="new_password" required
+                                                   name="new_password" onkeyup="checkPassword(this.value);">
+                                            <span id="showPassword"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="password-validation">
+                                        <ul>
+                                            <li id="validation_lower">En az bir adet küçük karakter olmalı</li>
+                                            <li id="validation_upper">En az bir adet büyük karakter olmalı</li>
+                                            <li id="validation_number">En az bir adet numara olmalı</li>
+                                            <li id="validation_length">En az 8 karakter olmalı</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="re_password">Yeni Şifre Tekrar</label>
+                                        <input type="password" class="form-control" required id="re_password"
+                                               name="re_password">
+                                    </div>
+
+                                    <div class="password-validation">
+                                        <ul>
+                                            <li id="check_password">Şifreler eşleşmeli</li>
+                                        </ul>
+                                    </div>
+
+                                </div>
+                                <!-- /.card-body -->
+
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-primary" name="changePasswordBtn"
+                                            id="changePasswordBtn" disabled>Güncelle
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'js/password_validation.js' %}"></script>
+{% endblock %}
+
+
+

@@ -1,0 +1,303 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>Kullanıcılar</title>{% endblock %}
+
+{% block kullanici_yonetimi %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>Kullanıcılar</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item">Kullanıcılar</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Filtreleme</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="" method="get" class="">
+                                <div class="row my-2">
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="filter_full_name">Ad - Soyad</label>
+                                            <input id="filter_full_name" type="text" name="filter_full_name"
+                                                   class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="filter_email">E-Posta</label>
+                                            <input id="filter_email" type="text" name="filter_email"
+                                                   class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="filter_mobile">Telefon Numarası</label>
+                                            <input id="filter_mobile" type="text" name="filter_mobile"
+                                                   class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6 col-sm-12">
+                                        <div class="form-group">
+                                            <label for="filter_user_type">Üyelik Tipi</label>
+                                            <select id="filter_user_type" name="filter_user_type" class="form-control">
+                                                <option value="">------</option>
+                                                <option value="None">Hepsi</option>
+                                                <option value="Yönetici">Yönetici</option>
+                                                <option value="Personel">Personel</option>
+                                                <option value="Müşteri">Müşteri</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row my-2" style="display: flex; flex-direction: row;align-items: center;">
+                                    <div class="col-12">
+                                        <div class="buttons float-right">
+                                            <button type="submit" class="btn btn-warning" name="filter_btn">Sorgula
+                                            </button>
+                                            <button type="reset" class="btn btn-light">Sıfırla</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <a href="#" class="btn btn-warning" data-toggle="modal"
+                               data-target="#createUser"><i class="fa fa-plus"></i> Kullanıcı Ekle</a>
+                        </div>
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                                <thead>
+                                <tr>
+                                    <th>Ad-Soyad</th>
+                                    <th>E-Posta</th>
+                                    <th>Telefon</th>
+                                    <th>Üyelik Tipi</th>
+                                    <th>Üyelik Tarihi</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for u in users %}
+                                    <tr>
+                                        <td>{{ u.get_full_name }}</td>
+                                        <td>{{ u.email }}</td>
+                                        <td>{{ u.mobile }}</td>
+                                        <td>{% if u.is_superuser %}Yönetici{% elif u.is_staff %}
+                                            Personel{% elif u.is_customer %}Müşteri{% endif %}</td>
+                                        <td>{{ u.created_date|date:"m-d-Y" }}</td>
+                                        <td>
+                                            <div class="btn-group mb-3" role="group" aria-label="Basic example">
+
+                                                <a href="{% url 'kullanici_sil' u.id %}" class="btn  btn-danger"
+                                                   data-toggle="tooltip" data-placement="top"
+                                                   data-original-title="Kullanıcı Sil"><i class="fa fa-trash"></i></a>
+                                                <a href="{% url 'kullanici_goruntule' u.id %}" class="btn  btn-warning"
+                                                   data-toggle="tooltip" data-placement="top"
+                                                   data-original-title="Kullanıcı Görüntüle"><i
+                                                        class="fa fa-eye"></i></a>
+                                                <a href="{% url 'kullanici_izinleri' u.id %}" class="btn  btn-success"
+                                                   data-toggle="tooltip" data-placement="top"
+                                                   data-original-title="Kullanıcı İzinlerini Düzenle"><i
+                                                        class="fa fa-edit"></i></a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            <div id="no-data"
+                                 style="width: 100%; text-align: center; margin-top: 5px; margin-bottom: 5px;"></div>
+                        </div>
+                        <div class="card-footer">
+                            <nav aria-label="pagination" class="pagination_area">
+                                <div class="row">
+                                    {% if users.end_index > 0 %}
+                                        <div class="col-sm-12 col-md-5 d-none d-md-block">
+                                            <p>Showing {{ users.start_index }} to {{ users.end_index }}
+                                                of {{ users.paginator.count }}.</p>
+                                        </div>
+                                    {% endif %}
+                                    {% if users.paginator.num_pages > 1 %}
+                                        <div class="col-sm-12 col-md-7 dataTables_pager">
+                                            <ul class="pagination float-right">
+                                                {% if users.has_previous %}
+
+                                                    <li class="page-item">
+                                                        <a class="page-link" data-page="1"
+                                                           href="{{ query }}&page={{ users.previous_page_number }}">
+                                                            <i class="fa fa-angle-double-left"></i>
+                                                        </a>
+                                                    </li>
+                                                    {% if users.previous_page_number > 1 %}
+                                                        <li class="page-item">
+                                                            <a class="page-link "
+                                                               data-page="{{ users.previous_page_number }}"
+                                                               href="{{ query }}&page={{ users.previous_page_number }}">
+                                                                <i class="fa fa-angle-left"></i>
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+
+                                                {% endif %}
+
+                                                {% if users.previous_page_number > 2 %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ users.number|add:'-2' }}"
+                                                           href="{{ query }}&page={{ users.number|add:'-2' }}"> {{ users.number|add:"-2" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ users.number|add:'-1' }}"
+                                                           href="{{ query }}&page={{ users.number|add:'-1' }}"> {{ users.number|add:"-1" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                <li class="page-item active"><span
+                                                        class="page-link ">{{ users.number }}</span></li>
+
+                                                {% if users.paginator.num_pages > users.number|add:"2" %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ users.number|add:'1' }}"
+                                                           href="{{ query }}&page={{ users.number|add:'1' }}"> {{ users.number|add:"1" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ users.number|add:'2' }}"
+                                                           href="{{ query }}&page={{ users.number|add:'2' }}"> {{ users.number|add:"2" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                {% if users.has_next %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ users.next_page_number }}"
+                                                           href="{{ query }}&page={{ users.next_page_number }}">
+                                                            <i class="fa fa-angle-right"></i>
+                                                        </a>
+                                                    </li>
+
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ users.paginator.num_pages }}"
+                                                           href="{{ query }}&page={{ users.paginator.num_pages }}">
+                                                            <i class="fa fa-angle-double-right"></i>
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="createUser">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Kullanıcı Ekle</h4>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="userType">Kullanıcı Tipi</label>
+                            <select id="userType" name="user_type" required class="form-control">
+                                <option value="">-----</option>
+                                <option value="Yönetici">Yönetici</option>
+                                <option value="Personel">Personel</option>
+                                <option value="Müşteri">Müşteri</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="first_name">Ad</label>
+                            <input type="text" class="form-control" required
+                                   name="first_name" id="first_name">
+                        </div>
+                        <div class="form-group">
+                            <label for="last_name">Soyad</label>
+                            <input type="text" class="form-control" required
+                                   name="last_name" id="last_name">
+                        </div>
+                        <div class="form-group">
+                            <label for="id_email">E-Posta</label>
+                            <input type="text" class="form-control" required maxlength="255"
+                                   name="email" placeholder="E-Posta adresi giriniz..."
+                                   id="email">
+                            <div class="check-email warning text-danger ml-1">* Bu e-posta adresi zaten
+                                kayıtlı.
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="mobile">Telefon Numarası</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text">
+                                        <i class="fas fa-phone"></i>
+                                    </div>
+                                </div>
+                                <input type="text" name="mobile" id="mobile" class="form-control phone-number">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Şifre</label>
+                            <input type="password" name="password" placeholder="Şifre oluştur"
+                                   class="form-control"
+                                   id="password">
+                            <button type="button" class="btn btn-sm btn-info mt-3" onclick="genPassword();">
+                                Şifre
+                                Oluştur
+                            </button>
+                        </div>
+                        <button type="submit" name="create_user" class="btn btn-primary" id="create_button">
+                            Kullanıcı Oluştur
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'backend/modules/cleave-js/dist/cleave.min.js' %}"></script>
+    <script src="{% static 'backend/modules/cleave-js/dist/addons/cleave-phone.us.js' %}"></script>
+    <script>
+        var cleavePN = new Cleave('.phone-number', {
+            phone: true,
+            phoneRegionCode: 'us'
+        });
+    </script>
+    <script src="{% static 'backend/js/generator_password.js' %}"></script>
+    <script src="{% static 'js/check_email.js' %}"></script>
+{% endblock %}
+
+
+

@@ -2,7 +2,7 @@
 {% load mathfilters %}
 
 <style>
-    .paymentDetailTable td, .paymentDetailTable th{
+    .paymentDetailTable td, .paymentDetailTable th {
         border-style: double;
     }
 </style>
@@ -177,8 +177,8 @@
     <tr>
         <td>Vade Farkı</td>
         <td>-</td>
-        <td id="maturity_difference3">0.00 TL</td>
-        <td id="maturity_difference4">0.00 TL</td>
+        <td class="maturity_difference3">0.00 TL</td>
+        <td class="maturity_difference4">0.00 TL</td>
     </tr>
     <tr>
         <td></td>
@@ -198,13 +198,14 @@
 </table>
 
 <p style="margin-top: 30px;"><b>Ödeme Şekli ve Planı:</b>
-    {% if order.paymenttype %}{{ order.paymenttype }}{% else %}Kredi Kartı{% endif %}</p>
+    {% if order.paymenttype %}{{ order.paymenttype }}{% else %}Kredi Kartı{% endif %} ({% if order.is_installment %}
+        {{ installment }} Taksit{% else %}<span class="paymentTypeAndPlan">Peşin Ödeme</span>{% endif %})
 <p style="margin-top: 10px;"><b>Teslim Edilecek Kişi:</b> {{ address.first_name }} {{ address.last_name }}</p>
 <p style="margin-top: 10px;"><b>Teslimat
     Adresi:</b> {{ address.address }} {{ address.county }}/{{ address.city }}</p>
 <p style="margin-top: 10px;"><b>Fatura
     Adresi:</b> {{ address.address }} {{ address.county }}/{{ address.city }}</p>
-<p style="margin-top: 10px;"><b>Sipariş Tarihi:</b> {% now "SHORT_DATETIME_FORMAT" %}</p>
+<p style="margin-top: 10px;"><b>Sipariş Tarihi:</b> {% now "d-m-Y H:i" %}</p>
 <p style="margin-top: 10px;"><b>Teslim Şekli:</b> Kargo ile adrese elden teslim</p>
 
 
@@ -382,4 +383,4 @@
 
 <p style="margin-top: 20px;">SATICI: {{ setting.company }}</p>
 <p>ALICI: {{ request.user.get_full_name }}</p>
-<p>TARİH: {% now "SHORT_DATETIME_FORMAT" %}</p>
+<p>TARİH: {% now "d-m-Y H:i" %}</p>

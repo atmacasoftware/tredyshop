@@ -1,0 +1,163 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>Amazon Fiyat Ayarla</title>{% endblock %}
+
+{% block xml_yonetimi %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>Amazon Fiyat Ayarla</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item active"><a href="{% url 'xml_fiyat_ayarla' %}">Fiyat Ayarla</a></div>
+                <div class="breadcrumb-item">Amazon Fiyat Ayarla</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+                <form enctype="multipart/form-data" class="container" method="post" id="amazon_form">
+                    {% csrf_token %}
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <tbody>
+                                {% for field in form %}
+                                    <tr>
+                                        <td style="width: 50%;">
+                                            <b><label for="{{ field.id_for_label }}">{{ field.label }}</label></b>
+                                        </td>
+                                        <td style="width: 25%;">
+                                            {{ field }}
+                                        </td>
+                                        <td style="width: 25%">
+                                            <span class="float-right">{{ amazon.update_at|date:"d-m-Y" }}</span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                    </div>
+
+
+                    {% with named_formsets.karmarjlari as formset %}
+                        {{ formset.management_form }}
+                        <script type="text/html" id="variants-template">
+                            <tr id="variants-__prefix__" class=hide_all>
+                                {% for fields in formset.empty_form.hidden_fields %}
+                                    {{ fields }}
+                                {% endfor %}
+
+                                {% for fields in formset.empty_form.visible_fields %}
+                                    <td>{{ fields }}</td>
+                                {% endfor %}
+                            </tr>
+                        </script>
+                        <div class="card mt-4 shadow">
+                            <div class="card-header card-header-secondary">
+                                <h4 class="card-title">Kar Marjı Ekle</h4>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead class="text-secondary">
+                                    <th>Başlangıç Fiyatı <span style="color: red;" class="required">*</span></th>
+                                    <th>Bitiş Fiyatı<span style="color: red;" class="required">*</span></th>
+                                    <th>Kar Marjı <span style="color: red;" class="required">*</span></th>
+                                    <th></th>
+                                    </thead>
+                                    <tbody id="item-variants">
+                                    {% for error in formset.non_form_errors %}
+                                        <span style="color: red">{{ error }}</span>
+                                    {% endfor %}
+                                    {% for formss in formset %}
+                                        {{ formss.management_form }}
+                                        <tr id="variants-{{ forloop.counter0 }}" class=hide_all>
+                                            {{ formss.id }}
+                                            {% for field in formss.visible_fields %}
+                                                <td>
+                                                    {{ field }}
+                                                    {% for error in field.errors %}
+                                                        <span style="color: red">{{ error }}</span>
+                                                    {% endfor %}
+                                                </td>
+                                            {% endfor %}
+                                            {% if formss.instance.pk %}
+                                                <td>
+                                                    <button type="button" class="btn btn-block btn-danger"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#exampleModal{{ formss.instance.pk }}">
+                                                        Sil
+                                                    </button>
+
+                                                    <div class="modal fade" id="exampleModal{{ formss.instance.pk }}"
+                                                         tabindex="-1" role="dialog"
+                                                         aria-labelledby="exampleModalLabel{{ formss.instance.pk }}"
+                                                         aria-hidden="true">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title"
+                                                                        id="exampleModalLabel{{ formss.instance.pk }}">
+                                                                        Are
+                                                                        Silme istediğinize emin misiniz?</h5>
+                                                                    <button type="button" class="close"
+                                                                            data-dismiss="modal"
+                                                                            aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <a href="{% url 'tredyshop_fiyat_delete' formss.instance.pk %}"
+                                                                       type="button" class="btn btn-primary">Evet,
+                                                                        Sil</a>
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                            data-dismiss="modal">Kapat
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    {% endwith %}
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success shadow btn-block">Kaydet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_script %}
+    <script>
+        $(document).ready(function () {
+            // when user clicks add more btn of variants
+            $('.add-karmarji').click(function (ev) {
+                ev.preventDefault();
+                var count = $('#item-variants').children().length;
+                var tmplMarkup = $('#variants-template').html();
+                var compiledTmpl = tmplMarkup.replace(/__prefix__/g, count);
+                $('#item-variants').append(compiledTmpl);
+
+                // update form count
+                $('#id_variants-TOTAL_FORMS').attr('value', count + 1);
+            });
+        });
+    </script>
+{% endblock %}
+
+
+

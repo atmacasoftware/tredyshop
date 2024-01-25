@@ -26,7 +26,6 @@
 #header img{
     width: auto;
     height: auto;
-    margin-top: 10px;
 }
 
 .header-center{
@@ -41,7 +40,7 @@
 }
 
 .dropdown-cart, .dropdown-account{
-    right: 8px;
+    right: 17px;
 }
 
 .js-push-menu i{

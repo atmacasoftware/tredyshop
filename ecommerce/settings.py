@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'hepsiburada',
     'amazon',
     'adminpage',
+    'blog',
     'apis',
 
     'django_ckeditor_5',
@@ -76,16 +77,14 @@ INSTALLED_APPS = [
 
     'admin_honeypot',
     'django_crontab'
-
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django_session_timeout.middleware.SessionTimeoutMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -118,6 +117,7 @@ TEMPLATES = [
                 'mainpage.context_processing.most_search',
                 'mainpage.context_processing.top_product',
                 'carts.context_processors.counter',
+                'adminpage.context_processors.okunmamis_bildirimler',
             ],
         },
     },
@@ -170,7 +170,12 @@ CRONJOBS = [
     ('*/30 * * * * ', 'ecommerce.cron.update_modaymis'),
     ('*/15 * * * * ', 'ecommerce.cron.find_not_active_modaymis'),
     ('*/30 * * * * ', 'ecommerce.cron.trendyol_update_stok_fiyat'),
-    ('* */1 * * * ', 'ecommerce.cron.trendyol_orders'),
+    ('*/5 * * * * ', 'ecommerce.cron.trendyol_orders'),
+    ('0 8 * * * ', 'ecommerce.cron.create_modaymis'),
+    ('0 */2 * * * ', 'ecommerce.cron.updatexmldunyasi'),
+    ('0 */6 * * * ', 'ecommerce.cron.find_not_active_xmldunyasi'),
+    ('0 */3 * * * ', 'ecommerce.cron.updatexmldunyasi_diger'),
+    ('0 0 * * * ', 'ecommerce.cron.task_cron'),
 ]
 
 ACCOUNT_AUTHENTICATION_METHOD = 'email'

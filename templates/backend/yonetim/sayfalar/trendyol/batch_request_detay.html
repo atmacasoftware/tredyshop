@@ -1,0 +1,98 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>Trendyol | Batch Request Detay</title>{% endblock %}
+
+{% block trendyol %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>Batch Request Detay</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item active"><a href="{% url 'trendyol_batch_request' %}">Batch Request</a></div>
+                <div class="breadcrumb-item">Batch Request Detay</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Analizler</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6"><b>Ürün Sayısı: </b> {{ response.itemCount }}</div>
+                                <div class="col-lg-6"><b>Başarısız Ürün Sayısı: </b>{{ response.failedItemCount }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>{{ response.batchRequestId }}</h4>
+                            <div class="card-header-action">
+                                <a href="{% url 'trendyol_batch_request_export_excell' response.batchRequestId %}" name="exportExcel" class="btn btn-success">
+                                        Excel İndir
+                                    </a>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="table-responsive p-0">
+                                <table class="table table-hover text-nowrap" id="batchTable">
+                                    <thead>
+                                    <tr>
+                                        <th>Güncelleme Tarihi</th>
+                                        <th>Barkod</th>
+                                        <th>Miktar</th>
+                                        <th>Liste Fiyatı</th>
+                                        <th>Satış Fiyatı</th>
+                                        <th>Status</th>
+                                        <th>Açıklama</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for item in response.items %}
+                                        <tr>
+                                            <td>{% if item.requestItem.updateRequestDate %}
+                                                {{ item.requestItem.updateRequestDate|slice:"10" }} -
+                                                {{ item.requestItem.updateRequestDate|slice:"11:19" }}{% else %}
+                                                -{% endif %}</td>
+                                            <td>{{ item.requestItem.barcode }}</td>
+                                            <td>{{ item.requestItem.quantity }}</td>
+                                            <td>{{ item.requestItem.listPrice }}</td>
+                                            <td>{{ item.requestItem.salePrice }}</td>
+                                            <td>{{ item.status }}</td>
+                                            <td>{% if item.failureReasons %}{{ item.failureReasons }}{% else %}
+                                                -{% endif %}</td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr class="text-center">
+                                            <td colspan="7">
+                                                <h4>Herhangi bir veri bulunmamaktadır.</h4>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_script %}
+
+{% endblock %}
+
+
+

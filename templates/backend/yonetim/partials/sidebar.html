@@ -1,0 +1,170 @@
+{% load static %}
+<div class="main-sidebar sidebar-style-2">
+    <aside id="sidebar-wrapper">
+        <div class="sidebar-brand">
+            <a href="{% url 'admin_mainpage' %}">TredyShop</a>
+        </div>
+        <div class="sidebar-brand sidebar-brand-sm">
+            <a href="{% url 'admin_mainpage' %}">TS</a>
+        </div>
+        <ul class="sidebar-menu">
+            <li {% if request.path == '/yonetim/' %}class="active"{% endif %}>
+                <a class="nav-link" href="{% url 'admin_mainpage' %}"><i class="fas fa-th"></i>
+                    <span>Anasayfa</span></a>
+            </li>
+            <li {% if '/kategori-yonetimi/' in request.path %}class="active"{% endif %}>
+                <a class="nav-link" href="{% url 'kategoriler_seviye1' %}"><i class="fas fa-table"></i> <span>Kategori Yönetimi</span></a>
+            </li>
+            <li class="dropdown {% if '/yonetim/urunler/' in request.path %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-box"></i>
+                    <span>Ürün Yönetimi</span></a>
+                <ul class="dropdown-menu">
+                    <li {% if '/yonetim/urunler/tum-urunler/' in request.path %}class="active"{% endif %}><a
+                            class="nav-link"
+                            href="{% url 'admin_product' %}">Tüm
+                        Ürünler</a></li>
+                    <li {% if request.path == '/yonetim/urunler/ozellik-guncelleme/' %}class="active"{% endif %}><a
+                            class="nav-link" href="{% url 'urun_ozellik_guncelleme' %}">Özellik Güncelleme</a></li>
+                    <li {% if request.path == '/yonetim/urunler/beden-tablosu/' %}class="active"{% endif %}><a
+                            class="nav-link" href="{% url 'beden_tablosu' %}">Beden Tablosu</a></li>
+                    <li {% if request.path == '/yonetim/urunler/kategori-degistir/' %}class="active"{% endif %}><a
+                            class="nav-link" href="{% url 'kategori_degistir' %}">Kategori Değiştir</a></li>
+                    <li {% if request.path == '/yonetim/urunler/kategorisi-hatali-urunler/' %}class="active"{% endif %}>
+                        <a
+                                class="nav-link" href="{% url 'kategori_hatasi_bulunan_urunler' %}">Kategori Hatalı
+                            Ürünler</a></li>
+                </ul>
+            </li>
+            <li class="dropdown {% if '/yonetim/siparis-yonetimi/' in request.path %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-box-open"></i>
+                    <span>Sipariş Yönetimi</span></a>
+                <ul class="dropdown-menu">
+                    <li {% if request.path == '/yonetim/siparis-yonetimi/tum-siparisler/' %}class="active"{% endif %}><a
+                            class="nav-link" href="{% url 'admin_siparisler' %}">Siparişler</a></li>
+                    <li {% if request.path == '/yonetim/siparis-yonetimi/iptal-talepleri/' %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'admin_iptal_talepleri' %}">İptal Talepleri</a></li>
+                    <li {% if '/yonetim/siparis-yonetimi/iade-talepleri/' in request.path %}class="active"{% endif %}><a
+                            class="nav-link" href="{% url 'iade_talepleri' %}">İade Talepleri</a></li>
+                </ul>
+            </li>
+            <li class="dropdown {% if '/yonetim/kampanya-yonetimi/' in request.path %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-bolt"></i>
+                    <span>Kampanya Yönetimi</span></a>
+                <ul class="dropdown-menu">
+                    <li {% if '/yonetim/kampanya-yonetimi/' in request.path %}class="active"{% endif %}><a
+                            class="nav-link" href="{% url 'kampanyalar' %}">Kampanyalar</a></li>
+                </ul>
+            </li>
+            <li class="dropdown {% if '/yonetim/xml-yonetimi/' in request.path %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-copy"></i>
+                    <span>XML Yönetimi</span></a>
+                <ul class="dropdown-menu">
+                    <li {% if request.path == '/yonetim/xml-yonetimi/haydigiy/veri-yukle-guncelle/' %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'haydigiy_product' %}">HaydiGiy/Modaymış</a></li>
+                    <li {% if request.path == '/yonetim/xml-yonetimi/xml-dunyasi/veri-yukle-guncelle/' %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'xmldunyasi_product' %}">XML Dünyası</a></li>
+                    <li {% if '/yonetim/xml-yonetimi/fiyat-ayarla/' in request.path %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'xml_fiyat_ayarla' %}">Fiyat Ayarla</a></li>
+                </ul>
+            </li>
+            <li class="dropdown {% if '/kullanici-yonetimi/' in request.path %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-users"></i>
+                    <span>Kullanıcı Yönetimi</span></a>
+                <ul class="dropdown-menu">
+                    <li {% if '/yonetim/kullanici-yonetimi/kullanicilar/' in request.path %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'kullanicilar' %}">Kullanıcılar</a></li>
+                    <li {% if '/yonetim/kullanici-yonetimi/gorevler/' in request.path %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'gorevler' %}">Görevler</a></li>
+                </ul>
+            </li>
+            <li class="dropdown {% if '/yonetim/site-yonetimi/' in request.path %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-file-archive"></i>
+                    <span>Site Yönetimi</span></a>
+                <ul class="dropdown-menu">
+                    <li {% if request.path == '/yonetim/site-yonetimi/site-ayarlari/' %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'site_ayarlari' %}">Site Ayarlari</a></li>
+                    <li {% if request.path == '/yonetim/site-yonetimi/anasayfa/' %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'page_mainpage' %}">Anasayfa</a></li>
+                    <li {% if request.path == '/yonetim/site-yonetimi/hakkimizda/' %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'admin_aboutus' %}">Hakkımızda</a></li>
+                </ul>
+            </li>
+            <li class="dropdown {% if '/yonetim/blog-yonetimi/' in request.path %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-blog"></i>
+                    <span>Blog Yönetimi</span></a>
+                <ul class="dropdown-menu">
+                    <li {% if request.path == '/yonetim/blog-yonetimi/kategoriler/' %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'blog_kategori' %}">Kategoriler</a></li>
+                    <li {% if request.path == '/yonetim/blog-yonetimi/blog-yazilari/' %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'blog_yazilari' %}">Blog Yazıları</a></li>
+                </ul>
+            </li>
+            <li class="menu-header">ENTREGRASYON</li>
+            <li class="dropdown {% if '/yonetim/trendyol/' in request.path %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-t"></i>
+                    <span>Trendyol</span></a>
+                <ul class="dropdown-menu">
+                    <li {% if '/trendyol/hesap-bilgileri/' in request.path %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'trendyol_hesap_bilgileri' %}">Hesap Bilgileri</a></li>
+                    <li {% if '/trendyol/urun-giris/' in request.path %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'trendyol_urun_girisi' %}">Ürün Girişi</a></li>
+                    <li {% if '/trendyol/ozellik-eslestir/' in request.path %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'trendyol_ozellik_eslestir' %}">Özellik Eşleştir</a></li>
+                    <li {% if '/trendyol/stok-fiyat-guncelleme/' in request.path %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'trendyol_stok_fiyat_guncelle' %}">Stok & Fiyat Güncelleme</a>
+                    </li>
+                    <li {% if '/trendyol/bilgi-guncelleme/' in request.path %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'trendyol_bilgi_guncelle' %}">Bilgi Güncelleme</a></li>
+                    <li {% if '/trendyol/urun-silme/' in request.path %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'trendyol_delete_product' %}">Ürün Silme</a></li>
+                    <li {% if '/trendyol/urunler/' in request.path %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'trendyol_yuklu_urunler' %}">Ürünler</a></li>
+                    <li {% if '/trendyol/hatali-urunler/' in request.path %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'trendyol_hatali_urunler' %}">Hatalı Ürünler</a></li>
+                    <li {% if '/trendyol/komisyon-oranlari/' in request.path %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'trendyol_komisyon' %}">Komisyon Oranları</a></li>
+                    <li {% if '/trendyol/servis-istekleri/' in request.path %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'trendyol_batch_request' %}">İstek Cevapları</a></li>
+                </ul>
+            </li>
+            <li class="dropdown {% if '/yonetim/hepsiburada/' in request.path %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-h"></i>
+                    <span>Hepsiburada</span></a>
+                <ul class="dropdown-menu">
+                    <li {% if '/hepsiburada/hesap-bilgileri/' in request.path %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'hepsiburada_hesap_bilgileri' %}">Hesap Bilgileri</a></li>
+                </ul>
+            </li>
+            <li class="menu-header">FİNANS</li>
+            <li class="dropdown {% if '/finans-yonetimi/' in request.path %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-money-bill"></i>
+                    <span>Faturalar</span></a>
+                <ul class="dropdown-menu">
+                    <li {% if request.path == '/yonetim/finans-yonetimi/kesilen-faturalar/' %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'kesilen_faturalar' %}">Kesilen Faturalar</a></li>
+                    <li {% if request.path == '/yonetim/finans-yonetimi/alinan-faturalar/' %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'alinan_faturalar' %}">Alınan Faturalar</a></li>
+                </ul>
+            </li>
+
+            <li {% if '/yonetim/harcamalar/' in request.path %}class="active"{% endif %}>
+                <a class="nav-link" href="{% url 'harcamalar' %}"><i class="fas fa-wallet"></i>
+                    <span>Harcamalar</span></a>
+            </li>
+            <li class="menu-header">Pazarlama</li>
+            <li {% if '/yonetim/pazarlama-yonetimi/email-pazarlama/' in request.path %}class="active"{% endif %}>
+                <a class="nav-link" href="{% url 'email_pazarlama' %}"><i class="fas fa-envelope"></i>
+                    <span>E-Posta Pazarlama</span></a>
+            </li>
+            <li class="menu-header">Diğer</li>
+            <li class="dropdown {% if '/yonetim/gecmis-kayitlar/' in request.path %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-rotate-left"></i>
+                    <span>Geçmiş Kayıtlar</span></a>
+                <ul class="dropdown-menu">
+                    <li {% if request.path == '/yonetim/gecmis-kayitlar/guncelleme-gecmisi/' %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'update_history' %}">Güncelleme Geçmişi</a></li>
+                </ul>
+            </li>
+        </ul>
+    </aside>
+</div>

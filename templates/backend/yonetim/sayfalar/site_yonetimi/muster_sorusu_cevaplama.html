@@ -1,0 +1,130 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>Site Yönetimi | Müşteri Soruları</title>{% endblock %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'backend/css/table_select.css' %}">
+{% endblock %}
+{% block site_yonetimi %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>Site Yönetimi | Müşteri Soruları</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item">Site Yönetimi | Müşteri Soruları</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <h2 class="section-title">Müşteri Soruları</h2>
+            <p class="section-lead">
+                Bu sayfada müşterilerin ürünler için sorduğu sorular bulunmaktadır.
+            </p>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Sorular</h4>
+                        </div>
+                        <div class="card-body">
+                            <a href="#" class="btn btn-primary btn-icon icon-left btn-lg btn-block mb-4 d-md-none"
+                               data-toggle-slide="#ticket-items">
+                                <i class="fas fa-list"></i> Tüm Sorular
+                            </a>
+                            <div class="tickets">
+                                <div class="row">
+                                    <div class="col-lg-4 col-sm-12">
+                                        <div class="ticket-items" id="ticket-items">
+                                            {% for soru in sorular %}
+                                                <div class="ticket-item
+                                                       {% if soru.id == ilgili_soru.id %}active{% endif %}">
+                                                    <div class="ticket-title">
+                                                        <h4>{{ soru.question }}</h4>
+                                                    </div>
+                                                    <div class="ticket-desc">
+                                                        <div>{{ soru.user.get_full_name }}</div>
+                                                        <div class="bullet"></div>
+                                                        <div>{{ soru.passing_time }} önce</div>
+                                                    </div>
+                                                    {% if soru.answer == None %}
+                                                        <div class="reader-status mt-1">
+                                                            <div>
+                                                                <span class="badge badge-danger"
+                                                                      style="font-size:10px;"> Cevaplanmamış</span>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-8">
+                                        <div class="ticket-content">
+                                            <div class="ticket-header">
+                                                <div class="ticket-sender-picture img-shadow">
+                                                    <img src="{{ ilgili_soru.product.image_url1 }}" alt="image">
+                                                </div>
+                                                <div class="ticket-detail">
+                                                    <div class="ticket-title">
+                                                        <h4>{{ ilgili_soru.product.title }}</h4>
+                                                    </div>
+                                                    <div class="ticket-info">
+                                                        <div class="font-weight-600">{{ ilgili_soru.user.get_full_name }}</div>
+                                                        <div class="bullet"></div>
+                                                        <div class="text-primary font-weight-600">{{ ilgili_soru.passing_time }}
+                                                            önce
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="ticket-description">
+                                                <p>
+                                                    {{ ilgili_soru.question }}
+                                                </p>
+
+                                                {% if ilgili_soru.answer %}
+                                                    <p class="bg-light p-3">
+                                                        {{ ilgili_soru.answer }}
+                                                    </p>
+                                                {% endif %}
+
+                                                <div class="ticket-divider"></div>
+
+                                                <div class="ticket-form">
+                                                    <form method="post" enctype="multipart/form-data">
+                                                        {% csrf_token %}
+                                                        <div class="form-group">
+                                                            <textarea class="form-control" name="answer"
+                                                                      placeholder="Cevabınızı yazınız."></textarea>
+                                                        </div>
+                                                        <div class="form-group text-right">
+                                                            <button type="submit" name="answerBtn"
+                                                                    class="btn btn-primary btn-lg">
+                                                                Cevpala
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+{% endblock %}
+
+{% block extra_script %}
+
+{% endblock %}
+
+
+

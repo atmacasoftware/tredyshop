@@ -1,0 +1,175 @@
+{% load static %}
+
+<div class="navbar-bg"></div>
+<nav class="navbar navbar-expand-lg main-navbar">
+    <form class="form-inline mr-auto" id="generalSearchForm">
+        <ul class="navbar-nav mr-3">
+            <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a></li>
+            <li><a href="#" data-toggle="search" class="nav-link nav-link-lg d-sm-none"><i
+                    class="fas fa-search"></i></a></li>
+        </ul>
+        <div class="search-element">
+            <input class="form-control" id="generalSearch" type="search" placeholder="Arama yap..." aria-label="Search"
+                   data-width="250">
+            <button class="btn" type="submit"><i class="fas fa-search"></i></button>
+            <div class="search-backdrop"></div>
+            <div class="search-result">
+                <p class="my-3 mx-2">Arama yapınız....</p>
+            </div>
+        </div>
+    </form>
+    <ul class="navbar-nav navbar-right">
+        <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
+                                                     class="nav-link nav-link-lg message-toggle beep"><i
+                class="far fa-envelope"></i></a>
+            <div class="dropdown-menu dropdown-list dropdown-menu-right">
+                <div class="dropdown-header">Mesajlar
+                    <div class="float-right">
+                        <a href="#">Tümünü Okundu Olarak İşaretle</a>
+                    </div>
+                </div>
+                <div class="dropdown-list-content dropdown-list-message">
+
+                </div>
+                <div class="dropdown-footer text-center">
+                    <a href="#">View All <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+        </li>
+        <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
+                                                     class="nav-link notification-toggle nav-link-lg {% if notify_count > 0 %}beep{% endif %}"><i
+                class="far fa-bell"></i></a>
+            <div class="dropdown-menu dropdown-list dropdown-menu-right">
+                <div class="dropdown-header">Bildirimler
+                    <div class="float-right">
+                        <a href="#" id="allReadBtn">Tümünü Okundu Olarak İşaretle</a>
+                    </div>
+                </div>
+                <div class="dropdown-list-content notifications-items dropdown-list-icons">
+                    {% for n in notify %}
+                        {% if n.noti_type == "1" %}
+                            <a href="{% url 'bildirim_goruntule' n.id %}" data-id = "{{ n.id }}" class="dropdown-item notification-item dropdown-item-unread">
+                                <div class="dropdown-item-icon bg-warning text-white">
+                                    <i class="fas fa-send"></i>
+                                </div>
+                                <div class="dropdown-item-desc">
+                                    {{ n.title }}
+                                    <div class="time text-primary">{{ n.passing_time }}</div>
+                                </div>
+                            </a>
+                        {% elif n.noti_type == "2" %}
+                            <a href="{% url 'bildirim_goruntule' n.id %}" class="dropdown-item dropdown-item-unread">
+                                <div class="dropdown-item-icon bg-primary text-white">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="dropdown-item-desc">
+                                    {{ n.title }}
+                                    <div class="time text-primary">{{ n.passing_time }}</div>
+                                </div>
+                            </a>
+                        {% elif n.noti_type == "3" %}
+                            <a href="{% url 'bildirim_goruntule' n.id %}" class="dropdown-item dropdown-item-unread">
+                                <div class="dropdown-item-icon bg-secondary text-white">
+                                    <i class="fas fa-cubes-stacked"></i>
+                                </div>
+                                <div class="dropdown-item-desc">
+                                    {{ n.title }}
+                                    <div class="time text-primary">{{ n.passing_time }}</div>
+                                </div>
+                            </a>
+                        {% elif n.noti_type == "4" %}
+                            <a href="{% url 'bildirim_goruntule' n.id %}" class="dropdown-item dropdown-item-unread">
+                                <div class="dropdown-item-icon bg-success text-white">
+                                    <i class="fas fa-box"></i>
+                                </div>
+                                <div class="dropdown-item-desc">
+                                    {{ n.title }}
+                                    <div class="time text-primary">{{ n.passing_time }}</div>
+                                </div>
+                            </a>
+                        {% elif n.noti_type == "5" %}
+                            <a href="{% url 'bildirim_goruntule' n.id %}" class="dropdown-item dropdown-item-unread">
+                                <div class="dropdown-item-icon bg-info text-white">
+                                    <i class="fas fa-question"></i>
+                                </div>
+                                <div class="dropdown-item-desc">
+                                    {{ n.title }}
+                                    <div class="time text-primary">{{ n.passing_time }}</div>
+                                </div>
+                            </a>
+                        {% elif n.noti_type == "6" %}
+                            <a href="{% url 'bildirim_goruntule' n.id %}" class="dropdown-item dropdown-item-unread">
+                                <div class="dropdown-item-icon bg-info text-white">
+                                    <i class="fas fa-rotate-left"></i>
+                                </div>
+                                <div class="dropdown-item-desc">
+                                    {{ n.title }}
+                                    <div class="time text-primary">{{ n.passing_time }}</div>
+                                </div>
+                            </a>
+                        {% elif n.noti_type == "7" %}
+                            <a href="{% url 'bildirim_goruntule' n.id %}" class="dropdown-item dropdown-item-unread">
+                                <div class="dropdown-item-icon bg-danger text-white">
+                                    <i class="fas fa-comment"></i>
+                                </div>
+                                <div class="dropdown-item-desc">
+                                    {{ n.title }}
+                                    <div class="time text-primary">{{ n.passing_time }}</div>
+                                </div>
+                            </a>
+                        {% elif n.noti_type == "8" %}
+                            <a href="{% url 'bildirim_goruntule' n.id %}" class="dropdown-item dropdown-item-unread">
+                                <div class="dropdown-item-icon bg-dark text-white">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div class="dropdown-item-desc">
+                                    {{ n.title }}
+                                    <div class="time text-primary">{{ n.passing_time }}</div>
+                                </div>
+                            </a>
+                        {% elif n.noti_type == "9" %}
+                            <a href="{% url 'gorev_detay' n.task_id %}" class="dropdown-item dropdown-item-unread">
+                                <div class="dropdown-item-icon bg-warning text-white">
+                                    <i class="fa-solid fa-list-check"></i>
+                                </div>
+                                <div class="dropdown-item-desc">
+                                    {{ n.title }}
+                                    <div class="time text-primary">{{ n.passing_time }}</div>
+                                </div>
+                            </a>
+                        {% endif %}
+                    {% empty %}
+                        <div style="height: 100%;width: 100%; display: flex; justify-content: center; align-items: center;flex-direction: column;" class="bg-light">
+                            <i class="fa fa-2x fa-exclamation-circle"></i>
+                            <h6 class="text-center mt-2">Şu anda okunmamış bildiriminiz bulunmamaktadır.</h6>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="dropdown-footer text-center">
+                    <a href="{% url 'bildirimler' %}">Tümünü Gör <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </div>
+        </li>
+        <li class="dropdown"><a href="#" data-toggle="dropdown"
+                                class="nav-link dropdown-toggle nav-link-lg nav-link-user"
+                                style="display: flex; justify-content: center; align-items: center; flex-direction: row;">
+            <div style="width: 30px; height: 30px; margin-right: 5px; border-radius: 50%; background: white; display: flex; justify-content: center; align-items: center;">
+                <span class="text-dark font-weight-bold">{{ request.user.first_name|slice:1 }}{{ request.user.last_name|slice:1 }}</span>
+            </div>
+            <div class="d-sm-none d-lg-inline-block">Merhaba, {{ request.user.get_full_name }}</div>
+        </a>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a href="{% url 'user_info' %}" class="dropdown-item has-icon">
+                    <i class="far fa-user"></i> Hesap Bilgilerim
+                </a>
+                <a href="{% url 'admin_change_password' %}" class="dropdown-item has-icon">
+                    <i class="fas fa-cog"></i> Şifre Değiştir
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="{% url 'logout' %}" class="dropdown-item has-icon text-danger">
+                    <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+                </a>
+            </div>
+        </li>
+    </ul>
+</nav>

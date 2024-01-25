@@ -2,42 +2,33 @@
     <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4 product-item">
         <div class="pd-bd product-inner">
             <div class="product-img">
-                <a href="{% url 'products_detail' product.slug %}"
+                <a href="{% url 'products_detail' product.product.slug %}"
                    style="display: flex; justify-content: center; align-items: center"><img
                         src="{{ product.kapak.url }}" alt="" class="img-reponsive"
                         style="width: auto;!important;"></a>
             </div>
             <div class="product-info">
                 <div class="color-group"></div>
-                <div class="element-list element-list-left">
-                    <ul class="desc-list">
-                        {% for description in descriptions %}
-                            {% if description.product.id == product.id %}
-                                <li>{{ description.list }}</li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
-                </div>
                 <div class="element-list element-list-middle">
                     <div class="product-rating bd-rating">
                                                     <span class="rating">
-                                    <i class="fa fa-star{% if product.averageReview < 0.5 %}-o{% elif product.averageReview >= 0.5 and product.averageReview < 1 %}-half-alt {% endif %}"></i><i
-                                                            class="fa fa-star{% if product.averageReview < 1.5 %}-o{% elif product.averageReview >= 1.5 and product.averageReview < 2 %}-half-alt {% endif %}"></i><i
-                                                            class="fa fa-star{% if product.averageReview < 2.5 %}-o{% elif product.averageReview >= 2.5 and product.averageReview < 3 %}-half-alt {% endif %}"></i><i
-                                                            class="fa fa-star{% if product.averageReview < 3.5 %}-o{% elif product.averageReview >= 3.5 and product.averageReview < 4 %}-half-alt {% endif %}"></i><i
-                                                            class="fa fa-star{% if product.averageReview < 4.5 %}-o{% elif product.averageReview >= 4.5 and product.averageReview < 5 %}-half-alt {% endif %}"></i>
+                                    <i class="fa fa-star{% if product.product.averageReview < 0.5 %}-o{% elif product.product.averageReview >= 0.5 and product.product.averageReview < 1 %}-half-alt {% endif %}"></i><i
+                                                            class="fa fa-star{% if product.product.averageReview < 1.5 %}-o{% elif product.product.averageReview >= 1.5 and product.product.averageReview < 2 %}-half-alt {% endif %}"></i><i
+                                                            class="fa fa-star{% if product.product.averageReview < 2.5 %}-o{% elif product.product.averageReview >= 2.5 and product.product.averageReview < 3 %}-half-alt {% endif %}"></i><i
+                                                            class="fa fa-star{% if product.product.averageReview < 3.5 %}-o{% elif product.product.averageReview >= 3.5 and product.product.averageReview < 4 %}-half-alt {% endif %}"></i><i
+                                                            class="fa fa-star{% if product.product.averageReview < 4.5 %}-o{% elif product.product.averageReview >= 4.5 and product.product.averageReview < 5 %}-half-alt {% endif %}"></i>
                                 </span>
-                        <div class="number-rating">( {{ product.countReview }}
+                        <div class="number-rating">( {{ product.product.countReview }}
                             değerlendirme )
                         </div>
                     </div>
-                    <p class="product-cate">{{ product.category.title }}</p>
+                    <p class="product-cate">{{ product.product.category.title }}</p>
                     <h3 class="product-title"><a
-                            href="{% url 'products_detail' product.slug %}">{{ product.title|truncatechars_html:25 }}</a>
+                            href="{% url 'products_detail' product.product.slug %}">{{ product.product.title|truncatechars_html:25 }}</a>
                     </h3>
                     <div class="product-bottom">
-                        <div class="product-price"><span>{{ product.price }} TL</span></div>
-                        <a href="{% url 'products_detail' product.slug %}"
+                        <div class="product-price"><span>{{ product.product.price }} TL</span></div>
+                        <a href="{% url 'products_detail' product.product.slug %}"
                            class="btn-icon btn-view">
                             <span class="icon-bg icon-view"></span>
                         </a>

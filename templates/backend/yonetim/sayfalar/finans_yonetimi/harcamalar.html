@@ -1,0 +1,401 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>Harcamalar</title>{% endblock %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'backend/css/table_select.css' %}">
+{% endblock %}
+{% block finans_yonetimi %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>Harcamalar</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item">Harcamalar</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Filtreleme</h4>
+                            <div class="card-header-action">
+                                <a data-collapse="#filter-card" class="btn btn-icon btn-info" href="#"><i
+                                        class="fas fa-minus"></i></a>
+                            </div>
+                        </div>
+                        <div class="collapse show" id="filter-card">
+                            <div class="card-body">
+                                <form action="" method="get" class="">
+                                    <div class="row my-2">
+                                        <div class="col-3">
+                                            <div class="form-group">
+                                                <label for="harcama_adi">Harcama Adı</label>
+                                                <input id="harcama_adi" type="text" name="harcama_adi"
+                                                       class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="form-group">
+                                                <label for="yil">Harcama Yılı</label>
+                                                <input id="yil" type="number" name="yil"
+                                                       class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="form-group">
+                                                <label for="ay">Harcama Ayı</label>
+                                                <input id="ay" type="number" name="ay"
+                                                       class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="form-group">
+                                                <label for="tip">Harcama Tipi</label>
+                                                <select id="tip" name="tip" class="form-control">
+                                                    <option value="">------</option>
+                                                    <option value="None">Hepsi</option>
+                                                    <option value="Ürün Alımı">Ürün Alımı</option>
+                                                    <option value="KDV Ödemesi">KDV Ödemesi</option>
+                                                    <option value="Gelir Geçici Vergi Ödemesi">Gelir Geçici Vergi
+                                                        Ödemesi
+                                                    </option>
+                                                    <option value="Diğer Harcamalar">Diğer Harcamalar</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row my-2"
+                                         style="display: flex; flex-direction: row;align-items: center;">
+                                        <div class="col-3">
+                                            <div class="form-group">
+                                                <label for="status">Ödeme Durumu</label>
+                                                <select id="status" name="status" class="form-control">
+                                                    <option value="">------</option>
+                                                    <option value="None">Hepsi</option>
+                                                    <option value="Ödeme Yapıldı">Ödeme Yapıldı</option>
+                                                    <option value="İptal Edildi">İptal Edildi</option>
+                                                    <option value="İade Yapıldı">İade Yapıldı</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-9">
+                                            <div class="buttons float-right">
+                                                <button type="submit" class="btn btn-warning" name="queryBtn">Sorgula
+                                                </button>
+                                                <button type="reset" class="btn btn-light">Sıfırla</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Analizler</h4>
+                            <div class="card-header-action">
+                                <a data-collapse="#analiz" class="btn btn-icon btn-info" href="#"><i
+                                        class="fas fa-minus"></i></a>
+                            </div>
+                        </div>
+                        <div class="collapse show" id="analiz">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <button class="btn btn-light btn-block" disabled>Toplam Harcama
+                                            Sayısı: {{ harcama_sayisi }} </button>
+                                    </div>
+                                    <div class="col-3">
+                                        <button class="btn btn-light btn-block" disabled>Toplam Harcama
+                                            Tutarı: {{ total_harcama|floatformat:2 }} TL
+                                        </button>
+                                    </div>
+                                    <div class="col-3">
+                                        <button class="btn btn-light btn-block" disabled>Toplam İade
+                                            Sayısı: {{ iade_sayisi }} </button>
+                                    </div>
+                                    <div class="col-3">
+                                        <button class="btn btn-light btn-block" disabled>Toplam İade
+                                            Tutarı: {{ iade_tutari|floatformat:2 }} TL
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="buttons">
+                                <button class="btn btn-info dropdown-toggle" type="button"
+                                        id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                        aria-expanded="false">
+                                    İşlemler
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a type="button" id="cancelRow" class="dropdown-item" href="#">İptal Et</a>
+                                    <a type="button" id="selectRow" class="dropdown-item" href="#">Seç</a>
+                                    <a class="dropdown-item" href="#" type="button" data-toggle="modal"
+                                       data-target="#modal-select-delete" id="deleteRow">Seçilileri Sil</a>
+                                    <a class="dropdown-item" href="#">Hepsini Sil</a>
+                                </div>
+                                <a href="#" class="btn btn-warning" data-toggle="modal"
+                                   data-target="#createExpenses"><i class="fa fa-plus"></i> Harcama Ekle</a>
+                                <a href="{% url 'harcamalar_export_excel' %}" class="btn btn-success"><i
+                                        class="fa fa-file-excel"></i> Excel İndir</a>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-head-fixed text-nowrap">
+                                    <thead>
+                                    <tr>
+                                        <th class="select-row" style="text-align: start; vertical-align: middle">
+                                            &nbsp;
+                                        </th>
+                                        <th style="text-align: start; vertical-align: middle">Harcama Tipi</th>
+                                        <th style="text-align: start; vertical-align: middle">Harcama Adı</th>
+                                        <th style="text-align: start; vertical-align: middle">Harcama Tutarı</th>
+                                        <th style="text-align: start; vertical-align: middle">Ödeme Durumu</th>
+                                        <th style="text-align: start; vertical-align: middle">Harcama Tarihi</th>
+                                        <th style="text-align: start; vertical-align: middle">İşlemler</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for h in harcamalar %}
+                                        <tr>
+                                            <td class="select-row"
+                                                style="text-align: start; vertical-align: middle; border: 0;">
+                                                <div class="form-check">
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" data-filter="harcama"
+                                                               class="custom-control-input select-checkbox"
+                                                               id="check-{{ h.id }}" name="harcama_secimi"
+                                                               value="{{ h.id }}">
+                                                        <label class="custom-control-label"
+                                                               for="check-{{ h.id }}"></label>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td style="text-align: start; vertical-align: middle">{{ h.harcama_tipi }}</td>
+                                            <td style="text-align: start; vertical-align: middle">{{ h.harcama_adi }}</td>
+                                            <td style="text-align: start; vertical-align: middle">{{ h.harcama_tutari|floatformat:2 }}</td>
+                                            <td style="text-align: start; vertical-align: middle">{{ h.durum }}</td>
+                                            <td style="text-align: start; vertical-align: middle">{{ h.created_at }}</td>
+                                            <td style="text-align: start; vertical-align: middle">
+                                                <a href="{% url 'harcama_detay' h.id %}"
+                                                   class="btn btn-block btn-sm btn-primary">Gör</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <nav aria-label="pagination" class="pagination_area">
+                                <div class="row">
+                                    {% if harcamalar.end_index > 0 %}
+                                        <div class="col-sm-12 col-md-5 d-none d-md-block">
+                                            <p>Showing {{ harcamalar.start_index }} to {{ harcamalar.end_index }}
+                                                of {{ harcamalar.paginator.count }}.</p>
+                                        </div>
+                                    {% endif %}
+                                    {% if harcamalar.paginator.num_pages > 1 %}
+                                        <div class="col-sm-12 col-md-7 dataTables_pager">
+                                            <ul class="pagination float-right">
+                                                {% if harcamalar.has_previous %}
+                                                    <li class="page-item">
+                                                        <a class="page-link" data-page="1"
+                                                           href="{{ query }}&page={{ harcamalar.previous_page_number }}">
+                                                            <i class="fa fa-angle-double-left"></i>
+                                                        </a>
+                                                    </li>
+                                                    {% if harcamalar.previous_page_number > 1 %}
+                                                        <li class="page-item">
+                                                            <a class="page-link "
+                                                               data-page="{{ harcamalar.previous_page_number }}"
+                                                               href="{{ query }}&page={{ harcamalar.previous_page_number }}">
+                                                                <i class="fa fa-angle-left"></i>
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+
+                                                {% endif %}
+
+                                                {% if harcamalar.previous_page_number > 2 %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ harcamalar.number|add:'-2' }}"
+                                                           href="{{ query }}&page={{ harcamalar.number|add:'-2' }}"> {{ harcamalar.number|add:"-2" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ harcamalar.number|add:'-1' }}"
+                                                           href="{{ query }}&page={{ harcamalar.number|add:'-1' }}"> {{ harcamalar.number|add:"-1" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                <li class="page-item active"><span
+                                                        class="page-link ">{{ harcamalar.number }}</span></li>
+
+                                                {% if harcamalar.paginator.num_pages > harcamalar.number|add:"2" %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ harcamalar.number|add:'1' }}"
+                                                           href="{{ query }}&page={{ harcamalar.number|add:'1' }}"> {{ harcamalar.number|add:"1" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ harcamalar.number|add:'2' }}"
+                                                           href="{{ query }}&page={{ harcamalar.number|add:'2' }}"> {{ harcamalar.number|add:"2" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                {% if harcamalar.has_next %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ harcamalar.next_page_number }}"
+                                                           href="{{ query }}&page={{ harcamalar.next_page_number }}">
+                                                            <i class="fa fa-angle-right"></i>
+                                                        </a>
+                                                    </li>
+
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ harcamalar.paginator.num_pages }}"
+                                                           href="{{ query }}&page={{ harcamalar.paginator.num_pages }}">
+                                                            <i class="fa fa-angle-double-right"></i>
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="createExpenses">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Fatura Ekle</h4>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="form-group">
+                                <label id="{{ field.id_for_label }}">{{ field.label }}</label>
+                                {% if field.field.required %}
+                                    <span style="color: red;" class="required">*</span>
+                                {% endif %}
+                                {{ field }}
+                            </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary btn-block" name="addBtn">Ekle</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-select-delete">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Emin misin?</h4>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Seçili kategoriler silinecektir.</p>
+                    <p>*Secili kategorilere bağlı alt kategorilerde silinecektir.</p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button id="deleteNow" class="btn btn-danger"
+                            data-dismiss="modal">
+                        Sil
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block extra_script %}
+    <script>
+        $(document).ready(function () {
+            $(".waiting").hide()
+            $("#deleteRow").hide();
+            $("#cancelRow").hide()
+            $("#selectRow").on('click', function (e) {
+                e.preventDefault();
+                $("#cancelRow").show()
+                $(".select-row").css('display', 'flex')
+                $("#selectRow").hide()
+                $("#deleteRow").show();
+                $("#cancelRow").on('click', function () {
+                    $("#selectRow").show();
+                    $("#cancelRow").hide();
+                    $("#deleteRow").hide();
+                    $(".select-row").css('display', 'none')
+                })
+            })
+        });
+
+        $("#deleteRow").on('click', function () {
+            var _filterObj = {};
+            $(".select-checkbox").each(function (index, ele) {
+                var _filterVal = $(this).val();
+                var _filterKey = $(this).data('filter');
+                _filterObj[_filterKey] = Array.from(document.querySelectorAll('input[data-filter=' + _filterKey + ']:checked')).map(function (el) {
+                    return el.value;
+                });
+            });
+            $("#deleteNow").on('click', function () {
+                console.log(_filterObj)
+                $.ajax({
+                    url: `/yonetim/harcamalar/secili-harcama-sil/`,
+                    data: _filterObj,
+                    dataType: 'json',
+                    beforeSend: function () {
+                        $(".waiting").show()
+                    },
+                    success: function (data) {
+                        $(".waiting").hide()
+                        location.reload();
+                    }
+                });
+            });
+        })
+    </script>
+{% endblock %}
+
+
+

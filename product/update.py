@@ -9,7 +9,7 @@ def kalip():
     dar_pattern = Pattern.objects.get(name='Dar')
     slim_pattern = Pattern.objects.get(name='Slim')
 
-    product = ApiProduct.objects.all().exclude(subcategory__category_no=5 or 6)
+    product = ApiProduct.objects.filter(dropshipping="Modaymış").exclude(subcategory__category_no=5 or 6)
 
     data = 'failed'
 
@@ -35,7 +35,7 @@ def kalip():
 
 def kumas():
     kumas_list = ['deri','triko', 'dokuma', 'dantel', 'denim', 'kot denim', 'kaşkorse', 'poplin', 'örme', 'flamlı']
-    product = ApiProduct.objects.all().exclude(subcategory__category_no=5 or 6)
+    product = ApiProduct.objects.filter(dropshipping="Modaymış").exclude(subcategory__category_no=5 or 6)
     suni_deri = FabricType.objects.get(id=6)
     dokuma = FabricType.objects.get(id=3)
     dantel = FabricType.objects.get(id=1)
@@ -76,7 +76,7 @@ def kumas():
 
 
 def ortam():
-    product = ApiProduct.objects.all().exclude(subcategory__category_no=5 or 6)
+    product = ApiProduct.objects.filter(dropshipping="Modaymış").exclude(subcategory__category_no=5 or 6)
     casual = EnvironmentType.objects.get(id=4)
 
     for p in product:
@@ -410,7 +410,7 @@ def bel():
 
 
 def boy():
-    product = ApiProduct.objects.all().exclude(subcategory_id=7 or 6 or 5)
+    product = ApiProduct.objects.filter(dropshipping="Modaymış").exclude(subcategory_id=7 or 6 or 5)
 
     boy_list = ['bilek boy', 'crop', 'kısa', 'maxi','midi', 'mini', 'regular', 'standart', 'uzun', 'kapri']
 
@@ -469,7 +469,7 @@ def paca():
     return 'success'
 
 def kategori():
-    product = ApiProduct.objects.all()
+    product = ApiProduct.objects.filter(dropshipping="Modaymış")
 
     for p in product:
         if p.subbottomcategory == '' or p.subbottomcategory == None or p.subbottomcategory == 'None':

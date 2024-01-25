@@ -1,0 +1,197 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>{{ user.get_full_name }} Kullanıcısı</title>{% endblock %}
+
+{% block kullanici_yonetimi %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>{{ user.get_full_name }} Kullanıcısı</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item active"><a href="{% url 'kullanicilar' %}">Kullanıcılar</a></div>
+                <div class="breadcrumb-item">{{ user.get_full_name }} Kullanıcısı</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+                <div class="col-lg-12 d-flex align-items-stretch flex-column">
+                    <div class="card d-flex flex-fill">
+                        <div class="card-header">
+                            <h4>{% if user.is_superuser %}Yönetici Bilgileri{% elif user.is_staff %}
+                                Müşteri Bilgileri{% elif user.is_customer %}Müşteri Bilgileri{% endif %}</h4>
+                        </div>
+                        <div class="card-body pt-0">
+                            <div class="row">
+                                <div class="col-7">
+                                    <h2 class="lead"><b>{{ user.get_full_name }}</b></h2>
+                                    <ul class="ml-4 mb-0 fa-ul text-muted">
+                                        <li class="small mt-2"><span class="fa-li"><i
+                                                class="fas fa-lg fa-envelope"></i></span>
+                                            {{ user.email }}
+                                        </li>
+                                        <li class="small mt-2"><span class="fa-li"><i
+                                                class="fas fa-lg fa-phone"></i></span>
+                                            {{ user.mobile }}
+                                        </li>
+                                        <li class="small mt-2"><span class="fa-li"><i
+                                                class="fas fa-lg fa-birthday-cake"></i></span>
+                                            {% if user.birthday %}{{ user.birthday }}{% else %}-{% endif %}
+                                        </li>
+                                        <li class="small mt-2"><span class="fa-li"><i
+                                                class="fas fa-lg fa-genderless"></i></span>
+                                            {% if user.gender %}{{ user.gender }}{% else %}-{% endif %}
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-5 text-center">
+                                    <div class="elevation-2"
+                                         style="float:right;width: 100px;height: 100px; background: orange; color: white; border-radius: 50%; font-size: 2rem; display: flex; justify-content: center; align-items: center;">
+                                        {{ user.first_name|slice:1 }}{{ user.last_name|slice:1 }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="text-right">
+                                <a href="{% url 'kullanici_sil' user.id %}" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i> Kullanıcı Sil
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Müşteri Adresleri</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                {% for a in address %}
+                                    <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch flex-column">
+                                        <div class="card card-warning d-flex flex-fill">
+                                            <div class="card-header text-muted border-bottom-0">
+                                                <h4>{{ a.title }}</h4>
+                                            </div>
+                                            <div class="card-body pt-0">
+                                                <div class="row">
+                                                    <div class="col-7">
+                                                        <h2 class="lead"><b>{{ a.first_name }} {{ a.last_name }}</b>
+                                                        </h2>
+
+                                                        <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                            <li class="small mt-2"><span class="fa-li"><i
+                                                                    class="fas fa-lg fa-phone"></i></span>
+                                                                {{ a.mobile }}
+                                                            </li>
+                                                            <li class="small mt-2"><span class="fa-li"><i
+                                                                    class="fas fa-lg fa-map"></i></span>
+                                                                {{ a.address }} {{ a.neighbourhood }}/{{ a.county }}/{{ a.city }}
+                                                            </li>
+                                                            <li class="small mt-2"><span class="fa-li"><i
+                                                                    class="fas fa-lg fa-money-bill"></i></span>
+                                                                {{ a.bill_type }}
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="col-5 text-center">
+                                                        {% if a.bill_type == 'Bireysel' %}
+                                                            <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                                <li class="small mt-2"><span class="fa-li"><i
+                                                                        class="fas fa-lg fa-address-card"></i></span>
+                                                                    {{ a.tc }}
+                                                                </li>
+                                                            </ul>
+                                                        {% else %}
+                                                            <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                                <li class="small mt-2"><span class="fa-li"><i
+                                                                        class="fas fa-lg fa-building"></i></span>
+                                                                    {{ a.company_name }}
+                                                                </li>
+                                                                <li class="small mt-2"><span class="fa-li"><i
+                                                                        class="fas fa-lg fa-address-card"></i></span>
+                                                                    {{ a.tax_number }}
+                                                                </li>
+                                                                <li class="small mt-2"><span class="fa-li"><i
+                                                                        class="fas fa-lg fa-briefcase"></i></span>
+                                                                    {{ a.tax_administration }}
+                                                                </li>
+                                                            </ul>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Müşteri Kuponları</h4>
+                            <div class="card-header-action">
+                                <a href="#" class="btn btn-primary">
+                                    Kupon Tanımla
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Kupon Kodu</th>
+                                    <th>Kupon Fiyatı</th>
+                                    <th>Kupon Şartı</th>
+                                    <th>İlgili Kategori</th>
+                                    <th>Başlangıç Tarihi</th>
+                                    <th>Bitiş Tarihi</th>
+                                    <th>Kullanım Durumu</th>
+                                    <th>Süresi</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for c in coupons %}
+                                    <tr>
+                                        <td>{{ c.coupon_code }}</td>
+                                        <td>{{ c.coupon_price }}</td>
+                                        <td>{{ c.coupon_conditional }}</td>
+                                        <td>{{ c.coupon_category }}</td>
+                                        <td>{{ c.start_date }}</td>
+                                        <td>{{ c.end_date }}</td>
+                                        <td>{{ c.is_active }}</td>
+                                        <td>{{ c.is_completed }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="9" class="text-center">Herhangi bir kupon
+                                            bulunmamaktadır.
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block extra_script %}
+
+{% endblock %}
+
+
+

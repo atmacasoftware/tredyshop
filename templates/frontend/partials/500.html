@@ -1,41 +1,45 @@
-{% extends 'frontend/layout.html' %}
 {% load static %}
-
-{% block title %}<title>Bir Hata Oluştu</title>{% endblock %}
-
-{% block page_error %}
-    <hr>
+<!doctype html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {% block title %}<title>Bir Hata Oluştu</title>{% endblock %}
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
-    <div class="page-container error">
-        <!-- ~~~~~~~~~~~~~~~~~ Error static content section [START] ~~~~~~~~~~~~~~~~~ -->
-        <div class="page-section static-message">
-            <div class="page-margin">
-                <div class="page-margin__content">
-                    <div class="page-section__body">
-                        <div class="error-page">
-                            <div class="error-page__code">
-                                <img src="{% static 'img/info-gf/500-error.png' %}" alt="IMG">
-                            </div>
-                            <div class="error-page__body">
-                                <h2>
-                                    Oops, Bir Hata Oluştu!
-                                </h2>
-                                <p>
-                                    İsteğiniz işlenirken sunucu bilinmeyen bir nedenle çöktü. Sayfayı yenileyin veya hata tekrarlanırsa bizimle iletişime geçin veya bir süre bekleyip tekrar deneyin.
-                                </p>
-                                <div class="btn-controls">
-                                    <div class="btn-control__item">
-                                        <a href="{% url 'mainpage' %}" class="a-block">
-                                            <div class="btn btn-primary btn-icon btn-lg outline">
-                                                <span class="icon" >
-                                                    <i class="fa fa-home"></i>
-                                                </span>
-                                                <span class="text" style="color: white;">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+</head>
+<body>
+{% include 'frontend/partials/__second_navbar.html' %}
+<div class="page-container error">
+    <!-- ~~~~~~~~~~~~~~~~~ Error static content section [START] ~~~~~~~~~~~~~~~~~ -->
+    <div class="page-section static-message">
+        <div class="page-margin">
+            <div class="page-margin__content">
+                <div class="page-section__body">
+                    <div class="error-page">
+                        <div class="error-page__code">
+                            <img src="{% static 'img/info-gf/500-error.png' %}" alt="IMG">
+                        </div>
+                        <div class="error-page__body">
+                            <h2>
+                                Oops, Bir Hata Oluştu!
+                            </h2>
+                            <p>
+                                İsteğiniz işlenirken sunucu bilinmeyen bir nedenle çöktü. Sayfayı yenileyin veya hata
+                                tekrarlanırsa bizimle iletişime geçin veya bir süre bekleyip tekrar deneyin.
+                            </p>
+                            <div class="btn-controls">
+                                <div class="btn-control__item">
+                                    <a href="{% url 'mainpage' %}" class="a-block">
+                                        <div class="btn btn-primary btn-icon btn-lg outline">
+                                            <span class="text m-0">
                                                     Anasayfaya Git
                                                 </span>
-                                            </div>
-                                        </a>
-                                    </div>
+                                        </div>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -44,4 +48,17 @@
             </div>
         </div>
     </div>
-{% endblock %}
+</div>
+
+{% include 'frontend/partials/__second_footer.html' %}
+
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+<script src="{% static 'js/second_navbar.js' %}"></script>
+</body>
+</html>
+
+
+

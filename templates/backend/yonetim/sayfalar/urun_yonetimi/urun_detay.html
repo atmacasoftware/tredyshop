@@ -1,0 +1,731 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>{{ product.title }}</title>{% endblock %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'backend/modules/select2/dist/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'backend/css/table.css' %}">
+    <link rel="stylesheet" href="{% static 'backend/modules/chocolat/dist/css/chocolat.css' %}">
+{% endblock %}
+{% block urunler %}
+
+
+    <section class="section">
+        <div class="section-header">
+            <h1>{{ product.title }}</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item active"><a href="{% url 'admin_product' %}">Tüm Ürünler</a></div>
+                <div class="breadcrumb-item">Ürün Bilgisi</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Ürün Görselleri</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="gallery gallery-md d-flex justify-content-center align-items-center">
+
+                                {% if product.image_url1 %}
+                                    <div class="gallery-item" data-image="{{ product.image_url1 }}"
+                                         data-title="Image 1"></div>
+                                {% endif %}
+                                {% if product.image_url2 %}
+                                    <div class="gallery-item" data-image="{{ product.image_url2 }}"
+                                         data-title="Image 2"></div>
+                                {% endif %}
+                                {% if product.image_url3 %}
+                                    <div class="gallery-item" data-image="{{ product.image_url3 }}"
+                                         data-title="Image 3"></div>
+                                {% endif %}
+                                {% if product.image_url4 %}
+                                    <div class="gallery-item" data-image="{{ product.image_url4 }}"
+                                         data-title="Image 4"></div>
+                                {% endif %}
+                                {% if product.image_url5 %}
+                                    <div class="gallery-item" data-image="{{ product.image_url5 }}"
+                                         data-title="Image 5"></div>
+                                {% endif %}
+                                {% if product.image_url6 %}
+                                    <div class="gallery-item" data-image="{{ product.image_url6 }}"
+                                         data-title="Image 6"></div>
+                                {% endif %}
+                                {% if product.image_url7 %}
+                                    <div class="gallery-item" data-image="{{ product.image_url7 }}"
+                                         data-title="Image 7"></div>
+                                {% endif %}
+                                {% if product.image_url8 %}
+                                    <div class="gallery-item gallery-md" data-image="{{ product.image_url8 }}"
+                                         data-title="Image 8"></div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>Yayın Durumu</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    {% for field in form %}
+                                        {% if field.name == "is_publish" or field.name == "is_publish_trendyol" %}
+                                            <div class="col-lg-6">
+                                                <div class="form-group">
+                                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                                    {{ field }}
+                                                    {% for error in field.errors %}
+                                                        <p style="color: red">{{ error }}</p>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>Ürün Bilgileri</h4>
+                            </div>
+                            <div class="card-body">
+
+                                {% csrf_token %}
+                                <ul class="nav nav-tabs" id="myTab2" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active show" id="home-tab2" data-toggle="tab" href="#info"
+                                           role="tab" aria-controls="home" aria-selected="true">Ürün</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="profile-tab2" data-toggle="tab" href="#images"
+                                           role="tab"
+                                           aria-controls="profile" aria-selected="false">Görseller</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="contact-tab2" data-toggle="tab" href="#attributes"
+                                           role="tab"
+                                           aria-controls="contact" aria-selected="false">Özellikler</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content tab-bordered" id="myTab3Content">
+                                    <div class="tab-pane fade active show" id="info" role="tabpanel"
+                                         aria-labelledby="home-tab2">
+                                        {{ form.media }}
+                                        {% for field in form %}
+                                            {% if field.name == "title" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "brand" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "description" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "model_code" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "barcode" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "stock_code" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "xml_id" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "dropshipping" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "category" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "subcategory" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "subbottomcategory" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "trendyol_category_id" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "price" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "discountprice" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "trendyol_price" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "hepsiburada_price" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "pttavm_price" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "quantity" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "is_discountprice" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <div class="tab-pane fade" id="images" role="tabpanel"
+                                         aria-labelledby="profile-tab2">
+                                        {% for field in form %}
+                                            {% if field.name == "image_url1" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "image_url2" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "image_url3" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "image_url4" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "image_url5" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "image_url6" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "image_url7" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            {% if field.name == "image_url8" %}
+                                                <div class="form-group row">
+                                                    <label for="{{ field.id_for_label }}"
+                                                           class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                    <div class="col-sm-9">
+                                                        {{ field }}
+                                                        {% for error in field.errors %}
+                                                            <p style="color: red">{{ error }}</p>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                    <div class="tab-pane fade" id="attributes" role="tabpanel"
+                                         aria-labelledby="contact-tab2">
+                                        {% for field in form %}
+                                            {% if product.subbottomcategory.category_no == "3000" %}
+                                                {% if field.name == "color" or field.name == "size" or field.name == "bag_pattern" or field.name == "age_group" or field.name == "sextype" or field.name == "environment" %}
+                                                    <div class="form-group row">
+                                                        <label for="{{ field.id_for_label }}"
+                                                               class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                        <div class="col-sm-9">
+                                                            {{ field }}
+                                                            {% for error in field.errors %}
+                                                                <p style="color: red">{{ error }}</p>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% elif product.subbottomcategory.category_no == "5000" or product.subbottomcategory.category_no == "5050" %}
+                                                {% if field.name == "color" or field.name == "compatible" %}
+                                                    <div class="form-group row">
+                                                        <label for="{{ field.id_for_label }}"
+                                                               class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                        <div class="col-sm-9">
+                                                            {{ field }}
+                                                            {% for error in field.errors %}
+                                                                <p style="color: red">{{ error }}</p>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% elif product.subbottomcategory.category_no == "5100" %}
+                                                {% if field.name == "color" or field.name == "sleepmode" or field.name == "casetype" or field.name == "compatible" or field.name == "tabletmodel" %}
+                                                    <div class="form-group row">
+                                                        <label for="{{ field.id_for_label }}"
+                                                               class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                        <div class="col-sm-9">
+                                                            {{ field }}
+                                                            {% for error in field.errors %}
+                                                                <p style="color: red">{{ error }}</p>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% elif product.subbottomcategory.category_no == "1" or product.subbottomcategory.category_no == "2" or product.subbottomcategory.category_no == "3" or product.subbottomcategory.category_no == "4" or product.subbottomcategory.category_no == "5" or product.subbottomcategory.category_no == "7" %}
+                                                {% if field.name == "color" or field.name == "size" or field.name == "age_group" or field.name == "sextype" or field.name == "heeltype" or field.name == "heelsize" %}
+                                                    <div class="form-group row">
+                                                        <label for="{{ field.id_for_label }}"
+                                                               class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                        <div class="col-sm-9">
+                                                            {{ field }}
+                                                            {% for error in field.errors %}
+                                                                <p style="color: red">{{ error }}</p>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% elif product.subbottomcategory.category_no == "1000" or product.subbottomcategory.category_no == "1001" or product.subbottomcategory.category_no == "1004" or product.subbottomcategory.category_no == "1005" or product.subbottomcategory.category_no == "1008" or product.subbottomcategory.category_no == "1011" or product.subbottomcategory.category_no == "1002" or product.subbottomcategory.category_no == "1013" or product.subbottomcategory.category_no == "1006" or product.subbottomcategory.category_no == "1007" or product.subbottomcategory.category_no == "1009" or product.subbottomcategory.category_no == "1010" or product.subbottomcategory.category_no == "1012" %}
+                                                {% if field.name == "color" or field.name == "size" or field.name == "age_group" or field.name == "sextype" or field.name == "height" or field.name == "pattern" or field.name == "fabrictype" or field.name == "environment" %}
+                                                    <div class="form-group row">
+                                                        <label for="{{ field.id_for_label }}"
+                                                               class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                        <div class="col-sm-9">
+                                                            {{ field }}
+                                                            {% for error in field.errors %}
+                                                                <p style="color: red">{{ error }}</p>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% elif product.subbottomcategory.category_no == "1014" %}
+                                                {% if field.name == "color" or field.name == "size" or field.name == "age_group" or field.name == "sextype" or field.name == "height" or field.name == "fabrictype" %}
+                                                    <div class="form-group row">
+                                                        <label for="{{ field.id_for_label }}"
+                                                               class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                        <div class="col-sm-9">
+                                                            {{ field }}
+                                                            {% for error in field.errors %}
+                                                                <p style="color: red">{{ error }}</p>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% elif product.subbottomcategory.category_no == "1015" or product.subbottomcategory.category_no == "1016" or product.subbottomcategory.category_no == "1017" or product.subbottomcategory.category_no == "1018" or product.subbottomcategory.category_no == "1019" or product.subbottomcategory.category_no == "1021" %}
+                                                {% if field.name == "color" or field.name == "size" or field.name == "age_group" or field.name == "sextype" or field.name == "waist" or field.name == "height" or field.name == "fabrictype" or field.name == "legtype" or field.name == "material" %}
+                                                    <div class="form-group row">
+                                                        <label for="{{ field.id_for_label }}"
+                                                               class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                        <div class="col-sm-9">
+                                                            {{ field }}
+                                                            {% for error in field.errors %}
+                                                                <p style="color: red">{{ error }}</p>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% elif product.subbottomcategory.category_no == "1020" or product.subbottomcategory.category_no == "1022" or product.subbottomcategory.category_no == "1023" or product.subbottomcategory.category_no == "1025" or product.subbottomcategory.category_no == "1026" or product.subbottomcategory.category_no == "1027" %}
+                                                {% if field.name == "color" or field.name == "size" or field.name == "age_group" or field.name == "sextype" or field.name == "pattern" or field.name == "height" or field.name == "fabrictype" %}
+                                                    <div class="form-group row">
+                                                        <label for="{{ field.id_for_label }}"
+                                                               class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                        <div class="col-sm-9">
+                                                            {{ field }}
+                                                            {% for error in field.errors %}
+                                                                <p style="color: red">{{ error }}</p>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% elif product.subbottomcategory.category_no == "1028" or product.subbottomcategory.category_no == "1029" or product.subbottomcategory.category_no == "1031" or product.subbottomcategory.category_no == "1033" or product.subbottomcategory.category_no == "1034" or product.subbottomcategory.category_no == "1035" or product.subbottomcategory.category_no == "1036" or product.subbottomcategory.category_no == "1037" or product.subbottomcategory.category_no == "1038" %}
+                                                {% if field.name == "color" or field.name == "size" or field.name == "age_group" or field.name == "sextype"  or field.name == "fabrictype" %}
+                                                    <div class="form-group row">
+                                                        <label for="{{ field.id_for_label }}"
+                                                               class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                        <div class="col-sm-9">
+                                                            {{ field }}
+                                                            {% for error in field.errors %}
+                                                                <p style="color: red">{{ error }}</p>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% elif product.subbottomcategory.category_no == "1032" %}
+                                                {% if field.name == "color" or field.name == "size" or field.name == "age_group" or field.name == "sextype" or field.name == "fabrictype" %}
+                                                    <div class="form-group row">
+                                                        <label for="{{ field.id_for_label }}"
+                                                               class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                        <div class="col-sm-9">
+                                                            {{ field }}
+                                                            {% for error in field.errors %}
+                                                                <p style="color: red">{{ error }}</p>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% elif product.subbottomcategory.category_no == "2000" or product.subbottomcategory.category_no == "2001" or  product.subbottomcategory.category_no == "2002" %}
+                                                {% if field.name == "color" or field.name == "size" or field.name == "age_group" or field.name == "sextype" or field.name == "bijuteri_theme" %}
+                                                    <div class="form-group row">
+                                                        <label for="{{ field.id_for_label }}"
+                                                               class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                        <div class="col-sm-9">
+                                                            {{ field }}
+                                                            {% for error in field.errors %}
+                                                                <p style="color: red">{{ error }}</p>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% else %}
+                                                {% if field.name == "color" or field.name == "size" or field.name == "fabrictype" or field.name == "height" or field.name == "waist" or field.name == "pattern" or field.name == "armtype" or field.name == "collartype" or field.name == "weavingtype" or field.name == "material" or field.name == "environment" or field.name == "legtype" or field.name == "pocket" or field.name == "heeltype" or field.name == "heelsize" or field.name == "age_group" or field.name == "sextype" or field.name == "warranty" or field.name == "compatible" %}
+                                                    <div class="form-group row">
+                                                        <label for="{{ field.id_for_label }}"
+                                                               class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                        <div class="col-sm-9">
+                                                            {{ field }}
+                                                            {% for error in field.errors %}
+                                                                <p style="color: red">{{ error }}</p>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>Ürün Açıklaması</h4>
+                            </div>
+                            <div class="card-body">
+                                {% for field in form %}
+                                    {% if field.name == "detail" %}
+                                        <div class="form-group row">
+                                            <label for="{{ field.id_for_label }}"
+                                                   class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                            <div class="col-sm-9">
+                                                {{ field }}
+                                                {% for error in field.errors %}
+                                                    <p style="color: red">{{ error }}</p>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    {% if field.name == "slug" %}
+                                        <div class="form-group row">
+                                            <label for="{{ field.id_for_label }}"
+                                                   class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                            <div class="col-sm-9">
+                                                {{ field }}
+                                                {% for error in field.errors %}
+                                                    <p style="color: red">{{ error }}</p>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>Ürün Varyantları</h4>
+                                <div class="card-header-action">
+                                    <a data-collapse="#varyant" class="btn btn-icon btn-info" href="#"><i
+                                            class="fas fa-plus"></i></a>
+                                </div>
+                            </div>
+                            <div class="card-body collapse" id="varyant">
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Ürün Adı</th>
+                                        <th scope="col">Barkod</th>
+                                        <th scope="col">Beden</th>
+                                        <th scope="col">Renk</th>
+                                        <th scope="col">Güncellenme Tarihi</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for v in variants %}
+                                        <tr>
+                                            <td><a href="{% url 'product_detail' v.id %}">{{ v.title }}</a></td>
+                                            <td>{{ v.barcode }}</td>
+                                            <td>{{ v.size }}</td>
+                                            <td>{{ v.color }}</td>
+                                            <td>{{ v.update_at }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="group__1">
+                                    <button type="submit" name="updateBtn" class="btn btn-success">
+                                        Güncelle
+                                    </button>
+                                    <button type="submit" name="updateAndCloseBtn" class="btn btn-primary">
+                                        Güncelle
+                                        ve
+                                        Kapat
+                                    </button>
+                                    <button type="submit" name="variantUpdateBtn" class="btn btn-warning">
+                                        Tüm Variantlara Uygula
+                                    </button>
+                                    <a href="/yonetim/urunler/" class="btn btn-dark">Kapat</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'backend/js/product.js' %}"></script>
+    <script src="{% static 'backend/modules/chocolat/dist/js/jquery.chocolat.min.js' %}"></script>
+    <script src="{% static 'backend/modules/select2/dist/js/select2.full.min.js' %}"></script>
+{% endblock %}

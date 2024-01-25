@@ -38,7 +38,7 @@ class MainCategory(models.Model):
         return reverse('first_category', args=[self.slug])
 
     def product_count(self):
-        return self.api_main_category.count()
+        return self.api_main_category.filter(is_publish=True).count()
 
     def exist_subbottomcategories(self):
         c = self.maincategories.filter(maincategory_id=self.id)
@@ -104,7 +104,7 @@ class SubCategory(models.Model):
         return reverse('second_category', args=[self.slug])
 
     def product_count(self):
-        return self.api_sub_category.count()
+        return self.api_sub_category.filter(is_publish=True).count()
 
     def save(self, *args, **kwargs):
 
@@ -160,7 +160,7 @@ class SubBottomCategory(models.Model):
         return reverse('third_category', args=[self.slug])
 
     def product_count(self):
-        return self.api_subbottom_category.count()
+        return self.api_subbottom_category.filter(is_publish=True).count()
 
     def save(self, *args, **kwargs):
         if not self.id and not self.slug:

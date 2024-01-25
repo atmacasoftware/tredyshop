@@ -25,13 +25,24 @@ class SubBottomCategoryList(APIView):
             subbottomcategory = {p.title:p.id for p in subbottomcategory}
         return JsonResponse(data=subbottomcategory, safe=False)
 
+def load_categories(request):
+    categories = SubBottomCategory.objects.all()
+    return render(request,
+                  '../templates/backend/adminpage/partials/load_subbottomcategories.html', {'category': categories})
 
 def load_subcategories(request):
     category_id = request.GET.get('category')
     subcategories = SubCategory.objects.filter(maincategory_id=category_id)
-    return render(request, 'frontend/partials/ajax/load_subcategories.html', {'category': subcategories})
+    return render(request, '../templates/backend/adminpage/partials/load_subcategories.html', {'category': subcategories})
 
 def load_subbottomcategories(request):
     subcategory_id = request.GET.get('subcategory')
     subbottomcategories = SubBottomCategory.objects.filter(subcategory_id=subcategory_id)
-    return render(request, 'frontend/partials/ajax/load_subbottomcategories.html', {'category': subbottomcategories})
+    return render(request,
+                  '../templates/backend/adminpage/partials/load_subbottomcategories.html', {'category': subbottomcategories})
+
+
+def load_all_subbottomcategories(request):
+    subbottomcategories = SubBottomCategory.objects.all()
+    return render(request,
+                  '../templates/backend/adminpage/partials/load_subbottomcategories.html', {'category': subbottomcategories})

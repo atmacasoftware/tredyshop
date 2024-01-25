@@ -117,8 +117,30 @@ class KadinJeanBedenAdmin(ImportExportModelAdmin):
     resource_class = KadinJeanBedenResource
 
 class ProductGroupAdmin(ImportExportModelAdmin):
-    list_display = ['modal_code','product']
+    list_display = ['model_code','product']
+    search_fields = ['model_code']
     resource_class = ProductGroupResource
+
+class TabletModelAdmin(ImportExportModelAdmin):
+    list_display = ['name']
+    resource_class = TabletModelResource
+
+class TableCaseTypeAdmin(ImportExportModelAdmin):
+    list_display = ['name']
+    resource_class = TableCaseTypeResource
+
+class SleepModeAdmin(ImportExportModelAdmin):
+    list_display = ['name']
+    resource_class = SleepModeResource
+
+class BagPatternAdmin(ImportExportModelAdmin):
+    list_display = ['name']
+    resource_class = BagPatternResource
+
+class BijuteriThemeAdmin(ImportExportModelAdmin):
+    list_display = ['name']
+    resource_class = BijuteriThemeResource
+
 
 admin.site.register(Brand, BrandAdmin)
 admin.site.register(LikeProduct)
@@ -150,3 +172,8 @@ admin.site.register(KadinAltBuyukBedenTablosu, KadinAltBuyukBedenAdmin)
 admin.site.register(KadinJeanBedenTablosu, KadinJeanBedenAdmin)
 admin.site.register(ProductKapak)
 admin.site.register(ProductModelGroup, ProductGroupAdmin)
+admin.site.register(TabletModel, TabletModelAdmin)
+admin.site.register(TableCaseType, TableCaseTypeAdmin)
+admin.site.register(SleepMode, SleepModeAdmin)
+admin.site.register(BagPattern, BagPatternAdmin)
+admin.site.register(BijuteriTheme, BijuteriThemeAdmin)

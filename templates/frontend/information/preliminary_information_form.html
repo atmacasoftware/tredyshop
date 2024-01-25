@@ -42,7 +42,7 @@
 
 <p style="margin-top: 30px;"><b>Ödeme Şekli ve Planı:</b>
     {% if order.paymenttype %}{{ order.paymenttype }}{% else %}Kredi Kartı{% endif %} ({% if order.is_installment %}
-        {{ installment }} Taksit{% else %}Peşin Ödeme{% endif %})</p>
+        {{ installment }} Taksit{% else %}<span class="paymentTypeAndPlan">Peşin Ödeme</span>{% endif %})</p>
 
 <table class="paymentDetailTable">
     <thead>
@@ -130,8 +130,8 @@
     <tr>
         <td>Vade Farkı</td>
         <td>-</td>
-        <td id="maturity_difference1">0.00 TL</td>
-        <td id="maturity_difference2">0.00 TL</td>
+        <td class="maturity_difference1">0.00 TL</td>
+        <td class="maturity_difference2">0.00 TL</td>
     </tr>
     <tr>
         <td></td>
@@ -154,7 +154,7 @@
     Adresi:</b> {{ address.address }} {{ address.neighbourhood }}/{{ address.county }}/{{ address.city }}</p>
 <p style="margin-top: 10px;"><b>Fatura
     Adresi:</b> {{ address.address }} {{ address.county }}/{{ address.city }}</p>
-<p style="margin-top: 10px;"><b>Sipariş Tarihi:</b> {% now "SHORT_DATETIME_FORMAT" %}</p>
+<p style="margin-top: 10px;"><b>Sipariş Tarihi:</b> {% now "d-m-Y H:i" %}</p>
 
 <p style="margin-top: 30px;">
     Paketleme, kargo ve teslim masrafları ALICI tarafından karşılanmaktadır. İlgili sipariş için kargo ücreti
