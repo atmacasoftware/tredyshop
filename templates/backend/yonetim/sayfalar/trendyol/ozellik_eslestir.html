@@ -5,6 +5,7 @@
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'backend/modules/select2/dist/css/select2.min.css' %}">
     <link rel="stylesheet" href="{% static 'backend/css/table.css' %}">
+    <link rel="stylesheet" href="{% static 'backend/modules/chocolat/dist/css/chocolat.css' %}">
 {% endblock %}
 {% block trendyol %}
 
@@ -30,7 +31,8 @@
                                             id="select-category" name="kategori" style="width: 100%;">
                                         <option value="">--------</option>
                                         {% for c in category %}
-                                            <option value="{{ c.id }}" {% if select_category.id == c.id %}selected{% endif %}>{{ c.title }}</option>
+                                            <option value="{{ c.id }}"
+                                                    {% if select_category.id == c.id %}selected{% endif %}>{{ c.title }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -42,8 +44,12 @@
                                         <select class="form-control select2 publish_statusSelect filter-checkbox"
                                                 id="select-publish_status" name="publish_status" style="width: 100%;">
                                             <option value="">--------</option>
-                                            <option value="True" {% if is_publish == "True" %}selected{% endif %}>Yayında</option>
-                                            <option value="False" {% if is_publish == "False" %}selected{% endif %}>Yayında Değil</option>
+                                            <option value="True" {% if is_publish == "True" %}selected{% endif %}>
+                                                Yayında
+                                            </option>
+                                            <option value="False" {% if is_publish == "False" %}selected{% endif %}>
+                                                Yayında Değil
+                                            </option>
                                         </select>
                                     </div>
                                 </div>
@@ -95,7 +101,7 @@
                                             <th>Cinsiyet <span class="text-danger">*</span></th>
                                             <th>Topuk Tipi <span class="text-danger">*</span></th>
                                             <th>Topuk Boyu <span class="text-danger">*</span></th>
-                                        {% elif select_category.title == "Atlet-Büstiyer" or select_category.title == "Bluz-Body-Triko" or select_category.title == "Kazak" or select_category.title == "Hırka" or select_category.title == "Süveter" or select_category.title == "Tunik" or select_category.title == "Ceket-Mont-Kaban" or select_category.title == "Yelek" or select_category.title == "Gömlek" or select_category.title == "Kimono" or select_category.title == "Panço" or select_category.title == "Sweat" or select_category.title == "Tişort" or select_category.title == "Yağmurluk" %}
+                                        {% elif select_category.title == "Atlet-Büstiyer" or select_category.title == "Bluz" or select_category.title == "Body" or select_category.title == "Kazak" or select_category.title == "Hırka" or select_category.title == "Süveter" or select_category.title == "Tunik" or select_category.title == "Ceket-Mont-Kaban" or select_category.title == "Yelek" or select_category.title == "Gömlek" or select_category.title == "Kimono" or select_category.title == "Panço" or select_category.title == "Sweat" or select_category.title == "Tişort" or select_category.title == "Yağmurluk" %}
                                             <th>Renk <span class="text-danger">*</span></th>
                                             <th>Beden <span class="text-danger">*</span></th>
                                             <th>Cinsiyet <span class="text-danger">*</span></th>
@@ -129,7 +135,7 @@
                                             <th>Boy <span class="text-danger">*</span></th>
                                             <th>Kalıp <span class="text-danger">*</span></th>
                                             <th>Kumaş Tipi <span class="text-danger">*</span></th>
-                                        {% elif select_category.title == "Fantezi Babydoll" or select_category.title == "Fantezi Gecelik" or select_category.title == "Fantezi İç Çamaşır Takımları" or select_category.title == "Fantezi Külot" or select_category.title == "Fantezi Sütyen" or select_category.title == "Gecelik" or select_category.title == "Jartiyer" or select_category.title == "Külot" or select_category.title == "Sütyen" %}
+                                        {% elif select_category.title == "Fantezi Babydoll" or select_category.title == "Fantezi Gecelik" or select_category.title == "Fantezi İç Çamaşır Takımları" or select_category.title == "Fantezi Külot" or select_category.title == "Fantezi Sütyen" or select_category.title == "Gecelik" or select_category.title == "Jartiyer" or select_category.title == "Külot" or select_category.title == "Sütyen" or select_category.title == "Çorap" %}
                                             <th>Renk <span class="text-danger">*</span></th>
                                             <th>Beden <span class="text-danger">*</span></th>
                                             <th>Cinsiyet <span class="text-danger">*</span></th>
@@ -155,8 +161,13 @@
                                         <tr>
                                             <form action="" method="get">
                                                 <td>
-                                                    <img src="{{ product.image_url1 }}" alt=""
-                                                         style="width: 50px; height: auto;">
+                                                    <div class="gallery gallery-md">
+                                                        <div class="gallery-item" data-image="{{ product.image_url1 }}"
+                                                             data-title="Image 1" style="width: 50px;"></div>
+                                                        <div class="gallery-item d-none"
+                                                             data-image="{{ product.image_url2 }}"
+                                                             data-title="Image 1" style="width: 50px;"></div>
+                                                    </div>
                                                 </td>
                                                 <td>
                                                     <p style="line-height: 0.2px;"><strong>{{ product.title }}</strong>
@@ -619,7 +630,7 @@
                                                             {% endfor %}
                                                         </select>
                                                     </td>
-                                                {% elif select_category.title == "Atlet-Büstiyer" or select_category.title == "Bluz-Body-Triko" or select_category.title == "Kazak" or select_category.title == "Hırka" or select_category.title == "Süveter" or select_category.title == "Tunik" or select_category.title == "Ceket-Mont-Kaban" or select_category.title == "Yelek" or select_category.title == "Gömlek" or select_category.title == "Kimono" or select_category.title == "Panço" or select_category.title == "Sweat" or select_category.title == "Tişort" or select_category.title == "Yağmurluk" %}
+                                                {% elif select_category.title == "Atlet-Büstiyer" or select_category.title == "Bluz" or select_category.title == "Body" or select_category.title == "Kazak" or select_category.title == "Hırka" or select_category.title == "Süveter" or select_category.title == "Tunik" or select_category.title == "Ceket-Mont-Kaban" or select_category.title == "Yelek" or select_category.title == "Gömlek" or select_category.title == "Kimono" or select_category.title == "Panço" or select_category.title == "Sweat" or select_category.title == "Tişort" or select_category.title == "Yağmurluk" %}
                                                     <td>
                                                         <select class="form-control select2 renkSelect filter-checkbox"
                                                                 id="select-category1" name="renk-{{ product.id }}"
@@ -1023,7 +1034,7 @@
                                                             {% endfor %}
                                                         </select>
                                                     </td>
-                                                {% elif select_category.title == "Fantezi Babydoll" or select_category.title == "Fantezi Gecelik" or select_category.title == "Fantezi İç Çamaşır Takımları" or select_category.title == "Fantezi Külot" or select_category.title == "Fantezi Sütyen" or select_category.title == "Gecelik" or select_category.title == "Jartiyer" or select_category.title == "Külot" or select_category.title == "Sütyen" %}
+                                                {% elif select_category.title == "Fantezi Babydoll" or select_category.title == "Fantezi Gecelik" or select_category.title == "Fantezi İç Çamaşır Takımları" or select_category.title == "Fantezi Külot" or select_category.title == "Fantezi Sütyen" or select_category.title == "Gecelik" or select_category.title == "Jartiyer" or select_category.title == "Külot" or select_category.title == "Sütyen" or select_category.title == "Çorap" %}
                                                     <td>
                                                         <select class="form-control select2 renkSelect filter-checkbox"
                                                                 id="select-category1" name="renk-{{ product.id }}"
@@ -1062,6 +1073,24 @@
                                                                 id="select-agegroup" name="agegroup-{{ product.id }}"
                                                                 style="width: 100%;">
                                                             <option value="">--------</option>
+                                                            {% if select_category.title == "Çorap" %}
+                                                                <option value="Bebek"
+                                                                        {% if product.age_group == "Bebek" %}selected{% endif %}>
+                                                                    Bebek
+                                                                </option>
+                                                                <option value="Bebek&Çocuk"
+                                                                        {% if product.age_group == "Bebek&Çocuk" %}selected{% endif %}>
+                                                                    Bebek&Çocuk
+                                                                </option>
+                                                                <option value="Çocuk"
+                                                                        {% if product.age_group == "Çocuk" %}selected{% endif %}>
+                                                                    Çocuk
+                                                                </option>
+                                                                <option value="Genç"
+                                                                        {% if product.age_group == "Genç" %}selected{% endif %}>
+                                                                    Genç
+                                                                </option>
+                                                            {% endif %}
                                                             <option value="Yetişkin"
                                                                     {% if product.age_group == "Yetişkin" %}selected{% endif %}>
                                                                 Yetişkin
@@ -1188,7 +1217,8 @@
                                                     </td>
                                                     <td>
                                                         <select class="form-control select2 bijuteritemaSelect filter-checkbox"
-                                                                id="select-bijuteritema" name="bijuteritema-{{ product.id }}"
+                                                                id="select-bijuteritema"
+                                                                name="bijuteritema-{{ product.id }}"
                                                                 style="width: 100%;">
                                                             <option value="">--------</option>
                                                             {% for c in bijuteri_tema %}
@@ -1204,7 +1234,7 @@
                                                         <button class="btn btn-success" id="update-{{ product.id }}">
                                                             Güncelle
                                                         </button>
-                                                        <a href="{% url 'product_detail' product.id %}"
+                                                        <a href="{% url 'product_detail' product.barcode %}"
                                                            class="btn btn-primary">Ürüne Git</a>
                                                         <script>
 
@@ -1357,6 +1387,7 @@
     <script src="{% static 'backend/js/product.js' %}"></script>
     <script src="{% static 'backend/modules/select2/dist/js/select2.full.min.js' %}"></script>
     <script src="{% static 'backend/modules/sweetalert/sweetalert.min.js' %}"></script>
+    <script src="{% static 'backend/modules/chocolat/dist/js/jquery.chocolat.min.js' %}"></script>
     <script>
         function copyFunction(element) {
             navigator.clipboard.writeText(element);

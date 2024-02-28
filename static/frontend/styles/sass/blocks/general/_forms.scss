@@ -1,0 +1,351 @@
+// @*************************************************************************@
+// @ Software author: Mansur Altamirov (Mansur_TL)                           @
+// @ Author URL: https://themeforest.net/user/mansur_tl                      @
+// @ Author E-mails: vayart.help@gmail.com, vayart.web@gmail.com             @
+// @*************************************************************************@
+// @ DreaM - Electronics eCommerce HTML Template                             @
+// @ Copyright (c) 2021 DreaM. All rights reserved.                          @
+// @*************************************************************************@
+
+
+form.form{
+	div.form-group{
+		&.no-mb{
+			margin-bottom: 0px;
+		}
+
+		&.mb-20{
+			margin-bottom: 30px;
+		}
+
+		&.mb-10{
+			margin-bottom: 10px;
+		}
+
+		&.mb-15{
+			margin-bottom: 15px;
+		}
+		
+		div.nice-select{
+			box-shadow: none;
+			height: 42px;
+			border: none;
+			padding-right: 40px;
+			background: transparent;
+			padding-left: 0px;
+
+			&::after{
+				width: 7px;
+				height: 7px;
+				border-right-color: $secondary-text-color;
+				border-bottom-color: $secondary-text-color;
+				right: 20px;
+			}
+
+			div.current-option{
+				display: inline-flex;
+				height: 100%;
+				align-items: center;
+				overflow: hidden;
+				max-width: 100%;
+				padding: 0px 15px;
+
+				span.label{
+					margin-right: 5px;
+					color: $secondary-text-color;
+					font-size: 14px;
+					line-height: 14px;
+				}
+
+				span.current{
+					flex: 1;
+					color: $primary-text-color;
+					font-size: 14px;
+					line-height: 14px;
+				}
+			}
+
+			ul.list{
+				box-shadow: 0 8px 20px rgba(18, 27, 73, 0.2);
+				min-width: 100%;
+				max-height: 300px;
+				overflow-x: hidden;
+				overflow-y: auto;
+				border: none;
+				background: $secondary-bg-color;
+
+
+				li.option{
+					font-size: 13px;
+					color: $primary-text-color;
+
+					&.selected{
+						font-weight: 500;
+					}
+
+					&:hover, &:active, &.selected{
+						background: $grey-ctrl-bg;
+					}
+				}
+
+				@import "../../snippets/scrollbar/_scrollbar.scss";
+			}
+		}
+
+		div.form-switch{
+			padding: 0;
+			margin: 0;
+
+			input.form-check-input{
+				padding: 0;
+				margin: 0;
+				min-width: 45px;
+				height: 22px;
+				cursor: pointer;
+				border: none;
+				background-color: #dcdddf;
+				border-radius: 22px;
+				outline: none;
+
+				&:checked{
+					background-color: $primary-color;
+				}
+			}
+		}
+
+		label.form-control-label{
+			font-size: 13px;
+			line-height: 13px;
+			color: $secondary-text-color;
+			margin-bottom: 10px;
+		}
+
+		input.form-control, textarea.form-control{
+			display: block;
+			box-shadow: none;
+			border: none;
+			height: 42px;
+			background: transparent;
+			border-radius: $secondary-corner-radius;
+			color: $primary-text-color;
+			font-size: 14px;
+			padding: 0px 15px;
+
+			&:focus, &:active{
+				border-color: $primary-color;
+			}
+
+			&::placeholder{
+				color: $secondary-text-color;
+				font-size: 14px;
+			}
+		}
+
+		textarea.form-control{
+			height: auto;
+			min-height: 100px;
+			max-height: 300px;
+			resize: vertical;
+			padding: 10px 15px;
+		}
+
+		div.form-control-feedback{
+			display: block;
+			width: 100%;
+			margin-top: 10px;
+		}
+
+		div.form-field{
+			display: block;
+			width: 100%;
+			position: relative;
+			border: 2px solid $secondary-border-color;
+			border-radius: $secondary-corner-radius;
+			transition: border-color 0.27s ease;
+
+			label.form-control-label{
+				margin: 0;
+				padding: 10px 15px 0px 15px; 
+				font-size: 13px;
+				line-height: 1;
+				z-index: 2;
+				color: $secondary-text-color;
+				font-weight: 500;
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				max-width: calc(100% - 30px);
+			}
+
+			input.form-control{
+				height: 42px;
+			}
+
+			textarea.form-control, input.form-control{
+				&:active, &:focus{
+					& + label.form-control-label{
+						color: $primary-color;
+					}
+				}
+
+
+				&:-webkit-autofill,
+				&:-webkit-autofill:hover, 
+				&:-webkit-autofill:focus, 
+				&:-webkit-autofill:active{
+					-webkit-box-shadow: 0 0 0px 1000px white inset;
+				}
+			}
+
+			textarea.form-control{
+				padding-top: 20px;
+			}
+
+			div.nice-select{
+				height: 42px;
+			}
+
+			button.form-field__password-vctrl{
+				padding: 0;
+				margin: 0;
+				box-shadow: none;
+				border: none;
+				background: transparent;
+				border-radius: 0px;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				position: absolute;
+				height: 42px;
+				width: 42px;
+				bottom: 0px;
+				right: 0px;
+
+				span{
+					width: 20px;
+					height: 20px;
+					line-height: 1;
+
+					svg{
+						width: 100%;
+						height: 100%;
+						stroke: $secondary-text-color;
+						transition: all 0.27s ease;
+					}
+
+					&:hover, &:active{
+						svg{
+							stroke: $primary-color;
+						}
+					}
+				}
+
+				&.vctrl-visible{
+					span.btn-pw-icon_hidden{
+						display: none;
+					}
+				}
+
+				&.vctrl-hidden{
+					span.btn-pw-icon_visible{
+						display: none;
+					}
+				}
+			}
+
+			&.focused-input, &:hover, &:active{
+				border-color: $primary-color;
+			}
+		}
+	}
+
+	div.form-group-title{
+		margin-bottom: 20px;
+
+		span{
+			font-size: 14px;
+			font-weight: normal;
+			font-weight: 500;
+			color: $primary-text-color;
+		}
+	}
+
+	div.form-group-devider{
+		display: block;
+		width: 100%;
+		margin-bottom: 20px;
+		border-bottom: 1px solid $primary-border-color;
+	}
+}
+
+
+div.form-check{
+	padding: 0;
+	line-height: 1;
+	min-height: 20px;
+
+	label.form-check-label{
+		display: inline-block;
+		font-size: 14px;
+		line-height: 24px;
+		color: $primary-text-color;
+		cursor: pointer;
+		margin-left: 10px;
+		padding: 0;
+		font-weight: 400;
+
+		span.color-circle{
+			display: inline-block;
+			width: 18px;
+			height: 18px;
+			border-radius: 3px;
+			background: #555555;
+			line-height: 1;
+			vertical-align: middle;
+			padding: 0;
+			margin: 0;
+			margin-bottom: 4px;
+			margin-right: 10px;
+			
+			&.bordered{
+				border: 1px solid $primary-border-color;
+			}
+		}
+	}
+
+	input.form-check-input{
+		border-color: $secondary-border-color;
+		margin: 0;
+		cursor: pointer;
+		width: 20px;
+		height: 20px;
+		background-color: transparent;
+
+		&:checked{
+			border: none;
+			background-color: $primary-color;
+		}
+	}
+
+	&.tos-agreement{
+		display: flex;
+		align-items: flex-start;
+		flex-wrap: nowrap;
+
+		input.form-check-input{
+			flex-shrink: 0;
+		}
+
+		label.form-check-label{
+			font-size: 13px;
+			line-height: 1.4;
+			margin-left: 20px;
+
+			a{
+				color: $primary-color;
+				text-decoration: none;
+				font-weight: 500;
+			}
+		}
+	}
+}

@@ -1,0 +1,151 @@
+// @*************************************************************************@
+// @ Software author: Mansur Altamirov (Mansur_TL)                           @
+// @ Author URL: https://themeforest.net/user/mansur_tl                      @
+// @ Author E-mails: vayart.help@gmail.com, vayart.web@gmail.com             @
+// @*************************************************************************@
+// @ DreaM - Electronics eCommerce HTML Template                             @
+// @ Copyright (c) 2021 DreaM. All rights reserved.                          @
+// @*************************************************************************@
+
+div.product-grid-item{
+	width: 100%;
+	background: $secondary-bg-color;
+	height: 100%;
+
+	div.product{
+		height: 100%;
+		
+		div.product__image{
+			position: relative;
+			overflow: hidden;
+			background: $grey-ctrl-bg;
+			margin-bottom: 15px;
+
+			img{
+				width: 100%;
+				display: block;
+				border-radius: ($card-corner-radius / 3);
+				transition: all 0.45s ease;
+				mix-blend-mode: multiply;
+			}
+
+			div.discount{
+				position: absolute;
+				width: 50px;
+				height: 50px;
+				border-radius: 50%;
+				background: $black-ctrl-bg;
+				bottom: 5px;
+				left: 5px;
+				line-height: 0px;
+
+				span{
+					width: 100%;
+					height: 100%;
+					font-size: 14px;
+					line-height: 52px;
+					color: $black-ctrl-color;
+					font-weight: 500;
+					display: block;
+					text-align: center;
+				}
+			}
+		}
+
+		div.product__description{
+			div.product_prices{
+				margin-bottom: 0px;
+				display: flex;
+				flex-direction: row;
+				flex-wrap: nowrap;
+				align-items: center;
+
+				b{
+					font-size: 20px;
+					font-weight: 500;
+					color: $primary-text-color;
+					display: inline-block;
+				}
+
+				span{
+					margin-left: 5px;
+					color: $secondary-text-color;
+					font-weight: normal;
+					font-size: 14px;
+					display: inline-block;
+					position: relative;
+
+					&:after{
+						position: absolute;
+						width: 100%;
+						height: 1px;
+						background: $danger-color;
+						content: "";
+						transform: rotate(-9deg);
+						left: 0;
+						top: 45%;
+						z-index: 1;
+					}
+				}
+			}
+
+			div.product_rating{
+				margin-bottom: 10px;
+
+				div.product_rating-stars{
+					display: flex;
+					flex-direction: row;
+					flex-wrap: nowrap;
+					align-items: center;
+
+					span.rating-star{
+						width: 15px;
+						height: 15px;
+						line-height: 0px;
+						padding: 0;
+						margin: 0;
+
+						svg{
+							width: 100%;
+							height: 100%;
+							stroke: darken(#000000, 10);
+							fill: darken(#000000, 10);
+						}
+					}
+
+					span.rating-feedback{
+						font-size: 13px;
+						line-height: 1;
+						color: $secondary-text-color;
+						margin-left: 5px;
+						font-weight: 500;
+					}
+				}
+			}
+
+			div.product_name{
+				a{
+					font-weight: normal;
+					font-size: 13px;
+					color: $primary-text-color;
+					text-decoration: none;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					display: -webkit-box;
+					-webkit-line-clamp: 2;
+					-webkit-box-orient: vertical;
+				}
+			}
+		}
+	}
+
+	&:hover, &:active{
+		div.product{
+			div.product__image{
+				img{
+					transform: scale(1.05);
+				}
+			}
+		}
+	}
+}

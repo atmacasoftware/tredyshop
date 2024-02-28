@@ -78,7 +78,7 @@
                                 </div>
                             </a>
                         {% elif n.noti_type == "4" %}
-                            <a href="{% url 'bildirim_goruntule' n.id %}" class="dropdown-item dropdown-item-unread">
+                            <a href="{% if n.trendyol_orders %}{% url 'trendyol_order_detail' n.trendyol_orders.id %}{% elif n.hepsiburada_orders %}{% url 'hepsiburada_order_detail' n.hepsiburada_orders.id %}{% else %}{% url 'admin_order_detail' n.tredyshop_orders.order_number %}{% endif %}" class="dropdown-item dropdown-item-unread">
                                 <div class="dropdown-item-icon bg-success text-white">
                                     <i class="fas fa-box"></i>
                                 </div>

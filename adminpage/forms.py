@@ -427,14 +427,14 @@ class HepsiburadaFiyatAyarlaForm(forms.ModelForm):
             else:
                 field.widget.attrs['class'] = 'form-control rounded-4'
 
-class AmazonFiyatAyarlaForm(forms.ModelForm):
+class CiceksepetiFiyatAyarlaForm(forms.ModelForm):
     class Meta:
-        model = AmazonFiyatAyarla
+        model = CiceksepetiFiyatAyarla
         fields = '__all__'
         exclude = ['created_at', 'update_at']
 
     def __init__(self, *args, **kwargs):
-        super(AmazonFiyatAyarlaForm, self).__init__(*args, **kwargs)
+        super(CiceksepetiFiyatAyarlaForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             if field.widget.attrs.get('class'):
                 field.widget.attrs['class'] += 'form-control rounded-4'
@@ -512,22 +512,22 @@ HepsiburadaKarMarjiFormSet =inlineformset_factory(
     extra=1, can_delete=False
 )
 
-class AmazonKarMarjiForm(forms.ModelForm):
+class CiceksepetiKarMarjiForm(forms.ModelForm):
     class Meta:
-        model = AmazonKarMarji
+        model = CiceksepetiKarMarji
         fields = '__all__'
         exclude = ['created_at', 'update_at', 'amazon']
 
     def __init__(self, *args, **kwargs):
-        super(AmazonKarMarjiForm, self).__init__(*args, **kwargs)
+        super(CiceksepetiKarMarjiForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             if field.widget.attrs.get('class'):
                 field.widget.attrs['class'] += 'form-control rounded-4'
             else:
                 field.widget.attrs['class'] = 'form-control rounded-4'
 
-AmazonKarMarjiFormSet =inlineformset_factory(
-    AmazonFiyatAyarla, AmazonKarMarji, form=AmazonKarMarjiForm,
+CiceksepetiKarMarjiFormSet =inlineformset_factory(
+    CiceksepetiFiyatAyarla, CiceksepetiKarMarji, form=CiceksepetiKarMarjiForm,
     extra=1, can_delete=False
 )
 

@@ -1,0 +1,155 @@
+{% extends 'frontend/v_1_0/layout.html' %}
+{% load static %}
+
+{% block title %}<title>{{ request.user.get_full_name }} - Kuponlarım</title>{% endblock %}
+
+{% block profile %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/venobox.min.css' %}">
+    <hr>
+    <div class="container container-240 page-container profile mt-20">
+        <div class="page-section orders">
+            <div class="page-margin">
+                <div class="page-margin__content">
+                    <div class="page-section__body">
+                        <div class="profile-page__body">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    {% include 'frontend/pages/profile/partials/partials/_sidebar.html' %}
+                                </div>
+                                <div class="col-lg-9">
+                                    <div class="profile-page__header">
+                                        <h3>
+                                            {{ request.user.get_full_name }} − Kuponlarım <sup
+                                                class="sec-text-color text-600">{{ coupon_count }}</sup>
+                                        </h3>
+                                    </div>
+
+                                    <div class="profile-page__content">
+                                        <div class="orders__list">
+                                            {% for coupon in coupons %}
+                                                <div class="orders__list-item">
+                                                    <div class="order-item">
+                                                        <div class="order-item__body">
+                                                            <div class="row align-items-center">
+                                                                <div class="col-lg-12">
+                                                                    <div class="order-item__num">
+                                                                        <div class="order-icon">
+                                                                            <i class="fa fa-ticket"></i>
+                                                                        </div>
+                                                                        <div class="order-date">
+                                                                            <div class="order-date__topline">
+                                                                            <span>Geçerlilik Tarihi {{ coupon.start_date }} - {{ coupon.end_date }}</span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="order-status">
+                                                                            <span class="badge badge-grad-1 badge-lg">
+                                                                                {% if coupon.is_completed == True %}
+                                                                                    Süresi Bitti
+                                                                                {% else %}
+                                                                                    Aktif
+                                                                                {% endif %}
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-12">
+                                                                    <div class="row">
+                                                                        <div class="col-lg-8">
+                                                                            <div class="order-item__total">
+                                                                                <div class="order-item__total-topline">
+                                                                                    <b>{{ coupon.coupon_price|floatformat:2 }}
+                                                                                        TL ({{ coupon.coupon_code }})</b>
+                                                                                </div>
+                                                                                <div class="order-item__total-botline">
+                                                                                <span>
+                                                                                    {{ coupon.coupon_conditional|floatformat:2 }} TL üzeri alışverişlerde geçerlidir.
+                                                                                </span>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% empty %}
+                                                <div class="d-block">
+                                                    <div class="placeholder-message">
+                                                        <div class="icon">
+                                                    <span>
+                                                        <svg width="31" height="36" viewBox="0 0 31 36" fill="none"
+                                                             xmlns="https://www.w3.org/2000/svg">
+                                                            <path d="M0.000488281 10.9575V23.3325C0.000488281 25.3745 1.21055 25.8165 1.21055 25.8165L14.0242 34.9155C16.0413 36.3475 15.4999 33.3325 15.4999 33.3325V21.9575L0.000488281 10.9575Z"
+                                                                  fill="#D65E45"/>
+                                                            <path d="M30.9994 10.9575V23.3325C30.9994 25.3745 29.8226 25.8165 29.8226 25.8165C29.8226 25.8165 19.0095 33.4835 16.9935 34.9155C14.9752 36.3475 15.5 33.3325 15.5 33.3325V21.9575L30.9994 10.9575Z"
+                                                                  fill="#D65E45"/>
+                                                            <path d="M16.9271 0.4575C16.0934 -0.1525 14.7261 -0.1525 13.8914 0.4575L0.626067 9.9865C-0.208689 10.5965 -0.208689 11.5935 0.626067 12.2025L13.9368 21.8485C14.7715 22.4575 16.1388 22.4575 16.9736 21.8485L30.3739 12.1185C31.2087 11.5095 31.2087 10.5125 30.3739 9.9025L16.9271 0.4575Z"
+                                                                  fill="#FF8D57"/>
+                                                            <path d="M15.5 35.7075C14.8889 35.7075 14.3929 35.2255 14.3929 34.6295V21.7025C14.3929 21.1065 14.8889 20.6245 15.5 20.6245C16.1122 20.6245 16.6071 21.1065 16.6071 21.7025V34.6295C16.6071 35.2255 16.1122 35.7075 15.5 35.7075Z"
+                                                                  fill="#FF8D57"/>
+                                                            <path d="M26.571 18.7935C26.571 19.8975 26.6862 20.4395 25.4639 21.2355L22.7305 23.1135C21.5082 23.9105 21.0355 23.2265 21.0355 22.1215V19.1605C21.0355 18.9675 21.0067 18.7605 20.7277 18.5525C17.8736 16.4275 6.79151 8.47651 4.77216 7.00851L9.89251 3.33051C11.2941 4.25651 21.7972 11.5825 26.1913 14.7075C26.4094 14.8635 26.571 15.0355 26.571 15.2235V18.7935Z"
+                                                                  fill="#99AAB5"/>
+                                                            <path d="M26.1902 14.7075C21.7972 11.5825 11.2941 4.25651 9.89251 3.33051L7.98718 4.69851L4.77216 7.00851C6.79262 8.47651 17.8736 16.4275 20.7277 18.5525C20.8949 18.6775 20.968 18.8025 21.0023 18.9235L26.4636 14.9575C26.3972 14.8705 26.302 14.7865 26.1902 14.7075Z"
+                                                                  fill="#CCD6DD"/>
+                                                            <path d="M26.571 18.7935V15.2235C26.571 15.0355 26.4094 14.8645 26.1902 14.7075C21.7972 11.5825 11.2941 4.25651 9.8925 3.33051L7.59747 4.97951C11.3539 7.64851 21.4152 14.6605 24.049 16.5525C24.3324 16.7565 24.3568 16.9675 24.3568 17.1605V21.9965L25.4639 21.2355C26.6861 20.4385 26.571 19.8975 26.571 18.7935V18.7935Z"
+                                                                  fill="#CCD6DD"/>
+                                                            <path d="M26.1902 14.7075C21.7972 11.5825 11.2941 4.25651 9.8925 3.33051L7.59747 4.97951C11.3539 7.64851 21.4152 14.6605 24.049 16.5525C24.09 16.5815 24.1155 16.6115 24.1453 16.6405L26.4636 14.9575C26.3972 14.8705 26.302 14.7865 26.1902 14.7075Z"
+                                                                  fill="#E1E8ED"/>
+                                                        </svg>
+                                                    </span>
+                                                        </div>
+                                                        <h2>
+                                                            Hiç kuponunuz yok
+                                                        </h2>
+                                                        <p>
+                                                            Hesabınıza henüz kupon tanımlanmamış.
+                                                        </p>
+                                                        <p>
+                                                            Sitemizi, sosyal medyamızı takip ederek ürün alarak kupon
+                                                            kazanabilirsiniz.
+                                                        </p>
+                                                        <div class="btn-controls">
+                                                            <div class="btn-control__item">
+                                                                <a href="{% url 'mainpage' %}" class="a-block">
+                                                                    <div class="btn btn-primary btn-icon btn-lg">
+                                                                <span class="icon">
+                                                                    <svg xmlns="https://www.w3.org/2000/svg" width="24"
+                                                                         height="24" viewBox="0 0 24 24" fill="none"
+                                                                         stroke="currentColor" stroke-width="2"
+                                                                         stroke-linecap="round" stroke-linejoin="round"
+                                                                         class="feather feather-arrow-up-right">
+                                                                        <line x1="7" y1="17" x2="17" y2="7"></line>
+                                                                        <polyline points="7 7 17 7 17 17"></polyline>
+                                                                    </svg>
+                                                                </span>
+                                                                        <span class="text">
+                                                                    Hadi Alışveriş Yapalım
+                                                                </span>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'plugins/venobox.min.js' %}"></script>
+    <script>
+        if ($('.venobox').length && $.fn.venobox != undefined) {
+            $('.venobox').venobox();
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,108 @@
+div.page-container.catalog div.page-section.catalog-filter div.catalog-listing div.catalog-listing__filter div.filter-layout-menu div.filter-layout div.filter-item div.filter-item__body.scrollable::-webkit-scrollbar-thumb{
+    background-color: var(--primary-color);
+}
+
+
+.catalog-department__nav-item .nav-header a {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--black-color);
+    text-decoration: none;
+    transition: .2s linear;
+}
+
+.catalog-department__nav-item .nav-header a:hover {
+    color: var(--primary-color);
+}
+
+.bi-star-fill {
+    color: yellow;
+}
+
+div.page-container.catalog div.page-section.catalog-filter div.catalog-listing div.catalog-listing__result div.content-section div.content-section__body div.listing-result div.listing-result__header form.form div.form-group div.sortby-filter {
+    justify-content: space-between;
+}
+
+#priceFilterBtn, #loadMore {
+    background: var(--primary-color);
+    padding: 15px 30px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    overflow: hidden;
+    width: 100%;
+    color: var(--white-color);
+    font-size: var(--text-fontSize1);
+}
+
+#priceFilterBtn .icon{
+    margin-right: 10px;
+}
+
+.filter-item:last-child{
+    border-bottom: 0!important;
+}
+
+.dropdown-arrangement input[type="radio"] {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    cursor: pointer;
+    z-index: 2;
+    opacity: 0;
+}
+
+.dropdown-arrangement input[type="radio"]:checked ~ label{
+    color: #D31027;
+}
+
+.dropdown-arrangement button{
+    border: 2px solid var(--bg-softGray2);
+    border-radius: 10px;
+    outline: none;
+    background: none;
+    padding: 10px 10px;
+    min-width: 175px;
+    text-align: start;
+    display: flex;
+    justify-content: space-between;
+    transition: .2s linear;
+}
+
+.dropdown-arrangement button::after{
+    content: none!important;
+}
+
+.dropdown-arrangement button:hover,
+.dropdown-arrangement button:focus,
+.dropdown-arrangement button:active{
+    border: 2px solid var(--primary-color)
+}
+
+.dropdown-arrangement .dropdown-menu{
+    min-width: 175px;
+    margin-top: 5px!important;
+    border-radius: 10px;
+    padding: 10px 10px;
+}
+
+.dropdown-arrangement .dropdown-menu li{
+    padding: 5px 5px;
+    transition: .2s linear;
+}
+
+.dropdown-arrangement .dropdown-menu li label{
+    font-size: var(--text-fontSize1);
+}
+
+.dropdown-arrangement .dropdown-menu li:hover{
+    color: var(--primary-color);
+}

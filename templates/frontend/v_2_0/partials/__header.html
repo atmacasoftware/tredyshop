@@ -1,0 +1,473 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'frontend/css/header.css' %}">
+
+<header class="main-header-section catgmenu-opens" id="main-nav-header">
+    <div class="main-header-section__topline">
+        <div class="page-margin">
+            <div class="page-margin__content">
+                <div class="d-flex align-items-center">
+                    <div class="flex-item mobile-dev-logo">
+                        <a href="{% url 'mainpage' %}">
+                            <img src="{% static 'frontend/images/dist/logo/logo2.png' %}" alt="Site Logo">
+                        </a>
+                    </div>
+                    <div class="flex-item flex-1 quick-nav-links-wrap">
+                        <div class="quick-nav-links">
+                            <a href="#">
+                                Blog
+                            </a>
+                            <a href="{% url 'aboutus' %}">
+                                Hakkımızda
+                            </a>
+                            <a href="{% url 'faq' %}" class="mr-auto">
+                                SSS
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex-item">
+                        <div class="event-trigger-wrap">
+                            <a href="https://wa.me/8503098552" target="_blank" class="a-block">
+                                    <span class="event-trigger">
+                                        <span class="text">
+                                            Canlı Yardım
+                                        </span>
+                                    </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-header-section__midline">
+        <div class="page-margin">
+            <div class="page-margin__content">
+                <div class="d-flex align-items-center">
+                    <div class="flex-item">
+                        <div class="logo">
+                            <a href="{% url 'mainpage' %}">
+                                <img src="{% static 'img/logo2.png' %}" alt="IMG">
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex-item">
+                        <div class="catalog-btn">
+                            <button class="btn catalog-btn__closed" id="catgmenu-btn">
+                                    <span class="icon icon-closed">
+                                        <svg width="24" height="24"
+                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                             stroke-linecap="round" stroke-linejoin="round"
+                                             class="feather feather-grid">
+                                            <rect x="3" y="3" width="7" height="7"></rect>
+                                            <rect x="14" y="3" width="7" height="7"></rect>
+                                            <rect x="14" y="14" width="7" height="7"></rect>
+                                            <rect x="3" y="14" width="7" height="7"></rect>
+                                        </svg>
+                                    </span>
+                                <span class="icon icon-open">
+                                        <svg width="24" height="24"
+                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                             stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex-item flex-1">
+                        <form action="" method="get" id="generalSearchForm">
+                            <div class="searchbar-holder">
+                                <input type="text"
+                                       placeholder="Keşfetmek istediğiniz ürün adını yazınız..."
+                                       id="generalSearch" autocomplete="off">
+                                <button class="searchbar-btn">
+                                    <svg width="24" height="24"
+                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                         stroke-linecap="round" stroke-linejoin="round"
+                                         class="feather feather-search">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="search-result-box hidden-xs hidden-sm">
+                                <ul class="list-product-search">
+
+                                </ul>
+                            </div>
+                        </form>
+
+                    </div>
+                    <div class="flex-item">
+                        <div class="user-nav-items">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-item">
+                                    <a href="{% url 'wishlist' %}" class="nav-item" title="Favorilerim">
+                                            <span class="nav-item__btn">
+                                                <span class="icon">
+                                                    <svg width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                         class="feather feather-heart">
+                                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                                    </svg>
+                                                </span>
+                                                <small class="count-ind"></small>
+                                            </span>
+                                    </a>
+                                </div>
+                                <div class="flex-item">
+                                    <a href="{% url 'order_page' %}" class="nav-item" title="Siparişlerim">
+                                            <span class="nav-item__btn">
+                                                <span class="icon">
+                                                    <svg width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                         class="feather feather-package">
+                                                        <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
+                                                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                                                    </svg>
+                                                </span>
+                                            </span>
+                                    </a>
+                                </div>
+                                <div class="flex-item">
+                                    <a href="{% url 'cart' %}" class="nav-item" title="Sepetim">
+                                            <span class="nav-item__btn">
+                                                <span class="icon">
+                                                    <svg width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                         class="feather feather-shopping-bag">
+                                                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                                                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                                                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                                                    </svg>
+                                                </span>
+                                                <small class="count-ind"></small>
+                                            </span>
+                                    </a>
+                                </div>
+                                <div class="flex-item">
+                                    <a href="{% url 'profile_mainpage' %}" class="nav-item" title="Hesabım">
+                                            <span class="nav-item__btn">
+                                                <span class="icon">
+                                                    <svg width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                         class="feather feather-user">
+                                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                        <circle cx="12" cy="7" r="4"></circle>
+                                                    </svg>
+                                                </span>
+                                            </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-header-section__catgmenu" id="catgmenu-layout">
+        <div class="catgmenu-wrap">
+            <div class="catgmenu">
+                <div class="page-margin">
+                    <div class="page-margin__content">
+                        <div class="row">
+                            <div class="col-xxl-2 col-xl-2 col-lg-4 col-12">
+                                <div class="catgmenu__departments">
+                                    <div class="departments-nav">
+                                        <a href="{% url 'product_by_subcategory' 'giyim' 'ust-giyim' %}"
+                                           class="departments-nav__item" target-name="Üst Giyim">
+                                            <span class="emoji-icon">
+                                                <img src="{% static 'frontend/images/dist/category/1.svg' %}"
+                                                     alt="Üst Giyim" width="24" height="24">
+                                            </span>
+                                            <span class="text">Üst Giyim</span>
+                                            <span class="icon">
+                                                    <svg width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                         class="feather feather-chevron-right">
+                                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                                    </svg>
+                                                </span>
+                                        </a>
+                                        <div class="subcategory cat_ust-giyim">
+                                            {% for sbc in subbottomcategories %}
+                                                {% if sbc.subcategory.category_no == "1" %}
+                                                    <a href="{{ sbc.get_url }}">{{ sbc.title }}</a>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-2 col-xl-2 col-lg-4 col-12">
+                                <div class="catgmenu__departments">
+                                    <div class="departments-nav">
+                                        <a href="{% url 'product_by_subcategory' 'giyim' 'alt-giyim' %}"
+                                           target-name="Alt Giyim"
+                                           class="departments-nav__item">
+                                                <span class="emoji-icon">
+                                                   <img src="{% static 'frontend/images/dist/category/2.svg' %}"
+                                                        alt="Alt Giyim" width="24" height="24">
+                                                </span>
+                                            <span class="text">Alt Giyim</span>
+                                            <span class="icon">
+                                                    <svg width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                         class="feather feather-chevron-right">
+                                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                                    </svg>
+                                                </span>
+                                        </a>
+                                        <div class="subcategory cat_alt-giyim">
+                                            {% for sbc in subbottomcategories %}
+                                                {% if sbc.subcategory.category_no == "2" %}
+                                                    <a href="{{ sbc.get_url }}">{{ sbc.title }}</a>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <a href="{% url 'product_by_subcategory' 'giyim' 'esofman-pijama' %}"
+                                           class="departments-nav__item" target-name="Eşofman Pijama">
+                                                <span class="emoji-icon">
+                                                    <img src="{% static 'frontend/images/dist/category/3.svg' %}"
+                                                         alt="Eşofman - Pijama" width="24" height="24">
+                                                </span>
+                                            <span class="text">Eşofman - Pijama</span>
+                                            <span class="icon">
+                                                    <svg width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                         class="feather feather-chevron-right">
+                                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                                    </svg>
+                                                </span>
+                                        </a>
+                                        <div class="subcategory cat_esofman-pijama">
+                                            {% for sbc in subbottomcategories %}
+                                                {% if sbc.subcategory.category_no == "3" %}
+                                                    <a href="{{ sbc.get_url }}">{{ sbc.title }}</a>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-2 col-xl-2 col-lg-4 col-12">
+                                <div class="catgmenu__departments">
+                                    <div class="departments-nav">
+                                        <a href="{% url 'product_by_subcategory' 'giyim' 'ayakkabi' %}"
+                                           class="departments-nav__item" target-name="Ayakkabi">
+                                                <span class="emoji-icon">
+                                                    <img src="{% static 'frontend/images/dist/category/5.svg' %}"
+                                                         alt="Ayakkabı" width="24" height="24">
+                                                </span>
+                                            <span class="text">Ayakkabı</span>
+                                            <span class="icon">
+                                                    <svg width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                         class="feather feather-chevron-right">
+                                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                                    </svg>
+                                                </span>
+                                        </a>
+                                        <div class="subcategory cat_ayakkabi">
+                                            {% for sbc in subbottomcategories %}
+                                                {% if sbc.subcategory.category_no == "5" %}
+                                                    <a href="{{ sbc.get_url }}">{{ sbc.title }}</a>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-2 col-xl-2 col-lg-4 col-12">
+                                <div class="catgmenu__departments">
+                                    <div class="departments-nav">
+                                        <a href="{% url 'product_by_subcategory' 'giyim' 'ic-giyim' %}"
+                                           class="departments-nav__item" target-name="İç Giyim">
+                                                <span class="emoji-icon">
+                                                    <img src="{% static 'frontend/images/dist/category/6.svg' %}"
+                                                         alt="İç Giyim" width="24" height="24">
+                                                </span>
+                                            <span class="text">İç Giyim</span>
+                                            <span class="icon">
+                                                    <svg width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                         class="feather feather-chevron-right">
+                                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                                    </svg>
+                                                </span>
+                                        </a>
+                                        <div class="subcategory cat_ic-giyim">
+                                            {% for sbc in subbottomcategories %}
+                                                {% if sbc.subcategory.category_no == "7" %}
+                                                    <a href="{{ sbc.get_url }}">{{ sbc.title }}</a>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-2 col-xl-2 col-lg-4 col-12">
+                                <div class="catgmenu__departments">
+                                    <div class="departments-nav">
+                                        <a href="{% url 'product_by_subcategory' 'giyim' 'elbise-tulum' %}"
+                                           class="departments-nav__item" target-name="Elbise Tulum">
+                                                <span class="emoji-icon">
+                                                    <img src="{% static 'frontend/images/dist/category/4.svg' %}"
+                                                         alt="Elbise-Tulum" width="24" height="24">
+                                                </span>
+                                            <span class="text">Elbise - Tulum</span>
+                                            <span class="icon">
+                                                    <svg width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                         class="feather feather-chevron-right">
+                                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                                    </svg>
+                                                </span>
+                                        </a>
+                                        <div class="subcategory cat_elbise-tulum">
+                                            {% for sbc in subbottomcategories %}
+                                                {% if sbc.subcategory.category_no == "4" %}
+                                                    <a href="{{ sbc.get_url }}">{{ sbc.title }}</a>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <a href="{% url 'product_by_subcategory' 'giyim' 'bebek' %}"
+                                           class="departments-nav__item" target-name="Bebek">
+                                                <span class="emoji-icon">
+                                                    <img src="{% static 'frontend/images/dist/category/7.svg' %}"
+                                                         alt="Bebek" width="24" height="24">
+                                                </span>
+                                            <span class="text">Bebek</span>
+                                            <span class="icon">
+                                                    <svg width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                         class="feather feather-chevron-right">
+                                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                                    </svg>
+                                                </span>
+                                        </a>
+                                        <div class="subcategory cat_bebek">
+                                            {% for sbc in subbottomcategories %}
+                                                {% if sbc.subcategory.category_no == "8" %}
+                                                    <a href="{{ sbc.get_url }}">{{ sbc.title }}</a>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-2 col-xl-2 col-lg-4 col-12">
+                                <div class="catgmenu__departments">
+                                    <div class="departments-nav">
+                                        <a href="catalog-departments.html" class="departments-nav__item"
+                                           target-name="Aksesuar">
+                                                <span class="emoji-icon">
+                                                    <img src="{% static 'frontend/images/dist/category/8.svg' %}"
+                                                         alt="Aksesuar" width="24" height="24">
+                                                </span>
+                                            <span class="text">Aksesuar</span>
+                                            <span class="icon">
+                                                    <svg width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                         class="feather feather-chevron-right">
+                                                        <polyline points="9 18 15 12 9 6"></polyline>
+                                                    </svg>
+                                                </span>
+                                        </a>
+                                        <div class="subcategory cat_aksesuar">
+                                            {% for sbc in subbottomcategories %}
+                                                {% if sbc.subcategory.category_no == "6" %}
+                                                    <a href="">{{ sbc.title }}</a>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-header-section__botline">
+        <div class="page-margin">
+            <div class="page-margin__content">
+                <div class="main-header-section__topcatgs">
+                    <a href="{% url 'most_discount_product' %}">
+                            <span class="icon">
+                                <svg width="17" height="17" viewBox="0 0 17 17" fill="none"
+                                >
+                                    <path d="M5.49011 3.31497C5.43722 3.36873 5.39708 3.43352 5.36356 3.50455L5.35978 3.50071L0.0635116 15.627L0.0687058 15.6323C-0.0295131 15.8257 0.134815 16.2193 0.471498 16.5619C0.808181 16.9041 1.19539 17.0712 1.38569 16.9713L1.39041 16.9761L13.3212 11.5926L13.3174 11.5883C13.3868 11.5547 13.4506 11.5139 13.5039 11.4592C14.2415 10.7095 13.0454 8.27857 10.8331 6.02954C8.61989 3.78052 6.22817 2.5653 5.49011 3.31497Z"
+                                          fill="#DD2E44"/>
+                                    <path d="M6.13892 5.48047L0.196674 15.3222L0.0635116 15.627L0.0687059 15.6323C-0.0295131 15.8257 0.134815 16.2192 0.471498 16.5619C0.58105 16.6733 0.694852 16.7577 0.806292 16.8293L8.02775 7.88019L6.13892 5.48047Z"
+                                          fill="#EA596E"/>
+                                    <path d="M10.8662 5.99198C13.0715 8.23428 14.2959 10.6244 13.5999 11.3309C12.9043 12.0383 10.5527 10.7943 8.34608 8.55296C6.14041 6.31066 4.91645 3.91957 5.61201 3.21261C6.30804 2.50566 8.65963 3.74967 10.8662 5.99198Z"
+                                          fill="#A0041E"/>
+                                    <path d="M8.77815 6.25273C8.68418 6.33 8.56141 6.37031 8.43155 6.35591C8.02168 6.3108 7.67697 6.16586 7.43567 5.93692C7.18021 5.69455 7.05413 5.36915 7.0886 5.04326C7.14904 4.47117 7.7138 3.94611 8.67663 4.0517C9.05109 4.09249 9.21825 3.97011 9.22392 3.91155C9.23053 3.85348 9.09311 3.6975 8.71865 3.65622C8.30878 3.61111 7.96407 3.46616 7.7223 3.23723C7.46684 2.99486 7.34028 2.66945 7.37523 2.34357C7.43661 1.77148 8.0009 1.24642 8.96279 1.35248C9.23572 1.38224 9.37974 1.32513 9.44066 1.28817C9.4893 1.25794 9.50866 1.22914 9.51054 1.21234C9.51621 1.15427 9.38069 0.998285 9.00528 0.957009C8.74604 0.928213 8.5581 0.69208 8.58691 0.42811C8.61477 0.16462 8.84662 -0.0259183 9.10681 0.0028784C10.0687 0.107986 10.5107 0.742954 10.4498 1.31553C10.3884 1.88858 9.82409 2.41268 8.86126 2.30758C8.58833 2.27734 8.44572 2.33493 8.38433 2.37189C8.3357 2.40164 8.31586 2.43092 8.31397 2.44724C8.30783 2.50579 8.4443 2.66129 8.81971 2.70257C9.78159 2.80816 10.2236 3.44265 10.1627 4.01522C10.1017 4.58732 9.53746 5.11238 8.5751 5.00631C8.30217 4.97655 8.15862 5.03414 8.09723 5.07062C8.04812 5.10134 8.02923 5.13013 8.02734 5.14645C8.02121 5.20452 8.15767 5.36051 8.5326 5.40178C8.79137 5.43058 8.97978 5.66719 8.95098 5.93068C8.93776 6.06219 8.87212 6.17593 8.77815 6.25273Z"
+                                          fill="#AA8DD8"/>
+                                    <path d="M14.4782 10.6912C15.4099 10.4239 16.0526 10.8463 16.2056 11.4006C16.3586 11.9544 16.0271 12.6556 15.0959 12.922C14.7323 13.0257 14.6232 13.2023 14.6378 13.2585C14.6539 13.3151 14.8385 13.4082 15.2012 13.3041C16.1324 13.0377 16.775 13.46 16.928 14.0139C17.082 14.5682 16.7495 15.2685 15.8179 15.5353C15.4548 15.639 15.3452 15.8161 15.3613 15.8722C15.3768 15.9284 15.561 16.0215 15.9241 15.9178C16.1744 15.8463 16.436 15.9946 16.5064 16.2495C16.5762 16.5048 16.4303 16.7697 16.1791 16.8417C15.2484 17.1081 14.6053 16.6867 14.4513 16.1319C14.2983 15.578 14.6303 14.8778 15.5624 14.6109C15.926 14.5068 16.0351 14.3307 16.019 14.274C16.0039 14.2179 15.8198 14.1243 15.4571 14.2279C14.525 14.4948 13.8828 14.0734 13.7293 13.5181C13.5758 12.9643 13.9078 12.264 14.8395 11.9967C15.2021 11.8935 15.3112 11.7159 15.2961 11.6602C15.28 11.6036 15.0963 11.5105 14.7332 11.6142C14.482 11.6862 14.2218 11.5374 14.151 11.2825C14.0806 11.0282 14.227 10.7632 14.4782 10.6912Z"
+                                          fill="#77B255"/>
+                                    <path d="M10.8613 9.39698C10.7224 9.39698 10.5855 9.33507 10.492 9.217C10.3291 9.00967 10.3626 8.70778 10.5657 8.5422C10.6686 8.45821 13.1241 6.49811 16.5943 7.00253C16.8526 7.03997 17.0321 7.28282 16.9952 7.54535C16.9584 7.8074 16.7214 7.9917 16.4607 7.95235C13.3947 7.50984 11.1781 9.27412 11.1564 9.29187C11.0686 9.36291 10.9647 9.39698 10.8613 9.39698Z"
+                                          fill="#AA8DD8"/>
+                                    <path d="M2.71688 7.40023C2.67202 7.40023 2.62621 7.39351 2.58088 7.38007C2.33108 7.30376 2.18942 7.03643 2.2645 6.78254C2.79951 4.97171 3.28447 2.08196 2.68854 1.32844C2.62196 1.24301 2.52138 1.15902 2.29095 1.17678C1.84802 1.21134 1.89004 2.16115 1.89052 2.17075C1.91035 2.4352 1.71485 2.66557 1.45514 2.68525C1.19118 2.70157 0.968296 2.50671 0.948936 2.24226C0.900299 1.58041 1.10288 0.305679 2.22012 0.219769C2.71877 0.181373 3.13289 0.357513 3.42519 0.727071C4.54479 2.14339 3.40819 6.24932 3.16925 7.05851C3.10786 7.26632 2.91993 7.40023 2.71688 7.40023Z"
+                                          fill="#77B255"/>
+                                    <path d="M12.0413 5.00063C12.4325 5.00063 12.7496 4.67831 12.7496 4.28071C12.7496 3.88311 12.4325 3.56079 12.0413 3.56079C11.6501 3.56079 11.333 3.88311 11.333 4.28071C11.333 4.67831 11.6501 5.00063 12.0413 5.00063Z"
+                                          fill="#5C913B"/>
+                                    <path d="M0.944413 9.32017C1.466 9.32017 1.88883 8.89041 1.88883 8.36028C1.88883 7.83015 1.466 7.40039 0.944413 7.40039C0.422828 7.40039 0 7.83015 0 8.36028C0 8.89041 0.422828 9.32017 0.944413 9.32017Z"
+                                          fill="#9266CC"/>
+                                    <path d="M15.347 9.79994C15.7382 9.79994 16.0553 9.47762 16.0553 9.08003C16.0553 8.68243 15.7382 8.36011 15.347 8.36011C14.9558 8.36011 14.6387 8.68243 14.6387 9.08003C14.6387 9.47762 14.9558 9.79994 15.347 9.79994Z"
+                                          fill="#5C913B"/>
+                                    <path d="M11.097 15.5592C11.4882 15.5592 11.8053 15.2369 11.8053 14.8393C11.8053 14.4417 11.4882 14.1194 11.097 14.1194C10.7058 14.1194 10.3887 14.4417 10.3887 14.8393C10.3887 15.2369 10.7058 15.5592 11.097 15.5592Z"
+                                          fill="#5C913B"/>
+                                    <path d="M13.2218 2.60069C13.7433 2.60069 14.1662 2.17093 14.1662 1.6408C14.1662 1.11067 13.7433 0.680908 13.2218 0.680908C12.7002 0.680908 12.2773 1.11067 12.2773 1.6408C12.2773 2.17093 12.7002 2.60069 13.2218 2.60069Z"
+                                          fill="#FFCC4D"/>
+                                    <path d="M15.347 4.52065C15.7382 4.52065 16.0553 4.19833 16.0553 3.80073C16.0553 3.40313 15.7382 3.08081 15.347 3.08081C14.9558 3.08081 14.6387 3.40313 14.6387 3.80073C14.6387 4.19833 14.9558 4.52065 15.347 4.52065Z"
+                                          fill="#FFCC4D"/>
+                                    <path d="M13.93 6.44057C14.3212 6.44057 14.6383 6.11825 14.6383 5.72065C14.6383 5.32305 14.3212 5.00073 13.93 5.00073C13.5388 5.00073 13.2217 5.32305 13.2217 5.72065C13.2217 6.11825 13.5388 6.44057 13.93 6.44057Z"
+                                          fill="#FFCC4D"/>
+                                    <path d="M3.54132 11.7199C3.93251 11.7199 4.24963 11.3975 4.24963 10.9999C4.24963 10.6023 3.93251 10.28 3.54132 10.28C3.15013 10.28 2.83301 10.6023 2.83301 10.9999C2.83301 11.3975 3.15013 11.7199 3.54132 11.7199Z"
+                                          fill="#FFCC4D"/>
+                                </svg>
+                            </span>
+                        <span class="text">
+                                İndirimli Ürünler
+                            </span>
+                    </a>
+                    <a href="{% url 'most_sell_product' %}">
+                            <span class="icon">
+                                <svg width="17" height="17" viewBox="0 0 17 17" fill="none"
+                                >
+                                    <path d="M17 8.96285C17 7.98799 16.8165 7.05331 16.48 6.18861C16.25 8.73639 14.8135 10.045 13.3125 9.43562C11.9065 8.86451 12.854 6.63822 12.924 5.57589C13.042 3.7751 12.918 1.7138 9.4585 0C10.896 2.60026 9.625 4.21572 8.292 4.31406C6.813 4.42327 5.4585 3.11227 5.9585 0.984788C4.3395 2.11283 4.2925 4.01149 4.792 5.23975C5.313 6.52002 4.771 7.58376 3.5005 7.70196C2.0805 7.83433 1.2915 6.26425 2.019 3.76233C0.76 5.16411 0 6.97956 0 8.96285C0 13.4017 3.8055 17 8.5 17C13.1945 17 17 13.4017 17 8.96285Z"
+                                          fill="#F4900C"/>
+                                    <path d="M13.697 11.3263C13.771 12.7843 12.4165 13.3559 11.6875 13.0798C10.6345 12.6812 10.917 11.9967 10.646 10.5783C10.375 9.16002 9.3335 8.17523 7.792 7.7417C8.917 10.7358 7.1685 11.8392 6.252 12.0364C5.316 12.2378 4.3755 12.0359 4.268 10.142C3.176 11.1698 2.5 12.5919 2.5 14.1634C2.5 14.3374 2.5115 14.5085 2.5275 14.6787C4.0625 16.1131 6.171 17 8.5 17C10.829 17 12.9375 16.1131 14.4725 14.6787C14.4885 14.5085 14.5 14.3374 14.5 14.1634C14.5 13.1294 14.208 12.1607 13.697 11.3263Z"
+                                          fill="#FFCC4D"/>
+                                </svg>
+                            </span>
+                        <span class="text">
+                                Çok Satılanlar
+                            </span>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

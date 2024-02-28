@@ -1,0 +1,5 @@
+<select name="" id="">
+    {% for c in subbottomcategories %}
+    <option value="{{ c.id }}">{{ c.maincategory.title }}>{{ c.subcategory.title }}>{{ c.title }}</option>
+    {% endfor %}
+</select>

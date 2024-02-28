@@ -1,0 +1,345 @@
+// @*************************************************************************@
+// @ Software author: Mansur Altamirov (Mansur_TL)                           @
+// @ Author URL: https://themeforest.net/user/mansur_tl                      @
+// @ Author E-mails: vayart.help@gmail.com, vayart.web@gmail.com             @
+// @*************************************************************************@
+// @ DreaM - Electronics eCommerce HTML Template                             @
+// @ Copyright (c) 2021 DreaM. All rights reserved.                          @
+// @*************************************************************************@
+
+
+div.page-margin{
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: flex-start;
+	padding: 0px 50px;
+	
+	div.page-margin__content{
+		max-width: 1440px;
+		min-width: 280px;
+		flex: 1;
+	}
+
+	@include media-breakpoint-down(xl) {
+		overflow: hidden;
+	}
+
+	@include media-breakpoint-down(xl) {
+		div.page-margin__content{
+			max-width: 690px;
+		}
+	}
+
+	@include media-breakpoint-down(md) {
+		padding: 0px 20px;
+	}
+
+	@include media-breakpoint-down(sm) {
+		padding: 0px 10px;
+	}
+}
+
+.text-600{
+	font-weight: 600;
+}
+
+.ml-auto{
+	margin-left: auto;
+}
+
+.mr-auto{
+	margin-right: auto;
+}
+
+.flex-1{
+	flex: 1;
+}
+
+.mb-30{
+	margin-bottom: 30px;
+}
+
+.mb-15{
+	display: block;
+	width: 100%;
+	margin-bottom: 15px;
+}
+
+button.btn.slider-btn{
+	width: 44px;
+	height: 44px;
+	background: rgba(#ffffff, 0.9);
+	box-shadow: 0 1px 10px rgba(0, 0, 0, 0.10);
+	border-radius: 10em;
+	padding: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0;
+	position: absolute;
+	transition: all 0.27s ease;
+	top: calc(50% - 22px);
+
+	svg{
+		stroke: $primary-color;
+		width: 25px;
+		height: 25px;
+		stroke-width: 1;
+		transition: all 0.27s ease;
+	}
+
+	&:hover, &:active{
+		transform: scale(1.1);
+		background: #ffffff;
+
+		svg{
+			stroke: $primary-color;
+		}
+	}
+
+	&.prev{
+		left: 20px;
+	}
+
+	&.next{
+		right: 20px;
+	}
+
+	&:disabled{
+		display: none;
+	}
+
+
+	@include media-breakpoint-down(xl) {
+		display: none;
+	}
+}
+
+div.page-container{
+	width: 100%;
+	display: block;
+	min-height: 60vh;
+	position: relative;
+	z-index: 3;
+
+	div.page-section{
+		display: block;
+		width: 100%;
+		margin-bottom: 50px;
+
+		div.page-section__header{
+			margin-bottom: 30px;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+
+			h2{
+				padding: 0;
+				margin: 0;
+				font-size: 24px;
+				font-weight: 500;
+				color: $primary-text-color;
+
+				a{
+					text-decoration: none;
+					font-size: inherit;
+					line-height: inherit;
+					color: $primary-color;
+					font-weight: inherit;
+				}
+			}
+
+			@include media-breakpoint-down(xl) {
+				h2{
+					font-size: 20px;
+				}
+			}
+
+			@include media-breakpoint-down(lg) {
+				h2{
+					font-size: 18px;
+				}
+			}
+		}
+
+		div.page-section__body{
+			display: block;
+			width: 100%;
+		}
+
+		&.cont-mb-20{
+			margin-bottom: 25px;
+		}
+
+		&.cont-mb-40{
+			margin-bottom: 40px;
+		}
+	}
+}
+
+a.a-block{
+	display: block;
+	padding: 0;
+	margin: 0;
+	text-decoration: none;
+	color: inherit;
+}
+
+nav.breadcrumbs{
+	width: 100%;
+	display: block;
+	margin-top: 0px;
+	margin-bottom: 0px;
+
+	ol.breadcrumb{
+		margin-bottom: 30px;
+
+		li.breadcrumb-item{
+			font-size: 13px;
+			color: $secondary-text-color;
+			line-height: 18px;
+
+			a{
+				text-decoration: none;
+				color: inherit;
+			}
+
+			& + li.breadcrumb-item {
+				&::before{
+					content: "—";
+				}
+			}
+
+			&.active{
+				color: $secondary-text-color;
+			}
+
+			@include media-breakpoint-down(xl) {
+				padding: 0;
+				margin: 0 10px 0 0;
+				line-height: 1.6;
+
+				& + li.breadcrumb-item {
+					&::before{
+						display: none;
+					}
+				}
+			}
+		}
+	}
+}
+
+div.tooltip{
+	opacity: 1 !important;
+
+	div.tooltip-inner{
+		background: $black-ctrl-bg;
+		font-size: 14px;
+		color: $black-ctrl-color;
+		padding: 15px;
+		box-shadow: $primary-box-shadow;
+		font-family: $font-family;
+		text-align: left;
+		border-radius: $secondary-corner-radius;
+	}
+
+	div.tooltip-arrow{
+		&::before{
+			border-top-color: $black-ctrl-bg;
+		}
+	}
+}
+
+div.top-sticky-block-b-wrap{
+	display: block;
+	width: 100%;
+}
+
+div.top-sticky-block{
+	position: sticky;
+	top: 110px;
+}
+
+div.horiz-ad-banner{
+	display: block;
+	width: 100%;
+	margin-bottom: 30px;
+
+	a{
+		img{
+			width: 100%
+		}
+	}
+
+	@include media-breakpoint-down(xl) {
+		display: none;
+	}
+}
+
+small.icon-badge{
+	display: inline-block;
+	padding: 0;
+	margin: 0;
+	width: 14px;
+	height: 14px;
+	line-height: 1;
+	cursor: pointer;
+	vertical-align: middle;
+
+	svg{
+		width: 100%;
+		height: 100%;
+		stroke: $secondary-text-color;
+		transition: all 0.27s ease;
+	}
+
+	&:hover, &:active{
+		svg{
+			stroke: $primary-color;
+		}
+	}
+}
+
+span.badge{
+	border-radius: 3px;
+	font-weight: 500;
+
+	&.badge-red{
+		background: $danger-color;
+	}
+
+	&.badge-orange{
+		background: $warning-color;
+	}
+
+	&.badge-lg{
+		padding: 7px 16px;
+		font-size: 11px;
+	}
+
+	&.badge-grad-1{
+		background: $primary-color;
+	}
+
+	&.badge-grad-2{
+		background: $primary-color;
+	}
+}
+
+.accent-color{
+	color: $primary-color !important;
+}
+
+.sec-text-color{
+	color: $primary-color !important;
+}
+
+.right-sb-minw{
+	min-width: 330px;
+}
+
+div.gradient-border-rounder{
+	overflow: hidden;
+	border-radius: 1px;
+}

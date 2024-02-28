@@ -35,9 +35,10 @@
                         <div class="card-header">
                             <h4>{{ response.batchRequestId }}</h4>
                             <div class="card-header-action">
-                                <a href="{% url 'trendyol_batch_request_export_excell' response.batchRequestId %}" name="exportExcel" class="btn btn-success">
-                                        Excel İndir
-                                    </a>
+                                <a href="{% url 'trendyol_batch_request_export_excell' response.batchRequestId %}"
+                                   name="exportExcel" class="btn btn-success">
+                                    Excel İndir
+                                </a>
                             </div>
                         </div>
 
@@ -46,37 +47,62 @@
                                 <table class="table table-hover text-nowrap" id="batchTable">
                                     <thead>
                                     <tr>
-                                        <th>Güncelleme Tarihi</th>
-                                        <th>Barkod</th>
-                                        <th>Miktar</th>
-                                        <th>Liste Fiyatı</th>
-                                        <th>Satış Fiyatı</th>
-                                        <th>Status</th>
-                                        <th>Açıklama</th>
+                                        {% if all_batch_request.log_type == "1" %}
+                                            <th>Barkod</th>
+                                            <th>Status</th>
+                                            <th>Açıklama</th>
+                                        {% else %}
+                                            <th>Güncelleme Tarihi</th>
+                                            <th>Barkod</th>
+                                            <th>Miktar</th>
+                                            <th>Liste Fiyatı</th>
+                                            <th>Satış Fiyatı</th>
+                                            <th>Status</th>
+                                            <th>Açıklama</th>
+                                        {% endif %}
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for item in response.items %}
-                                        <tr>
-                                            <td>{% if item.requestItem.updateRequestDate %}
-                                                {{ item.requestItem.updateRequestDate|slice:"10" }} -
-                                                {{ item.requestItem.updateRequestDate|slice:"11:19" }}{% else %}
-                                                -{% endif %}</td>
-                                            <td>{{ item.requestItem.barcode }}</td>
-                                            <td>{{ item.requestItem.quantity }}</td>
-                                            <td>{{ item.requestItem.listPrice }}</td>
-                                            <td>{{ item.requestItem.salePrice }}</td>
-                                            <td>{{ item.status }}</td>
-                                            <td>{% if item.failureReasons %}{{ item.failureReasons }}{% else %}
-                                                -{% endif %}</td>
-                                        </tr>
-                                    {% empty %}
-                                        <tr class="text-center">
-                                            <td colspan="7">
-                                                <h4>Herhangi bir veri bulunmamaktadır.</h4>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
+                                    {% if all_batch_request.log_type == "1" %}
+                                        {% for item in response.items %}
+                                            <tr>
+                                                <td>
+                                                    <a href="{% url 'product_detail' item.requestItem.barcode %}">{{ item.requestItem.barcode }}</a>
+                                                </td>
+                                                <td>{{ item.status }}</td>
+                                                <td>{% if item.failureReasons %}{{ item.failureReasons }}{% else %}
+                                                    -{% endif %}</td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr class="text-center">
+                                                <td colspan="7">
+                                                    <h4>Herhangi bir veri bulunmamaktadır.</h4>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% else %}
+                                        {% for item in response.items %}
+                                            <tr>
+                                                <td>{% if item.requestItem.updateRequestDate %}
+                                                    {{ item.requestItem.updateRequestDate|slice:"10" }} -
+                                                    {{ item.requestItem.updateRequestDate|slice:"11:19" }}{% else %}
+                                                    -{% endif %}</td>
+                                                <td>{{ item.requestItem.barcode }}</td>
+                                                <td>{{ item.requestItem.quantity }}</td>
+                                                <td>{{ item.requestItem.listPrice }}</td>
+                                                <td>{{ item.requestItem.salePrice }}</td>
+                                                <td>{{ item.status }}</td>
+                                                <td>{% if item.failureReasons %}{{ item.failureReasons }}{% else %}
+                                                    -{% endif %}</td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr class="text-center">
+                                                <td colspan="7">
+                                                    <h4>Herhangi bir veri bulunmamaktadır.</h4>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    {% endif %}
                                     </tbody>
                                 </table>
                             </div>

@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7WERTPZR5T"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-7WERTPZR5T');
+    </script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta name="copyright" content="Copyright 2023 tredyshop.com">
+    {% block title %}<title></title>{% endblock %}
+    {% block seodescription %}
+        <meta name="description" content="">{% endblock %}
+    {% block seokeyword %}
+        <meta name="keywords" content="">{% endblock %}
+    {% block canonical %}
+        <link rel="canonical" href="">{% endblock %}
+    <meta name="yandex-verification" content="8ce085c46d937d94"/>
+    <link rel="stylesheet" href="{% static 'css/config.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/slick.css' %}">
+    <link rel="stylesheet" href="{% static 'css/slick-theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/cookie.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+
+</head>
+
+<body>
+
+
+{% include 'frontend/v_1_0/partials/_navbar.html' %}
+
+
+{% include 'frontend/v_1_0/partials/messages.html' %}
+{% include 'frontend/v_1_0/partials/_header.html' %}
+<div class="h3-bg">
+
+    <div class="wrappage v2">
+        {% block mainpage %}
+        {% endblock %}
+        {% block slider %}
+        {% endblock %}
+        {% block store %}
+        {% endblock %}
+        {% block product %}
+        {% endblock %}
+        {% block account %}
+        {% endblock %}
+        {% block profile %}
+        {% endblock %}
+        {% block cart %}
+        {% endblock %}
+        {% block reset_password %}
+        {% endblock %}
+        {% block checkout %}
+        {% endblock %}
+        {% block information %}
+        {% endblock %}
+        {% block page_error %}
+        {% endblock %}
+        {% block hakkimizde %}
+        {% endblock %}
+        {% block payment_failed %}
+        {% endblock %}
+    </div>
+</div>
+
+
+{% include 'frontend/v_1_0/partials/__feature.html' %}
+{% include 'frontend/v_1_0/partials/_footer.html' %}
+<div class="whatsapp">
+    <a href="https://wa.me/+908503098552" target="_blank" class="header_whatsapp">
+         <i class="fa fa-3x fa-whatsapp" aria-hidden="true"></i>
+    </a>
+</div>
+
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="
+https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js
+"></script>
+<script src="{% static 'js/bootstrap.js' %}"></script>
+{% if request.path != '/checkout' %}
+    <script src="{% static 'js/search.js' %}"></script>
+{% endif %}
+<script src="{% static 'js/owl.carousel.min.js' %}"></script>
+<script src="{% static 'js/slick.js' %}"></script>
+<script src="{% static 'js/countdown.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/cookie.js' %}"></script>
+<script src="https://kit.fontawesome.com/7ffad3a2e0.js" crossorigin="anonymous"></script>
+
+</body>
+</html>

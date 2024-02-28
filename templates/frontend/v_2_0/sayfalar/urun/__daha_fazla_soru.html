@@ -1,0 +1,37 @@
+{% for r in question_reviews %}
+    <div class="reviews__list-item">
+        <div class="review-data">
+            <div class="review-data-topline">
+                <div class="review-data-topline__avatar">
+                    <div class="avatar d-flex justify-content-center align-items-center">
+                        {{ r.user.first_name|slice:"1" }}{{ r.user.last_name|slice:"1" }}
+                    </div>
+                </div>
+                <div class="review-data-topline__name">
+                                                            <span class="name">
+                                                                {{ r.user.first_name|slice:"2" }}. {{ r.user.last_name|slice:"1" }}.
+                                                            </span>
+                </div>
+                <div class="review-data-topline__grade">
+                                                                <span class="date">
+                                                                {{ r.created_at|date:"d-m-Y" }}
+                                                            </span>
+                </div>
+            </div>
+            <div class="review-data-midline">
+                <div class="review-text-box"
+                     style="border-top-left-radius: 2px; border-top-right-radius: 20px; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
+                    {{ r.question }}
+                </div>
+                <div class="review-text-box"
+                     style="border-top-left-radius: 20px; border-top-right-radius: 2px; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
+                    {% if r.answer %}
+                        {{ r.answer }}
+                    {% else %}
+                        Cevap bekleniyor...
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}

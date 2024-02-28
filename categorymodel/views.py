@@ -28,21 +28,9 @@ class SubBottomCategoryList(APIView):
 def load_categories(request):
     categories = SubBottomCategory.objects.all()
     return render(request,
-                  '../templates/backend/adminpage/partials/load_subbottomcategories.html', {'category': categories})
-
-def load_subcategories(request):
-    category_id = request.GET.get('category')
-    subcategories = SubCategory.objects.filter(maincategory_id=category_id)
-    return render(request, '../templates/backend/adminpage/partials/load_subcategories.html', {'category': subcategories})
-
-def load_subbottomcategories(request):
-    subcategory_id = request.GET.get('subcategory')
-    subbottomcategories = SubBottomCategory.objects.filter(subcategory_id=subcategory_id)
-    return render(request,
-                  '../templates/backend/adminpage/partials/load_subbottomcategories.html', {'category': subbottomcategories})
-
+                  '../templates/backend/yonetim/partials/load_subbottomcategories.html', {'category': categories})
 
 def load_all_subbottomcategories(request):
     subbottomcategories = SubBottomCategory.objects.all()
     return render(request,
-                  '../templates/backend/adminpage/partials/load_subbottomcategories.html', {'category': subbottomcategories})
+                  '../templates/backend/yonetim/partials/load_subbottomcategories.html', {'category': subbottomcategories})

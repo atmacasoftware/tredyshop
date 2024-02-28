@@ -19,4 +19,6 @@ urlpatterns = [
     path('apits/ic-giyim-urunleri/', IcGiyimUrunleriApiView.as_view()),
     path('apits/en-cok-satilan/', MostSellerApiView.as_view()),
     path('apits/super-firsatlar/', FlashDealsApiView.as_view()),
+    path('apits/header-kategoriler/', FrontendHeaderCategoryApiView.as_view()),
+    path('apits/banner/', BannerApiView.as_view()),
 ]

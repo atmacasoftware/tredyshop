@@ -199,7 +199,7 @@ def create_order_token(user_ip, merchant_oid, email, payment_amount, installment
         payment_amount) + payment_type + installment_count + currency + test_mode + non_3d
     paytr_token = base64.b64encode(hmac.new(merchant_key, hash_str.encode() + merchant_salt, hashlib.sha256).digest())
 
-    return paytr_token.decode( )
+    return paytr_token.decode()
 
 def card_type(bin_code):
 

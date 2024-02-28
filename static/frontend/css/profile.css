@@ -1,0 +1,67 @@
+select, select:focus, select:active {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.btn-profile-sm {
+    font-size: var(--text-fontSize1) !important;
+}
+
+.confirm-actions {
+    z-index: 9999999 !important;
+}
+
+.confirm-actions .modal-dialog {
+    z-index: 9999999999 !important;
+}
+
+.address__controls a {
+    height: 45px;
+}
+
+.address__controls a:hover {
+    background-color: var(--bg-softGray2);
+}
+
+div.page-container.profile div.page-section div.profile-page__body div.profile-page__navigation div.profile-page__navigation-body div.nav-menu div.nav-menu__list a.nav-menu__list-item.active::before {
+    background: var(--primary-color) !important;
+}
+
+div.page-container.profile div.page-section div.profile-page__body div.profile-page__navigation div.profile-page__navigation-body div.nav-menu div.nav-menu__list a.nav-menu__list-item.active span.icon svg {
+    stroke: var(--primary-color) !important;
+}
+
+div.page-container.profile div.page-section div.profile-page__body div.profile-page__navigation div.profile-page__navigation-body div.nav-menu div.nav-menu__list a.nav-menu__list-item:hover span.icon svg {
+    stroke: var(--primary-color) !important;
+}
+
+div.page-container.profile div.page-section div.profile-page__body div.profile-page__navigation div.profile-page__navigation-body div.nav-menu div.nav-menu__list a.nav-menu__list-item:active span.text, div.page-container.profile div.page-section div.profile-page__body div.profile-page__navigation div.profile-page__navigation-body div.nav-menu div.nav-menu__list a.nav-menu__list-item.active span.text {
+    color: var(--primary-color);
+}
+
+div.page-container.profile div.page-section div.profile-page__body div.profile-page__navigation div.profile-page__navigation-body div.nav-menu div.nav-menu__list a.nav-menu__list-item:active span.text, div.page-container.profile div.page-section div.profile-page__body div.profile-page__navigation div.profile-page__navigation-body div.nav-menu div.nav-menu__list a.nav-menu__list-item:hover span.text {
+    color: var(--primary-color);
+}
+
+form.form div.form-group div.form-field input.form-control:hover + label.form-control-label,
+form.form div.form-group div.form-field textarea.form-control:hover + label.form-control-label {
+    color: var(--primary-color) !important;
+}
+
+form.form div.form-group div.form-field input.form-control:active + label.form-control-label,
+form.form div.form-group div.form-field input.form-control:focus + label.form-control-label,
+form.form div.form-group div.form-field textarea.form-control:active + label.form-control-label,
+form.form div.form-group div.form-field textarea.form-control:focus + label.form-control-label {
+    color: var(--primary-color) !important;
+}
+
+form.form div.form-group div.form-field.focused-input,
+form.form div.form-group div.form-field:active,
+form.form div.form-group div.form-field:hover {
+    border-color: var(--primary-color);
+}
+
+div.form-check input.form-check-input:checked {
+    background-color: var(--primary-color);
+}

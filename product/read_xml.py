@@ -68,6 +68,32 @@ def trendyolPrice(urun_maliyeti, kdv, indirim=False):
             duzeltilmis_satis_fiyati = customPrice(0, 10, satis_fiyati)
     return duzeltilmis_satis_fiyati
 
+def ciceksepetiPrice(urun_maliyeti, kdv, indirim=False):
+    ciceksepeti = CiceksepetiFiyatAyarla.objects.all().last()
+    kar_marjlari = CiceksepetiKarMarji.objects.filter(ciceksepeti=ciceksepeti)
+    duzeltilmis_satis_fiyati = 0
+
+    indirim = 0
+    if indirim == True:
+        indirim = ciceksepeti.indirim
+
+    for kar_marji in kar_marjlari:
+        if urun_maliyeti >= kar_marji.baslangic and urun_maliyeti <= kar_marji.bitis:
+            maliyet = 0
+            kdv_hesabi = 0
+            marj = 1 + (kar_marji.kar_maji / 100)
+            if kdv == "Giyim":
+                kdv_hesabi = ciceksepeti.kdv1 / 100 * marj
+            else:
+                kdv_hesabi = ciceksepeti.kdv2 / 100 * marj
+            urun = urun_maliyeti * marj
+            komisyon_hesabi = ciceksepeti.commission / 100 * marj
+            hizmet_bedeli = ciceksepeti.service * marj
+            kargo_hesabi = ciceksepeti.kargo * marj
+            satis_fiyati = kargo_hesabi + (urun * kdv_hesabi) + (
+                    urun * komisyon_hesabi) + urun + hizmet_bedeli - indirim
+            duzeltilmis_satis_fiyati = customPrice(0, 10, satis_fiyati)
+    return duzeltilmis_satis_fiyati
 
 def modaymissaveXML2db():
     with urlopen('https://www.modaymis.com/1.xml') as f:
@@ -106,6 +132,7 @@ def modaymissaveXML2db():
                     if ApiProduct.objects.filter(barcode=combination_gtin).count() < 1:
                         tredyshop_price = tredyshopPrice(float(price), "Giyim")
                         trendyol_price = trendyolPrice(float(price), "Giyim")
+                        ciceksepeti_price = ciceksepetiPrice(float(price), "Giyim")
 
                         for a in c.iter("Attributes"):
                             for ac in a.iter("Attribute"):
@@ -116,8 +143,8 @@ def modaymissaveXML2db():
                         beden_id = None
                         for s in Size.objects.all():
                             if beden is not None:
-                                if beden.replace(" ", "").replace(",", ".") == s.name.replace(" ", "").replace(",",
-                                                                                                               "."):
+                                if beden.replace(" ", "").replace(",", ".").lower() == s.name.replace(" ", "").replace(",",
+                                                                                                               ".").lower():
                                     beden_id = s.id
 
                         for p in product.iter("Categories"):
@@ -174,6 +201,7 @@ def modaymissaveXML2db():
                                                          brand_id=9, title=title, description=name,
                                                          price=tredyshop_price,
                                                          trendyol_price=trendyol_price,
+                                                         ciceksepeti_price=ciceksepeti_price,
                                                          quantity=combination_stock, detail=description,
                                                          status=True, color_id=renk_id, size_id=beden_id,
                                                          age_group="Yetişkin")
@@ -281,9 +309,11 @@ def updateModaymisSaveXML2db():
                         renk = exist_product.color.name
                         tredyshop_price = tredyshopPrice(float(price), "Giyim")
                         trendyol_price = trendyolPrice(float(price), "Giyim", True)
+                        ciceksepeti_price = ciceksepetiPrice(float(price), "Giyim", True)
 
                         exist_product.price = tredyshop_price
                         exist_product.trendyol_price = trendyol_price
+                        exist_product.ciceksepeti_price = ciceksepeti_price
                         exist_product.quantity = combination_stock
                         exist_product.detail = description
                         exist_product.brand.id = 9

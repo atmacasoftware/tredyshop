@@ -1,0 +1,46 @@
+{% extends 'frontend/v_2_0/base.html' %}
+{% load static %}
+
+{% block title %}<title>Aradığınız sayfa bulunamadı</title>{% endblock %}
+
+{% block error %}
+    <div class="page-container error">
+        <!-- ~~~~~~~~~~~~~~~~~ Error static content section [START] ~~~~~~~~~~~~~~~~~ -->
+        <div class="page-section static-message">
+            <div class="page-margin">
+                <div class="page-margin__content">
+                    <div class="page-section__body">
+                        <div class="error-page">
+                            <div class="error-page__code">
+                                <img src="{% static 'frontend/images/dist/info-gf/404-error.png' %}" alt="IMG">
+                            </div>
+                            <div class="error-page__body">
+                                <h2>
+                                    Oops, Aradığınız Sayfa Bulunamıyor :-(
+                                </h2>
+                                <p>
+                                    Üzgünüz, istediğiniz sayfa bulunamadı (404 hatası). Bir şeyin ters gittiğini
+                                    düşünüyorsanız, lütfen sorunu bildirin!
+                                </p>
+                                <div class="btn-controls">
+                                    <div class="btn-control__item">
+                                        <a href="{% url 'mainpage' %}" class="a-block">
+                                            <div class="btn btn-primary btn-icon btn-lg outline">
+                                                <span class="icon">
+                                                    <i class="fa fa-home"></i>
+                                                </span>
+                                                <span class="text" style="color: white;">
+                                                    Anasayfaya Git
+                                                </span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

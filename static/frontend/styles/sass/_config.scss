@@ -1,0 +1,79 @@
+// @*************************************************************************@
+// @ Software author: Mansur Altamirov (Mansur_TL)                           @
+// @ Author URL: https://themeforest.net/user/mansur_tl                      @
+// @ Author E-mails: vayart.help@gmail.com, vayart.web@gmail.com             @
+// @*************************************************************************@
+// @ DreaM - Electronics eCommerce HTML Template                             @
+// @ Copyright (c) 2021 DreaM. All rights reserved.                          @
+// @*************************************************************************@
+
+$font-family: "Inter", sans-serif;
+
+//Theme UI colors
+$primary-color: #067aff;
+$danger-color: #f91155;
+$success-color: #47c9a2;
+$warning-color: #faad14;
+
+//Theme text colors
+$primary-text-color: #010101;
+$secondary-text-color: rgba(32, 35, 51, 0.8);
+
+//Theme box shadows
+$primary-box-shadow: 0 1px 1px rgba(32,35,51,0.04),0 2px 4px rgba(32,35,51, 0.02);
+
+//Theme border colors
+$primary-border-color: rgba(32,35,51,0.12);
+$secondary-border-color: rgba(32,35,51,0.2);
+
+//Theme corner radius
+$primary-corner-radius: 1px;
+$secondary-corner-radius: 2px;
+$card-corner-radius: 12px;
+
+//Theme BG colors
+$primary-bg-color: lighten(#f0f2f5, 2.5);
+$secondary-bg-color: #ffffff;
+$white-bg-color: #e7e6f2;
+$input-primary-bg-color: #f3f3f4;
+         
+//Theme pastel colors
+$pastel-color-1: #d0e2f1;
+
+//Black UI controls
+$black-ctrl-bg: #202333;
+$black-ctrl-color: #ffffff;
+
+$grey-ctrl-bg: #efeff0;
+$grey-ctrl-color: $primary-text-color;
+
+$grey-panel-bg: #f5f5f5;
+$grey-panel-color: $primary-text-color;
+
+$secondary-bg-contrast-bg: rgba(32,35,51,.07);
+$secondary-bg-contrast-color: $primary-text-color;
+
+
+::selection{
+	color: #ffffff;
+	background: $primary-color;
+}
+
+input, textarea, button, a{
+	outline: none;	
+}
+	
+body{
+	font-family: $font-family;
+	background: $secondary-bg-color;
+	line-height: 1.4;
+	overflow-y: scroll;
+
+	@include media-breakpoint-down(xl) {
+		padding-bottom: 54px;
+	}
+
+	&.fixed-top-header{
+		padding-top: 138px;
+	}
+}

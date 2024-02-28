@@ -1,0 +1,125 @@
+{% extends 'frontend/v_2_0/base.html' %}
+{% load static %}
+{% block title %}<title>{{ request.user.get_full_name }} | Değerlendirmelerim</title>{% endblock %}
+
+{% block extra_style %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{% static 'frontend/css/vendor/VenoBox/venobox.min.css' %}">
+    <link rel="stylesheet" href="{% static 'frontend/css/profile.css' %}">
+{% endblock %}
+
+{% block profil %}
+    <div class="page-container profile" data-profile-page="data">
+        <div class="page-margin">
+            <div class="page-margin__content">
+                <nav class="breadcrumbs">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'mainpage' %}">Anasayfa</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'profile_mainpage' %}">{{ request.user.get_full_name }}</a>
+                        </li>
+                        <li class="breadcrumb-item active">
+                            Favorilerim
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="page-section reviews">
+            <div class="page-margin">
+                <div class="page-margin__content">
+                    <div class="page-section__body">
+                        <div class="profile-page__body">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    {% include 'frontend/v_2_0/sayfalar/profil/__sidebar.html' %}
+                                </div>
+                                <div class="col-lg-9">
+                                    <div class="profile-page__header">
+                                        <h3>
+                                            {{ request.user.get_full_name }} − Değerlendirmelerim <sup
+                                                class="sec-text-color text-600">{{ reviews_count }}</sup>
+                                        </h3>
+                                    </div>
+                                    <div class="profile-page__content">
+                                        <div class="reviews__list">
+                                            {% for r in reviews %}
+                                                <div class="reviews__list-item">
+                                                    <div class="review">
+                                                        <div class="review__body">
+                                                            <div class="review__item-title">
+                                                                <div class="review-image" style="background: none;">
+                                                                    <a href="{{ r.product.get_url }}" class="a-block">
+                                                                        <img src="{{ r.product.image_url1 }}"
+                                                                             alt="IMG"
+                                                                             style="height: 75px; width: auto;">
+                                                                    </a>
+                                                                </div>
+                                                                <div class="review-title" style="width: 100%;">
+                                                                    <div class="review-rating">
+                                                                        <div class="rating-stars">
+                                                                        <span class="rating">
+                                                                            <i class="bi bi-star{% if r.rating > 0 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if r.rating > 1.5 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if r.rating > 2.5 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if r.rating > 3.5 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if r.rating > 4.5 %}-fill{% else %}{% endif %}"></i>
+                                </span>
+                                                                        </div>
+                                                                        <div class="review-date">
+                                                                            {{ r.created_at|date:"d-m-Y" }}
+                                                                        </div>
+                                                                    </div>
+                                                                    <h3>
+                                                                        <a href="{{ r.product.get_url }}"
+                                                                           class="a-block">
+                                                                            {{ r.product.title }}
+                                                                        </a>
+                                                                    </h3>
+                                                                </div>
+                                                            </div>
+                                                            <div class="review__item-text">
+                                                                <div class="review-text-box">
+                                                                <span>
+                                                                    {{ r.review }}
+                                                                </span>
+                                                                </div>
+                                                                <div class="review-media-box">
+                                                                    <div class="row">
+                                                                        {% for i in r.photoReview %}
+                                                                            <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-3">
+                                                                                <div class="review-media-item">
+                                                                                    <a data-gall="review-1-attachements"
+                                                                                       href="{{ i.get_image }}"
+                                                                                       class="a-block venobox">
+                                                                                        <img src="{{ i.get_image }}"
+                                                                                             alt="IMG">
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        {% endfor %}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'frontend/js/plugins/venobox.min.js' %}"></script>
+    <script src="{% static 'frontend/js/pages/profile/script.master.js' %}"></script>
+{% endblock %}

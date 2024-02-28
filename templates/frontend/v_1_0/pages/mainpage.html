@@ -1,0 +1,58 @@
+{% extends 'frontend/v_1_0/layout.html' %}
+{% load static %}
+{% block title %}<title>En Uygun Fiyatlı En Şık Ürünler</title>{% endblock %}
+{% block seodescription %}
+    <meta name="description" content="{{ setting.description }}">{% endblock %}
+{% block seokeyword %}
+    <meta name="keywords" content="{{ setting.keywords }}">{% endblock %}
+{% block canonical %}
+    <link rel="canonical" href="https://www.tredyshop.com">{% endblock %}
+
+{% block mainpage %}
+    <link rel="stylesheet" href="{% static 'css/skeleton.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mainpage.css' %}">
+    <section class="all-s">
+
+        <div class="ads-group v2 bd-slick">
+            <div class="container container-240">
+                <div class="row">
+                    {% for b in banners %}
+                        <div class="col-lg-4 col-md-4 col-sm-6">
+                            <div class="card banner-card">
+                                <div class="card-body">
+                                    <a href="{% url 'product_by_subbottomcategory' b.banner_category.maincategory.slug b.banner_category.subcategory.slug b.banner_category.slug %}" data-banner-id="{{ b.id }}" class="banner-href"><img
+                                            src="{{ b.image.url }}"
+                                            alt="Banner"
+                                            class="img-responsive" style="height: 180px!important; width: 100%; object-fit: fill;"></a>
+                                </div>
+                                <div class="card-footer bg-black">
+                                    <a href="{% url 'product_by_subbottomcategory' b.banner_category.maincategory.slug b.banner_category.subcategory.slug b.banner_category.slug %}">
+                                        <span>{{ b.banner_title }}</span>
+                                        <span><i class="fa-solid fa-arrow-right fa-beat-fade"></i></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+
+        {% include 'frontend/v_1_0/partials/__flash_deals.html' %}
+        {% include 'frontend/v_1_0/partials/most_seller.html' %}
+        {% include 'frontend/v_1_0/partials/ust_giyim_yeni_yayınlananlar.html' %}
+        {% include 'frontend/v_1_0/partials/alt_giyim_yeni_yayınlananlar.html' %}
+        {% include 'frontend/v_1_0/partials/elbise_yeni_yayınlananlar.html' %}
+        {% include 'frontend/v_1_0/partials/ayakkabi_yeni_yayınlananlar.html' %}
+        {% include 'frontend/v_1_0/partials/aksesuar_yeni_yayınlananlar.html' %}
+        {% include 'frontend/v_1_0/partials/ic_giyim_yeni_yayınlananlar.html' %}
+        {% include 'frontend/v_1_0/partials/en_begenilenler.html' %}
+        {% include 'frontend/v_1_0/partials/en_yorumlananlar.html' %}
+
+
+    </section>
+
+    <script src="{% static 'js/mainpage_api.js' %}"></script>
+
+{% endblock %}

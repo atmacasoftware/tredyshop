@@ -1,0 +1,36 @@
+@import "root.css";
+
+footer.main-footer-section {
+    border-top: 2px solid var(--primary-color);
+}
+
+footer.main-footer-section div.main-footer-section__midline div.main-footer-section__midline-links a:hover,
+footer.main-footer-section div.main-footer-section__midline div.main-footer-section__midline-links a:active {
+    color: var(--primary-color);
+}
+
+footer.main-footer-section div.main-footer-section__topline div.main-footer-section__subscribe div.main-footer-section__subscribe-form form.form div.form-group div.email-input input:hover,
+footer.main-footer-section div.main-footer-section__topline div.main-footer-section__subscribe div.main-footer-section__subscribe-form form.form div.form-group div.email-input input:focus,
+footer.main-footer-section div.main-footer-section__topline div.main-footer-section__subscribe div.main-footer-section__subscribe-form form.form div.form-group div.email-input input:active {
+    border: 2px solid var(--primary-color);
+}
+
+.footer_social_media {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: row;
+    list-style-type: none;
+    margin-top: 10px;
+}
+
+.footer_social_media a{
+    margin: 0 10px;
+    color: black;
+    font-size: var(--text-fontSize4);
+    transition: .2s linear;
+}
+
+.footer_social_media a:hover{
+    color: var(--primary-color);
+}

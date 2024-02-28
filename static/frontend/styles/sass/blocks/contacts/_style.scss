@@ -1,0 +1,202 @@
+// @*************************************************************************@
+// @ Software author: Mansur Altamirov (Mansur_TL)                           @
+// @ Author URL: https://themeforest.net/user/mansur_tl                      @
+// @ Author E-mails: vayart.help@gmail.com, vayart.web@gmail.com             @
+// @*************************************************************************@
+// @ DreaM - Electronics eCommerce HTML Template                             @
+// @ Copyright (c) 2021 DreaM. All rights reserved.                          @
+// @*************************************************************************@
+
+/*
+* Error page [START]
+*/
+
+div.page-container.contacts{
+	div.page-section{
+		&.contact-info{
+			div.contacts-card{
+				padding: 25px;
+				background: $secondary-bg-color;
+				border-radius: $card-corner-radius;
+				border: 2px solid $primary-color;
+
+				div.contacts-card__info{
+					padding-right: 30px;
+					display: flex;
+					flex-direction: column;
+					height: 100%;
+
+					div.contacts-card__title{
+						margin-bottom: 30px;
+
+						h4{
+							font-size: 18px;
+							color: $primary-text-color;
+							padding: 0;
+							margin: 0;
+							font-weight: 600;
+						}
+					}
+
+					div.contacts-card__address{
+						margin-bottom: 15px;
+
+						span{
+							font-size: 14px;
+							font-weight: 500;
+							color: $primary-text-color;
+						}
+					}
+
+					div.contacts-card__phones{
+						margin-bottom: 10px;
+
+						a{
+							display: block;
+							width: 100%;
+							text-decoration: none;
+							font-size: 28px;
+							line-height: 1;
+							color: $primary-text-color;
+							font-weight: 500;
+							margin-bottom: 10px;
+							transition: all 0.27s ease;
+
+							&:last-child{
+								margin-bottom: 0px;
+							}
+
+							&:hover, &:active{
+								color: $primary-color;
+							}
+						}
+					}
+
+					div.contacts-card__callinfo{
+						margin-bottom: 40px;
+
+						span{
+							display: block;
+							font-size: 13px;
+							color: $secondary-text-color;
+							line-height: 1.4;
+						}
+					}
+
+					div.contacts-card__social{
+						display: flex;
+						flex-direction: row;
+						margin-bottom: 30px;
+						flex: 1;
+
+						a{
+							width: 60px;
+							height: 60px;
+							flex-shrink: 0;
+							margin-right: 15px;
+
+							span{
+								width: 100%;
+								height: 100%;
+								display: flex;
+								align-items: center;
+								justify-content: center;
+								background: $grey-ctrl-bg;
+								border-radius: $secondary-corner-radius;
+								transition: all 0.27s ease;
+								border-radius: $card-corner-radius / 2;
+
+								svg{
+									width: 25px;
+									height: 25px;
+									fill: $grey-ctrl-color;
+								}
+
+								&:hover, &:active{
+									svg{
+										fill: $primary-color;
+									}
+								}
+							}
+						}
+					}
+
+					div.contacts-card__email{
+						span.email-title{
+							font-size: 13px;
+							color: $primary-text-color;
+							margin-bottom: 15px;
+							display: block;
+						}
+
+						a{
+							display: block;
+							text-decoration: none;
+						}
+					}
+				}
+
+				div.contacts-card__map{
+					background: darken($secondary-bg-color, 1);
+					line-height: 0pc;
+
+					iframe{
+						width: 100%;
+						height: 400px;
+						border: none;
+					}
+				}
+
+				@include media-breakpoint-down(xl) {
+					padding: 0px;
+					border: none;
+					background: none;
+					border-radius: 0px;
+					box-shadow: none;
+
+					div.contacts-card__info{
+						padding-right: 0px;
+						background: $secondary-bg-color;
+						border-radius: ($card-corner-radius / 3);
+						border: 2px solid $primary-color;
+						height: auto;
+						margin-bottom: 30px;
+						padding: 25px;
+
+						div.contacts-card__title{
+							display: none;
+						}
+
+						div.contacts-card__address, div.contacts-card__social, div.contacts-card__callinfo{
+							margin-bottom: 20px;
+						}
+					}
+				}
+
+				@include media-breakpoint-down(sm) {
+					div.contacts-card__info{
+						padding: 15px;
+					}
+				}
+			}
+		}
+
+		&.recommendations{
+			@import "../../snippets/grid/grid_cont";
+
+			div.products-grid-row{
+				margin-left: -5px;
+				margin-right: -5px;
+
+				div.grid-item-col{
+					padding-left: 5px;
+					padding-right: 5px;
+					margin-bottom: 25px;
+				}
+			}
+		}
+	}
+}
+/*
+* Error page [END]
+*/

@@ -152,7 +152,6 @@ table th {
 }
 
 .selected {
-    border-radius: 8px;
     margin-bottom: 8px;
     position: relative;
     order: 0;

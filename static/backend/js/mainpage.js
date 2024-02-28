@@ -177,4 +177,41 @@ $(document).ready(function () {
         });
     });
 
+    $.ajax({
+        type: 'GET',
+        url: `/yonetim/fatura-istatistikleri-ajax`,
+        dataType: 'json',
+        beforeSend: function () {
+
+        },
+        success: function (data) {
+            var kesilenFaturaToplami = data[0]
+            var alinanFaturaToplami = data[1]
+            var ctx = document.getElementById("billStatisticsGraph").getContext('2d');
+            var myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                datasets: [{
+                    data: [kesilenFaturaToplami, alinanFaturaToplami],
+                    backgroundColor: [
+                        '#63ed7a',
+                        '#ffa426',
+                    ],
+                    label: 'Dataset 1'
+                }],
+                labels: [
+                    'Kesilen Faturalar',
+                    'Alınan Faturalar',
+                ],
+            },
+            options: {
+                responsive: true,
+                legend: {
+                    position: 'bottom',
+                },
+            }
+        });
+        }
+    });
+
 });

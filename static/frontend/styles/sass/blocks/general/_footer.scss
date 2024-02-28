@@ -1,0 +1,429 @@
+// @*************************************************************************@
+// @ Software author: Mansur Altamirov (Mansur_TL)                           @
+// @ Author URL: https://themeforest.net/user/mansur_tl                      @
+// @ Author E-mails: vayart.help@gmail.com, vayart.web@gmail.com             @
+// @*************************************************************************@
+// @ DreaM - Electronics eCommerce HTML Template                             @
+// @ Copyright (c) 2021 DreaM. All rights reserved.                          @
+// @*************************************************************************@
+
+
+/*
+* Main navigation footer [START]
+*/
+
+footer.main-footer-section{
+	width: 100%;
+	display: block;
+	position: relative;
+	z-index: 3;
+	background: $secondary-bg-color;
+	border-top: 2px solid $primary-color;
+
+	div.main-footer-section__topline{
+		padding-top: 35px;
+		padding-bottom: 35px;
+
+		div.main-footer-section__subscribe{
+			div.main-footer-section__subscribe-cta{
+				div.subscribe-cta{
+					display: flex;
+
+					div.subscribe-cta__icon{
+						width: 50px;
+						height: 50px;
+						min-width: 50px;
+						
+						svg{
+							width: 100%;
+							height: 100%;
+						}
+					}
+
+					div.subscribe-cta__text{
+						margin-left: 30px;
+
+						h2{
+							font-weight: 600;
+							padding: 0;
+							margin: 0 0 10px 0;
+							font-size: 22px;
+							color: $primary-text-color;
+						}
+
+						p{
+							font-size: 14px;
+							color: $secondary-text-color;
+							padding: 0;
+							margin: 0;
+						}
+					}
+				}
+
+				@include media-breakpoint-down(xl) {
+					margin-bottom: 20px;
+
+					div.subscribe-cta{
+						div.subscribe-cta__icon{
+							width: 30px;
+							height: 30px;
+							min-width: 30px;
+						}
+
+						div.subscribe-cta__text{
+							margin-left: 20px;
+
+							h2{
+								font-size: 18px;
+							}
+
+							p{
+								font-size: 14px;
+							}
+						}
+					}
+				}
+			}
+
+			div.main-footer-section__subscribe-form{
+				form.form{
+					display: flex;
+					flex-wrap: nowrap;
+
+					div.form-group{
+						div.email-input{
+							margin-bottom: 10px;
+							display: flex;
+							flex-direction: row;
+							flex-wrap: nowrap;
+
+							input{
+								height: 48px;
+								border: 2px solid $input-primary-bg-color;
+								color: $primary-text-color;
+								width: 100%;
+								padding-left: 20px;
+								background: $input-primary-bg-color;
+								box-shadow: none;
+
+								&::placeholder{
+									font-size: 14px;
+									color: $secondary-text-color;
+								}
+
+								&:hover, &:active, &:focus{
+									border-color: $primary-color;
+									background: transparent;
+								}
+							}
+
+							button.subscribe-btn{
+								flex-shrink: 0;
+								padding: 0;
+								margin: 0 0 0 5px;
+								border: none;
+								background: $primary-color;
+								height: 48px;
+								width: 48px;
+								border-radius: $primary-corner-radius;
+								display: inline-flex;
+								align-items: center;
+								justify-content: center;
+								transition: all 0.27s ease;
+
+								svg{
+									width: 20px;
+									height: 20px;
+									stroke: $black-ctrl-color;
+								}
+
+								&:hover, &:active, &:focus{
+									background-position: right center;
+								}
+							}
+						}
+
+						div.subscribe-tos{
+							span{
+								display: block;
+								font-size: 11px;
+								color: $primary-text-color;
+								line-height: 1.4;
+								font-weight: 400;
+
+								a{
+									color: $primary-color;
+									font-weight: 500;
+									text-decoration: none;
+								}
+							}
+						}
+					}
+				}
+
+				@include media-breakpoint-down(xl) {
+					margin-bottom: 30px;
+				}
+			}
+		}
+
+		div.main-footer-section__qr-code{
+			div.qr-code{
+				display: flex;
+				align-items: flex-start;
+
+				div.qr-code__image{
+					width: 100px;
+					min-width: 100px;
+					overflow: hidden;
+
+					img{
+						width: 100%;
+					}
+				}
+
+				div.qr-code__links{
+					margin-left: 20px;
+				
+					div.qr-code__text{
+						margin-bottom: 15px;
+
+						span{
+							font-size: 14px;
+							color: $secondary-text-color;
+							line-height: 1.4;
+							padding: 0;
+							margin: 0;
+							display: block;
+						}
+					}
+
+					div.qr-code__get-apps{
+						a{
+							text-decoration: none;
+							display: inline-block;
+							margin-right: 10px;
+
+							svg{
+								width: 30px;
+								height: 30px;
+
+								path{
+									transition: all 0.27s ease;
+								}
+							}
+
+							&:hover, &:active{
+								svg path{
+									fill: $primary-color !important;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	div.main-footer-section__midline{
+		padding-top: 20px;
+		padding-bottom: 20px;
+		transition: all 1s ease;
+		border-top: 1px solid $primary-border-color;
+
+		div.main-footer-section__midline-links{
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			overflow-x: auto;
+
+			a{
+				text-decoration: none;
+				color: $primary-text-color;
+				font-size: 13px;
+				line-height: 18px;
+				margin-right: 25px;
+				white-space: nowrap;
+				flex-shrink: 0;
+
+				&:hover, &:active{
+					color: $primary-color;
+				}
+
+				&.ml-auto{
+					margin-right: 0px;
+				}
+			}
+
+			@include media-breakpoint-down(xl) {
+				a{
+
+					&.ml-auto{
+						margin-left: 0px;
+					}
+				}
+			}
+
+			@import "../../snippets/scrollbar/_hide_scrollbar.scss";
+		}
+
+		&:hover{
+			background-position: right center;
+		}
+	}
+}
+
+div.bottom-chat{
+	display: inline-block;
+	position: fixed;
+	right: 50px;
+	bottom: 50px;
+	width: 55px;
+	z-index: 10;
+
+	div.bottom-chat__options{
+		display: none;
+
+		div.bottom-chat__option-item-wrap{
+			display: flex;
+			align-items: center;
+			flex-direction: column;
+			margin-bottom: 15px;
+
+			a.bottom-chat__option-item{
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			    width: 40px;
+			    height: 40px;
+			    flex-shrink: 0;
+			    border-radius: 100%;
+			    transition: all 0.27s ease-in-out;
+
+			    svg{
+				    width: 22px;
+				    height: 22px;
+				    fill: #ffffff;
+
+		    		*{
+		    			stroke: #ffffff;
+		    		}
+			    }
+
+			    &.discord{
+			    	background: #00aae9;
+			    	border: 1px solid #00aae9;
+			    	
+			    }
+
+			    &.skype{
+			    	background: #5769e9;
+			    	border: 1px solid #5769e9;
+			    }
+
+			    &.snapchat{
+			    	background: #f7f301;
+			    	border: 1px solid #f7f301;
+
+			    	svg{
+					    fill: #222222;
+
+			    		*{
+			    			stroke: #222222;
+			    		}
+				    }
+			    }
+			    
+			    &.whatsapp{
+			    	background: #29a71a;
+			    	border: 1px solid #29a71a;
+			    }
+
+			    &.telegram{
+			    	background: #0088cc;
+			    	border: 1px solid #0088cc;
+			    }
+
+			    &:hover, &:active{
+			    	transform: scale(1.2);
+			    }
+			}
+		}
+	}
+
+	div.bottom-chat__trigger{
+		width: 100%;
+
+		button.chat-button{
+			padding: 0;
+			margin: 0;
+			width: 55px;
+			height: 55px;
+			border-radius: 60px;
+			padding: 0;
+			border: none;
+			transition: all 0.27s ease;
+
+			span.chat-button__icon{
+				width: 100%;
+				height: 100%;
+				border-radius: 100%;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				background: $primary-color;
+				transition: all 1s ease;
+
+				svg{
+					width: 27px;
+					height: 27px;
+					transition: all 0.27s ease;
+					stroke: $black-ctrl-color;
+					fill: $black-ctrl-color;
+
+					path{
+						stroke: $black-ctrl-color;
+					}
+				}
+			}
+
+			&:hover, &:active{
+				margin-bottom: 5px;
+				svg{
+					stroke: #ffffff;
+					fill: #ffffff;
+
+					path{
+
+						stroke: #ffffff;
+					}
+				}
+
+				span.chat-button__icon{
+					background-position: right center;
+				}
+			}
+
+			&.chat-button_closed{
+				span.chat-button__icon_opened{
+					display: none;
+				}
+			}
+
+			&.chat-button_opened{
+				span.chat-button__icon_closed{
+					display: none;
+				}
+			}
+		}
+	}
+
+	@include media-breakpoint-down(xl) {
+		display: none;
+	}
+}
+	
+/*
+* Main navigation footer [END]
+*/
+

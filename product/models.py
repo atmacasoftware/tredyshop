@@ -330,9 +330,16 @@ class ApiProduct(models.Model):
     quantity = models.BigIntegerField(verbose_name="Miktar", null=True, default=0)
     detail = RichTextUploadingField()
     trendyol_price = models.DecimalField(verbose_name="Trendyol Fiyatı", decimal_places=2, max_digits=20, null=True)
+    trendyol_discountprice = models.DecimalField(verbose_name="Trendyol İndirimli Fiyatı", decimal_places=2, max_digits=20, null=True)
+    is_trendyol_discountprice = models.BooleanField(default=False, verbose_name="Trendyol İndirim Durumu", null=True, blank=True)
     discountprice = models.DecimalField(verbose_name="İndirimli Fiyat", decimal_places=2, max_digits=20, null=True,
                                         blank=True)
     is_discountprice = models.BooleanField(default=False, verbose_name="İndirimli Yayınla", null=True, blank=True)
+    ciceksepeti_price = models.DecimalField(verbose_name="Çiçeksepeti Fiyatı", decimal_places=2, max_digits=20, null=True, blank=True)
+    ciceksepeti_discountprice = models.DecimalField(verbose_name="Çiçeksepeti İndirimli Fiyatı", decimal_places=2,
+                                                 max_digits=20, null=True)
+    is_ciceksepeti_discountprice = models.BooleanField(default=False, verbose_name="Çiçeksepeti İndirim Durumu", null=True,
+                                                    blank=True)
     age_group = models.CharField(choices=AGE_GROUP, max_length=50, verbose_name="Yaş Grubu", null=True, blank=True)
     sextype = models.ForeignKey(Sex, verbose_name="Cinsiyet", null=True, blank=True, on_delete=models.CASCADE)
     warranty = models.CharField(choices=WARRANTY_TYPE, default="Belirtilmemiş", null=True, blank=True, verbose_name="Garanti Süresi", max_length=100)
@@ -345,6 +352,7 @@ class ApiProduct(models.Model):
     is_publish = models.BooleanField(default=True, verbose_name="Yayında mı?", null=True)
     is_publish_trendyol = models.BooleanField(default=False, verbose_name="Trendyolda Yayında Mı?", null=True)
     is_publish_hepsiburada = models.BooleanField(default=False, verbose_name="Hepsiburadada Yayında Mı?", null=True)
+    is_publish_ciceksepeti = models.BooleanField(default=False, verbose_name="Çiçeksepetinde Yayında Mı?", null=True)
     slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
     status = models.BooleanField(default=True)
     create_at = models.DateTimeField(auto_now_add=True)
@@ -521,6 +529,9 @@ class ProductModelGroup(models.Model):
 
     def __str__(self):
         return self.model_code
+
+    def get_kapak(self):
+        return self.kapak.url
 
     def get_product_title(self):
         title = self.product.title

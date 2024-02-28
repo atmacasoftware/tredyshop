@@ -1,0 +1,366 @@
+{% extends 'frontend/v_2_0/base.html' %}
+{% load static %}
+{% block title %}<title>{{ request.user.get_full_name }}</title>{% endblock %}
+
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'frontend/css/profile.css' %}">
+{% endblock %}
+
+{% block profil %}
+    <div class="page-container profile" data-profile-page="data">
+        <div class="page-margin">
+            <div class="page-margin__content">
+                <nav class="breadcrumbs">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'mainpage' %}">Anasayfa</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'profile_mainpage' %}">{{ request.user.get_full_name }}</a>
+                        </li>
+                        <li class="breadcrumb-item active">
+                            Hesap Bilgilerim
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="page-section profile-page">
+            <div class="page-margin">
+                <div class="page-margin__content">
+                    <div class="page-section__body">
+                        <div class="profile-page__body">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    {% include 'frontend/v_2_0/sayfalar/profil/__sidebar.html' %}
+                                </div>
+                                <div class="col-lg-9">
+                                    <div class="profile-page__content mb-30">
+                                        <form class="form" method="POST">
+                                            {% csrf_token %}
+                                            <div class="form-group mb-20">
+                                                <div class="row">
+                                                    <div class="col-lg-6">
+                                                        <div class="form-field">
+                                                            <label for="first_name" class="form-control-label">
+                                                                Ad
+                                                            </label>
+                                                            <input name="first_name" type="text" class="form-control"
+                                                                   id="first_name"
+                                                                   value="{{ request.user.first_name }}">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        <div class="form-field">
+                                                            <label for="last_name" class="form-control-label">
+                                                                Ad
+                                                            </label>
+                                                            <input name="last_name" type="text" class="form-control"
+                                                                   id="last_name" value="{{ request.user.last_name }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group-devider"></div>
+
+                                            <div class="form-group mb-20">
+                                                <div class="row">
+                                                    <div class="col-lg-8 col-md-10 col-sm-12">
+                                                        <div class="form-field">
+                                                            <label for="birthday" class="form-control-label">
+                                                                Doğum Günü
+                                                            </label>
+                                                            <input type="date" class="form-control" name="birthday"
+                                                                   id="birthday"
+                                                                   value="{{ request.user.birthday|date:"Y-m-d" }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group mb-20">
+                                                <div class="user-gender">
+                                                    <div class="user-gender__option">
+                                                        <div class="form-check"
+                                                             style="display: flex; justify-content: start; align-content: center; flex-direction: row">
+                                                            <input class="form-check-input"
+                                                                   {% if request.user.gender == False %}checked=""{% endif %}
+                                                                   type="radio"
+                                                                   value="1"
+                                                                   name="gender" id="gender-male">
+                                                            <label class="form-check-label" for="gender-male">
+                                                                Erkek
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="user-gender__option">
+                                                        <div class="form-check"
+                                                             style="display: flex; justify-content: start; align-content: center; flex-direction: row">
+                                                            <input class="form-check-input" type="radio"
+                                                                   {% if request.user.gender == True %}checked=""{% endif %}
+                                                                   name="gender"
+                                                                   value="2"
+                                                                   id="gender-female">
+                                                            <label class="form-check-label" for="gender-female">
+                                                                Kadın
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group-devider"></div>
+
+                                            <div class="form-group mb-20">
+                                                <div class="row">
+                                                    <div class="col-lg-12 mb-30">
+                                                        <div class="form-field">
+                                                            <label for="mobile" class="form-control-label">
+                                                                Cep Telefonu
+                                                            </label>
+                                                            <input name="mobile" id="mobile" type="text"
+                                                                   class="form-control"
+                                                                   value="{{ request.user.mobile }}"
+                                                                   placeholder="(555) 555-5555">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-12 mt-30">
+                                                        <div class="form-field">
+                                                            <label for="email" class="form-control-label">
+                                                                E-Posta
+                                                            </label>
+                                                            <input name="email" id="email" type="email"
+                                                                   class="form-control"
+                                                                   value="{{ request.user.email }}">
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="flex lr">
+                                                <button type="submit" class="btn btn-primary btn-icon btn-lg btn-block"
+                                                        id="userInfoBtn"
+                                                        name="userInfoBtn">
+                                                    <span class="icon">
+                                                                <svg width="24"
+                                                                     height="24" viewBox="0 0 24 24" fill="none"
+                                                                     stroke="currentColor" stroke-width="2"
+                                                                     stroke-linecap="round" stroke-linejoin="round"
+                                                                     class="feather feather-save">
+                                                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                                                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                                                    <polyline points="7 3 7 8 15 8"></polyline>
+                                                                </svg>
+                                                            </span>
+                                                    <span class="text">
+                                                                Kaydet
+                                                            </span>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="profile-page__content mb-30">
+                                        <div class="feedback-alert mb-30">
+                                                        <span class="feedback-alert__icon">
+                                                            <svg width="24"
+                                                                 height="24" viewBox="0 0 24 24" fill="none"
+                                                                 stroke="currentColor" stroke-width="2"
+                                                                 stroke-linecap="round" stroke-linejoin="round"
+                                                                 class="feather feather-alert-circle">
+                                                                <circle cx="12" cy="12" r="10"></circle>
+                                                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                                                            </svg>
+                                                        </span>
+                                            <span class="feedback-alert__text">
+                                                            Şifreniz en az bir harf, rakam veya özel karakter içermeli. Ayrıca
+                                                şifreniz en az 8
+                                                karakterden oluşmalı.
+                                                        </span>
+                                        </div>
+
+                                        {% if request.user.username == None or request.user.username == '' %}
+                                            <form action="" method="post" class="form" id="changePasswordForm">
+                                                {% csrf_token %}
+                                                <div class="form-group mb-20">
+                                                    <div class="row mb-30">
+                                                        <div class="col-lg-12 mb-30">
+                                                            <div class="form-field">
+                                                                <label for="current_password"
+                                                                       class="form-control-label">
+                                                                    Mevcut Şifre
+                                                                </label>
+                                                                <input name="current_password" type="password"
+                                                                       class="form-control" id="current_password">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-12 mb-30">
+                                                            <div class="form-field">
+                                                                <label for="new_password" class="form-control-label">
+                                                                    Yeni Şifre
+                                                                </label>
+                                                                <input name="new_password" type="password"
+                                                                       class="form-control" id="new_password"
+                                                                       onkeyup="checkPassword(this.value);">
+                                                                <span id="showPassword"></span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-lg-12">
+                                                            <div class="form-control-feedback">
+                                                                <div class="feedback-alert warning">
+                                                                <span class="feedback-alert__icon">
+                                                                    <svg width="24"
+                                                                         height="24" viewBox="0 0 24 24" fill="none"
+                                                                         stroke="currentColor" stroke-width="2"
+                                                                         stroke-linecap="round" stroke-linejoin="round"
+                                                                         class="feather feather-alert-triangle">
+                                                                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                                                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                                                                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                                                    </svg>
+                                                                </span>
+                                                                    <span class="feedback-alert__text fw-500">
+                                                                    <ul>
+                                                                    <li id="validation_lower">En az bir adet küçük
+                                                                        karakter
+                                                                        olmalı
+                                                                    </li>
+                                                                    <li id="validation_upper">En az bir adet büyük
+                                                                        karakter
+                                                                        olmalı
+                                                                    </li>
+                                                                    <li id="validation_number">En az bir adet numara
+                                                                        olmalı
+                                                                    </li>
+                                                                    <li id="validation_length">En az 8 karakter olmalı
+                                                                    </li>
+                                                                </ul>
+                                                                </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="flex lr">
+                                                        <button type="submit"
+                                                                class="btn btn-primary btn-icon btn-lg btn-block"
+                                                                disabled
+                                                                id="changePasswordBtn"
+                                                                name="changePasswordBtn">
+                                                            <span class="icon">
+                                                                <svg width="24"
+                                                                     height="24" viewBox="0 0 24 24" fill="none"
+                                                                     stroke="currentColor" stroke-width="2"
+                                                                     stroke-linecap="round" stroke-linejoin="round"
+                                                                     class="feather feather-save">
+                                                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                                                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                                                    <polyline points="7 3 7 8 15 8"></polyline>
+                                                                </svg>
+                                                            </span>
+                                                            <span class="text">
+                                                                Kaydet
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        {% else %}
+                                            <form action="" method="post" class="form" id="createPasswordForm">
+                                                {% csrf_token %}
+                                                <div class="form-group mb-20">
+                                                    <div class="row mb-30">
+                                                        <div class="col-lg-12 mb-30">
+                                                            <div class="form-field">
+                                                                <label for="new_password" class="form-control-label">
+                                                                    Yeni Şifre
+                                                                </label>
+                                                                <input name="new_password" type="password"
+                                                                       class="form-control" id="new_password"
+                                                                       onkeyup="checkPassword(this.value);">
+                                                                <span id="showPassword"></span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-lg-12">
+                                                            <div class="form-control-feedback">
+                                                                <div class="feedback-alert warning">
+                                                                <span class="feedback-alert__icon">
+                                                                    <svg width="24"
+                                                                         height="24" viewBox="0 0 24 24" fill="none"
+                                                                         stroke="currentColor" stroke-width="2"
+                                                                         stroke-linecap="round" stroke-linejoin="round"
+                                                                         class="feather feather-alert-triangle">
+                                                                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                                                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                                                                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                                                    </svg>
+                                                                </span>
+                                                                    <span class="feedback-alert__text fw-500">
+                                                                    <ul>
+                                                                    <li id="validation_lower">En az bir adet küçük
+                                                                        karakter
+                                                                        olmalı
+                                                                    </li>
+                                                                    <li id="validation_upper">En az bir adet büyük
+                                                                        karakter
+                                                                        olmalı
+                                                                    </li>
+                                                                    <li id="validation_number">En az bir adet numara
+                                                                        olmalı
+                                                                    </li>
+                                                                    <li id="validation_length">En az 8 karakter olmalı
+                                                                    </li>
+                                                                </ul>
+                                                                </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="flex lr">
+                                                        <button type="submit"
+                                                                class="btn btn-primary btn-icon btn-lg btn-block"
+                                                                disabled
+                                                                id="changePasswordBtn"
+                                                                name="createPasswordBtn">
+                                                            <span class="icon">
+                                                                <svg width="24"
+                                                                     height="24" viewBox="0 0 24 24" fill="none"
+                                                                     stroke="currentColor" stroke-width="2"
+                                                                     stroke-linecap="round" stroke-linejoin="round"
+                                                                     class="feather feather-save">
+                                                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                                                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                                                    <polyline points="7 3 7 8 15 8"></polyline>
+                                                                </svg>
+                                                            </span>
+                                                            <span class="text">
+                                                                Şifre Değiştir
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+    <script>
+        document.getElementById('mobile').addEventListener('input', function (e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+    </script>
+    <script src="{% static 'frontend/js/change_password.js' %}"></script>
+    <script src="{% static 'frontend/js/pages/profile/script.master.js' %}"></script>
+{% endblock %}

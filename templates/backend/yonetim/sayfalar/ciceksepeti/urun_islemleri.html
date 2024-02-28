@@ -1,0 +1,315 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+{% load mathfilters %}
+
+{% block title %}<title>Çiçeksepeti | Ürün Girişi</title>{% endblock %}
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'backend/modules/select2/dist/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'backend/css/table.css' %}">
+    <link rel="stylesheet" href="{% static 'backend/modules/chocolat/dist/css/chocolat.css' %}">
+{% endblock %}
+{% block ciceksepeti %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>Ürün Girişi</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item">Çiçeksepeti Girişi</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+                <div class="col-12">
+                    <form action="" method="get">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label for="select-urunStatus">Ürünler</label>
+                                    <select class="form-control select2 urunStatus filter-checkbox"
+                                            id="select-urunStatus" name="urun_durumu" style="width: 100%;">
+                                        <option value="tum-urunler">Tüm Ürünler</option>
+                                        <option value="yayinda">Yayındaki Ürünleri</option>
+                                        <option value="yayinde-olmayan">Yayında Olmayan Ürünleri</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label for="select-category">Kategori</label>
+                                    <select class="form-control select2 kategoriSelect filter-checkbox"
+                                            id="select-category" name="kategori" style="width: 100%;">
+                                        <option value="">--------</option>
+                                        {% for c in category %}
+                                            <option value="{{ c.id }}"
+                                                    {% if select_category.id == c.id %}selected{% endif %}>{{ c.title }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label for="title">Ürün Adı</label>
+                                    <input type="text" name="baslik" id="title"
+                                           class="form-control float-right filter-checkbox"
+                                           value="{% if title %}{{ title }}{% endif %}">
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label for="barcode">Barkod</label>
+                                    <input type="text" name="barkod" id="barcode"
+                                           class="form-control float-right filter-checkbox"
+                                           value="{% if barcode %}{{ barcode }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-lg-3 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label for="model_kodu">Model Kodu</label>
+                                    <input type="text" name="model_kodu" id="model_kodu"
+                                           class="form-control float-right filter-checkbox"
+                                           value="{% if model_code %}{{ model_code }}{% endif %}">
+                                </div>
+                            </div>
+                            <div class="col-lg-9 col-md-8 col-sm-12 mt-4">
+                                <button class="btn btn-lg btn-primary float-right">Ara</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Çiçeksepeti Ürünler</h4>
+                            <div class="card-header-action">
+                                <a href="{% url 'ciceksepeti_stok_fiyat_guncelle' %}" class="btn btn-primary">Stok & Fiyat Güncelle</a>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover text-nowrap" id="productTable">
+                                    <thead class="bg-light">
+                                    <tr>
+                                        <th>Görsel</th>
+                                        <th>Ürün Adı</th>
+                                        <th>Kategori</th>
+                                        <th>Çiceksepeti Kategori</th>
+                                        <th>Stok</th>
+                                        <th>Durum</th>
+                                        <th>İşlemler</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for product in products %}
+                                        <tr>
+                                            <form action="" method="get">
+                                                <td>
+                                                    <div class="gallery gallery-md">
+                                                        <div class="gallery-item"
+                                                             data-image="{{ product.product.image_url1 }}"
+                                                             data-title="Image 1" style="width: 50px;"></div>
+                                                        <div class="gallery-item d-none"
+                                                             data-image="{{ product.product.image_url2 }}"
+                                                             data-title="Image 1" style="width: 50px;"></div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <p style="line-height: 0.2px;">
+                                                        <strong><a
+                                                                href="{% url 'product_detail' product.product.barcode %}"
+                                                                class="font-weight-bold text-dark">{{ product.product.title|truncatechars_html:35 }}</a></strong>
+                                                    </p>
+                                                    <span id="{{ product.product.barcode }}">Barcode: {{ product.product.barcode }}</span>
+                                                    <span id="copy-{{ product.product.id }}" title="Kopyala"
+                                                          onclick="copyFunction({{ product.product.barcode }})"
+                                                          style="background: none; outline: none; border: none; cursor:pointer;">
+                                                        <i class="fa fa-copy"></i></span>
+                                                </td>
+                                                <td>{{ product.product.subbottomcategory }}</td>
+                                                <td>
+                                                    {{ product.ciceksepeti_kategori_id }}
+                                                    <input type="hidden" id="{{ product.product.id }}-categoryID"
+                                                           value="{{ product.ciceksepeti_kategori_id }}">
+                                                </td>
+                                                <td>{{ product.product.quantity }}</td>
+                                                <td id="yayin-durumu-{{ product.product.id }}">
+                                                    {% if product.yayin_durumu == True %}
+                                                        <span class="btn btn-icon btn-success">
+                                                            <i class="fas fa-check"></i>
+                                                        </span>
+                                                    {% else %}
+                                                        <span class="btn btn-icon btn-danger">
+                                                            <i class="fas fa-times"></i>
+                                                        </span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group-vertical" role="group"
+                                                         aria-label="Basic example">
+                                                        {% if product.yayin_durumu == True %}
+                                                            <button class="btn btn-primary">
+                                                                Yayından Kaldır
+                                                            </button>
+                                                        {% else %}
+                                                            <button class="btn btn-success"
+                                                                    id="update-{{ product.product.id }}">
+                                                                Gönder <i class="fa fa-send"></i>
+                                                            </button>
+                                                            <script>
+
+                                                                $("#update-{{ product.product.id }}").on('click', function (e) {
+                                                                    e.preventDefault();
+                                                                    $.ajax({
+                                                                        type: "GET",
+                                                                        url: `/yonetim/ciceksepeti/urun-girisi/urun-gonder/`,
+                                                                        data: {
+                                                                            'productID': {{ product.product.id }},
+                                                                            'kategoriID': $("#{{ product.product.id }}-categoryID").val(),
+                                                                        },
+                                                                        dataType: 'json',
+                                                                        beforeSend: function () {
+                                                                            $(".waiting").css('display', 'flex')
+                                                                            $(".waiting").css('visibility', 'visible')
+                                                                        },
+                                                                        success: function (data) {
+                                                                            setTimeout(function () {
+                                                                                $(".waiting").css('display', 'none')
+                                                                                $(".waiting").css('visibility', 'hidden')
+
+                                                                                if (data === "success") {
+                                                                                    swal('Ürün Gönderildi', '', 'success');
+                                                                                    window.location.reload();
+                                                                                } else {
+                                                                                    swal('Bir Hata Oluştu', '', 'error');
+                                                                                }
+                                                                            }, 5000)
+                                                                        },
+                                                                        error: function (e) {
+                                                                            iziToast.error({
+                                                                                title: 'Hata !',
+                                                                                message: `Bir hata meydana geldi. ${e}.`,
+                                                                                position: 'topRight'
+                                                                            });
+                                                                        }
+                                                                    });
+                                                                })
+                                                            </script>
+                                                        {% endif %}
+
+                                                    </div>
+                                                </td>
+                                            </form>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="6" class="text-center">
+                                                <div style="width: 100%; height: 250px; display:flex; justify-content: center; align-items: center; flex-direction: column;">
+                                                    <i class="fa fa-2x fa-computer-mouse mb-3"></i>
+                                                    <h5>Ürün bulunmamaktadır.</h5>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <nav aria-label="pagination" class="pagination_area">
+                                <div class="row">
+                                    {% if products.end_index > 0 %}
+                                        <div class="col-sm-12 col-md-5 d-none d-md-block">
+                                            <p>Showing {{ products.start_index }} to {{ products.end_index }}
+                                                of {{ products.paginator.count }}.</p>
+                                        </div>
+                                    {% endif %}
+                                    {% if products.paginator.num_pages > 1 %}
+                                        <div class="col-sm-12 col-md-7 dataTables_pager">
+                                            <ul class="pagination">
+                                                {% if products.has_previous %}
+                                                    <li class="page-item">
+                                                        <a class="page-link" data-page="1"
+                                                           href="{{ query }}&page=1">
+                                                            <i class="fa fa-angle-double-left"></i>
+                                                        </a>
+                                                    </li>
+                                                    {% if products.previous_page_number > 1 %}
+                                                        <li class="page-item">
+                                                            <a class="page-link "
+                                                               data-page="{{ products.previous_page_number }}"
+                                                               href="{{ query }}&page={{ products.previous_page_number }}">
+                                                                <i class="fa fa-angle-left"></i>
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+
+                                                {% endif %}
+
+                                                {% if products.previous_page_number > 2 %}
+                                                    <li class="page-item">
+                                                        <a class="page-link " data-page="{{ products.number|add:'-1' }}"
+                                                           href="{{ query }}&page={{ products.number|add:'-1' }}"> {{ products.number|add:"-1" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                <li class="page-item active"><span
+                                                        class="page-link ">{{ products.number }}</span></li>
+
+                                                {% if products.paginator.num_pages > products.number|add:"1" %}
+                                                    <li class="page-item">
+                                                        <a class="page-link " data-page="{{ products.number|add:'1' }}"
+                                                           href="{{ query }}&page={{ products.number|add:'1' }}"> {{ products.number|add:"1" }} </a>
+                                                    </li>
+
+                                                {% endif %}
+
+                                                {% if products.has_next %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ products.next_page_number }}"
+                                                           href="{{ query }}&page={{ products.next_page_number }}">
+                                                            <i class="fa fa-angle-right"></i>
+                                                        </a>
+                                                    </li>
+
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ products.paginator.num_pages }}"
+                                                           href="{{ query }}&page={{ products.paginator.num_pages }}">
+                                                            <i class="fa fa-angle-double-right"></i>
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'backend/js/product.js' %}"></script>
+    <script src="{% static 'backend/modules/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'backend/modules/sweetalert/sweetalert.min.js' %}"></script>
+    <script src="{% static 'backend/modules/chocolat/dist/js/jquery.chocolat.min.js' %}"></script>
+    <script>
+        function copyFunction(element) {
+            navigator.clipboard.writeText(element);
+        }
+    </script>
+{% endblock %}
+
+
+

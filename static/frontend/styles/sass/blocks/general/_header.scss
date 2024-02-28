@@ -1,0 +1,675 @@
+// @*************************************************************************@
+// @ Software author: Mansur Altamirov (Mansur_TL)                           @
+// @ Author URL: https://themeforest.net/user/mansur_tl                      @
+// @ Author E-mails: vayart.help@gmail.com, vayart.web@gmail.com             @
+// @*************************************************************************@
+// @ DreaM - Electronics eCommerce HTML Template                             @
+// @ Copyright (c) 2021 DreaM. All rights reserved.                          @
+// @*************************************************************************@
+
+
+/*
+* Main navigation header [START]
+*/
+
+header.main-header-section{
+	width: 100%;
+	display: block;
+	transition: all 0.5s ease;
+	box-shadow: none;
+	position: relative;
+	z-index: 1000;
+	margin-bottom: 20px;
+	background: $secondary-bg-color;
+	border-bottom: 2px solid $primary-color;
+
+	div.main-header-section__topline{
+		width: 100%;
+		padding-top: 8px;
+		padding-bottom: 8px;
+		position: relative;
+		z-index: 15;
+		border-bottom: 1px solid $secondary-border-color;
+
+		div.mobile-dev-logo{
+			display: none;
+		}
+
+		div.quick-nav-links{
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			width: 100%;
+
+			a{
+				font-size: 13px;
+				color: $primary-text-color;
+				margin-left: 30px;
+				text-decoration: none;
+
+				&:last-child{
+					margin-right: 30px;
+				}
+
+				&:hover, &:active{
+					color: $primary-color;
+				}
+			}
+		}
+
+		div.event-trigger-wrap{
+			span.event-trigger{
+				display: flex;
+				flex-direction: row;
+				align-items: center;
+				cursor: pointer;
+
+				span.icon{
+					width: 16px;
+					height: 16px;
+					line-height: 1;
+					
+					svg{
+						stroke: $primary-text-color;
+						width: 100%;
+						height: 100%;
+					}
+				}
+
+				span.text{
+					font-size: 13px;
+					color: $primary-text-color;
+					margin-left: 6px;
+					text-decoration: none;
+				}
+
+				&:hover, &:active{
+					span.icon{
+						svg{
+							stroke: $primary-color;
+						}
+					}
+
+					span.text{
+						color: $primary-color;
+					}
+				}
+			}
+		}
+
+		div.langs-links{
+			margin-left: 30px;
+
+			a{
+				color: $primary-text-color;
+				text-decoration: none;
+				font-size: 12px;
+				line-height: 1;
+				margin-left: 5px;
+
+				&:first-child{
+					margin-left: 0px;
+				}
+
+				&.active{
+					background: $black-ctrl-bg;
+					padding: 3px 5px;
+					color: $black-ctrl-color;
+				}
+			}
+		}
+
+		@include media-breakpoint-down(xl) {
+			padding: 0px;
+
+			div.d-flex{
+				height: 50px;
+				justify-content: space-around;
+
+				div.flex-item{
+					&:first-child, &:last-child{
+						width: 20px;
+						flex-shrink: 0;
+					}
+
+					&.quick-nav-links-wrap, &.ui-languages{
+						display: none;
+					}
+
+					&.mobile-dev-logo{
+						display: block;
+						margin-left: auto;
+						margin-right: auto;
+
+						img{
+							height: 24px;
+						}
+					}
+				}
+			}
+
+			div.event-trigger-wrap{
+				span.event-trigger{
+					span.icon{
+						width: 20px;
+						height: 20px;
+
+						svg{
+							stroke: $secondary-text-color;
+						}
+					}
+
+					span.text{
+						display: none;
+					}
+
+					&:hover, &:active{
+						span.icon{
+							svg{
+								stroke: $primary-text-color;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	div.main-header-section__midline{
+		padding-top: 15px;
+		padding-bottom: 15px;
+		position: relative;
+		z-index: 10;
+
+		div.flex-item:nth-child(1){
+			div.logo{
+				margin-right: 30px;
+
+				a{
+					display: inline-block;
+
+					img{
+						height: 40px;
+					}
+				}
+			}
+
+			@include media-breakpoint-down(xl) {
+				display: none;
+			}
+		}
+
+		div.flex-item:nth-child(2){
+			div.catalog-btn{
+				margin-right: 10px;
+
+				button.btn{
+					display: flex;
+					flex-direction: row;
+					align-items: center;
+					border: none;
+					background: $primary-color;
+					height: 48px;
+					padding: 0 15px;
+					margin: 0;
+					box-shadow: none;
+					border-radius: $primary-corner-radius;
+					transition: all 1s ease;
+
+					span.icon{
+						width: 22px;
+						height: 22px;
+						line-height: 1;
+						
+						svg{
+							stroke: $black-ctrl-color;
+							width: 100%;
+							height: 100%;
+						}
+					}
+
+					&.catalog-btn__closed{
+						span.icon-open{
+							display: none;
+						}
+					}
+
+					&.catalog-btn__open{
+						span.icon-closed{
+							display: none;
+						}
+					}
+
+					&:hover, &:active{
+						box-shadow: rgba(149, 157, 165, 0.3) 0px 1px 15px;
+					}
+				}
+
+				@include media-breakpoint-down(xl) {
+					margin-right: 10px;
+
+					button.btn{
+						width: 40px;
+						height: 40px;
+						padding: 0px;
+						display: inline-flex;
+						align-items: center;
+						justify-content: center;
+
+						span.icon{
+							width: 20px;
+							height: 20px;
+						}
+					}
+				}
+			}
+		}
+
+		div.flex-item:nth-child(3){
+			div.searchbar-holder{
+				position: relative;
+				border-radius: $secondary-corner-radius;
+				overflow: hidden;
+
+				input{
+					height: 48px;
+					border: 2px solid $input-primary-bg-color;
+					border-radius: $primary-corner-radius;
+					color: $primary-text-color;
+					width: 100%;
+					padding-left: 20px;
+					background: $input-primary-bg-color;
+					transition: all 0.27s ease;
+
+					&::placeholder{
+						font-size: 14px;
+						color: $secondary-text-color;
+					}
+
+					&:active, &:hover, &:focus{
+						border: 2px solid $primary-color;
+						background: $secondary-bg-color;
+
+						& + {
+							button.searchbar-btn{
+								svg{
+									stroke: $primary-color;
+								}
+							}
+						}
+					}
+				}
+
+				button.searchbar-btn{
+					padding: 0;
+					margin: 0;
+					border: none;
+					background: none;
+					position: absolute;
+					right: 4px;
+					top: 4px;
+					bottom: 4px;
+					height: 40px;
+					width: 40px;
+					opacity: 0.9;
+					display: inline-flex;
+					align-items: center;
+					justify-content: center;
+
+					svg{
+						width: 24px;
+						height: 24px;
+						stroke: $secondary-text-color;
+					}
+				}
+
+				@include media-breakpoint-down(xl) {
+					display: flex;
+					flex-direction: row;
+					flex-wrap: nowrap;
+
+					input{
+						height: 40px;
+						flex: 1;
+					}
+
+					button.searchbar-btn{
+						height: 40px;
+						width: 40px;
+						position: static;
+						margin-left: 10px;
+						background: $primary-color;
+						border-radius: $primary-corner-radius;
+
+						svg{
+							width: 20px;
+							height: 20px;
+							stroke: $black-ctrl-color;
+						}
+					}
+				}
+			}
+		}
+
+		div.flex-item:nth-child(4){
+			div.user-nav-items{
+				margin-left: 10px;
+
+				a.nav-item{
+					text-decoration: none;
+					display: block;
+					line-height: 1;
+
+					span.nav-item__btn{
+						display: flex;
+						flex-direction: row;
+						align-items: center;
+						justify-content: center;
+						border-radius: 100%;
+						height: 50px;
+						width: 50px;
+						background: $grey-ctrl-bg;
+						margin-left: 25px;
+						padding: 0px;
+						position: relative;
+					
+						span.icon{
+							width: 22px;
+							height: 22px;
+							line-height: 1;
+
+							svg{
+								stroke: $grey-ctrl-color;
+								width: 100%;
+								height: 100%;
+							}
+						}
+
+						small.count-ind{
+							position: absolute;
+							background: $danger-color;
+							display: inline-block;
+							height: 10px;
+							width: 10px;
+							border-radius: 10px;
+							top: 10px;
+							right: 15px;
+						}
+					}
+
+					&:hover, &:active{
+						span.nav-item__btn{
+							span.icon{
+								svg{
+									stroke: $primary-color;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			@include media-breakpoint-down(xl) {
+				display: none;
+			}
+		}
+	}
+
+	div.main-header-section__botline{
+		padding-bottom: 20px;
+		position: relative;
+		z-index: 5;
+
+		div.main-header-section__topcatgs{
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			overflow-y: hidden;
+			overflow-x: auto;
+			position: relative;
+		
+			a{
+				display: inline-flex;
+				align-items: center;
+				text-decoration: none;
+				margin-right: 25px;
+				flex-wrap: nowrap;
+				flex-shrink: 0;
+				line-height: 1;
+
+				span.icon{
+					margin-right: 10px;
+
+					svg{
+						width: 17px;
+						height: 17px;
+					}
+				}
+
+				span.text{
+					font-size: 15px;
+					color: $primary-text-color;
+					font-weight: 500;
+					line-height: 14px;
+					white-space: nowrap;
+				}
+
+				&:hover{
+					span.text{
+						color: $primary-color;
+					}
+				}
+
+				@include media-breakpoint-down(xl) {
+					margin-right: 15px;
+
+					span.icon{
+						margin-right: 7px;
+
+						svg{
+							width: 15px;
+							height: 15px;
+						}
+					}
+
+					span.text{
+						font-size: 12px;
+					}
+				}
+			}
+
+			@import "../../snippets/scrollbar/_hide_scrollbar.scss";
+		}
+	}
+
+	div.main-header-section__catgmenu{
+		position: relative;
+		z-index: 4;
+		opacity: 0;
+		visibility: hidden;
+		transition: all 0.1s ease-in;
+		z-index: 3;
+
+		div.catgmenu-wrap{
+			border-top: 1px solid $primary-border-color;
+			position: absolute;
+			left: 0px;
+			right: 0px;
+			top: 0px;
+			
+			div.catgmenu{
+				background: $secondary-bg-color;
+				z-index: 1;
+				border-bottom: 5px solid $primary-color;
+				
+				div.catgmenu__departments{
+					div.departments-nav{
+						padding-top: 10px;
+						padding-bottom: 10px;
+
+						a.departments-nav__item{
+							display: flex;
+							flex-direction: row;
+							flex-wrap: nowrap;
+							width: 100%;
+							text-decoration: none;
+							padding: 0;
+							padding: 16px 30px;
+							color: $primary-text-color;
+							position: relative;
+							border-radius: ($card-corner-radius / 3);
+							transition: all 0.27s ease;
+
+							span.emoji-icon{
+								width: 18px;
+								height: 18px;
+								flex-shrink: 0;
+								line-height: 1;
+								margin-right: 15px;
+
+								svg{
+									width: 100%;
+									height: 100%;
+								}
+							}
+
+							span.text{
+								font-weight: 500;
+								font-size: 14px;
+							}
+
+							span.icon{
+								width: 20px;
+								height: 20px;
+								flex-shrink: 0;
+								line-height: 1;
+								margin-left: auto;
+								visibility: hidden;
+
+								svg{
+									width: 100%;
+									height: 100%;
+									stroke: $secondary-text-color;
+								}
+							}
+
+							&:last-child{
+								margin-bottom: 0px;
+							}
+
+							&:active, &:hover{
+								background: $grey-ctrl-bg;
+
+								span.text{
+									color: $primary-color;
+								}
+
+								span.icon svg{
+									stroke: $primary-color;
+								}
+							}
+						}
+
+						@include media-breakpoint-down(xl) {
+							a.departments-nav__item{
+								padding-left: 0px;
+								padding-right: 0px;
+
+								&:active, &:hover{
+									background: $primary-bg-color;
+								}
+
+								span.icon{
+									visibility: visible;
+								}
+							}
+						}
+					}
+				}
+
+				div.catgmenu__brands{
+					overflow: hidden;
+					margin-bottom: 25px;
+
+					div.swiper{
+						position: relative;
+
+						div.swiper-wrapper{
+							display: flex;
+							width: 100%;
+
+							div.swiper-slide{
+								flex-shrink: 0;
+
+								div.slide-cont{
+									@import "../../snippets/brands/brand_item";
+
+									div.product-brand-item{
+										div.brand{
+											div.brand__logo{
+												border: 1px solid $primary-border-color;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	&.fixed-top-header{
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: 1000;
+		box-shadow: rgba(#000000, 0.05) 0px 2px 20px 10px;
+
+		div.main-header-section__topline{
+			display: none;
+		}
+
+		div.main-header-section__botline{
+			display: none;
+		}
+	}
+
+	&.catgmenu-open{
+		div.main-header-section__midline{
+			position: relative;
+			z-index: 1;
+		}
+
+		div.main-header-section__botline{
+			position: relative;
+			z-index: 1;
+		}
+
+		div.main-header-section__catgmenu{
+			visibility: visible;
+			opacity: 1;
+
+			div.catgmenu-wrap{
+			
+				&:after{
+					position: absolute;
+					top: 100%;
+					left: 0px;
+					right: 0px;
+					content: "";
+					height: 100vh;
+					background-image: radial-gradient(circle farthest-side at 77% 100%,rgba(207,119,235,0.8),rgba(207,119,235,0.3) 38%);
+					background-position: 0% 0%;
+					z-index: -1;
+				}
+			}
+		}
+	}
+}
+	
+/*
+* Main navigation header [END]
+*/

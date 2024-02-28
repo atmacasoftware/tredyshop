@@ -23,6 +23,8 @@
                             class="nav-link"
                             href="{% url 'admin_product' %}">Tüm
                         Ürünler</a></li>
+                    <li {% if request.path == '/yonetim/urunler/urun-islemleri/' %}class="active"{% endif %}><a
+                            class="nav-link" href="{% url 'urun_islemleri' %}">Ürün İşlemleri</a></li>
                     <li {% if request.path == '/yonetim/urunler/ozellik-guncelleme/' %}class="active"{% endif %}><a
                             class="nav-link" href="{% url 'urun_ozellik_guncelleme' %}">Özellik Güncelleme</a></li>
                     <li {% if request.path == '/yonetim/urunler/beden-tablosu/' %}class="active"{% endif %}><a
@@ -110,6 +112,8 @@
                         <a class="nav-link" href="{% url 'trendyol_urun_girisi' %}">Ürün Girişi</a></li>
                     <li {% if '/trendyol/ozellik-eslestir/' in request.path %}class="active"{% endif %}>
                         <a class="nav-link" href="{% url 'trendyol_ozellik_eslestir' %}">Özellik Eşleştir</a></li>
+                    <li {% if '/trendyol/indirim-olustur/' in request.path %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'trendyol_indirim_olustur' %}">İndirim Oluştur</a></li>
                     <li {% if '/trendyol/stok-fiyat-guncelleme/' in request.path %}class="active"{% endif %}>
                         <a class="nav-link" href="{% url 'trendyol_stok_fiyat_guncelle' %}">Stok & Fiyat Güncelleme</a>
                     </li>
@@ -133,6 +137,19 @@
                 <ul class="dropdown-menu">
                     <li {% if '/hepsiburada/hesap-bilgileri/' in request.path %}class="active"{% endif %}>
                         <a class="nav-link" href="{% url 'hepsiburada_hesap_bilgileri' %}">Hesap Bilgileri</a></li>
+                </ul>
+            </li>
+            <li class="dropdown {% if '/yonetim/ciceksepeti/' in request.path %}active{% endif %}">
+                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-c"></i>
+                    <span>Çiçeksepeti</span></a>
+                <ul class="dropdown-menu">
+                    <li {% if '/ciceksepeti/hesap-bilgileri/' in request.path %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'ciceksepeti_hesap_bilgileri' %}">Hesap Bilgileri</a></li>
+                    <li {% if '/ciceksepeti/kategori-eslestir/' in request.path %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'ciceksepeti_kategori_eslestir' %}">Kategori Eşleştirme</a>
+                    </li>
+                    <li {% if '/ciceksepeti/urun-girisi/' in request.path %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'ciceksepeti_urun_gonder' %}">Ürün İşlemleri</a></li>
                 </ul>
             </li>
             <li class="menu-header">FİNANS</li>

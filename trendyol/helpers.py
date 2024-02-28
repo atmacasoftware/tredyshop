@@ -30,6 +30,8 @@ def trendyol_update_function(products):
         for p in products:
             listprice = p.trendyol_price
             saleprice = p.trendyol_price
+            if p.is_trendyol_discountprice:
+                saleprice = p.trendyol_discountprice
             if saleprice > trendyol.firstbarem and saleprice <= 140:
                 saleprice = trendyol.firstbarem
 

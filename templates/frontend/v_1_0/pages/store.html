@@ -1,0 +1,311 @@
+{% extends 'frontend/v_1_0/layout.html' %}
+{% load static %}
+
+{% block title %}<title>
+    {% if keyword %}
+        {{ keyword }}
+    {% else %}
+        {% if categroy_slug != None and subcategory_slug == None and subbottomcategory_slug == None and brands_slug == None %}
+            {{ category_s.title }} Ürünleri
+        {% elif categroy_slug != None and subcategory_slug != None and subbottomcategory_slug == None and brands_slug == None %}
+            {{ subcategory_s.title }} Ürünleri
+        {% elif categroy_slug != None and subcategory_slug != None and subbottomcategory_slug != None and brands_slug == None %}
+            {{ subbottomcategory_s.title }} Ürünleri
+        {% elif categroy_slug == None and subcategory_slug == None and brands_slug != None %}
+            {{ brands_s.title }} Marka Ürünleri
+        {% endif %}
+    {% endif %}
+
+</title>{% endblock %}
+
+{% block store %}
+    <link rel="stylesheet" href="{% static 'css/product_filter.css' %}">
+
+    <div class="container container-240 shop-collection catleft">
+        <ul class="breadcrumb">
+            <li><a href="{% url 'mainpage' %}">Anasayfa</a></li>
+            {% if keyword %}
+                <li class="active"> {{ keyword }}</li>
+            {% else %}
+                {% if categroy_slug != None and subcategory_slug == None and subbottomcategory_slug == None and brands_slug == None %}
+                    <li class="active">{{ category_s.title }}</li>
+                {% elif categroy_slug != None and subcategory_slug != None and subbottomcategory_slug == None and brands_slug == None %}
+                    <li><a href="{{ category_s.get_url }}">{{ category_s.title }}</a></li>
+                    <li class="active">{{ subcategory_s.title }}</li>
+                {% elif categroy_slug != None and subcategory_slug != None and subbottomcategory_slug != None and brands_slug == None %}
+                    <li><a href="{{ category_s.get_url }}">{{ category_s.title }}</a></li>
+                    <li><a href="{{ subcategory_s.get_url }}">{{ subcategory_s.title }}</a></li>
+                    <li class="active">{{ subbottomcategory_s.title }}</li>
+                {% elif categroy_slug == None and subcategory_slug == None and brands_slug != None %}
+                    <li class="active">{{ brands_s.title }}</li>
+                {% endif %}
+            {% endif %}
+        </ul>
+        <div class="filter-collection-left hidden-lg hidden-md">
+            <a class="btn"><i class="fa fa-filter"></i>&nbsp; Filtreleme</a>
+        </div>
+        <div class="row shop-colect">
+            <div class="col-md-3 col-sm-3 col-xs-12 col-left collection-sidebar" id="filter-sidebar">
+                <div class="close-sidebar-collection hidden-lg hidden-md">
+                    <span>Filtreleme</span><i class="icon_close ion-close"></i>
+                </div>
+                <div class="filter filter-cate">
+                    <ul class="wiget-content v3">
+                        {% if category_type == "main" %}
+                            <li class="active"><a href="{{ category_s.get_url }}">{{ category_s.title }}
+                                Kategorileri</a>
+                                <ul class="wiget-content v4">
+                                    {% for sc in subcategories %}
+                                        {% if sc.maincategory.id == category_s.id %}
+                                            <li><a href="{{ sc.get_url }}">{{ sc.title }} <span
+                                                    class="number">({{ sc.product_count }})</span></a></li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% elif category_type == "sub" %}
+                            <li class="active"><a href="{{ subcategory_s.get_url }}">{{ subcategory_s.title }}
+                                Kategorileri</a>
+                                <ul class="wiget-content v4">
+                                    {% for sb in subbottomcategories %}
+                                        {% if sb.subcategory.id == subcategory_s.id %}
+                                            <li><a href="{{ sb.get_url }}">{{ sb.title }} <span
+                                                    class="number">({{ sb.product_count }})</span></a></li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% elif category_type == "search" %}
+                            <li class="active"><a href="{{ c.get_url }}">{{ c.title }}
+                                Kategorileri</a>
+                                <ul class="wiget-content v4">
+                                    {% for sc in subcategories %}
+                                        {% if sc.maincategory.id == 1 %}
+                                            <li><a href="{{ sc.get_url }}">{{ sc.title }} <span
+                                                    class="number">({{ sc.product_count }})</span></a></li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="filter filter-group">
+                    <div class="filter-price filter-inside">
+                        <h3>Fiyat</h3>
+                        <div class="filter-content">
+                            <input type="number" id="minPrice" data-value="{{ minMaxPrice.price__min }}"
+                                   value="{{ minMaxPrice.price__min }}" name="min_price" placeholder="En Az">
+                            <span>-</span>
+                            <input type="number" id="maxPrice" name="max_price"
+                                   data-value="{{ minMaxPrice.price__max }}" value="{{ minMaxPrice.price__max }}"
+                                   placeholder="En Çok">
+                            <button id="priceFilterBtn"><i class="fa fa-search"></i></button>
+                        </div>
+                    </div>
+                    {% if colors %}
+                        <div class="filter-color filter-brand filter-inside">
+                            <h3>Renk</h3>
+                            <div class="colors">
+                                {% for c in colors %}
+                                    <div class="color">
+                                        <input type="checkbox" class="filter-checkbox" data-filter="color"
+                                               value="{{ c.color__id }}"
+                                               id="color-{{ c.color__id }}"
+                                               name="size">
+                                        <label for="color-{{ c.color__id }}" class="color-label"
+                                               style="background-color: {{ c.color__code }}; width: 30px;height: 30px; border-radius: 50%; border: 2px solid black;"
+                                               title="{{ c.color__name }}"></label>
+                                    </div>
+
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if sizes %}
+                        <div class="filter-color filter-brand filter-inside">
+                            <h3>Beden</h3>
+                            <ul class="e-filter brand-filter"
+                                style="margin-top: 10px; max-height: 200px;overflow-x: auto;">
+                                {% for s in sizes %}
+                                    <li>
+                                        <input type="checkbox" class="filter-checkbox" data-filter="size"
+                                               value="{{ s.size__id }}" id="size-{{ s.size__id }}"
+                                               name="size">
+                                        <label for="size-{{ s.size__id }}">{{ s.size__name }}</label>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-9 col-sm-12 col-xs-12 collection-list">
+                <div class="e-product">
+                    <div class="pd-top bg-tredyshop">
+                        {% if category_type == "search" %}
+                            <h1 class="title v2">Arama Sonucu</h1>
+                            <div class="show-element">
+                                <span>{{ product_count }} ürün bulundu.</span></div>
+                        {% else %}
+                            <h1 class="title v2">
+                                {% if categroy_slug != None and subcategory_slug == None and subbottomcategory_slug == None and brands_slug == None %}
+                                    {{ category_s.title }}{% elif categroy_slug != None and subcategory_slug != None and subbottomcategory_slug == None and brands_slug == None %}
+                                    {{ subcategory_s.title }}{% elif categroy_slug != None and subcategory_slug != None and subbottomcategory_slug != None and brands_slug == None %}
+                                    {{ subbottomcategory_s.title }}{% elif categroy_slug == None and subcategory_slug == None and brands_slug != None %}
+                                    {{ brands_s.title }}{% endif %}</h1>
+                            <div class="show-element">
+                            <span>{% if categroy_slug != None and subcategory_slug == None and subbottomcategory_slug == None and brands_slug == None %}
+                                {{ category_s.product_count }} ürün bulundu.
+                                {% elif categroy_slug != None and subcategory_slug != None and subbottomcategory_slug == None and brands_slug == None %}{{ subcategory_s.product_count }}
+                                ürün bulundu.
+                                {% elif categroy_slug != None and subcategory_slug != None and subbottomcategory_slug != None and brands_slug == None %}{{ subbottomcategory_s.product_count }}
+                                ürün bulundu.
+                                {% elif categroy_slug == None and subcategory_slug == None and subbottomcategory_slug == None and brands_slug != None %}{{ brands_s.product_count }}
+                                ürün bulundu.{% endif %}</span></div>
+                        {% endif %}
+
+                    </div>
+                    {% if products.count > 0 %}
+                        <div class="pd-middle">
+                            <div class="view-mode view-group">
+                                <a class="grid-icon col active"><i class="fas fa-grip 2x"></i></a>
+                                <a class="grid-icon col2"><i class="fa fa-list"></i></a>
+                            </div>
+                            <div class="pd-sort">
+                                <div class="filter-sort">
+                                    <div class="dropdown">
+                                        <button class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                            <span class="dropdown-label">Sıralama</span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-arrangement">
+                                            <li>
+                                                <input type="radio" class="filter-checkbox" name="arrangement" checked
+                                                       data-filter="arrangement" value="1" id="highlights">
+                                                <label for="highlights">Öne Çıkanlar</label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" class="filter-checkbox" name="arrangement"
+                                                       data-filter="arrangement" value="2" id="highlights">
+                                                <label for="highlights">En Çok Satılanlar</label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" class="filter-checkbox" name="arrangement"
+                                                       data-filter="arrangement" value="3" id="highlights">
+                                                <label for="highlights">Artan Fiyat</label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" class="filter-checkbox" name="arrangement"
+                                                       data-filter="arrangement" value="4" id="highlights">
+                                                <label for="highlights">Azalan Fiyat</label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" class="filter-checkbox" name="arrangement"
+                                                       data-filter="arrangement" value="5" id="highlights">
+                                                <label for="highlights">En Yeniler</label>
+                                            </li>
+                                            <li>
+                                                <input type="radio" class="filter-checkbox" name="arrangement"
+                                                       data-filter="arrangement" value="6" id="highlights">
+                                                <label for="highlights">En Eskiler</label>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="product-collection-grid product-grid">
+                        <div class="row">
+                            {% for product in products %}
+                                <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4 product-item">
+                                    <div class="pd-bd product-inner">
+                                        <div class="product-img">
+                                            <a href="{% url 'products_detail' product.product.slug %}"
+                                               style="display: flex; justify-content: center; align-items: center"><img
+                                                    src="{{ product.kapak.url }}" alt="" class="img-reponsive"
+                                                    style="width: auto;!important;"></a>
+                                        </div>
+                                        <div class="product-info">
+                                            <div class="color-group"></div>
+
+                                            <div class="element-list element-list-middle">
+                                                <div class="product-rating bd-rating">
+                                                    <span class="rating">
+                                    <i class="fa fa-star{% if product.product.averageReview < 0.5 %}-o{% elif product.product.averageReview >= 0.5 and product.product.averageReview < 1 %}-half-alt {% endif %}"></i><i
+                                                            class="fa fa-star{% if product.product.averageReview < 1.5 %}-o{% elif product.product.averageReview >= 1.5 and product.product.averageReview < 2 %}-half-alt {% endif %}"></i><i
+                                                            class="fa fa-star{% if product.product.averageReview < 2.5 %}-o{% elif product.product.averageReview >= 2.5 and product.product.averageReview < 3 %}-half-alt {% endif %}"></i><i
+                                                            class="fa fa-star{% if product.product.averageReview < 3.5 %}-o{% elif product.product.averageReview >= 3.5 and product.product.averageReview < 4 %}-half-alt {% endif %}"></i><i
+                                                            class="fa fa-star{% if product.product.averageReview < 4.5 %}-o{% elif product.product.averageReview >= 4.5 and product.product.averageReview < 5 %}-half-alt {% endif %}"></i>
+                                </span>
+                                                    <div class="number-rating">( {{ product.product.countReview }}
+                                                        değerlendirme )
+                                                    </div>
+                                                </div>
+                                                <p class="product-cate">{{ product.product.category.title }}</p>
+                                                <h3 class="product-title"><a
+                                                        href="{% url 'products_detail' product.product.slug %}">{{ product.product.title|truncatechars_html:25 }}</a>
+                                                </h3>
+                                                <div class="product-bottom">
+                                                    <div class="product-price">
+                                                        <span>{{ product.product.price }} TL</span></div>
+                                                    <a href="{% url 'products_detail' product.product.slug %}"
+                                                       class="btn-icon btn-view">
+                                                        <span class="icon-bg icon-view"></span>
+                                                    </a>
+                                                </div>
+
+                                            </div>
+                                            <div class="product-button-group"
+                                                 style="display: flex; justify-content: center;align-items: center;">
+                                                <a href="{{ product.product.get_url }}" class="btn btn-gradient">Ürünü
+                                                    Gör
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <div class="empty__product_container"
+                                     style="display: flex; flex-direction: column; justify-content: start; align-items: center; width: 100%; height: 100%; margin-top: 30px;">
+                                    <img src="{% static 'img/icon/no_data.png' %}" alt="No Data">
+                                    <h4 style="margin-top: 30px;font-weight: bold;">Aradığınız kategori veya anahtar
+                                        kelimede ürün bulunamadı.</h4>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% if products.count > 15 %}
+                        {% if category_type != "search" %}
+                            <div class="pd-middle space-v1"
+                                 style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                                <div class="product_loader" style="margin-bottom: 20px;">
+                                    <img src="{% static 'img/loader.gif' %}" alt="Loader"
+                                         style="width: 50px;height: 50px;">
+                                </div>
+
+                                <button class="btn" data-total="{{ product_count }}" data-limit="15"
+                                        data-category="{{ categroy_slug }}" data-subcategory="{{ subcategory_slug }}"
+                                        data-bottomcategory="{{ subbottomcategory_slug }}"
+                                        data-brands="{{ brands_slug }}"
+                                        id="loadMore" filter-color="" filter-sizer=""
+                                        filter-minprice="{{ minMaxPrice.price__min }}"
+                                        filter-maxprice="{{ minMaxPrice.price__max }}" filter-arrangement="">Daha Fazla
+                                    Gör
+                                </button>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" value="{{ categroy_slug }}" id="data-category">
+    <input type="hidden" value="{{ subcategory_slug }}" id="data-subcategory">
+    <input type="hidden" value="{{ subbottomcategory_slug }}" id="data-bottomcategory">
+    <input type="hidden" value="{{ brands_slug }}" id="data-brands">
+    <input type="hidden" value="{{ keyword }}" id="data-search">
+
+    <script src="{% static 'js/filter.js' %}"></script>
+{% endblock %}

@@ -1,5 +1,6 @@
 from django.urls import path
 from adminpage.views import *
+from ciceksepeti.views import *
 
 urlpatterns = [
     path('giris-yap/', admin_login, name='admin_login'),
@@ -7,6 +8,7 @@ urlpatterns = [
     path('', mainpage, name='admin_mainpage'),
     path('siparis-istatistikleri-ajax', siparis_istatistikleri, name='siparis_istatistikleri'),
     path('platform-istatistikleri-ajax', platform_istatistikleri, name='platform_istatistikleri'),
+    path('fatura-istatistikleri-ajax', fatura_istatistikleri, name='fatura_istatistikleri'),
     path('kar-istatistikleri-ajax', aylik_kar, name='aylik_kar'),
     path('bildirimler/id=<int:id>/', read_notification, name='read_notification'),
     path('bildirimler/sil/id=<int:id>/', sil_notification, name='sil_notification'),
@@ -28,6 +30,18 @@ urlpatterns = [
          name='banner_publish'),
     path('site-yonetimi/banner/secili-banner/id=<int:id>/sira-degistir/', banner_order,
          name='banner_order'),
+    path('site-yonetimi/banner/secili-banner/id=<int:id>/gidecegi-url-degistir/', banner_url,
+         name='banner_url'),
+    path('site-yonetimi/header-cat/hepsini-sil/', headercat_hepsini_sil,
+         name='headercat_hepsini_sil'),
+    path('site-yonetimi/headercat/secili-headercat-sil/', headercat_secilileri_sil,
+         name='headercat_secilileri_sil'),
+    path('site-yonetimi/headercat/secili-headercat/id=<int:id>/yayin-durumu-degistir/', headercat_publish,
+         name='headercat_publish'),
+    path('site-yonetimi/headercat/secili-headercat/id=<int:id>/sira-degistir/', headercat_order,
+         name='headercat_order'),
+    path('site-yonetimi/headercat/secili-headercat/id=<int:id>/gidecegi-url-degistir/', cat_url,
+         name='cat_url'),
     path('site-yonetimi/musteri-sorulari/', musteri_sorulari, name='musteri_sorulari'),
     path('site-yonetimi/musteri-sorulari/soru-cevapla/soru_id=<int:id>/', musteri_sorulari_cevapla,
          name='musteri_sorulari_cevapla'),
@@ -138,8 +152,9 @@ urlpatterns = [
     path('urunler/sil/json/', ajax_select_delete_product, name='ajax_select_delete_product'),
     path('urunler/sil/', all_delete_product, name='all_delete_product'),
     path('urunler/aktif-olmayan-urunler/sil/', not_active_product_delete, name='not_active_product_delete'),
-    path('urunler/tum-urunler/urun_id=<int:id>/', product_detail, name='product_detail'),
+    path('urunler/tum-urunler/barkod=<str:barkod>/', product_detail, name='product_detail'),
     path('urunler/excel-indir/', product_export_excel, name='product_export_excel'),
+    path('urunler/urun-islemleri/', urun_islemleri, name='urun_islemleri'),
     path('urunler/ozellik-guncelleme/', urun_ozellik_guncelleme, name='urun_ozellik_guncelleme'),
     path('urunler/beden-tablosu/', beden_tablosu, name='beden_tablosu'),
     path('urunler/beden-tablosu/kadin-ust-beden-tablosu/id=<int:id>/sil/', kadin_ust_beden_sil,
@@ -213,12 +228,12 @@ urlpatterns = [
          name="hepsiburada_fiyat_guncelle"),
     path('xml-yonetimi/fiyat-ayarla/hepsiburada-fiyat-sil/<int:pk>/', delete_hepsiburada_karmarji_formset,
          name="hepsiburada_fiyat_delete"),
-    path('xml-yonetimi/fiyat-ayarla/amazon-fiyat-ayarla/', AmazonFiyatAyarlaCreate.as_view(),
-         name="amazon_fiyat_ayarla"),
-    path('xml-yonetimi/fiyat-ayarla/amazon-fiyat-guncelle/<int:pk>/', AmazonFiyatAyarlaUpdate.as_view(),
-         name="amazon_fiyat_guncelle"),
-    path('xml-yonetimi/fiyat-ayarla/amazon-fiyat-sil/<int:pk>/', delete_amazon_karmarji_formset,
-         name="amazon_fiyat_delete"),
+    path('xml-yonetimi/fiyat-ayarla/ciceksepeti-fiyat-ayarla/', CiceksepetiFiyatAyarlaCreate.as_view(),
+         name="ciceksepeti_fiyat_ayarla"),
+    path('xml-yonetimi/fiyat-ayarla/ciceksepeti-fiyat-guncelle/<int:pk>/', CiceksepetiFiyatAyarlaUpdate.as_view(),
+         name="ciceksepeti_fiyat_guncelle"),
+    path('xml-yonetimi/fiyat-ayarla/ciceksepeti-fiyat-sil/<int:pk>/', delete_ciceksepeti_karmarji_formset,
+         name="ciceksepeti_fiyat_delete"),
     path('xml-yonetimi/fiyat-ayarla/pttavm-fiyat-ayarla/', PttAvmFiyatAyarlaCreate.as_view(),
          name="pttavm_fiyat_ayarla"),
     path('xml-yonetimi/fiyat-ayarla/pttavm-fiyat-guncelle/<int:pk>/', PttAvmFiyatAyarlaUpdate.as_view(),
@@ -256,6 +271,8 @@ urlpatterns = [
     path('trendyol/komisyon-oranlari/komisyon_id=<int:id>/', trendyol_komisyon_detay, name="trendyol_komisyon_detay"),
     path('trendyol/komisyon-oranlari/sil/id=<int:id>/', trendyol_komisyon_sil,
          name='trendyol_komisyon_sil'),
+    path('trendyol/indirim-olustur/', trendyol_indirim_olustur, name="trendyol_indirim_olustur"),
+    path('trendyol/indirim-olustur/indirim-kaydet/', trendyol_indirim_kaydet, name="trendyol_indirim_kaydet"),
 
     ## Hepsiburada
     path('hepsiburada/hesap-bilgileri/', hepsiburada_hesap_bilgileri, name="hepsiburada_hesap_bilgileri"),
@@ -265,6 +282,15 @@ urlpatterns = [
          name="hepsiburada_add_product_giyim_category"),
     path('hepsiburada/urun-giris/giyim/kategori_id=<int:id>/hepsiburada/urun-gonder/',
          hepsiburada_add_product_giyim_send, name="hepsiburada_add_product_giyim_send"),
+
+     ## Çiçeksepeti
+    path('ciceksepeti/hesap-bilgileri/', ciceksepeti_hesap_bilgileri, name="ciceksepeti_hesap_bilgileri"),
+    path('ciceksepeti/kategori-eslestir/', ciceksepeti_kategori_eslestir, name="ciceksepeti_kategori_eslestir"),
+    path('ciceksepeti/kategori-eslestir/kategorileri-al/', kategorileri_al, name="kategorileri_al"),
+    path('ciceksepeti/kategori-eslestir/ajax/', ciceksepeti_kategori_eslestir_ajax, name="ciceksepeti_kategori_eslestir_ajax"),
+    path('ciceksepeti/urun-girisi/', ciceksepeti_urun_gonder, name="ciceksepeti_urun_gonder"),
+    path('ciceksepeti/urun-girisi/urun-gonder/', ciceksepeti_urun_gonder_ajax, name="ciceksepeti_urun_gonder_ajax"),
+    path('ciceksepeti/urun-girisi/stok-fiyat-guncelle/', ciceksepeti_stok_fiyat_guncelle, name="ciceksepeti_stok_fiyat_guncelle"),
 
     # muhasebe
     path('finans-yonetimi/kesilen-faturalar/', kesilen_faturalar, name="kesilen_faturalar"),

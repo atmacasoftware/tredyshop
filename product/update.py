@@ -47,30 +47,41 @@ def kumas():
     flamli = FabricType.objects.get(id=7)
 
     for p in product:
+        try:
+            if p.subbottomcategory.category_no == "1015":
+                p.fabrictype = denim
+                p.save()
+        except:
+            pass
+
         if p.fabrictype == '' or p.fabrictype == None or p.fabrictype == 'None':
-            p.fabrictype = dokuma
-            p.save()
-            for liste in kumas_list:
-                if liste.lower() in p.title.lower().split():
-                    if liste == 'deri':
-                        p.fabrictype = suni_deri
-                    if liste == 'triko':
-                        p.fabrictype = triko
-                    if liste == 'dokuma':
-                        p.fabrictype = dokuma
-                    if liste == 'dantel':
-                        p.fabrictype = dantel
-                    if liste == 'örme':
-                        p.fabrictype = orme
-                    if liste == 'denim':
-                        p.fabrictype = denim
-                    if liste == 'poplin':
-                        p.fabrictype = poplin
-                    if liste == 'kaşkorse':
-                        p.fabrictype = dokuma
-                    if liste == 'flamlı':
-                        p.fabrictype = dokuma
-                    p.save()
+            if p.subbottomcategory.category_no == "1015":
+                p.fabrictype = denim
+                p.save()
+            else:
+                p.fabrictype = dokuma
+                p.save()
+                for liste in kumas_list:
+                    if liste.lower() in p.title.lower().split():
+                        if liste == 'deri':
+                            p.fabrictype = suni_deri
+                        if liste == 'triko':
+                            p.fabrictype = triko
+                        if liste == 'dokuma':
+                            p.fabrictype = dokuma
+                        if liste == 'dantel':
+                            p.fabrictype = dantel
+                        if liste == 'örme':
+                            p.fabrictype = orme
+                        if liste == 'denim':
+                            p.fabrictype = denim
+                        if liste == 'poplin':
+                            p.fabrictype = poplin
+                        if liste == 'kaşkorse':
+                            p.fabrictype = dokuma
+                        if liste == 'flamlı':
+                            p.fabrictype = dokuma
+                        p.save()
 
     return 'success'
 
@@ -162,34 +173,38 @@ def bel():
 
     for p in ApiProduct.objects.filter(subbottomcategory_id=8):
         if p.waist == '' or p.waist == None or p.waist == 'None':
-            for liste in bel_list:
-                if liste.lower() in p.title.lower():
-                    if liste == 'yüksek bel':
-                        p.waist = yuksek_bel
-                    if liste == 'süper yüksek bel':
-                        p.waist = super_yuksek_bel
-                    if liste == 'regular':
-                        p.waist = regular
-                    if liste == 'paperbag':
-                        p.waist = paperbag
-                    if liste == 'normal bel':
+            if p.subbottomcategory.category_no == "1015":
+                p.waist = yuksek_bel
+                p.save()
+            else:
+                for liste in bel_list:
+                    if liste.lower() in p.title.lower():
+                        if liste == 'yüksek bel':
+                            p.waist = yuksek_bel
+                        if liste == 'süper yüksek bel':
+                            p.waist = super_yuksek_bel
+                        if liste == 'regular':
+                            p.waist = regular
+                        if liste == 'paperbag':
+                            p.waist = paperbag
+                        if liste == 'normal bel':
+                            p.waist = normal
+                        if liste == 'lastikli':
+                            p.waist = lastikli
+                        if liste == 'kuşaklı':
+                            p.waist = kusakli
+                        if liste == 'kemerli':
+                            p.waist = kemerli
+                        if liste == 'jogger lastik bel':
+                            p.waist = jogger_lastik
+                        if liste == 'extra yüksek bel':
+                            p.waist = extra_yuksek
+                        if liste == 'düşük bel':
+                            p.waist = dusuk_bel
+                        p.save()
+                    else:
                         p.waist = normal
-                    if liste == 'lastikli':
-                        p.waist = lastikli
-                    if liste == 'kuşaklı':
-                        p.waist = kusakli
-                    if liste == 'kemerli':
-                        p.waist = kemerli
-                    if liste == 'jogger lastik bel':
-                        p.waist = jogger_lastik
-                    if liste == 'extra yüksek bel':
-                        p.waist = extra_yuksek
-                    if liste == 'düşük bel':
-                        p.waist = dusuk_bel
-                    p.save()
-                else:
-                    p.waist = normal
-                    p.save()
+                        p.save()
 
     for p in ApiProduct.objects.filter(subbottomcategory_id=7):
         if p.waist == '' or p.waist == None or p.waist == 'None':
@@ -553,6 +568,20 @@ def kategori():
 
     return 'success'
 
+
+def yas_grubu():
+    products = ApiProduct.objects.filter(is_publish=True)
+    for product in products:
+        for t in product.title.split(' '):
+            if t == "Çocuk":
+                product.age_group = "Çocuk"
+                product.save()
+
+            if t == "Bebek":
+                product.age_group = "Bebek"
+                product.save()
+
+    return "success"
 
 def topukTipi():
     product = ApiProduct.objects.filter(subcategory_id=5)

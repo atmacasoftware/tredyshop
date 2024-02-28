@@ -1,0 +1,226 @@
+// @*************************************************************************@
+// @ Software author: Mansur Altamirov (Mansur_TL)                           @
+// @ Author URL: https://themeforest.net/user/mansur_tl                      @
+// @ Author E-mails: vayart.help@gmail.com, vayart.web@gmail.com             @
+// @*************************************************************************@
+// @ DreaM - Electronics eCommerce HTML Template                             @
+// @ Copyright (c) 2021 DreaM. All rights reserved.                          @
+// @*************************************************************************@
+
+/*
+* Auth page [START]
+*/
+
+div.page-container.auth{
+	div.page-section{
+		div.auth-form{
+			div.auth-form__header{
+				margin-bottom: 25px;
+
+				div.icon{
+					display: flex;
+					justify-content: center;
+					margin-bottom: 10px;
+
+					span{
+						background: $grey-ctrl-bg;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						width: 70px;
+						height: 70px;
+						border-radius: 100%;
+
+						svg{
+							width: 30px;
+							height: 30px;
+						}
+					}
+				}
+
+				h3{
+					color: $primary-color;
+					font-weight: 600;
+					padding: 0;
+					margin: 0 0 10px 0;
+					font-size: 28px;
+					text-align: center;
+				}
+
+				p{
+					padding: 0;
+					margin: 0;
+					color: $secondary-text-color;
+					font-size: 14px;
+					text-align: center;
+
+					b{
+						font-weight: 500;
+						color: $primary-text-color;
+					}
+				}
+			}
+
+			div.form-group-text-sep{
+				margin-top: 20px;
+				margin-bottom: 20px;
+				color: $secondary-text-color;
+
+				span{
+					display: block;
+					font-size: 13px;
+					text-align: center;
+
+					a{
+						text-decoration: none;
+						color: $primary-color;
+						font-weight: 500;
+					}
+				}
+
+				&.no-mb{
+					margin-bottom: 0px;
+				}
+
+				&.mt-30{
+					margin-top: 30px;
+				}
+			}
+
+			div.form-group-line-sep{
+				display: flex;
+				justify-content: center;
+				margin-top: 20px;
+				margin-bottom: 20px;
+				color: $primary-color;
+
+				span{
+					font-size: 13px;
+					text-align: center;
+					font-weight: 500;
+					position: relative;
+
+					&::after, &::before{
+						height: 2px;
+						content: "";
+						position: absolute;
+						top: 8px;
+						width: 100px;
+						background: $primary-border-color;
+					}
+
+					&::after{
+						left: 40px;
+					}
+
+					&::before{
+						right: 40px;
+					}
+				}
+			}
+
+			div.auth-form__body{
+				margin-bottom: 30px;
+
+				a.social-login-btn{
+					margin-bottom: 20px;
+
+					div.btn span.icon{
+						svg{
+							stroke: unset;
+						}
+					}
+
+					&.google div.btn{
+						background: #ffffff;
+						border: 1px solid $primary-border-color;
+
+						span.icon{
+							svg{
+								fill: #ffffff;
+							}
+						}
+
+						span.text{
+							color: #444444;
+						}
+					}
+
+					&.facebook div.btn{
+						background: #507cc0;
+
+						span.icon{
+							svg{
+								fill: #ffffff;
+							}
+						}
+					}
+
+					&.twitter div.btn{
+						background: #64ccf2;
+
+						span.icon{
+							svg{
+								fill: #ffffff;
+							}
+						}
+					}
+
+					&:last-child{
+						margin-bottom: 0px;
+					}
+				}
+
+				&.no-mb{
+					margin-bottom: 0px;
+				}
+			}
+
+			div.auth-form__footer{
+				color: $secondary-text-color;
+
+				span{
+					display: block;
+					font-size: 13px;
+					text-align: center;
+
+					a{
+						text-decoration: none;
+						color: $primary-color;
+						font-weight: 500;
+					}
+				}
+			}
+			
+			div.row-p-10{
+				margin-left: -5px;
+				margin-right: -5px;
+
+				div.col-p-10{
+					padding-left: 5px;
+					padding-right: 5px;
+				}
+			}
+
+			@include media-breakpoint-down(md) {
+				div.auth-form__header{
+					h3{
+						font-size: 24px;
+					}
+				}
+			}
+
+			@include media-breakpoint-down(sm) {
+				div.auth-form__header{
+					h3{
+						font-size: 22px;
+					}
+				}
+			}
+		}
+	}
+}
+
+/*
+* Auth page [END]
+*/

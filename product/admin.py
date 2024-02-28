@@ -11,7 +11,7 @@ class ProductApiAdmin(ImportExportModelAdmin):
                     'create_at', 'is_publish', 'update_at']
     search_fields = ['title', 'id', 'barcode', 'model_code']
     list_filter = ['status', 'is_discountprice']
-    list_per_page = 100
+    list_per_page = 5000
 
 
 class BrandAdmin(ImportExportModelAdmin):
@@ -119,6 +119,7 @@ class KadinJeanBedenAdmin(ImportExportModelAdmin):
 class ProductGroupAdmin(ImportExportModelAdmin):
     list_display = ['model_code','product']
     search_fields = ['model_code']
+    list_per_page = 1000
     resource_class = ProductGroupResource
 
 class TabletModelAdmin(ImportExportModelAdmin):

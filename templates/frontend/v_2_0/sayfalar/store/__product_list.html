@@ -1,0 +1,59 @@
+{% for product in data %}
+    <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-4 col-6 grid-item-col">
+        <div class="grid-item">
+            <div class="product-grid-item">
+                <div class="product">
+                    <a class="a-block"
+                       href="{{ product.product.get_url }}">
+                        <div class="product__image">
+                            <img src="{{ product.get_kapak }}"
+                                 alt="IMG">
+                            {% if product.product.is_discountprice %}
+                                <div class="discount">
+                                                                                    <span>
+                                                                                        -{{ product.product.discountrate }}%
+                                                                                    </span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </a>
+                    <div class="product__description">
+                        <a class="a-block"
+                           href="{{ product.product.get_urş }}">
+                            <div class="product_prices">
+                                {% if product.product.is_discountprice %}
+                                    <b>
+                                        {{ product.product.discountprice }}
+                                        TL
+                                    </b>
+                                    <span>
+                                                                                        {{ product.product.price }} TL
+                                                                                    </span>
+                                {% else %}
+                                    <b>
+                                        {{ product.product.price }}
+                                        TL
+                                    </b>
+                                {% endif %}
+                            </div>
+                            <div class="product_rating">
+                                                                                            <span class="rating">
+                                                    <i class="bi bi-star{% if product.product.averageReview > 0 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if product.product.averageReview > 1.5 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if product.product.averageReview > 2.5 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if product.product.averageReview > 3.5 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if product.product.averageReview > 4.5 %}-fill{% else %}{% endif %}"></i>
+                                                </span>
+                            </div>
+                        </a>
+                        <div class="product_name">
+                            <a href="{{ product.product.get_url }}">
+                                {{ product.product.title }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}

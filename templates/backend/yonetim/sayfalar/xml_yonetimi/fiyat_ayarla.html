@@ -75,13 +75,13 @@
                 <div class="col-md-3 col-sm-4 col-6">
                     <div class="card card-dark">
                         <div class="card-header">
-                            <h4>Amazon</h4>
+                            <h4>Çiçeksepeti</h4>
                         </div>
                         <div class="card-body">
-                            <a href="{% if amazon != None %}
-                                        {% url 'amazon_fiyat_guncelle' amazon.id %}
+                            <a href="{% if ciceksepeti != None %}
+                                        {% url 'ciceksepeti_fiyat_guncelle' amazon.id %}
                                       {% else %}
-                                        {% url 'amazon_fiyat_ayarla' %}
+                                        {% url 'ciceksepeti_fiyat_ayarla' %}
                                       {% endif %}"
                                class="btn btn-dark btn-block text-center font-weight-bold text-white"
                                style="font-size: 1.3rem;">Fiyat Ayarla</a>

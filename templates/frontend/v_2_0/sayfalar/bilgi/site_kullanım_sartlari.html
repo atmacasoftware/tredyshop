@@ -1,0 +1,59 @@
+{% extends 'frontend/v_2_0/base.html' %}
+{% load static %}
+
+{% block title %}<title>Site Kullanım Şartları</title>{% endblock %}
+
+{% block extra_style %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{% static 'frontend/css/bilgi.css' %}">
+{% endblock %}
+
+{% block bilgi %}
+    <div class="page-container faqs">
+        <!-- ~~~~~~~~~~~~~~~~~ Teslimat Koşulları page breadcrumbs section [START] ~~~~~~~~~~~~~~~~~ -->
+        <div class="page-margin">
+            <div class="page-margin__content">
+                <nav class="breadcrumbs">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'mainpage' %}">Anasayfa</a>
+                        </li>
+                        <li class="breadcrumb-item active">
+                            Site Kullanım Şartları
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <!-- ~~~~~~~~~~~~~~~~~ Teslimat Koşulları page breadcrumbs section [END] ~~~~~~~~~~~~~~~~~ -->
+
+        <!-- ~~~~~~~~~~~~~~~~~ Teslimat Koşulları content section [START] ~~~~~~~~~~~~~~~~~ -->
+        <div class="page-section">
+            <div class="page-margin">
+                <div class="page-margin__content">
+                    <div class="page-section__body">
+                        <div class="row">
+                            <div class="col-xxl-3 col-xl-3 col-12">
+                                {% include 'frontend/v_2_0/sayfalar/bilgi/__sidebar.html' %}
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-12">
+                                <div class="popular-questions">
+                                    <div class="page-section__header">
+                                        <h2>
+                                            Site Kullanım Şartları
+                                        </h2>
+                                    </div>
+                                    <p>{{ contracts.term_of_use|safe }}</p>
+                                </div>
+                            </div>
+                            <div class="col-xxl-3 col-xl-3 col-12">
+                                {% include 'frontend/v_2_0/sayfalar/bilgi/__live_chat.html' %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ~~~~~~~~~~~~~~~~~ Teslimat Koşulları content section [END] ~~~~~~~~~~~~~~~~~ -->
+    </div>
+{% endblock %}

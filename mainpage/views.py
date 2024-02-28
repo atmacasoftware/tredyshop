@@ -1,12 +1,13 @@
 import json
 
 from django.db.models import Q, Count, Min, Max
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
 import decimal
 import requests
 from adminpage.models import *
+from ciceksepeti.models import CiceksepetiOrders
 from customer.models import Subscription
 from mainpage.models import *
 from product.models import Brand, ReviewRating, ApiProduct, Pattern, EnvironmentType, ProductModelGroup
@@ -21,12 +22,12 @@ def index(request):
     flash_deals = []
     new_release = []
 
-    banners = Banner.objects.all().order_by('order')
+    banners = Banner.objects.filter(is_publish=True).order_by('order')
 
     context.update({
         'banners':banners,
     })
-    return render(request, 'frontend/pages/mainpage.html', context)
+    return render(request, 'frontend/v_2_0/sayfalar/anasayfa/anasayfa.html', context)
 
 
 def ajax_search(request):
@@ -44,6 +45,8 @@ def ajax_search(request):
             MostSearchingKeyword.objects.create(keyword=series, ip=ip)
 
     products = ProductModelGroup.objects.filter(product__title__icontains=series, product__is_publish=True)[:15]
+
+    categories = SubBottomCategory.objects.filter(Q(title__icontains=series))
 
     if len(products) > 0:
         data = []
@@ -67,6 +70,7 @@ def ajax_search(request):
                 }
                 data.append(item)
         res = data
+
     else:
         res = "no-data"
     return JsonResponse({'data': res})
@@ -108,7 +112,7 @@ def search(request):
             'minMaxPrice': minMaxPrice,
         })
 
-    return render(request, 'frontend/pages/store.html', context)
+    return render(request, 'frontend/v_1_0/pages/store.html', context)
 
 
 def search_product_filter(request):
@@ -144,7 +148,7 @@ def search_product_filter(request):
             product__subcategory__title__icontains=keyword) | Q(product__brand__title__icontains=keyword), product__price__gte=minPrice,
                                       product__price__lte=maxPrice, product__is_publish=True).order_by(order_type)
 
-    t = render_to_string('frontend/partials/ajax/product-list.html', {'data': data})
+    t = render_to_string('frontend/v_1_0/partials/ajax/product-list.html', {'data': data})
     return JsonResponse({'data': t})
 
 
@@ -154,7 +158,7 @@ def sss(request):
     context.update({
         'faq': faq,
     })
-    return render(request, 'frontend/information/faq.html', context)
+    return render(request, 'frontend/v_2_0/sayfalar/bilgi/faq.html', context)
 
 
 def delivery_conditional(request):
@@ -164,7 +168,7 @@ def delivery_conditional(request):
         'contracts': contracts
     })
 
-    return render(request, 'frontend/information/delivery_conditional.html', context)
+    return render(request, 'frontend/v_2_0/sayfalar/bilgi/teslimat_kosullari.html', context)
 
 
 def membership_contract(request):
@@ -174,7 +178,7 @@ def membership_contract(request):
         'contracts': contracts
     })
 
-    return render(request, 'frontend/information/membership_contract.html', context)
+    return render(request, 'frontend/v_2_0/sayfalar/bilgi/uyelik_sozlesmesi.html', context)
 
 
 def terms_of_use(request):
@@ -184,7 +188,7 @@ def terms_of_use(request):
         'contracts': contracts
     })
 
-    return render(request, 'frontend/information/terms_of_use.html', context)
+    return render(request, 'frontend/v_2_0/sayfalar/bilgi/site_kullanım_sartlari.html', context)
 
 
 def security_policy(request):
@@ -194,7 +198,7 @@ def security_policy(request):
         'contracts': contracts
     })
 
-    return render(request, 'frontend/information/security_policy.html', context)
+    return render(request, 'frontend/v_2_0/sayfalar/bilgi/gizlilik_politikasi.html', context)
 
 
 def kvkk(request):
@@ -204,7 +208,7 @@ def kvkk(request):
         'contracts': contracts
     })
 
-    return render(request, 'frontend/information/kvkk.html', context)
+    return render(request, 'frontend/v_2_0/sayfalar/bilgi/kvkk.html', context)
 
 
 def cookies(request):
@@ -216,31 +220,39 @@ def cookies(request):
         'cookie': cookie
     })
 
-    return render(request, 'frontend/information/cookies.html', context)
+    return render(request, 'frontend/v_2_0/sayfalar/bilgi/cerezler.html', context)
 
 
 def subscription(request):
-    if 'subscriptionBtn' in request.POST:
-        email = request.POST.get('email')
-        ip = request.META.get('REMOTE_ADDR')
-        if email != '':
-            if Subscription.objects.filter(email=email).exists():
-                return redirect(request.META.get('HTTP_REFERER'))
-            else:
-                Subscription.objects.create(email=email, ip=ip)
-            return redirect(request.META.get('HTTP_REFERER'))
+    try:
+        if 'subscriptionBtn' in request.POST:
+            email = request.POST.get('email')
+            ip = request.META.get('REMOTE_ADDR')
+            if email != '':
+                if Subscription.objects.filter(email=email).exists():
+                    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+                else:
+                    Subscription.objects.create(email=email, ip=ip)
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    except:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 def aboutus(request):
     context = {}
     about = Hakkimizda.objects.all().last()
-    context.update({'about':about})
 
-    return render(request, 'frontend/pages/aboutus.html', context)
+    orders = Order.objects.all().count() + TrendyolOrders.objects.all().count() + HepsiburadaSiparisler.objects.all().count() + CiceksepetiOrders.objects.all().count()
+    product = ProductModelGroup.objects.all().count()
+    category = SubBottomCategory.objects.filter(maincategory_id=1).count()
+
+    context.update({'about':about, 'orders':orders, 'product':product, 'category':category})
+
+    return render(request, 'frontend/v_2_0/sayfalar/anasayfa/hakkimizda.html', context)
 
 def error_404_view(request, exception):
-    return render(request, 'frontend/partials/404.html', status=404)
+    return render(request, 'frontend/v_2_0/partials/404.html', status=404)
 
 
 def error_500_view(request):
-    return render(request, 'frontend/partials/500.html', status=500)
+    return render(request, 'frontend/v_2_0/partials/500.html', status=500)

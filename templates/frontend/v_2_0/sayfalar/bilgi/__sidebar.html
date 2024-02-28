@@ -1,0 +1,64 @@
+<div class="question-categories">
+        <div class="nav-menu">
+            <div class="nav-menu__list">
+                <a href="{% url 'faq' %}"
+                   class="nav-menu__list-item {% if request.path == '/sikca-sorulan-sorular' %}active{% endif %}">
+                    <span class="icon">
+                       <i class="bi bi-question-circle"></i>
+                    </span>
+                    <span class="text">
+                        Sıkça Sorulan Sorular
+                    </span>
+                </a>
+                <a href="{% url 'delivery_conditional' %}"
+                   class="nav-menu__list-item {% if request.path == '/teslimat-kosullari' %}active{% endif %}">
+                    <span class="icon">
+                        <i class="bi bi-truck"></i>
+                    </span>
+                    <span class="text">
+                        Teslimat Koşulları
+                    </span>
+                </a>
+                <a href="{% url 'membership_contract' %}" class="nav-menu__list-item {% if request.path == '/uyelik-sozlesmesi' %}active{% endif %}">
+                    <span class="icon">
+                        <i class="bi bi-person-lines-fill"></i>
+                    </span>
+                    <span class="text">
+                        Üyelik Sözleşmesi
+                    </span>
+                </a>
+                <a href="{% url 'terms_of_use' %}" class="nav-menu__list-item {% if request.path == '/site-kullanim-sartlari' %}active{% endif %}">
+                    <span class="icon">
+                        <i class="bi bi-diagram-3"></i>
+                    </span>
+                    <span class="text">
+                        Site Kullanım Şartları
+                    </span>
+                </a>
+                <a href="{% url 'security_policy' %}" class="nav-menu__list-item {% if request.path == '/gizlilik-politikasi' %}active{% endif %}">
+                    <span class="icon">
+                        <i class="bi bi-shield"></i>
+                    </span>
+                    <span class="text">
+                        Gizlilik Politikası
+                    </span>
+                </a>
+                <a href="{% url 'cookies' %}" class="nav-menu__list-item {% if request.path == '/cerez-politikasi' %}active{% endif %}">
+                    <span class="icon">
+                        <i class="bi bi-cookie"></i>
+                    </span>
+                    <span class="text">
+                        Çerezler
+                    </span>
+                </a>
+                <a href="{% url 'kvkk' %}" class="nav-menu__list-item {% if request.path == '/kvkk-aydinlatma-metni' %}active{% endif %}">
+                    <span class="icon">
+                        <i class="bi bi-text-center"></i>
+                    </span>
+                    <span class="text">
+                        KVKK Aydınlatma Metni
+                    </span>
+                </a>
+            </div>
+        </div>
+    </div>

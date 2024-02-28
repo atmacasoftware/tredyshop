@@ -1,0 +1,392 @@
+@import "root.css";
+
+div.page-container.product div.page-section.page-section.prod-details div.prod-details__body div.prod-details__img-gallery div.gallery div.gallery__top-slider div.swiper div.swiper-wrapper div.swiper-slide div.slide-cont {
+    background: var(--white-color);
+}
+
+.vbox-figlio {
+    width: 400px;
+    height: 100%;
+}
+
+div.page-container.product div.page-section.page-section.prod-details div.prod-details__body div.prod-details__img-gallery div.gallery div.gallery__bot-slider div.swiper-wrapper div.swiper-slide.swiper-slide-active div.slide-cont {
+    border-color: var(--primary-color);
+}
+
+.variations__option.variations__option_text.btn {
+    font-size: 13px;
+    line-height: 13px;
+    border: 2px solid rgba(32, 35, 51, .2);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    font-weight: 500;
+    color: #010101;
+    padding: 10px 15px;
+    border-radius: 1px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.variations__option.variations__option_text.btn {
+    position: relative;
+}
+
+.variations__option.variations__option_text.btn a {
+    text-decoration: none;
+    color: var(--black-color);
+}
+
+.variations__option.variations__option_text.btn:hover,
+.variations__option.variations__option_text.btn.active {
+    border-color: var(--primary-color) !important;
+}
+
+.variations__option.variations__option_text.btn:disabled::after {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 100%;
+    height: 1px;
+    background-color: #f91155;
+}
+
+.prod-offering__cart-btn button {
+    background: var(--primary-color);
+    width: 100%;
+    color: var(--white-color);
+}
+
+.prod-offering__cart-btn button span.icon {
+    width: 20px;
+    height: 20px;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.prod-offering__cart-btn button span.text {
+    font-size: 13px;
+    line-height: 1;
+    font-weight: 500;
+    margin-left: 10px;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+}
+
+.prod-offering__cart-btn button:hover {
+    color: var(--white-color);
+}
+
+.add-product.show .modal-footer {
+    justify-content: space-evenly;
+}
+
+.add-product.show .modal-footer a {
+    width: 45%;
+}
+
+.bi-cart-check {
+    stroke: var(--bg-green);
+}
+
+.reviews__footer a {
+    padding: 15px 30px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: var(--primary-color);
+}
+
+.reviews__footer a .icon svg {
+    stroke: var(--primary-color);
+}
+
+.reviews__footer a .text {
+    color: var(--white-color);
+    font-size: var(--text-fontSize1);
+    font-weight: bold;
+}
+
+.reviews-product {
+    padding: 25px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid rgba(32, 35, 51, .12);
+}
+
+.reviews_product__info {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+}
+
+.reviews__body .reviews_product__info img {
+    width: 100px;
+    height: auto;
+    margin-right: 20px;
+    border: 2px solid var(--black-color);
+    border-radius: 10px;
+}
+
+.reviews_product__info_detail .back-product {
+    text-decoration: none;
+    padding: 15px 30px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    width: 175px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: var(--text-fontSize1);
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.ratings-chart div.ratings-chart__body div.ratings-chart__bars div.rating-bar div.rating-bar__line span.prog-line span.prog-line-bar {
+    background: var(--primary-color);
+}
+
+.ratings-chart__footer button {
+    padding: 15px 30px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    overflow: hidden;
+    width: 100%;
+    border-radius: 4px;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    background: var(--primary-color);
+    -webkit-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    transition: all 1s ease;
+    border: none;
+    line-height: 1;
+    margin: 0;
+    color: var(--white-color);
+    font-size: var(--text-fontSize1);
+}
+
+.rate {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: row-reverse;
+}
+
+.ratings-chart__footer button:hover {
+    color: var(--white-color);
+}
+
+.rate input[name="rating"] {
+    display: none;
+}
+
+.rate .comment-adding-box label.bi {
+    font-size: 25px;
+    color: #444;
+    padding: 5px;
+    transition: all 0.2s ease;
+    float: right;
+}
+
+.rate input[name="rating"]:not(:checked) ~ label:hover,
+.rate input[name="rating"]:not(:checked) ~ label:hover ~ label {
+    color: #fd4;
+    cursor: pointer;
+}
+
+.rate input[name="rating"]:checked ~ label {
+    color: black;
+}
+
+.rate input[name="rating"]:not(:checked) ~ label,
+.rate input[name="rating"]:not(:checked) ~ label ~ label {
+    color: black;
+    cursor: pointer;
+}
+
+.rate input[name="rating"]#rating1:checked ~ label {
+    color: #fd4;
+}
+
+.rate input[name="rating"]#rating2:checked ~ label {
+    color: #fd4;
+}
+
+.rate input[name="rating"]#rating3:checked ~ label {
+    color: #fd4;
+}
+
+.rate input[name="rating"]#rating4:checked ~ label {
+    color: #fd4;
+}
+
+.rate input[name="rating"]#rating5:checked ~ label {
+    color: #fd4;
+}
+
+#review-item-modal .bi-star-fill {
+    margin: 2px;
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item div.review-data div.review-data-topline {
+    align-items: center !important;
+}
+
+.vbox-container img {
+    width: 100%;
+}
+
+.reviews-gallery__body {
+    overflow: auto;
+    white-space: nowrap;
+}
+
+.reviews-gallery__body .reviews-gallery__item {
+    display: inline-block;
+    width: 150px;
+    height: 100px;
+}
+
+.reviews-gallery__body .reviews-gallery__item img {
+    width: 150px;
+    height: 100px;
+    object-fit: contain;
+}
+
+.rating .bi-star-fill {
+    color: #e3e32b;
+}
+
+.reviews__footer .pagination li {
+    margin: 4px;
+}
+
+.reviews__footer .pagination a {
+    color: black;
+    background: var(--bg-softGray2);
+    padding: 10px 20px;
+    border-radius: 10px;
+}
+
+.page-item:first-child .page-link,
+.page-item:last-child .page-link {
+    border-radius: 10px;
+}
+
+.dot-3 {
+    display: flex;
+    justify-content: end;
+    align-items: end;
+}
+
+.page-item.active .page-link {
+    border-radius: 10px !important;
+    background: var(--primary-color);
+    border: none;
+    padding: 10px 20px;
+}
+
+.review-text-box {
+    background: var(--bg-softGray2);
+    padding: 10px 20px;
+    border-radius: 20px;
+}
+
+.btn:disabled, .btn.disabled {
+    opacity: 0.9;
+}
+
+table {
+    width: 100%;
+}
+
+table, th, td {
+    border: 1px solid;
+}
+
+.bi-heart-fill {
+    color: var(--primary-color);
+}
+
+
+.questions {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    margin-bottom: 15px;
+    text-decoration: none;
+}
+
+
+.questions .icon {
+    width: 34px;
+    height: 34px;
+    line-height: 1;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    background: #efeff0;
+    border-radius: 2px;
+    color: #067aff;
+}
+
+
+.questions .text {
+    margin-left: 15px;
+    display: flex;
+    justify-content: start;
+    flex-direction: column;
+    font-size: var(--text-fontSize1);
+    line-height: 1;
+}
+
+.questions .text b {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: #010101;
+}
+
+.questions .text span {
+    font-size: 13px;
+    color: rgba(32, 35, 51, .8);
+    line-height: 1;
+    display: block;
+}
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item:first-child{
+    border-top: 0;
+}
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item:last-child{
+    border-bottom: 0;
+}

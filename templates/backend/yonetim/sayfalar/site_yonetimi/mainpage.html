@@ -29,26 +29,6 @@
                                 <div class="row">
                                     <div class="col-3">
                                         <div class="form-group">
-                                            <label for="banner_title">Banner Adı</label>
-                                            <input id="banner_title" type="text" name="banner_title"
-                                                   class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="col-3">
-                                        <div class="form-group">
-                                            <label for="select-tip">Banner Tipi</label>
-                                            <select id="select-tip" name="tip" class="form-control">
-                                                <option value="">------</option>
-                                                <option value="None">Hepsi</option>
-                                                <option value="Belirli Tutar Altı">Belirli Tutar Altı</option>
-                                                <option value="İndirimli Ürünler">İndirimli Ürünler</option>
-                                                <option value="Kategori Bazlı Ürünler">Kategori Bazlı Ürünler</option>
-                                                <option value="Kampanya Bazlı Ürünler">Kampanya Bazlı Ürünler</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-3">
-                                        <div class="form-group">
                                             <label for="select-ispublish">Yayın Durumu</label>
                                             <select id="select-ispublish" name="status" class="form-control">
                                                 <option value="">------</option>
@@ -58,7 +38,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-3">
+                                    <div class="col-9">
                                         <div class="buttons float-right mt-4">
                                             <button type="submit" class="btn btn-warning" name="filterBtn">Sorgula
                                             </button>
@@ -110,6 +90,7 @@
                                         <th style="text-align: start; vertical-align: middle">Banner Tipi</th>
                                         <th style="text-align: start; vertical-align: middle">Banner Adı</th>
                                         <th style="text-align: start; vertical-align: middle">Yayın Durumu</th>
+                                        <th style="text-align: start; vertical-align: middle">Gideceği URL</th>
                                         <th style="text-align: start; vertical-align: middle">Görüntülenme Sayısı</th>
                                         <th style="text-align: start; vertical-align: middle">Sıra Sayısı</th>
                                         <th style="text-align: start; vertical-align: middle">Oluşturuma Tarihi</th>
@@ -138,6 +119,32 @@
                                             <td style="text-align: start; vertical-align: middle">{{ b.banner_title }}</td>
                                             <td style="text-align: start; vertical-align: middle">{% if b.is_publish %}
                                                 Yayında{% else %}Yayında Değil{% endif %}</td>
+                                            <td style="text-align: start; vertical-align: middle">
+                                            <form action="">
+                                                    <input type="url" class="form-control" value=" {% if b.url %}{{ b.url }}{% endif %}"
+                                                           id="bannerUrl-{{ b.id }}" name="bannerUrl-{{ b.id }}">
+                                                    <script>
+                                                        $("#bannerUrl-{{ b.id }}").on('change', function () {
+                                                            $.ajax({
+                                                                url: `/yonetim/site-yonetimi/banner/secili-banner/id={{ b.id }}/gidecegi-url-degistir/`,
+                                                                data: {
+                                                                    'banner_url': $("input[name='bannerUrl-{{ b.id }}']").val(),
+                                                                },
+                                                                dataType: 'json',
+                                                                beforeSend: function () {
+                                                                    $(".waiting").css('display', 'flex')
+                                                                    $(".waiting").css('visibility', 'visible')
+                                                                },
+                                                                success: function (data) {
+                                                                    $(".waiting").css('display', 'none')
+                                                                    $(".waiting").css('visibility', 'hidden')
+
+                                                                }
+                                                            });
+                                                        })
+                                                    </script>
+                                                </form>
+                                            </td>
                                             <td style="text-align: start; vertical-align: middle">{{ b.viewd_count }}</td>
                                             <td style="text-align: start; vertical-align: middle">
                                                 <form action="">
@@ -265,6 +272,220 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="buttons">
+                                <button class="btn btn-primary" data-toggle="modal"
+                                        data-target="#modal-create-category"><i class="fa fa-plus"></i> &nbsp; Kategori
+                                    Ekle
+                                </button>
+                                <div class="dropdown d-inline">
+                                    <button class="btn btn-info dropdown-toggle" type="button"
+                                            id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false">
+                                        İşlemler
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a type="button" id="cancelRow2" class="dropdown-item" href="#">İptal Et</a>
+                                        <a type="button" id="selectRow2" class="dropdown-item" href="#">Seç</a>
+                                        <a class="dropdown-item" href="#" type="button" data-toggle="modal"
+                                           data-target="#modal2-select-delete" id="deleteRow2">Seçilileri Sil</a>
+                                        <a class="dropdown-item" href="#" type="button" data-toggle="modal"
+                                           data-target="#modal2-all-delete" id="deleteAll2">Hepsini Sil</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-head-fixed text-nowrap">
+                                    <thead>
+                                    <tr>
+                                        <th class="select-row2" style="text-align: start; vertical-align: middle">
+                                            &nbsp;
+                                        </th>
+                                        <th style="text-align: start; vertical-align: middle">Başlık</th>
+                                        <th style="text-align: start; vertical-align: middle">Yayın Durumu</th>
+                                        <th style="text-align: start; vertical-align: middle">Gideceği URL</th>
+                                        <th style="text-align: start; vertical-align: middle">Sıra Sayısı</th>
+                                        <th style="text-align: start; vertical-align: middle">Oluşturuma Tarihi</th>
+                                        <th style="text-align: start; vertical-align: middle">İşlemler</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for b in categories %}
+                                        <tr>
+                                            <td class="select-row2"
+                                                style="text-align: start; vertical-align: middle; border: 0;">
+                                                <div class="form-check">
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" data-filter="catID"
+                                                               class="custom-control-input select-checkbox"
+                                                               id="check-cat-{{ b.id }}" name="cat_secimi"
+                                                               value="{{ b.id }}">
+                                                        <label class="custom-control-label"
+                                                               for="check-cat-{{ b.id }}"></label>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td style="text-align: start; vertical-align: middle">{{ b.title }}</td>
+                                            <td style="text-align: start; vertical-align: middle">{% if b.is_publish %}
+                                                Yayında{% else %}Yayında Değil{% endif %}</td>
+                                            <td style="text-align: start; vertical-align: middle">
+                                                <form action="">
+                                                    <input type="url" class="form-control" value=" {% if b.url %}{{ b.url }}{% endif %}"
+                                                           id="catUrl-{{ b.id }}" name="catUrl-{{ b.id }}">
+                                                    <script>
+                                                        $("#catUrl-{{ b.id }}").on('change', function () {
+                                                            $.ajax({
+                                                                url: `/yonetim/site-yonetimi/headercat/secili-headercat/id={{ b.id }}/gidecegi-url-degistir/`,
+                                                                data: {
+                                                                    'cat_url': $("input[name='catUrl-{{ b.id }}']").val(),
+                                                                },
+                                                                dataType: 'json',
+                                                                beforeSend: function () {
+                                                                    $(".waiting").css('display', 'flex')
+                                                                    $(".waiting").css('visibility', 'visible')
+                                                                },
+                                                                success: function (data) {
+                                                                    $(".waiting").css('display', 'none')
+                                                                    $(".waiting").css('visibility', 'hidden')
+
+                                                                }
+                                                            });
+                                                        })
+                                                    </script>
+                                                </form>
+                                            </td>
+                                            <td style="text-align: start; vertical-align: middle">
+                                                <form action="">
+                                                    <input type="number" class="form-control" value="{{ b.order }}"
+                                                           id="cat_ajax_order-{{ b.id }}"
+                                                           name="cat_ajax_order-{{ b.id }}">
+                                                    <script>
+                                                        $("#cat_ajax_order-{{ b.id }}").on('change', function () {
+                                                            $.ajax({
+                                                                url: `/yonetim/site-yonetimi/headercat/secili-headercat/id={{ b.id }}/sira-degistir/`,
+                                                                data: {
+                                                                    'cat_ajax_order': $("input[name='cat_ajax_order-{{ b.id }}']").val(),
+                                                                },
+                                                                dataType: 'json',
+                                                                beforeSend: function () {
+                                                                    $(".waiting").css('display', 'flex')
+                                                                    $(".waiting").css('visibility', 'visible')
+                                                                },
+                                                                success: function (data) {
+                                                                    $(".waiting").css('display', 'none')
+                                                                    $(".waiting").css('visibility', 'hidden')
+
+                                                                }
+                                                            });
+                                                        })
+                                                    </script>
+                                                </form>
+                                            </td>
+                                            <td style="text-align: start; vertical-align: middle">{{ b.create_at|date:"d-m-Y H:i" }}</td>
+                                            <td style="text-align: start; vertical-align: middle">
+                                                <a href="{% url 'headercat_publish' b.id %}"
+                                                   class="btn btn-block btn-sm btn-primary">{% if b.is_publish %}
+                                                    Yayından
+                                                    Kaldır{% else %}Yayınla{% endif %}</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <nav aria-label="pagination" class="pagination_area">
+                                <div class="row">
+                                    {% if categories.end_index > 0 %}
+                                        <div class="col-sm-12 col-md-5 d-none d-md-block">
+                                            <p>Showing {{ categories.start_index }} to {{ categories.end_index }}
+                                                of {{ categories.paginator.count }}.</p>
+                                        </div>
+                                    {% endif %}
+                                    {% if categories.paginator.num_pages > 1 %}
+                                        <div class="col-sm-12 col-md-7 dataTables_pager">
+                                            <ul class="pagination float-right">
+                                                {% if categories.has_previous %}
+
+                                                    <li class="page-item">
+                                                        <a class="page-link" data-page="1"
+                                                           href="{{ query }}&page={{ categories.previous_page_number }}">
+                                                            <i class="fa fa-angle-double-left"></i>
+                                                        </a>
+                                                    </li>
+                                                    {% if categories.previous_page_number > 1 %}
+                                                        <li class="page-item">
+                                                            <a class="page-link "
+                                                               data-page="{{ categories.previous_page_number }}"
+                                                               href="{{ query }}&page={{ categories.previous_page_number }}">
+                                                                <i class="fa fa-angle-left"></i>
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+
+                                                {% endif %}
+
+                                                {% if categories.previous_page_number > 2 %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ categories.number|add:'-2' }}"
+                                                           href="{{ query }}&page={{ categories.number|add:'-2' }}"> {{ categories.number|add:"-2" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ categories.number|add:'-1' }}"
+                                                           href="{{ query }}&page={{ categories.number|add:'-1' }}"> {{ categories.number|add:"-1" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                <li class="page-item active"><span
+                                                        class="page-link ">{{ categories.number }}</span></li>
+
+                                                {% if categories.paginator.num_pages > categories.number|add:"2" %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ banners.number|add:'1' }}"
+                                                           href="{{ query }}&page={{ banners.number|add:'1' }}"> {{ banners.number|add:"1" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ categories.number|add:'2' }}"
+                                                           href="{{ query }}&page={{ categories.number|add:'2' }}"> {{ categories.number|add:"2" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                {% if categories.has_next %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ categories.next_page_number }}"
+                                                           href="{{ query }}&page={{ categories.next_page_number }}">
+                                                            <i class="fa fa-angle-right"></i>
+                                                        </a>
+                                                    </li>
+
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ categories.paginator.num_pages }}"
+                                                           href="{{ query }}&page={{ categories.paginator.num_pages }}">
+                                                            <i class="fa fa-angle-double-right"></i>
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -283,6 +504,30 @@
                 </div>
                 <div class="modal-footer justify-content-between">
                     <button id="deleteNow" class="btn btn-danger"
+                            data-dismiss="modal">
+                        Sil
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" id="modal-select-delete2">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Emin misin?</h4>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Seçili kategoriler silinecektir.</p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button id="deleteNow2" class="btn btn-danger"
                             data-dismiss="modal">
                         Sil
                     </button>
@@ -313,6 +558,27 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
+    <div class="modal fade" id="modal-all-delete2">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Emin misin?</h4>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Tüm kategoriler silinecektir.</p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <a href="{% url 'headercat_hepsini_sil' %}" class="btn btn-danger">Tümünü Sil</a>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
     <div class="modal fade" id="modal-create-banner">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -336,9 +602,52 @@
                                 <option value="Kampanya Bazlı Ürünler">Kampanya Bazlı Ürünler</option>
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label for="banner_url">Gideceği URL</label>
+                            <input type="url" name="banner_url" id="banner_url" class="form-control">
+                        </div>
                         <div class="change-form">
 
                         </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <div class="modal fade" id="modal-create-category">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Kategori Ekle</h4>
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="post" id="categoryForm" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="cat_title">Başlık</label>
+                            <input type="text" name="cat_title" id="cat_title" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="cat_url">Gideceği URL</label>
+                            <input type="url" name="cat_url" id="cat_url" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="cat_order">Sırası</label>
+                            <input type="number" step="1" name="cat_order" id="cat_order" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                <input type="checkbox" class="custom-control-input" name="cat_status" id="cat_status">
+                                <label class="custom-control-label" for="cat_status">Yayınlansın mı?</label>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" type="submit" name="categoryAddBtn">Ekle</button>
                     </form>
                 </div>
             </div>
@@ -351,7 +660,6 @@
 {% block extra_script %}
     <script src="{% static 'backend/js/banner.js' %}"></script>
     <script>
-
 
         $(document).ready(function () {
             $(".waiting").hide()
@@ -369,6 +677,23 @@
                     $(".select-row").css('display', 'none')
                 })
             })
+
+            $(".select-row2").css('display', 'none')
+            $("#deleteRow2").hide();
+            $("#cancelRow2").hide()
+            $("#selectRow2").on('click', function () {
+                $("#cancelRow2").show()
+                $(".select-row2").css('display', 'block')
+                $("#selectRow2").hide()
+                $("#deleteRow2").show();
+                $("#cancelRow2").on('click', function () {
+                    $("#selectRow2").show();
+                    $("#cancelRow2").hide();
+                    $("#deleteRow2").hide();
+                    $(".select-row2").css('display', 'none')
+                })
+            })
+
         });
 
         $("#deleteRow").on('click', function () {
@@ -385,6 +710,37 @@
             $("#deleteNow").on('click', function () {
                 $.ajax({
                     url: `/yonetim/site-yonetimi/banner/secili-harcama-sil/`,
+                    data: _filterObj,
+                    dataType: 'json',
+                    beforeSend: function () {
+                        $(".waiting").css('display', 'flex')
+                        $(".waiting").css('visibility', 'visible')
+                    },
+                    success: function (data) {
+                        $(".waiting").css('display', 'none')
+                        $(".waiting").css('visibility', 'hidden')
+                        location.reload();
+                    }
+                });
+            });
+
+
+        });
+
+        $("#deleteRow2").on('click', function () {
+            var _filterObj = {};
+            $(".select-checkbox").each(function (index, ele) {
+                var _filterVal = $(this).val();
+                var _filterKey = $(this).data('filter');
+                _filterObj[_filterKey] = Array.from(document.querySelectorAll('input[data-filter=' + _filterKey + ']:checked')).map(function (el) {
+                    return el.value;
+                });
+            });
+
+
+            $("#deleteNow2").on('click', function () {
+                $.ajax({
+                    url: `/yonetim/site-yonetimi/headercat/secili-headercat-sil/`,
                     data: _filterObj,
                     dataType: 'json',
                     beforeSend: function () {

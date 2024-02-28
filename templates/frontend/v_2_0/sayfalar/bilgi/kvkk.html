@@ -1,0 +1,59 @@
+{% extends 'frontend/v_2_0/base.html' %}
+{% load static %}
+
+{% block title %}<title>KVKK Aydınlatma Metni</title>{% endblock %}
+
+{% block extra_style %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{% static 'frontend/css/bilgi.css' %}">
+{% endblock %}
+
+{% block bilgi %}
+    <div class="page-container faqs">
+        <!-- ~~~~~~~~~~~~~~~~~ KVKK Aydınlatma Metni page breadcrumbs section [START] ~~~~~~~~~~~~~~~~~ -->
+        <div class="page-margin">
+            <div class="page-margin__content">
+                <nav class="breadcrumbs">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'mainpage' %}">Anasayfa</a>
+                        </li>
+                        <li class="breadcrumb-item active">
+                            KVKK Aydınlatma Metni
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <!-- ~~~~~~~~~~~~~~~~~ KVKK Aydınlatma Metni page breadcrumbs section [END] ~~~~~~~~~~~~~~~~~ -->
+
+        <!-- ~~~~~~~~~~~~~~~~~ KVKK Aydınlatma Metni content section [START] ~~~~~~~~~~~~~~~~~ -->
+        <div class="page-section">
+            <div class="page-margin">
+                <div class="page-margin__content">
+                    <div class="page-section__body">
+                        <div class="row">
+                            <div class="col-xxl-3 col-xl-3 col-12">
+                                {% include 'frontend/v_2_0/sayfalar/bilgi/__sidebar.html' %}
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-12">
+                                <div class="popular-questions">
+                                    <div class="page-section__header">
+                                        <h2>
+                                            KVKK Aydınlatma Metni
+                                        </h2>
+                                    </div>
+                                    <p>{{ contracts.kvkk|safe }}</p>
+                                </div>
+                            </div>
+                            <div class="col-xxl-3 col-xl-3 col-12">
+                                {% include 'frontend/v_2_0/sayfalar/bilgi/__live_chat.html' %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ~~~~~~~~~~~~~~~~~ KVKK Aydınlatma Metni content section [END] ~~~~~~~~~~~~~~~~~ -->
+    </div>
+{% endblock %}

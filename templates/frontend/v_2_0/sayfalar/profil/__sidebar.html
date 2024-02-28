@@ -1,0 +1,150 @@
+
+<div class="profile-page__navigation top-sticky-block">
+    <div class="profile-page__navigation-body">
+        <div class="nav-menu">
+            <div class="nav-menu__list">
+                <a href="{% url 'profile_mainpage' %}"
+                   class="nav-menu__list-item
+                   {% if request.path == '/kullanici-bilgilerim' %}active{% endif %}"
+                   data-navmenu-li="mainpage">
+                                                        <span class="icon">
+                                                            <svg width="24"
+                                                                 height="24" viewBox="0 0 24 24" fill="none"
+                                                                 stroke="currentColor" stroke-width="2"
+                                                                 stroke-linecap="round" stroke-linejoin="round"
+                                                                 class="feather feather-user">
+                                                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                                                <circle cx="12" cy="7" r="4"></circle>
+                                                            </svg>
+                                                        </span>
+                    <span class="text">
+                                                            {{ request.user.get_full_name|truncatechars_html:18 }}
+                                                        </span>
+                </a>
+                <a href="{% url 'address' %}"
+                   class="nav-menu__list-item
+                   {% if '/adreslerim' in request.path %}active{% endif %}"
+                   data-navmenu-li="addresses">
+                                                        <span class="icon">
+                                                            <svg width="24"
+                                                                 height="24" viewBox="0 0 24 24" fill="none"
+                                                                 stroke="currentColor" stroke-width="2"
+                                                                 stroke-linecap="round" stroke-linejoin="round"
+                                                                 class="feather feather-map">
+                                                                <polygon
+                                                                        points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+                                                                <line x1="8" y1="2" x2="8" y2="18"></line>
+                                                                <line x1="16" y1="6" x2="16" y2="22"></line>
+                                                            </svg>
+                                                        </span>
+                    <span class="text">
+                                                            Adreslerim
+                                                        </span>
+                </a>
+                <a href="{% url 'order_page' %}" class="nav-menu__list-item {% if '/siparislerim' in request.path %}active{% endif %}" data-navmenu-li="orders">
+                                                        <span class="icon">
+                                                            <svg width="24"
+                                                                 height="24" viewBox="0 0 24 24" fill="none"
+                                                                 stroke="currentColor" stroke-width="2"
+                                                                 stroke-linecap="round" stroke-linejoin="round"
+                                                                 class="feather feather-truck">
+                                                                <rect x="1" y="3" width="15" height="13"></rect>
+                                                                <polygon
+                                                                        points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                                                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                                                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                                                            </svg>
+                                                        </span>
+                    <span class="text">
+                                                            Siparişlerim
+                                                        </span>
+                </a>
+                <a href="{% url 'coupon_page' %}" class="nav-menu__list-item {% if request.path == '/kuponlarim' %}active{% endif %}" data-navmenu-li="bonuses">
+                                                        <span class="icon">
+                                                            <svg width="24"
+                                                                 height="24" viewBox="0 0 24 24" fill="none"
+                                                                 stroke="currentColor" stroke-width="2"
+                                                                 stroke-linecap="round" stroke-linejoin="round"
+                                                                 class="feather feather-gift">
+                                                                <polyline points="20 12 20 22 4 22 4 12"></polyline>
+                                                                <rect x="2" y="7" width="20" height="5"></rect>
+                                                                <line x1="12" y1="22" x2="12" y2="7"></line>
+                                                                <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
+                                                                <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
+                                                            </svg>
+                                                            <small class="count-ind"></small>
+                                                        </span>
+                    <span class="text">
+                                                            Kuponlarım
+                                                        </span>
+                </a>
+                <a href="{% url 'wishlist' %}" class="nav-menu__list-item {% if request.path == '/favorilerim' %}active{% endif %}" data-navmenu-li="favorites">
+                                                        <span class="icon">
+                                                            <svg width="24"
+                                                                 height="24" viewBox="0 0 24 24" fill="none"
+                                                                 stroke="currentColor" stroke-width="2"
+                                                                 stroke-linecap="round" stroke-linejoin="round"
+                                                                 class="feather feather-heart">
+                                                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                                            </svg>
+                                                        </span>
+                    <span class="text">
+                                                            Favorilerim
+                                                        </span>
+                </a>
+                <a href="{% url 'reviews' %}" class="nav-menu__list-item border-btm {% if request.path == '/degerlendirmelerim' %}active{% endif %}" data-navmenu-li="reviews">
+                                                        <span class="icon">
+                                                            <svg width="24"
+                                                                 height="24" viewBox="0 0 24 24" fill="none"
+                                                                 stroke="currentColor" stroke-width="2"
+                                                                 stroke-linecap="round" stroke-linejoin="round"
+                                                                 class="feather feather-pie-chart">
+                                                                <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+                                                                <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+                                                            </svg>
+                                                        </span>
+                    <span class="text">
+                                                            Değerlendirmelerim
+                                                        </span>
+                </a>
+                <a href="{% url 'logout' %}" class="nav-menu__list-item inactive">
+                                                        <span class="icon">
+                                                            <svg width="24"
+                                                                 height="24" viewBox="0 0 24 24" fill="none"
+                                                                 stroke="currentColor" stroke-width="2"
+                                                                 stroke-linecap="round" stroke-linejoin="round"
+                                                                 class="feather feather-log-out">
+                                                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                                                <polyline points="16 17 21 12 16 7"></polyline>
+                                                                <line x1="21" y1="12" x2="9" y2="12"></line>
+                                                            </svg>
+                                                        </span>
+                    <span class="text">
+                                                            Çıkış Yap
+                                                        </span>
+                </a>
+                <a href="{% url 'question_page' %}" class="nav-menu__list-item {% if request.path == '/sorularim' %}active{% endif %}">
+                                                        <span class="icon">
+                                                            <svg width="24"
+                                                                 height="24" viewBox="0 0 24 24" fill="none"
+                                                                 stroke="currentColor" stroke-width="2"
+                                                                 stroke-linecap="round" stroke-linejoin="round"
+                                                                 class="feather feather-life-buoy">
+                                                                <circle cx="12" cy="12" r="10"></circle>
+                                                                <circle cx="12" cy="12" r="4"></circle>
+                                                                <line x1="4.93" y1="4.93" x2="9.17" y2="9.17"></line>
+                                                                <line x1="14.83" y1="14.83" x2="19.07"
+                                                                      y2="19.07"></line>
+                                                                <line x1="14.83" y1="9.17" x2="19.07" y2="4.93"></line>
+                                                                <line x1="14.83" y1="9.17" x2="18.36" y2="5.64"></line>
+                                                                <line x1="4.93" y1="19.07" x2="9.17" y2="14.83"></line>
+                                                            </svg>
+                                                        </span>
+                    <span class="text">
+                                                            Soru ve Taleplerim
+                                                        </span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

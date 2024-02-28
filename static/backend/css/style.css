@@ -3986,4 +3986,8 @@ body:not(.sidebar-mini) .sidebar-style-2 .sidebar-menu li.active ul.dropdown-men
     overflow-y: auto;
 }
 
+.chocolat-wrapper{
+    z-index: 99999!important;
+}
+
 /*# sourceMappingURL=style.css.map */

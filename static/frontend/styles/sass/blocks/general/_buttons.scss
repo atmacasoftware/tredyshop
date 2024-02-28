@@ -1,0 +1,183 @@
+// @*************************************************************************@
+// @ Software author: Mansur Altamirov (Mansur_TL)                           @
+// @ Author URL: https://themeforest.net/user/mansur_tl                      @
+// @ Author E-mails: vayart.help@gmail.com, vayart.web@gmail.com             @
+// @*************************************************************************@
+// @ DreaM - Electronics eCommerce HTML Template                             @
+// @ Copyright (c) 2021 DreaM. All rights reserved.                          @
+// @*************************************************************************@
+
+
+button.btn.btn-primary, div.btn.btn-primary{
+	border-radius: ($card-corner-radius / 3);
+	box-shadow: none;
+	background: $primary-color;
+	transition: all 1s ease;
+	border: none;
+	padding: 0px;
+	line-height: 1;
+	margin: 0;
+
+	&.btn-lg.btn-icon{
+		padding: 15px 30px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		overflow: hidden;
+
+		span.icon{
+			width: 20px;
+			height: 20px;
+			flex-shrink: 0;
+			line-height: 1;
+
+			svg{
+				width: 100%;
+				height: 100%;
+				stroke: $black-ctrl-color;
+			}
+		}
+
+		span.text{
+			font-size: 13px;
+			line-height: 1;
+			font-weight: 500;
+			margin-left: 10px;
+			color: $black-ctrl-color;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		&:hover, &:active{
+			box-shadow: rgba(149, 157, 165, 0.3) 0px 1px 15px;
+		}
+	}
+
+	&.outline{
+		background: transparent;
+		border: 2px solid $primary-color;
+
+		&.btn-lg.btn-icon{
+			span.icon{
+				svg{
+					stroke: $primary-color;
+				}
+			}
+
+			span.text{
+				color: $primary-color;
+			}
+		}
+	}
+
+	&.btn-block{
+		width: 100%;
+	}
+}
+
+button.btn.text-btn, div.btn.text-btn{
+	padding: 0px;
+	margin: 0px;
+	box-shadow: none;
+	font-size: 13px;
+	line-height: 1;
+	font-weight: 500;
+	color: $primary-text-color;
+	transition: all 0.27s ease;
+	border-radius: $primary-corner-radius;
+	border: none;
+
+	&:hover, &:active{
+		color: $primary-color;
+	}
+}
+
+button.btn.text-btn.icon, div.btn.text-btn.icon{
+	padding: 0px;
+	margin: 0px;
+	box-shadow: none;
+	font-size: 15px;
+	line-height: 1;
+	font-weight: 500;
+	color: $primary-text-color;
+	transition: all 0.27s ease;
+	border-radius: 0px;
+	display: inline-flex;
+	flex-wrap: nowrap;
+	align-items: center;
+	border: none;
+
+	&.icon-right{
+		span.text{
+			margin-right: 7px;
+		}
+	}
+
+	&.icon-left{
+		span.text{
+			margin-left: 7px;
+		}
+	}
+
+	span.text{
+		white-space: nowrap;
+		line-height: 1;
+	}
+	
+	span.icon{
+		width: 18px;
+		height: 18px;
+		line-height: 1;
+
+		svg{
+			width: 100%;
+			height: 100%;
+			stroke: $primary-text-color;
+			transition: all 0.27s ease;
+		}
+	}
+
+	&:hover, &:active{
+		color: $primary-color;
+
+		span.icon{
+			svg{
+				stroke: $primary-color;
+			}
+		}
+	}
+}
+
+button.btn.btn-icon-only, div.btn.btn-icon-only{
+	padding: 0;
+	margin: 0;
+	box-shadow: none;
+	background: darken($primary-bg-color, 2);
+	width: 44px;
+	height: 44px;
+	border-radius: 5px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: none;
+	
+	svg{
+		width: 20px;
+		height: 20px;
+		stroke: $secondary-text-color;
+		transition: all 0.27s ease;
+	}
+
+	&:hover, &:active{
+		background: darken($primary-bg-color, 5);
+
+		svg{
+			stroke: $primary-color;
+		}
+	}
+
+	@include media-breakpoint-down(xl) {
+		background: darken($secondary-bg-color, 1.5);
+	}
+}

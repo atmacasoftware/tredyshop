@@ -534,11 +534,23 @@
                                         <h6 class="media-title"><a href="#">{{ task.name }}</a></h6>
                                         <div class="text-small text-muted">
                                             <div class="bullet"></div>
-                                            <span class="text-primary">{{ task.task_time }}</span></div>
+                                            <span class="text-primary">{% if task.task_time == "Her Gün" %}{{ task.task_time }}{% elif task.task_time == "Son Gün" %}{{ task.task_date|date:"d/m/Y" }}{% endif %}</span></div>
                                     </div>
                                 </li>
                             {% endfor %}
                         </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Fatura İstatistikleri</h4>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="billStatisticsGraph" height="158"></canvas>
                     </div>
                 </div>
             </div>

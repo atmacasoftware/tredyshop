@@ -1,0 +1,195 @@
+{% extends 'frontend/v_2_0/base.html' %}
+{% load static %}
+{% block title %}<title>{{ request.user.get_full_name }}</title>{% endblock %}
+
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'frontend/css/profile.css' %}">
+{% endblock %}
+
+{% block profil %}
+    <div class="page-container profile" data-profile-page="data">
+        <div class="page-margin">
+            <div class="page-margin__content">
+                <nav class="breadcrumbs">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'mainpage' %}">Anasayfa</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'profile_mainpage' %}">{{ request.user.get_full_name }}</a>
+                        </li>
+                        <li class="breadcrumb-item active">
+                            Hesap Bilgilerim
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="page-section addresses">
+            <div class="page-margin">
+                <div class="page-margin__content">
+                    <div class="page-section__body">
+                        <div class="profile-page__body">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    {% include 'frontend/v_2_0/sayfalar/profil/__sidebar.html' %}
+                                </div>
+                                <div class="col-lg-9">
+                                    <div class="profile-page__header">
+                                        <h3>
+                                            {{ request.user.get_full_name }} − {{ address.title }} Güncelle
+                                        </h3>
+                                    </div>
+
+                                    <div class="profile-page__content">
+                                        <div class="form__header"
+                                             style="display: flex; justify-content: end; margin-bottom: 20px;">
+                                            {% if address.is_active == "Hayır" %}
+                                                <a href="{% url 'is_active_address' address.id %}" class="btn btn-profile-sm btn-primary"
+                                                   style="display: flex; justify-content: center; align-items: center; margin-right: 10px;">Geçerli
+                                                    Adres Yap</a>
+                                            {% endif %}
+                                            <button class="btn btn-icon-only" data-toggle="modal"
+                                                    data-target="#confirm-delete-address">
+                                                <svg xmlns="https://www.w3.org/2000/svg" width="24"
+                                                     height="24"
+                                                     viewBox="0 0 24 24" fill="none"
+                                                     stroke="currentColor"
+                                                     stroke-width="2" stroke-linecap="round"
+                                                     stroke-linejoin="round"
+                                                     class="feather feather-trash">
+                                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <form class="form address-form" method="POST"
+                                              data-counties-url="{% url 'load_counties' %}" id="addAddressForm">
+                                            {% csrf_token %}
+                                            <div class="row">
+                                                {% for field in update_form %}
+                                                    <div class="col-lg-12" id="field-{{ field.id_for_label }}">
+                                                        <div class="form-group mb-20">
+                                                            <div class="form-field">
+                                                                <label for="{{ field.id_for_label }}"
+                                                                       class="form-control-label">
+                                                                    {{ field.label }}
+                                                                </label>
+                                                                {{ field }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                            <div class="flex lr">
+                                                <button type="submit" class="btn btn-primary btn-icon btn-lg btn-block"
+                                                        id="updateAddressBtn"
+                                                        name="updateAddressBtn">
+                                                    <span class="icon">
+                                                                <svg width="24"
+                                                                     height="24" viewBox="0 0 24 24" fill="none"
+                                                                     stroke="currentColor" stroke-width="2"
+                                                                     stroke-linecap="round" stroke-linejoin="round"
+                                                                     class="feather feather-save">
+                                                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                                                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                                                    <polyline points="7 3 7 8 15 8"></polyline>
+                                                                </svg>
+                                                            </span>
+                                                    <span class="text">
+                                                                Kaydet
+                                                            </span>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade confirm-actions" tabindex="-1" role="dialog" id="confirm-delete-address">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Adresi Sil
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <div class="confirmation">
+                        <div class="confirmation__icon">
+                            <svg width="36" height="33" viewBox="0 0 36 33" fill="none"
+                                 xmlns="https://www.w3.org/2000/svg">
+                                <path d="M36 31.5002C36 32.3282 35.328 33.0002 34.5 33.0002H1.5C0.672 33.0002 0 32.3282 0 31.5002C0 30.6722 0.672 30.0002 1.5 30.0002H34.5C35.328 30.0002 36 30.6722 36 31.5002Z"
+                                      fill="#5C913B"/>
+                                <path d="M12.344 12.7022H10.344C10.068 12.7022 9.844 12.4782 9.844 12.2022V5.20225C9.844 4.92625 10.068 4.70225 10.344 4.70225H12.344C12.62 4.70225 12.844 4.92625 12.844 5.20225V12.2022C12.844 12.4782 12.62 12.7022 12.344 12.7022Z"
+                                      fill="#A0041E"/>
+                                <path d="M5.942 30.0002C5.805 25.3432 5.436 22.0002 5 22.0002C4.565 22.0002 4.196 25.3432 4.059 30.0002H5.942Z"
+                                      fill="#FFCC4D"/>
+                                <path d="M10 16.7313C10 22.3063 7.762 24.0002 5 24.0002C2.239 24.0002 0 22.3063 0 16.7313C0 11.1543 4 3.00025 5 3.00025C6 3.00025 10 11.1543 10 16.7313Z"
+                                      fill="#77B255"/>
+                                <path d="M8 14.0002L21 1.00025L34 14.0002V30.0002H8V14.0002Z" fill="#FFE8B6"/>
+                                <path d="M21 14.0002H22V30.0002H21V14.0002Z" fill="#FFCC4D"/>
+                                <path d="M34 15.0002C33.744 15.0002 33.488 14.9023 33.293 14.7073L21 2.41425L8.707 14.7073C8.316 15.0983 7.684 15.0983 7.293 14.7073C6.902 14.3163 6.902 13.6843 7.293 13.2933L20.293 0.29325C20.684 -0.09775 21.316 -0.09775 21.707 0.29325L34.707 13.2933C35.098 13.6843 35.098 14.3163 34.707 14.7073C34.512 14.9023 34.256 15.0002 34 15.0002Z"
+                                      fill="#66757F"/>
+                                <path d="M21 15.0002C20.744 15.0002 20.488 14.9023 20.293 14.7073C19.902 14.3163 19.902 13.6843 20.293 13.2933L26.793 6.79325C27.184 6.40225 27.816 6.40225 28.207 6.79325C28.598 7.18425 28.598 7.81625 28.207 8.20725L21.707 14.7073C21.512 14.9023 21.256 15.0002 21 15.0002Z"
+                                      fill="#66757F"/>
+                                <path d="M13 24.0002H17V30.0002H13V24.0002Z" fill="#C1694F"/>
+                                <path d="M13 15.0002H17V19.0002H13V15.0002ZM25.5 15.0002H29.5V19.0002H25.5V15.0002ZM25.5 24.0002H29.5V28.0002H25.5V24.0002Z"
+                                      fill="#55ACEE"/>
+                                <path d="M10.625 27.9912C10.625 29.6042 9.767 30.0943 8.708 30.0943C7.65 30.0943 6.791 29.6042 6.791 27.9912C6.791 26.3782 8.324 24.0182 8.708 24.0182C9.092 24.0182 10.625 26.3772 10.625 27.9912ZM35.875 27.9912C35.875 29.6042 35.017 30.0943 33.958 30.0943C32.9 30.0943 32.041 29.6042 32.041 27.9912C32.041 26.3782 33.574 24.0182 33.958 24.0182C34.342 24.0182 35.875 26.3772 35.875 27.9912Z"
+                                      fill="#77B255"/>
+                            </svg>
+                        </div>
+                        <div class="confirmation__alert">
+                            <div class="confirmation__text">
+                                <h5>
+                                    Lütfen işlemlerinizi onaylayın!
+                                </h5>
+                                <p>
+                                    Bu gönderim adresini kaldırmak istediğinizden emin misiniz?
+                                    <br>
+                                    Bu adrese daha önce verilen siparişlerin değişmeyeceğini hatırlatırız.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="{% url 'delete_address' address.id %}" type="button"
+                       class="btn btn-primary btn-icon btn-lg btn-block outline">
+                        <span class="icon">
+                            <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                 stroke-linejoin="round" class="feather feather-trash">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                        </span>
+                        <span class="text">
+                            Evet, adresi sil
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'frontend/js/load_counties.js' %}"></script>
+    <script src="{% static 'frontend/js/address.js' %}"></script>
+    <script>
+        document.getElementById('id_mobile').addEventListener('input', function (e) {
+            var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+    </script>
+
+    <script src="{% static 'frontend/js/pages/profile/script.master.js' %}"></script>
+{% endblock %}

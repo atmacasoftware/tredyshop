@@ -1,0 +1,351 @@
+// @*************************************************************************@
+// @ Software author: Mansur Altamirov (Mansur_TL)                           @
+// @ Author URL: https://themeforest.net/user/mansur_tl                      @
+// @ Author E-mails: vayart.help@gmail.com, vayart.web@gmail.com             @
+// @*************************************************************************@
+// @ DreaM - Electronics eCommerce HTML Template                             @
+// @ Copyright (c) 2021 DreaM. All rights reserved.                          @
+// @*************************************************************************@
+
+div.modal-backdrop{
+	background-color: transparent;
+	background: rgba(#000000, 0.95);
+	background-position: 0% 0%;
+}
+
+div.modal{
+	div.modal-dialog{
+		div.modal-content{
+			border-radius: $card-corner-radius;
+			border: none;
+			background: $secondary-bg-color;
+			position: relative;
+			overflow: hidden;
+
+			div.modal-header{
+				padding: 0px 25px;
+				border: none;
+				border-bottom: 1px solid $primary-border-color;
+				border-radius: 0px;
+				display: flex;
+				align-items: center;
+				height: 64px;
+
+				h5.modal-title{
+					font-size: 16px;
+					line-height: 1;
+					font-weight: 600;
+					color: $primary-text-color;
+					padding: 0;
+					margin: 0;
+				}
+
+				button.btn{
+					flex-shrink: 0;
+					background-color: transparent;
+					border-radius: 0px;
+					width: 25px;
+					height: 25px;
+
+					svg{
+						width: 100%;
+						height: 100%;
+						stroke: $primary-text-color;
+					}
+				}
+
+				@include media-breakpoint-down(xl) {
+					padding: 0px 25px;
+
+					h5.modal-title{
+						font-size: 14px;
+					}
+
+					button.btn{
+						width: 25px;
+						height: 25px;
+					}
+				}
+			}
+
+			div.modal-body{
+				padding: 25px 25px;
+
+				@include media-breakpoint-down(xl) {
+					padding: 20px 25px;
+				}
+			}
+
+			div.modal-footer{
+				padding: 25px;
+				border-top: 1px dotted $primary-border-color;
+			}
+
+			@include media-breakpoint-down(xl) {
+				border-radius: ($card-corner-radius / 3);
+			}
+		}
+	}
+
+	&.confirm-actions{
+		div.confirmation{
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			align-items: flex-start;
+
+			div.confirmation__icon{
+				width: 35px;
+				height: 35px;
+				flex-shrink: 0;
+
+				svg{
+					width: 100%;
+					height: 100%;
+				}
+			}
+
+			div.confirmation__alert{
+				padding-left: 20px;
+				flex: 1;
+
+				div.confirmation__text{
+					h5{
+						padding: 0;
+						margin: 0 0 10px 0;
+						font-size: 18px;
+						color: $primary-text-color;
+						font-weight: 600;
+					}
+
+					p{
+						font-size: 14px;
+						color: $secondary-text-color;
+						padding: 0;
+						line-height: 1.6;
+						margin: 0;
+					}
+				}
+			}
+
+			@include media-breakpoint-down(xl) {
+				flex-direction: column;
+				align-items: center;
+
+				div.confirmation__icon{
+					margin-bottom: 20px;
+				}
+
+				div.confirmation__alert{
+					padding-left: 0px;
+
+					div.confirmation__text{
+						h5, p{
+							text-align: center;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	&.share-product{
+		div.share-product-item{
+			div.social-media-links{
+				display: flex;
+				width: 100%;
+				line-height: 1;
+				align-items: center;
+				justify-content: center;
+				margin-bottom: 30px;
+
+				a.link-item{
+					display: flex;
+					align-items: center;
+					justify-content: center;
+				    width: 50px;
+				    height: 50px;
+				    border-radius: 100%;
+				    margin: 0px 10px;
+				    flex-shrink: 0;
+				    transition: all 0.27s ease-in-out;
+
+				    svg{
+					    width: 25px;
+					    height: 25px;
+					    fill: #ffffff;
+
+			    		*{
+			    			stroke: #ffffff;
+			    		}
+				    }
+
+				    &.twitter{
+				    	background: #1DA1F2;
+				    	border: 1px solid #1DA1F2;
+				    }
+
+				    &.facebook{
+				    	background: #3b5899;
+				    	border: 1px solid #3b5899;
+				    }
+				    
+				    &.whatsapp{
+				    	background: #29a71a;
+				    	border: 1px solid #29a71a;
+				    }
+
+				    &.instagram{
+				    	background: #de3275;
+				    	border: 1px solid #de3275;
+				    }
+
+				    &.telegram{
+				    	background: #0088cc;
+				    	border: 1px solid #0088cc;
+				    }
+
+				    &.vkontakte{
+				    	background: #5181b8;
+				    	border: 1px solid #5181b8;
+				    }
+
+				    &:hover, &:active{
+				    	transform: scale(1.2);
+				    }
+				}
+
+				@include media-breakpoint-down(xl) {
+					flex-wrap: wrap;
+					margin-bottom: 10px;
+
+					a.link-item{
+				    	margin: 0px 5px 10px 5px;
+
+				    	&:hover, &:active{
+				    		transform: none;
+				    	}
+					}
+				}
+			}
+
+			div.raw-link{
+				div.form-group{
+
+					div.form-field{
+						input.form-control{
+							border-color: darken($primary-border-color, 10);
+						}
+					}
+
+					button.btn{
+						opacity: 0.9;
+
+						&:hover, &:active{
+							opacity: 1;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	&.region-selector{
+		div.selector-form{
+			form.form{
+				div.form-group{
+					div.selector-input{
+						position: relative;
+						width: 100%;
+
+						input{
+							height: 48px;
+							border: none;
+							color: $primary-text-color;
+							width: 100%;
+							padding-left: 20px;
+							background: $input-primary-bg-color;
+							transition: all 0.50s ease;
+
+							&::placeholder{
+								font-size: 14px;
+								color: $secondary-text-color;
+							}
+						}
+
+						button.searchbar-btn{
+							padding: 0;
+							margin: 0;
+							border: none;
+							background: transparent;
+							position: absolute;
+							right: 4px;
+							top: 4px;
+							bottom: 4px;
+							height: 40px;
+							width: 40px;
+							border-radius: 100%;
+							opacity: 0.9;
+							display: inline-flex;
+							align-items: center;
+							justify-content: center;
+
+							svg{
+								width: 20px;
+								height: 20px;
+								stroke: $secondary-text-color;
+							}
+						}
+					}
+
+					div.locations-list{
+						max-height: 250px;
+						overflow-x: hidden;
+						overflow-y: auto;
+						border: 2px solid $primary-border-color;
+
+						div.locations-list__item{
+							font-size: 14px;
+							line-height: 1;
+							padding: 15px 20px;
+							transition: all 0.27s ease;
+							cursor: pointer;
+							border-radius: $secondary-corner-radius;
+							display: flex;
+							flex-direction: row;
+							flex-wrap: nowrap;
+							align-items: center;
+							color: $primary-text-color;
+
+							&:hover, &:active{
+								background: $grey-ctrl-bg;
+								color: $grey-ctrl-color;
+							}
+
+							&.active{
+								font-weight: 500;
+								color: $grey-ctrl-color;
+								background: $grey-ctrl-bg;
+							}
+
+							span.icon{
+								width: 20px;
+								height: 20px;
+								flex-shrink: 0;
+								margin-left: 15px;
+
+								svg{
+									width: 100%;
+									height: 100%;
+									stroke: $primary-color;
+								}
+							}
+						}
+
+						@import "../../../sass/snippets/scrollbar/_scrollbar.scss";
+					}
+				}
+			}
+		}
+	}
+}

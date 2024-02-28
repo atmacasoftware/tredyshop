@@ -63,7 +63,7 @@ def login(request):
                 else:
                     messages.warning(request, "E-posta veya şifre hatalı. Lütfen tekrar deneyiniz.")
                     return redirect('login')
-        return render(request, 'frontend/pages/login.html')
+        return render(request, 'frontend/v_2_0/kullanici_islemleri/giris_yap.html')
     except Exception as e:
         return redirect('login')
 
@@ -82,7 +82,7 @@ def register(request):
         if request.is_ajax():
             otp = generateOTP()
             return JsonResponse(data=otp, safe=False)
-        return render(request, 'frontend/pages/register.html')
+        return render(request, 'frontend/v_2_0/kullanici_islemleri/kayit-ol.html')
     except Exception as e:
         messages.warning(request, 'Bir hata meydana geldi!')
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
@@ -196,7 +196,7 @@ def profile_mainpage(request):
             messages.error(request, 'Mevcut şifreniz doğru değil!')
             return redirect('profile_mainpage')
 
-    return render(request, 'frontend/pages/profile/mainpage.html')
+    return render(request, 'frontend/v_2_0/sayfalar/profil/anasayfa.html')
 
 
 @login_required(login_url="/giris-yap")
@@ -245,13 +245,13 @@ def address(request):
                 data.save()
                 messages.success(request, 'Adres başarıyla eklendi.')
                 return redirect('address')
-    return render(request, 'frontend/pages/profile/address.html', context)
+    return render(request, 'frontend/v_2_0/sayfalar/profil/adresler.html', context)
 
 
 def load_counties(request):
     city_id = request.GET.get('city_id')
     counties = County.objects.filter(city_id=city_id)
-    return render(request, 'frontend/pages/profile/partials/dropdown_ilceler.html', {'counties': counties})
+    return render(request, 'frontend/v_2_0/sayfalar/profil/dropdown_ilceler.html', {'counties': counties})
 
 
 @login_required(login_url="/giris-yap")
@@ -281,7 +281,7 @@ def update_address(request, id):
             messages.success(request, 'Adres başarıyla güncellendi.')
             return redirect('update_address', id)
 
-    return render(request, 'frontend/pages/profile/update_address.html', context)
+    return render(request, 'frontend/v_2_0/sayfalar/profil/adres_guncelle.html', context)
 
 
 @login_required(login_url="/giris-yap")
@@ -290,7 +290,7 @@ def is_active_address(request, id):
     address.is_active = "Evet"
     address.save()
     messages.success(request, f'{address.title} aktif adres olarak seçildi.')
-    return redirect('address')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 @login_required(login_url="/giris-yap")
 def delete_address(request, id):
@@ -304,12 +304,14 @@ def delete_address(request, id):
 def wishlist(request):
     context = {}
 
-    favourite_products = Favorite.objects.filter(customer=request.user)
+    favourite_products = Favorite.objects.filter(customer=request.user, product__is_publish=True)
+    favourite_products_count = Favorite.objects.filter(customer=request.user).count()
     context.update({
-        'favourite_products': favourite_products
+        'favourite_products': favourite_products,
+        'favourite_products_count':favourite_products_count,
     })
 
-    return render(request, 'frontend/pages/profile/wishlist.html', context)
+    return render(request, 'frontend/v_2_0/sayfalar/profil/favoriler.html', context)
 
 
 @login_required(login_url="/giris-yap")
@@ -330,7 +332,7 @@ def reviews(request):
         'reviews': reviews,
         'reviews_count': reviews_count
     })
-    return render(request, 'frontend/pages/profile/reviews.html', context)
+    return render(request, 'frontend/v_2_0/sayfalar/profil/degerlendirmeler.html', context)
 
 
 @login_required(login_url="/giris-yap")
@@ -342,7 +344,7 @@ def order_page(request):
         'orders': orders,
         'orders_count': orders_count
     })
-    return render(request, 'frontend/pages/profile/orders.html', context)
+    return render(request, 'frontend/v_2_0/sayfalar/profil/siparisler.html', context)
 
 
 @login_required(login_url="/giris-yap")
@@ -381,7 +383,7 @@ def order_detail(request, order_number):
         sendExtraditionRequestInfoEmail(request=request, email="atmacaahmet5261@hotmail.com", order_number=order.order_number, siparis_tarihi=order.created_at, iade_tarihi=extradition.created_at, urun_id=product_id)
         messages.success(request, 'Ürün iade talebi iletildi.')
         return redirect('order_detail', order_number)
-    return render(request, 'frontend/pages/profile/order_detail.html', context)
+    return render(request, 'frontend/v_2_0/sayfalar/profil/siparis_detay.html', context)
 
 
 
@@ -407,7 +409,7 @@ def coupon_page(request):
         'coupons': coupons,
         'coupon_count': coupon_count,
     })
-    return render(request, 'frontend/pages/profile/coupons.html', context)
+    return render(request, 'frontend/v_2_0/sayfalar/profil/kuponlar.html', context)
 
 
 @login_required(login_url="/giris-yap")
@@ -420,4 +422,4 @@ def question_page(request):
         'question': question,
         'question_count': question_count,
     })
-    return render(request, 'frontend/pages/profile/question.html', context)
+    return render(request, 'frontend/v_2_0/sayfalar/profil/soru_taleplerim.html', context)

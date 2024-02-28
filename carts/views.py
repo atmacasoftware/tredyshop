@@ -127,8 +127,10 @@ def minus_quantity(request, product_id, cart_item_id):
 
 
 def plus_quantity(request, product_id, cart_item_id):
+
     cart = Cart.objects.get(cart_id=request.user.id)
     product = get_object_or_404(ApiProduct, id=product_id)
+
     try:
         cart_item = CartItem.objects.get(product=product, cart=cart, id=cart_item_id, user=request.user)
         if cart_item.quantity == cart_item.product.quantity:
@@ -144,19 +146,17 @@ def plus_quantity(request, product_id, cart_item_id):
         pass
     return redirect('cart')
 
-
 @login_required(login_url="/giris-yap")
-def cart(request, total=0, general_total=0, quantity=0, cart_items=None):
-    query = None
+def cart(request, cart_items=None):
     context = {}
     cart = None
-    coupon = None
-    coupon_exist = False
     cartitem_count = 0
+    favourite_status = 0
+    products = ProductModelGroup.objects.filter(product__is_publish=True).order_by('?')[:8]
 
     try:
         cart = Cart.objects.get(cart_id=request.user.id)
-        all_address = CustomerAddress.objects.all().filter(user=request.user, is_active="Hayır")
+        all_address = CustomerAddress.objects.all().filter(user=request.user)
         add_form = AddressForm(data=request.POST or None, files=request.FILES or None)
 
         try:
@@ -170,45 +170,21 @@ def cart(request, total=0, general_total=0, quantity=0, cart_items=None):
             'address': address
         })
 
-        setting = Setting.objects.filter().last()
-
         if request.user.is_authenticated:
             cart_items = CartItem.objects.filter(user=request.user, is_active=True)
             for c in cart_items:
+                try:
+                    favourite_product = Favorite.objects.filter(product=c.product, customer=request.user)
+                    if favourite_product.count() > 0:
+                        favourite_status = 1
+                except:
+                    pass
                 if c.product.is_publish == False or c.product.quantity == 0:
                     c.delete()
                     return redirect('cart')
-            cartitem_count = cart_items.count()
-            coupon_exist = Coupon.objects.filter(user=request.user, is_active=True).exists()
-            try:
-                coupon = Coupon.objects.get(user=request.user, is_active=True)
-                if cart_items.count() == 0:
-                    coupon.is_active = False
-                    coupon.save()
-            except:
-                pass
-
-        if cart_items.count() > 0:
-
-            for cart_item in cart_items:
-                if cart_item.product.is_discountprice == True:
-                    total += float(cart_item.product.discountprice) * int(cart_item.quantity)
-                else:
-                    total += float(cart_item.product.price) * cart_item.quantity
-                quantity += cart_item.quantity
-
-                if total < setting.free_shipping:
-                    if coupon_exist == True:
-                        general_total = float(total) + float(setting.shipping_price) - float(coupon.coupon_price)
-                    else:
-                        general_total = float(total) + float(setting.shipping_price)
-                else:
-                    if coupon_exist == True:
-                        general_total = float(total) + float(setting.shipping_price) - float(coupon.coupon_price)
-                    else:
-                        general_total = total
 
         if 'sendCheckout' in request.POST:
+            print("111")
             coupon = request.POST.get('coupon')
             yr = int(date.today().strftime('%Y'))
             dt = int(date.today().strftime('%d'))
@@ -234,15 +210,14 @@ def cart(request, total=0, general_total=0, quantity=0, cart_items=None):
         pass
 
     context.update({
-        'total': total,
-        'quantity': quantity,
         'cart_items': cart_items,
-        'general_total': general_total,
-        'coupon': coupon,
-        'cartitem_count': cartitem_count
+        'cartitem_count': cartitem_count,
+        'cart': cart,
+        'favourite_status':favourite_status,
+        'products':products
     })
 
-    return render(request, 'frontend/pages/carts.html', context)
+    return render(request, 'frontend/v_2_0/sayfalar/sepet/sepet.html', context)
 
 
 def uses_coupon(request):
@@ -341,7 +316,7 @@ def createOrder(request, address, order_number, order_amount, order_total, is_in
 
         product = ApiProduct.objects.get(id=item.product.id)
         product.quantity -= item.quantity
-        productStatistic(barcode=orderproduct.product.barcode, title=orderproduct.title, orderNumber=str(order_number), quantity=orderproduct.quantity, satis=orderproduct.product_price)
+        productStatistic(barcode=orderproduct.product.barcode, title=orderproduct.title, quantity=orderproduct.quantity, satis=orderproduct.product_price)
         if product.quantity <= 0:
             product.is_publish = False
         product.save()
@@ -397,6 +372,7 @@ def checkout(request, total=0, cart_items=None):
                 total += (float(cart_item.product.price) * cart_item.quantity)
             context.update({
                 'total': total,
+                'cart': cart,
             })
 
             if total < setting.free_shipping:
@@ -478,7 +454,7 @@ def checkout(request, total=0, cart_items=None):
          'pre_order': pre_order, 'address': active_address, 'add_form': add_form, 'all_address': all_address,
          'paytr_data': paytr_data, 'taksitler': taksitler, 'paytr_form_action': paytr_form_action})
 
-    return render(request, 'frontend/pages/checkout.html', context)
+    return render(request, 'frontend/v_2_0/sayfalar/sepet/odeme.html', context)
 
 
 def order_token(request):
@@ -576,11 +552,11 @@ def completed_checkout(request, order_number):
             'order': order[1],
         })
 
-    return render(request, 'frontend/pages/completed_checkout.html', context)
+    return render(request, 'frontend/v_2_0/sayfalar/sepet/basarili_sonuc.html', context)
 
 
 def payment_failed(request):
-    return render(request, 'frontend/partials/odeme_basarisiz.html')
+    return render(request, 'frontend/v_2_0/sayfalar/sepet/basarisiz_sonuc.html')
 
 
 def select_address(request, address_id):

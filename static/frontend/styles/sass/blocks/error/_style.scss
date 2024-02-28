@@ -1,0 +1,121 @@
+// @*************************************************************************@
+// @ Software author: Mansur Altamirov (Mansur_TL)                           @
+// @ Author URL: https://themeforest.net/user/mansur_tl                      @
+// @ Author E-mails: vayart.help@gmail.com, vayart.web@gmail.com             @
+// @*************************************************************************@
+// @ DreaM - Electronics eCommerce HTML Template                             @
+// @ Copyright (c) 2021 DreaM. All rights reserved.                          @
+// @*************************************************************************@
+
+
+/*
+* Error page [START]
+*/
+
+div.page-container.error{
+	margin-top: 70px;
+
+	div.page-section{
+		&.static-message{
+			div.error-page{
+				div.error-page__code{
+					display: flex;
+					justify-content: center;
+					margin-bottom: 25px;
+
+					img{
+						height: 150px;
+					}			
+				}
+
+				div.error-page__body{
+					display: flex;
+					align-items: center;
+					flex-direction: column;
+
+					h2{
+						font-size: 24px;
+						color: $primary-text-color;
+						padding: 0;
+						margin: 0 0 20px 0;
+						font-weight: 600;
+						text-align: center;
+					}
+
+					p{
+						font-size: 14px;
+						color: $secondary-text-color;
+						padding: 0;
+						margin: 0;
+						margin-bottom: 30px;
+						text-align: center;
+						max-width: 40%;
+						line-height: 1.6;
+					}
+
+					div.btn-controls{
+						display: flex;
+						flex-wrap: wrap;
+						align-items: center;
+					}
+				}
+
+				@include media-breakpoint-down(xl) {
+					div.error-page__code{
+						img{
+							height: 150px;
+						}
+					}
+
+					div.error-page__body{
+						h2{
+							font-size: 20px;
+							margin-bottom: 10px;
+						}
+
+						p{
+							font-size: 13px;
+							margin-bottom: 20px;
+							max-width: 100%;
+						}
+					}
+				}
+
+				@include media-breakpoint-down(lg) {
+					div.error-page__code{
+						img{
+							height: 100px;
+						}
+					}
+				}
+
+				@include media-breakpoint-down(sm) {
+					div.error-page__code{
+						img{
+							height: 80px;
+						}
+					}
+				}
+			}
+		}
+
+		&.recommendations{
+			@import "../../snippets/grid/grid_cont";
+
+			div.products-grid-row{
+				margin-left: -5px;
+				margin-right: -5px;
+
+				div.grid-item-col{
+					padding-left: 5px;
+					padding-right: 5px;
+					margin-bottom: 25px;
+				}
+			}
+		}
+	}
+}
+/*
+* Error page [END]
+*/
+

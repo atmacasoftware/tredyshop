@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7WERTPZR5T"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-7WERTPZR5T');
+    </script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="copyright" content="Copyright 2023 tredyshop.com">
+    {% block title %}<title></title>{% endblock %}
+    {% block seodescription %}
+        <meta name="description" content="">{% endblock %}
+    {% block seokeyword %}
+        <meta name="keywords" content="">{% endblock %}
+    {% block canonical %}
+        <link rel="canonical" href="https://www.tredyshop.com">{% endblock %}
+    <meta name="yandex-verification" content="8ce085c46d937d94"/>
+    <meta name="robots" content="noindex, follow"/>
+    <!-- ~~~~~~~~~~~~~~~~~ Google Fonts ~~~~~~~~~~~~~~~~~ -->
+    <link rel="stylesheet" href="{% static 'frontend/fonts/Inter/inter-fontfaces.css' %}">
+    <!-- ~~~~~~~~~~~~~~~~~ Vendor CSS ~~~~~~~~~~~~~~~~~ -->
+    <link rel="stylesheet" href="{% static 'frontend/css/vendor/bootstrapv5-0-2/bootstrapv5-0-2.css' %}">
+    <!-- ~~~~~~~~~~~~~~~~~ Style CSS ~~~~~~~~~~~~~~~~~ -->
+    <link rel="stylesheet" href="{% static 'frontend/css/main.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'frontend/css/cookie.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    {% block extra_style %}
+    {% endblock %}
+</head>
+
+<body>
+
+{% include 'frontend/v_2_0/partials/__header.html' %}
+
+{% block anasayfa %}
+{% endblock %}
+{% block urun %}
+{% endblock %}
+{% block store %}
+{% endblock %}
+{% block profil %}
+{% endblock %}
+{% block bilgi %}
+{% endblock %}
+{% block sepet %}
+{% endblock %}
+{% block kullanici_islemleri %}
+{% endblock %}
+{% block error %}
+{% endblock %}
+{% block hakkimizde %}
+{% endblock %}
+
+<div class="back-dard"></div>
+
+{% include 'frontend/v_2_0/partials/__mobile_nav.html' %}
+{% include 'frontend/v_2_0/partials/__chat.html' %}
+{% include 'frontend/v_2_0/partials/__messages.html' %}
+{% include 'frontend/v_2_0/partials/__cookie.html' %}
+{% include 'frontend/v_2_0/partials/__footer.html' %}
+
+<script src="{% static 'frontend/js/vendor/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'frontend/js/plugins/swiper-bundle.min.js' %}"></script>
+<script src="{% static 'frontend/js/vendor/bootstrap.bundle.min.js' %}"></script>
+<!-- ~~~~~~~~~~~~~~~~~ JS Files (Main JS) ~~~~~~~~~~~~~~~~~ -->
+<script src="{% static 'frontend/js/main.js' %}"></script>
+<script src="{% static 'frontend/js/pages/home/script.master.js' %}"></script>
+<script src="{% static 'frontend/js/header.js' %}"></script>
+<script src="{% static 'frontend/js/search.js' %}"></script>
+<script src="{% static 'frontend/js/cookie.js' %}"></script>
+{% block extra_script %}
+{% endblock %}
+</body>
+
+</html>

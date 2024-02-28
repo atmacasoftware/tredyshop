@@ -1,0 +1,5 @@
+    <option value="">---------</option>
+    {% for c in ciceksepeti_kategoriler %}
+        <option value="{{ c.id }}" data-name="{{ c.name }}"
+                {% if product.ciceksepeti_kategori_id == c.id %}selected{% endif %}>{{ c.name }}</option>
+    {% endfor %}

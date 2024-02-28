@@ -1,0 +1,72 @@
+// @*************************************************************************@
+// @ Software author: Mansur Altamirov (Mansur_TL)                           @
+// @ Author URL: https://themeforest.net/user/mansur_tl                      @
+// @ Author E-mails: vayart.help@gmail.com, vayart.web@gmail.com             @
+// @*************************************************************************@
+// @ DreaM - Electronics eCommerce HTML Template                             @
+// @ Copyright (c) 2021 DreaM. All rights reserved.                          @
+// @*************************************************************************@
+
+
+div.inline-nav{
+	width: 100%;
+	display: block;
+
+	div.inline-nav__list{
+		display: flex;
+		flex-direction: row;
+		align-items: flex-start;
+		flex-wrap: wrap;
+
+		a.inline-nav__list-item{
+			font-size: 14px;
+			color: $primary-text-color;
+			line-height: 1;
+			padding: 12px 20px;
+			border: 2px solid $secondary-border-color;
+			border-radius: ($card-corner-radius / 3);
+			margin: 0 10px 10px 0;
+			text-decoration: none;
+			transition: all 0.27s ease;
+			white-space: nowrap;
+			font-weight: normal;
+
+			&:hover, &:active, &.active{
+				color: $primary-color;
+				border-color: $primary-color;
+			}
+
+			span.iconed-link{
+				display: inline-flex;
+				align-items: center;
+				flex-wrap: nowrap;
+
+				span.icon{
+					width: 16px;
+					height: 16px;
+					line-height: 1;
+					margin-right: 7px;
+					flex-shrink: 0;
+
+					svg{
+						width: 100%;
+						height: 100%;
+					}
+				}
+
+				span.text{
+					line-height: 1;
+					color: inherit;
+					font-size: inherit;
+				}
+			}
+		}
+
+		@include media-breakpoint-down(md){
+			flex-wrap: nowrap;
+			overflow-x: auto;
+		}
+
+		@import "../../snippets/scrollbar/_hide_scrollbar.scss";
+	}
+}

@@ -1,0 +1,53 @@
+{% for r in reviews %}
+    <div class="reviews__list-item">
+                                                    <div class="review-data">
+                                                        <div class="review-data-topline">
+                                                            <div class="review-data-topline__avatar">
+                                                                <div class="avatar d-flex justify-content-center align-items-center">
+                                                                    {{ r.user.first_name|slice:"1" }}{{ r.user.last_name|slice:"1" }}
+                                                                </div>
+                                                            </div>
+                                                            <div class="review-data-topline__name">
+                                                            <span class="name">
+                                                                {{ r.user.first_name|slice:"2" }}. {{ r.user.last_name|slice:"1" }}.
+                                                            </span>
+                                                            </div>
+                                                            <div class="review-data-topline__grade">
+                                                            <span class="rating">
+                                                    <i class="bi bi-star{% if r.rating > 0 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if r.rating > 1.5 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if r.rating > 2.5 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if r.rating > 3.5 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if r.rating > 4.5 %}-fill{% else %}{% endif %}"></i>
+                                                </span>
+                                                            <span class="date">
+                                                                {{ r.created_at|date:"d-m-Y" }}
+                                                            </span>
+                                                        </div>
+                                                        </div>
+                                                        <div class="review-data-midline">
+                                                            <div class="review-text-box">
+                                                                {{ r.review }}
+                                                            </div>
+                                                            <div class="review-media-box">
+                                                                <div class="row">
+                                                                    {% for i in r.photoReview %}
+                                                                        <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-3">
+                                                                            <div class="review-media-item">
+                                                                                <a data-gall="review-1-attachements"
+                                                                                   href="{{ i.get_image }}"
+                                                                                   class="a-block venobox">
+                                                                                    <img src="{{ i.get_image }}"
+                                                                                         alt="IMG">
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+{% empty %}
+    <p>Ürün değerlendirmesi bulunmamaktadır.</p>
+{% endfor %}

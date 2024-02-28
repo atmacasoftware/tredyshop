@@ -20,7 +20,6 @@
 
     <div class="section-body">
         <div class="row mb-3">
-
             <div class="col-12">
                 <form action="" method="get">
                     <div class="row">
@@ -141,7 +140,7 @@
                                                     <button class="btn btn-success" id="update-{{ product.id }}">
                                                         Güncelle
                                                     </button>
-                                                    <a href="{% url 'product_detail' product.id %}"
+                                                    <a href="{% url 'product_detail' product.barcode %}"
                                                         class="btn btn-primary">Ürüne Git</a>
                                                     <script>
                                                         $("#update-{{ product.id }}").on('click', function (e) {
@@ -150,11 +149,7 @@
                                                                 type: "GET",
                                                                 url: `/yonetim/urunler/kategorisi-hatali-urunler/kategori-duzelt/`,
                                                                 data: {
-                                                                    'productID': {
-                                                                        {
-                                                                            product.id
-                                                                        }
-                                                                    },
+                                                                    'productID': {{ product.id }},
                                                                     'kategori1': $(
                                                                         "select[name='kategori1-{{ product.id }}']"
                                                                         ).val(),
@@ -201,10 +196,10 @@
                                     {% empty %}
                                     <tr>
                                         <td colspan="6" class="text-center">
-                                            <div
+                                            <div class = "mt-5 mb-5"
                                                 style="width: 100%; height: 100%; display:flex; justify-content: center; align-items: center; flex-direction: column;">
-                                                <i class="fa fa-2x fa-smile mb-3"></i>
-                                                <h5>Tebrikler, kategorisi hatalı ürün bulamadım.</h5>
+                                                <i class="fa-regular fa-face-meh mb-3 fa-4x"></i>
+                                                <h5>Aradığınız kategori - kelimede ürün bulanamadı.</h5>
                                             </div>
                                         </td>
                                     </tr>

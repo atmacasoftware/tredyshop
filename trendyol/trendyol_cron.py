@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-
+from user_accounts.models import User
 from adminpage.custom import productStatistic, sendOrderInfoEmail
 from adminpage.models import Trendyol, Notification
 from product.models import ApiProduct
@@ -149,7 +149,8 @@ def get_trendyol_orders():
 
                     productStatistic(barcode=barcode, title=title, quantity=quantity,
                                      satis=salesAmount)
-                    Notification.objects.create(noti_type="4", title="Yeni Trendyol siparişi alındı.", trendyol_orders=data)
+                    for user in User.objects.filter(is_superuser=True):
+                        Notification.objects.create(noti_type="4", title="Yeni Trendyol siparişi alındı.", trendyol_orders=data, user=user)
                     sendOrderInfoEmail(platform="Trendyol", email="atmacaahmet5261@hotmail.com", order=data)
             elif len(r['lines']) > 1:
                 for l in r['lines']:
@@ -212,7 +213,7 @@ def get_trendyol_orders():
                                                             quantity=quantity, size=size, stock_code=sku,
                                                             unit_price=unitPrice, sales_amount=salesAmount,
                                                             discount_amount=discount, status=status)
-                    productStatistic(barcode=barcode, title=title, orderNumber=orderNumber, quantity=quantity,
+                    productStatistic(barcode=barcode, title=title, quantity=quantity,
                                      satis=salesAmount)
                 birim_fiyat = 0
                 satis_fiyat = 0
@@ -234,5 +235,6 @@ def get_trendyol_orders():
                                                      shippment_city=r['shipmentAddress']['city'],
                                                      order_date=datetime_obj_with_tz, commission_price=komisyon_tutari,
                                                      service_price=trendyol.hizmet_bedeli)
-                Notification.objects.create(noti_type="4", title="Yeni Trendyol siparişi alındı.", trendyol_orders=data)
+                for user in User.objects.filter(is_superuser=True):
+                        Notification.objects.create(noti_type="4", title="Yeni Trendyol siparişi alındı.", trendyol_orders=data, user=user)
                 sendOrderInfoEmail(platform="Trendyol", email="atmacaahmet5261@hotmail.com", order=data)

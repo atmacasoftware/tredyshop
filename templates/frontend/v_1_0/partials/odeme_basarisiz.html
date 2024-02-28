@@ -1,0 +1,31 @@
+{% extends 'frontend/v_1_0/layout.html' %}
+{% load static %}
+
+{% block title %}<title>Ödeme Başarısız</title>{% endblock %}
+
+{% block payment_failed %}
+    <hr>
+    <link rel="stylesheet" href="{% static 'css/orders.css' %}">
+    <div class="container container-240">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card failed-card">
+                    <div class="card-body">
+                        <div class="warning-icon">
+                            <i class="fa-regular fa-circle-xmark fa-2xl" style="font-size: 5em;"></i>
+                        </div>
+                        <div class="warning-body">
+                            <h3>Ödeme Başarısız!</h3>
+                            <p>Ödeme işlemeniz başarısız olmuştur. Lütfen tekrar deneyiniz.</p>
+                        </div>
+                        <div class="warning-button">
+                            <a href="{% url 'cart' %}" class="btn btn-ordering">Sepete Git</a>
+                            <a href="{% url 'checkout' %}" class="btn btn-ordering">Ödeme Sayfasına Git</a>
+                            <a href="{% url 'mainpage' %}" class="btn btn-ordering">Anasayfa Git</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

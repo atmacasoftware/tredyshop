@@ -43,7 +43,8 @@ class UserRegistrationView(APIView):
             current_site = get_current_site(request)
             from_email = EMAIL_HOST_USER
             mail_subject = "Lütfen hesabınızı aktif ediniz."
-            message = render_to_string("frontend/acccounts/../templates/backend/email/account_verification_email.html", {
+            message = render_to_string(
+                "frontend/v_1_0/acccounts/../templates/backend/email/account_verification_email.html", {
                 'user': data,
                 'domain': current_site,
                 'uid': urlsafe_base64_encode(force_bytes(data.id)),

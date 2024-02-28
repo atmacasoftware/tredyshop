@@ -1,0 +1,60 @@
+:root{
+    --primary-color: #D31027;
+    --black-color: #010101;
+    --white-color: #ffffff;
+    --bg-white: #FFFFFF;
+    --bg-softGray: #b2adad;
+    --bg-softGray2: #f4f4f4;
+    --bg-div-hover: #efeff0;
+    --bg-skeleton: #DDDBDD;
+    --bg-green: #65ef4d;
+    --bg-blue: #3bc5ec;
+    --bg-yellow: #f6e553;
+    --bg-red: rgba(236, 29, 29, 0.78);
+    --bg-purple: rgba(236, 29, 226, 0.78);
+    --bg-olive: rgba(186, 238, 28, 0.78);
+    --bg-orange: rgba(238, 140, 28, 0.78);
+    --bg-turkuaz: rgba(28, 200, 238, 0.78);
+    --bg-skeleton-image: linear-gradient(90deg, rgba(255, 255, 255, 0) 0, rgba(255, 255, 255, 0.2) 20%, rgba(255, 255, 255, 0.5) 60%, rgba(255, 255, 255, 0));
+    --text-fontSize1: 14px;
+    --text-fontSize2: 16px;
+    --text-fontSize3: 18px;
+    --text-fontSize4: 20px;
+    --text-fontSize5: 22px;
+    --text-fontSize6: 24px;
+    --text-fontSize7: 26px;
+    --text-fontSize8: 28px;
+    --text-fontSize9: 30px;
+}
+
+.bg-green{
+    background: var(--bg-green);
+}
+
+.bg-blue{
+    background: var(--bg-blue);
+}
+
+.bg-yellow{
+    background: var(--bg-yellow);
+}
+
+.bg-red{
+    background: var(--bg-red);
+}
+
+.bg-purple{
+    background: var(--bg-purple);
+}
+
+.bg-olive{
+    background: var(--bg-olive);
+}
+
+.bg-orange{
+    background: var(--bg-orange);
+}
+
+.bg-turkuaz{
+    background: var(--bg-turkuaz);
+}

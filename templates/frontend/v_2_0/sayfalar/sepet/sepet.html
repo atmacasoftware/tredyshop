@@ -1,0 +1,612 @@
+{% extends 'frontend/v_2_0/base.html' %}
+{% load static %}
+
+{% block title %}<title>{{ request.user.get_full_name }} | Sepetim</title>{% endblock %}
+
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'frontend/css/sepet.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+{% endblock %}
+
+{% block sepet %}
+    <div class="page-container basket">
+        <!-- ~~~~~~~~~~~~~~~~~ Basket buyer cart section [START] ~~~~~~~~~~~~~~~~~ -->
+        {% if cart.total_quantity > 0 %}
+            <div class="page-section checkout-cart">
+                <div class="page-margin">
+                    <div class="page-margin__content">
+                        <div class="page-section__body">
+                            <form action="#" class="form" name="checkout" method="post" id="checkoutPrevious">
+                                {% csrf_token %}
+                                <div class="checkout-cart-layout">
+                                    <div class="checkout-cart-layout__content">
+                                        <div class="checkout-base">
+                                            <div class="checkout-basket open">
+                                                <div class="checkout-basket__header" data-toggle="checkout-cart-items">
+                                                    <h2>
+                                                        Sepetim <sup>{{ cart.total_quantity }}</sup>
+                                                    </h2>
+                                                    <div class="btn-control">
+                                                    <span class="minus">
+                                                        <button class="btn btn-icon-only">
+                                                            <svg role="img"
+                                                                 width="48px" height="48px" viewBox="0 0 24 24"
+                                                                 stroke="#2329D6" stroke-width="1"
+                                                                 stroke-linecap="square" stroke-linejoin="miter"
+                                                                 fill="none" color="#2329D6">
+                                                                <title>Minus</title>
+                                                                <path d="M20,12 L4,12"></path>
+                                                            </svg>
+                                                        </button>
+                                                    </span>
+                                                        <span class="plus">
+                                                        <button class="btn btn-icon-only">
+                                                            <svg role="img"
+                                                                 width="48px" height="48px" viewBox="0 0 24 24"
+                                                                 stroke="#2329D6" stroke-width="1"
+                                                                 stroke-linecap="square" stroke-linejoin="miter"
+                                                                 fill="none" color="#2329D6">
+                                                                <title>Plus</title>
+                                                                <path d="M20 12L4 12M12 4L12 20"></path>
+                                                            </svg>
+                                                        </button>
+                                                    </span>
+                                                    </div>
+                                                </div>
+                                                <div class="checkout-basket__body">
+                                                    <div class="cart-items-list">
+                                                        {% for cart_item in cart_items %}
+                                                            <div class="cart-item">
+                                                                <div class="row align-items-stretch mobile-rel">
+                                                                    <div class="col-xxl-7 col-xl-7 col-12">
+                                                                        <div class="cart-item__info">
+                                                                            <div class="cart-item__image">
+                                                                                <a href="{{ cart_item.product.get_url }}"
+                                                                                   class="a-block">
+                                                                                    <img src="{{ cart_item.product.image_url1 }}"
+                                                                                         alt="IMG"
+                                                                                         style="width: auto; height: 100px;">
+                                                                                </a>
+                                                                            </div>
+                                                                            <div class="cart-item__text">
+                                                                                <div class="cart-item__title">
+                                                                                    <a href="{{ cart_item.product.get_url }}">
+                                                                                        {{ cart_item.product.title }}
+                                                                                    </a>
+                                                                                </div>
+                                                                                <div class="cart-item__properties">
+                                                                                    <div class="cart-item__property-item">
+                                                                                <span>
+                                                                                    Renk:
+                                                                                </span>
+                                                                                        {% if cart_item.product.color != None %}
+                                                                                            <span>
+                                                                                            {{ cart_item.product.color.name }}
+                                                                                            </span>
+                                                                                        {% endif %}
+                                                                                    </div>
+                                                                                    <div class="cart-item__property-item">
+                                                                                <span>
+                                                                                    Beden:
+                                                                                </span>
+                                                                                        {% if cart_item.product.size != None %}
+                                                                                            <span>
+                                                                                        {{ cart_item.product.size.name }}
+                                                                                        </span>
+                                                                                        {% endif %}
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xxl-2 col-xl-2 col-6 col-12 mobile-order-3">
+                                                                        <div class="cart-item__counter">
+                                                                            <div class="count">
+                                                                                <a href="{% url 'minus_quantity' cart_item.product.id cart_item.id %}"
+                                                                                   class="btn count__ctrl shadow-none"
+                                                                                   id="minus">
+                                                                                    <svg
+                                                                                            width="18" height="18"
+                                                                                            viewBox="0 0 24 24"
+                                                                                            fill="none"
+                                                                                            stroke="currentColor"
+                                                                                            stroke-width="2"
+                                                                                            stroke-linecap="round"
+                                                                                            stroke-linejoin="round"
+                                                                                            class="feather feather-minus">
+                                                                                        <line x1="5" y1="12" x2="19"
+                                                                                              y2="12"></line>
+                                                                                    </svg>
+                                                                                </a>
+                                                                                <span data-count="1" class="count__num">
+                                                                            <input type="hidden" step="1" min="1"
+                                                                                   max="{{ cart_item.product.quantity }}"
+                                                                                   name="quantity"
+                                                                                   value="{{ cart_item.quantity }}"
+                                                                                   disabled="disabled"
+                                                                                   title="Qty"
+                                                                                   class="qty input-text js-number"
+                                                                                   size="4">
+                                                                                {{ cart_item.quantity }}
+                                                                        </span>
+                                                                                <a href="{% url 'plus_quantity' cart_item.product.id cart_item.id %}"
+                                                                                   class="btn count__ctrl shadow-none"
+                                                                                   id=plus>
+                                                                                    <svg
+                                                                                            width="18" height="18"
+                                                                                            viewBox="0 0 24 24"
+                                                                                            fill="none"
+                                                                                            stroke="currentColor"
+                                                                                            stroke-width="2"
+                                                                                            stroke-linecap="round"
+                                                                                            stroke-linejoin="round"
+                                                                                            class="feather feather-plus">
+                                                                                        <line x1="12" y1="5" x2="12"
+                                                                                              y2="19"></line>
+                                                                                        <line x1="5" y1="12" x2="19"
+                                                                                              y2="12"></line>
+                                                                                    </svg>
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xxl-2 col-xl-2 col-6 col-12 mobile-order-2">
+                                                                        <div class="cart-item__prices">
+                                                                            <div class="prices">
+                                                                        <span class="sale-price">
+                                                                            {{ cart_item.sub_total|floatformat:2 }} TL
+                                                                        </span>
+                                                                                {% if cart_item.product.is_discountprice %}
+                                                                                    <span class="reg-price">
+                                                                            {{ cart_item.not_discount_sub_total|floatformat:2 }} TL
+                                                                        </span>
+                                                                                {% endif %}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-xxl-1 col-xl-1 mobile-fixed-1">
+                                                                        <div class="cart-item__controls">
+                                                                            <a href="{% url 'remove_cart' cart_item.product.id cart_item.id %}"
+                                                                               class="btn btn-icon-only shadow-none">
+                                                                                <svg
+                                                                                        width="24" height="24"
+                                                                                        viewBox="0 0 24 24" fill="none"
+                                                                                        stroke="currentColor"
+                                                                                        stroke-width="2"
+                                                                                        stroke-linecap="round"
+                                                                                        stroke-linejoin="round"
+                                                                                        class="feather feather-trash">
+                                                                                    <polyline
+                                                                                            points="3 6 5 6 21 6"></polyline>
+                                                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                                                </svg>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                                <div class="checkout-basket__footer">
+                                                    Toplam {{ cart.total_quantity }} ürün— <b>{{ cart.total_price }}
+                                                    TL</b>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="checkout-cart-layout__sidebar">
+                                        <div class="top-sticky-block">
+                                            <div class="checkout-sidebar">
+                                                <div class="checkout-sidebar__header">
+                                                    <h2>
+                                                        Sipariş Özeti
+                                                    </h2>
+                                                </div>
+                                                <div class="checkout-sidebar__body">
+                                                    <div class="checkout-summary">
+                                                        <div class="checkout-summary__body">
+                                                            <div class="info-line">
+                                                            <span class="info-line__label">
+                                                                Toplam ({{ cart.total_quantity }}) parça
+                                                            </span>
+                                                                <span class="info-line__value">
+                                                                {{ cart.total_not_discuntprice|floatformat:2 }} TL
+                                                            </span>
+                                                            </div>
+                                                            <div class="info-line">
+                                                            <span class="info-line__label">
+                                                                Kargo Ücreti <small data-toggle="tooltip"
+                                                                                    data-placement="top"
+                                                                                    title="{{ setting.shipping_price }} TL üzeri alışverişlerde ücretsiz kargo"
+                                                                                    class="icon-badge"><svg
+                                                                    width="24"
+                                                                    height="24" viewBox="0 0 24 24" fill="none"
+                                                                    stroke="currentColor" stroke-width="2"
+                                                                    stroke-linecap="round" stroke-linejoin="round"
+                                                                    class="feather feather-info">
+                                                                        <circle cx="12" cy="12" r="10"></circle>
+                                                                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                                                                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                                                    </svg></small>
+                                                            </span>
+                                                                <span class="info-line__value">
+                                                                {% if total != 0 %}
+                                                                    {% if total < setting.free_shipping %}
+                                                                        {{ setting.shipping_price|floatformat:2 }} TL
+                                                                        <input type="hidden"
+                                                                               value="{{ setting.shipping_price|floatformat:2 }}"
+                                                                               name="delivery_price">
+                                                                    {% else %}
+                                                                        Ücretsiz
+                                                                    {% endif %}
+                                                                {% else %}
+                                                                    -
+                                                                {% endif %}
+                                                            </span>
+                                                            </div>
+                                                            <div class="info-line">
+                                                            <span class="info-line__label">
+                                                                İndirim
+                                                            </span>
+                                                                <span class="info-line__value">
+                                                                {{ cart.total_discount }} TL
+                                                            </span>
+                                                            </div>
+                                                            <div class="info-line">
+                                                            <span class="info-line__label">
+                                                                Kupon
+                                                            </span>
+                                                                <span class="info-line__value">
+                                                                {% if coupon.is_active == True %}
+                                                                    <input type="hidden"
+                                                                           value="{{ coupon.coupon_price }}"
+                                                                           name="coupon">
+                                                                    {{ coupon.coupon_price|floatformat:2 }} TL
+                                                                {% else %}
+                                                                    -
+                                                                {% endif %}
+                                                            </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="checkout-address">
+                                                        <div class="checkout-address__header">
+                                                            <div class="text-label">
+                                                            <span>
+                                                                Adres:
+                                                            </span>
+                                                            </div>
+                                                            {% if address.address %}
+                                                                <div class="btn-control">
+                                                                    <button class="btn btn-icon-only" type="button"
+                                                                            data-toggle="modal"
+                                                                            data-target="#address-select-modal">
+                                                                        <svg width="24"
+                                                                             height="24" viewBox="0 0 24 24" fill="none"
+                                                                             stroke="currentColor" stroke-width="2"
+                                                                             stroke-linecap="round"
+                                                                             stroke-linejoin="round"
+                                                                             class="feather feather-edit-3">
+                                                                            <path d="M12 20h9"></path>
+                                                                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                                                                        </svg>
+                                                                    </button>
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="checkout-address__body">
+                                                            <div class="address">
+                                                                {% if address.address %}
+                                                                    <input type="hidden" value="{{ address.id }}"
+                                                                           name="selectedAddress">
+                                                                    {{ address.address }}
+                                                                {% else %}
+                                                                    Adres eklemeniz gerekmektedir.
+                                                                    <a href="{% url 'address' %}" type="button"
+                                                                       class="btn btn-block" id="addAddressBtn">Adres
+                                                                        Ekle</a>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="checkout-points">
+                                                        <div class="checkout-points__body">
+                                                            <div class="checkout-points__input">
+                                                                <div class="form-group">
+                                                                    <div class="form-field">
+                                                                        <input name="coupon"
+                                                                               id="coupon"
+                                                                               value="{% if coupon.is_active == True %}
+                                                                            {{ coupon.coupon_code }}
+                                                                               {% endif %}"
+                                                                               class="form-control"
+                                                                               placeholder="Kupon kodu"
+                                                                               type="text">
+                                                                        <button class="btn text-btn" type="button">
+                                                                            Uygula
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="checkout-sidebar__footer">
+                                                    <div class="text-label">
+                                                    <span>
+                                                        Toplam
+                                                    </span>
+                                                    </div>
+                                                    <div class="text-value">
+                                                    <span>
+                                                        {% if total != 0 %}
+                                                            <input type="hidden" value="{{ cart.general_total }}"
+                                                                   name="order_total">
+                                                            {{ cart.general_total|floatformat:2 }} TL
+                                                        {% else %}
+                                                            0 TL
+                                                        {% endif %}
+                                                    </span>
+                                                    </div>
+
+                                                </div>
+                                                <div class="checkout-sidebar__footer">
+                                                    <button {% if cart.total_quantity > 0 %}type="submit"
+                                                            {% else %} data-toggle="modal"
+                                                            data-target="#emptyCart" {% endif %} name="sendCheckout"
+                                                            class="btn btn-checkout shadow-none">Sepeti Onayla
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="page-section checkout-cart-empty">
+                <div class="page-margin">
+                    <div class="page-margin__content">
+                        <div class="page-section__body">
+                            <div class="d-block">
+                                <div class="placeholder-message">
+                                    <div class="icon">
+                                    <span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" fill="currentColor" class="bi bi-emoji-frown" viewBox="0 0 16 16">
+  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+  <path d="M4.285 12.433a.5.5 0 0 0 .683-.183A3.5 3.5 0 0 1 8 10.5c1.295 0 2.426.703 3.032 1.75a.5.5 0 0 0 .866-.5A4.5 4.5 0 0 0 8 9.5a4.5 4.5 0 0 0-3.898 2.25.5.5 0 0 0 .183.683M7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5m4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5"/>
+</svg>
+                                    </span>
+                                    </div>
+                                    <h2>
+                                        Sepetinizde henüz ürün yok
+                                    </h2>
+                                    <p>
+                                        Henüz sepetinize herhangi bir ürün eklemediniz. Ürünleri sepete ekleyerek alışverişe devam edebilirsiniz.
+                                    </p>
+                                    <p>Sizlere sunduğumuz uygun fiyatlı ürünlere hemen göz atabilirsiniz.</p>
+                                    <div class="btn-controls">
+                                        <div class="btn-control__item">
+                                            <a href="{% url 'mainpage' %}" class="a-block">
+                                                <div class="btn btn-primary btn-icon btn-lg">
+                                                <span class="icon">
+                                                    <svg width="24" height="24"
+                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                         class="feather feather-arrow-up-right">
+                                                        <line x1="7" y1="17" x2="17" y2="7"></line>
+                                                        <polyline points="7 7 17 7 17 17"></polyline>
+                                                    </svg>
+                                                </span>
+                                                    <span class="text">
+                                                    Alışverişe Başla
+                                                </span>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- ~~~~~~~~~~~~~~~~~ Basket buyer cart section [START] ~~~~~~~~~~~~~~~~~ -->
+        <!-- ~~~~~~~~~~~~~~~~~ Basket recommendations section [START] ~~~~~~~~~~~~~~~~~ -->
+        <div class="page-section recommendations">
+            <div class="page-margin">
+                <div class="page-margin__content">
+                    <div class="page-section__header">
+                        <h2>
+                            Bu ürünlerede bakabilirsin
+                        </h2>
+                    </div>
+                    <div class="page-section__body">
+                        <div class="products-slider">
+                            <div class="swiper" id="recommendations-slider">
+                                <div class="swiper-wrapper">
+                                    {% for product in products %}
+                                        <div class="swiper-slide">
+                                            <div class="slide-cont">
+                                                <div class="product-grid-item">
+                                                    <div class="product">
+                                                        <a class="a-block"
+                                                           href="{{ product.product.get_url }}">
+                                                            <div class="product__image">
+                                                                <img src="{{ product.get_kapak }}"
+                                                                     alt="IMG">
+                                                                {% if product.product.is_discountprice %}
+                                                                    <div class="discount">
+                                                                                    <span>
+                                                                                        -{{ product.product.discountrate }}%
+                                                                                    </span>
+                                                                    </div>
+                                                                {% endif %}
+                                                            </div>
+                                                        </a>
+                                                        <div class="product__description">
+                                                            <a class="a-block"
+                                                               href="{{ product.product.get_url }}">
+                                                                <div class="product_prices">
+                                                                    {% if product.product.is_discountprice %}
+                                                                        <b>
+                                                                            {{ product.product.discountprice }}
+                                                                            TL
+                                                                        </b>
+                                                                        <span>
+                                                                                        {{ product.product.price }} TL
+                                                                                    </span>
+                                                                    {% else %}
+                                                                        <b>
+                                                                            {{ product.product.price }}
+                                                                            TL
+                                                                        </b>
+                                                                    {% endif %}
+                                                                </div>
+                                                                <div class="product_rating">
+                                                                                            <span class="rating">
+                                                    <i class="bi bi-star{% if product.product.averageReview > 0 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if product.product.averageReview > 1.5 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if product.product.averageReview > 2.5 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if product.product.averageReview > 3.5 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if product.product.averageReview > 4.5 %}-fill{% else %}{% endif %}"></i>
+                                                </span>
+                                                                </div>
+                                                            </a>
+                                                            <div class="product_name">
+                                                                <a href="{{ product.product.get_url }}">
+                                                                    {{ product.product.title }}
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="swiper-button-prev">
+                                    <button class="btn slider-btn prev">
+                                        <svg width="24" height="24"
+                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                             stroke-linecap="round" stroke-linejoin="round"
+                                             class="feather feather-chevron-left">
+                                            <polyline points="15 18 9 12 15 6"></polyline>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="swiper-button-next">
+                                    <button class="btn slider-btn next">
+                                        <svg width="24" height="24"
+                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                             stroke-linecap="round" stroke-linejoin="round"
+                                             class="feather feather-chevron-right">
+                                            <polyline points="9 18 15 12 9 6"></polyline>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ~~~~~~~~~~~~~~~~~ Basket recommendations section [END] ~~~~~~~~~~~~~~~~~ -->
+
+    </div>
+
+    <!-- ~~~~~~~~~~~~~~~~~ Address Select modal window [START] ~~~~~~~~~~~~~~~~~ -->
+    <div class="modal fade share-product" tabindex="-1" role="dialog" id="address-select-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Adres Değiştir
+                    </h5>
+                    <button type="button" class="btn btn-icon-only" data-dismiss="modal">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="feather feather-x">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="addresses__list">
+                        {% for address in all_address %}
+                            <div class="addresses__list-item">
+                                <div class="address">
+                                    <div class="address__body">
+                                        <div class="address__rec">
+                                                            <span class="name-contacts">
+                                                                {{ address.title }} - {{ address.first_name }} {{ address.last_name }} <a
+                                                                    class="phone"
+                                                                    href="tel:{{ address.mobile }}">{{ address.mobile }}</a>
+                                                            </span>
+                                            <span class="address">
+                                                                {{ address.address }}
+                                                            </span>
+                                            {% if address.is_active == "Evet" %}
+                                                <span class="status">
+                                                                        <span class="badge badge-grad-1 badge-lg">Geçerli Adres</span>
+                                                                    </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="address__controls">
+                                        <a href="{% url 'update_address' address.id %}"
+                                           class="btn btn-icon-only">
+                                            <svg width="24"
+                                                 height="24"
+                                                 viewBox="0 0 24 24" fill="none"
+                                                 stroke="currentColor"
+                                                 stroke-width="2" stroke-linecap="round"
+                                                 stroke-linejoin="round"
+                                                 class="feather feather-edit-3">
+                                                <path d="M12 20h9"></path>
+                                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                                            </svg>
+                                        </a>
+                                        <a href="{% url 'delete_address' address.id %}" class="btn btn-icon-only">
+                                            <svg width="24"
+                                                 height="24"
+                                                 viewBox="0 0 24 24" fill="none"
+                                                 stroke="currentColor"
+                                                 stroke-width="2" stroke-linecap="round"
+                                                 stroke-linejoin="round"
+                                                 class="feather feather-trash">
+                                                <polyline points="3 6 5 6 21 6"></polyline>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
+                                {% if address.is_active == "Hayır" %}
+                                    <a href="{% url 'is_active_address' address.id %}" class="select-address">Seç</a>
+                                {% endif %}
+                            </div>
+                        {% empty %}
+                            <div class="empty-address">
+                                <p>Kayıtlı adresiniz bulunmamaktadır.</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ~~~~~~~~~~~~~~~~~ Address Select modal window [END] ~~~~~~~~~~~~~~~~~ -->
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'frontend/js/pages/basket/script.master.js' %}"></script>
+    <script src="{% static 'frontend/js/sepet.js' %}"></script>
+{% endblock %}

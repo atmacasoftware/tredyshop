@@ -188,6 +188,7 @@
                                 <option value="">-----</option>
                                 <option value="Her Gün">Her Gün</option>
                                 <option value="Belirli Gün">Belirli Gün</option>
+                                <option value="Son Gün">Son Gün</option>
                             </select>
                         </div>
                         <div class="form-group task_time_form">
@@ -253,7 +254,7 @@
         $(document).ready(function () {
             $(".task_time_form").hide()
             $("#tasktime").on('change', function (e) {
-                if (e.target.value == "Belirli Gün") {
+                if (e.target.value == "Belirli Gün" || e.target.value == "Son Gün") {
                     $(".task_time_form").show()
                     $("#task_date").attr("required", true)
                 } else {

@@ -1,0 +1,113 @@
+{% load static %}
+
+<div class="page-section promo-banners">
+    <div class="page-margin">
+        <div class="page-margin__content">
+            <div class="page-section__header">
+                <h2>
+                    Kategoriler
+                </h2>
+            </div>
+            <div class="page-section__body">
+                <div class="promos-slider">
+                    <div class="swiper" id="promos-slider">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <a href="{% url 'product_by_subcategory' 'giyim' 'ust-giyim' %}">
+                                    <div class="slide-cont" style="border: none">
+                                        <div class="mainpage__category bg-green">
+                                            Üst Giyim
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="swiper-slide">
+                                <a href="{% url 'product_by_subcategory' 'giyim' 'alt-giyim' %}">
+                                    <div class="slide-cont" style="border: none">
+                                        <div class="mainpage__category bg-blue">
+                                            Alt Giyim
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="swiper-slide">
+                                <a href="{% url 'product_by_subcategory' 'giyim' 'elbise-tulum' %}">
+                                    <div class="slide-cont" style="border: none">
+                                        <div class="mainpage__category bg-yellow">
+                                            Elbise - Tulum
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="swiper-slide">
+                                <a href="{% url 'product_by_subcategory' 'giyim' 'ic-giyim' %}">
+                                    <div class="slide-cont" style="border: none">
+                                        <div class="mainpage__category bg-red">
+                                            İç Giyim
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="swiper-slide">
+                                <a href="{% url 'product_by_subcategory' 'giyim' 'esofman-pijama' %}">
+                                    <div class="slide-cont" style="border: none">
+                                        <div class="mainpage__category bg-purple">
+                                            Eşofman - Pijama
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="swiper-slide">
+                                <a href="{% url 'product_by_subcategory' 'giyim' 'bebek' %}">
+                                    <div class="slide-cont" style="border: none">
+                                        <div class="mainpage__category bg-olive">
+                                            Bebek
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="swiper-slide">
+                                <a href="{% url 'product_by_subcategory' 'giyim' 'ayakkabi' %}">
+                                    <div class="slide-cont" style="border: none">
+                                        <div class="mainpage__category bg-orange">
+                                            Ayakkabı
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="swiper-slide">
+                                <a href="{% url 'product_by_subcategory' 'giyim' 'aksesuar' %}">
+                                    <div class="slide-cont" style="border: none">
+                                        <div class="mainpage__category bg-turkuaz">
+                                            Aksesuarlar
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-button-prev">
+                            <button class="btn slider-btn prev">
+                                <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24"
+                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                     stroke-linecap="round" stroke-linejoin="round"
+                                     class="feather feather-chevron-left">
+                                    <polyline points="15 18 9 12 15 6"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="swiper-button-next">
+                            <button class="btn slider-btn next">
+                                <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24"
+                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                     stroke-linecap="round" stroke-linejoin="round"
+                                     class="feather feather-chevron-right">
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

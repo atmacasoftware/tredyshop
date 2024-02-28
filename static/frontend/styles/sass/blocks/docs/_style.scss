@@ -1,0 +1,133 @@
+// @*************************************************************************@
+// @ Software author: Mansur Altamirov (Mansur_TL)                           @
+// @ Author URL: https://themeforest.net/user/mansur_tl                      @
+// @ Author E-mails: vayart.help@gmail.com, vayart.web@gmail.com             @
+// @*************************************************************************@
+// @ DreaM - Electronics eCommerce HTML Template                             @
+// @ Copyright (c) 2021 DreaM. All rights reserved.                          @
+// @*************************************************************************@
+
+/*
+* Document page [START]
+*/
+
+div.page-container.docs{
+	div.page-section{
+
+		div.document-nav{
+			a{
+				display: block;
+			}
+		}
+
+		div.document{
+			color: $primary-text-color;
+			padding: 50px;
+			border: 2px solid $secondary-border-color;
+			border-radius: $card-corner-radius;
+			
+			div.document__title-block{
+				margin-bottom: 50px;
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				align-items: center;
+
+				h1{
+					font-size: 33px;
+					font-weight: 600;
+					color: $primary-text-color;
+					padding: 0;
+					margin: 0;
+				}
+
+				div.title-ctrls{
+					margin-left: 30px;
+
+					button.btn-icon-only{
+						background: $grey-panel-bg;
+
+						svg{
+							stroke: $grey-panel-color;
+						}
+					}
+				}
+			}
+
+			div.document__text-block{
+				margin-bottom: 40px;
+				padding-bottom: 40px;
+				border-bottom: 1px solid $primary-border-color;
+
+				h3{
+					font-size: 22px;
+					font-weight: 500;
+					padding: 0;
+					margin: 0;
+					margin-bottom: 15px;
+
+					span{
+						color: $primary-color;
+					}
+				}
+
+				p{
+					font-size: 16px;
+					line-height: 1.6;
+					color: $secondary-text-color;
+					padding: 0;
+					margin: 0;
+				}
+
+				&:last-child{
+					margin-bottom: 0px;
+					padding-bottom: 0px;
+					border-bottom: none;
+				}
+			}
+
+			@include media-breakpoint-down(xl) {
+				padding: 15px;
+				border-radius: ($card-corner-radius / 3);
+
+
+				div.document__title-block{
+					margin-bottom: 30px;
+
+					h1{
+						font-size: 22px;
+					}
+
+					div.title-ctrls{
+						button.btn{
+							width: 35px;
+							height: 35px;
+
+							svg{
+								width: 18px;
+								height: 18px;
+							}
+						}
+					}
+				}
+
+				div.document__text-block{
+					margin-bottom: 30px;
+					padding-bottom: 30px;
+
+					h3{
+						font-size: 16px;
+					}
+
+					p{
+						font-size: 13px;
+					}
+				}
+			}
+		}
+	}
+}
+
+/*
+* Document page [END]
+*/

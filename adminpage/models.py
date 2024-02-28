@@ -4,7 +4,7 @@ from django.template import defaultfilters
 from django_ckeditor_5.fields import CKEditor5Field
 from django_resized import ResizedImageField
 from unidecode import unidecode
-
+from hepsiburada.models import HepsiburadaSiparisler
 from categorymodel.models import MainCategory, SubBottomCategory
 from orders.models import Order
 from product.models import ApiProduct, Question
@@ -192,6 +192,8 @@ class Notification(models.Model):
         ("7", "7"),
         ("8", "8"),
         ("9", "9"),
+        ("10", "10"),
+        ("11", "11"),
     )
 
     # 1: Ürünler pazaryerlerine yüklendi.
@@ -210,6 +212,7 @@ class Notification(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Müşteri",
                                  related_name="noti_customer")
     trendyol_orders = models.ForeignKey(TrendyolOrders, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Trendyol Siparişi")
+    hepsiburada_orders = models.ForeignKey(HepsiburadaSiparisler, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Trendyol Siparişi")
     tredyshop_orders = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Tredyshop Siparişi")
     question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Soru")
     task_id = models.BigIntegerField(verbose_name="Task ID", blank=True, null=True)
@@ -253,6 +256,7 @@ class Hakkimizda(models.Model):
     product_count = models.BigIntegerField(verbose_name="Ürün Sayısı", null=True)
     trendyol_url = models.CharField(max_length=255, verbose_name="Trendyol Mağaza Adresi", null=True)
     hepsiburada_url = models.CharField(max_length=255, verbose_name="Hepsiburada Mağaza Adresi", null=True)
+    ciceksepeti_url = models.CharField(max_length=255, verbose_name="Çiçeksepeti Mağaza Adresi", null=True)
     pttavm_url = models.CharField(max_length=255, verbose_name="PTTAvm Mağaza Adresi", null=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
@@ -313,7 +317,8 @@ class Banner(models.Model):
     banner_maxprice = models.IntegerField(verbose_name="En Yüksek Fiyat", null=True, blank=True)
     banner_discountrate = models.IntegerField(null=True, verbose_name="İndirim Oranı", blank=True)
     banner_category = models.ForeignKey(SubBottomCategory, on_delete=models.CASCADE, max_length=255, verbose_name="Kategori Seçiniz", null=True, blank=True)
-    image = ResizedImageField(force_format="WEBP", quality=50, upload_to="adminpage/banner", null=True, blank=True)
+    url = models.URLField(verbose_name="Gideceği URL", null=True, blank=True)
+    image = ResizedImageField(force_format="WEBP", quality=75, upload_to="adminpage/banner", null=True, blank=True)
     is_publish = models.BooleanField(default=False, verbose_name="Yayında Mı?")
     order = models.PositiveIntegerField(null=True, blank=False, verbose_name="Sıra Sayısı")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
@@ -323,6 +328,8 @@ class Banner(models.Model):
 
     class Meta:
         ordering = ["created_at"]
+
+
 
     def save(self, *args, **kwargs):
         if not self.id and not self.slug:
@@ -347,6 +354,7 @@ class Harcamalar(models.Model):
         ("Ürün Alımı", "Ürün Alımı"),
         ("KDV Ödemesi", "KDV Ödemesi"),
         ("Gelir Geçici Vergi Ödemesi", "Gelir Geçici Vergi Ödemesi"),
+        ("Muhtasar Vergi Ödemesi", "Muhtasar Vergi Ödemesi"),
         ("Reklam Harcaması", "Reklam Harcaması"),
         ("Diğer Harcamalar", "Diğer Harcamalar")
     )
@@ -493,18 +501,19 @@ class HepsiburadaKarMarji(models.Model):
     created_at = models.DateField(auto_now_add=True, verbose_name="Oluşturulma Tarihi", null=True)
     update_at = models.DateField(auto_now=True, verbose_name="Güncellenme Tarihi", null=True)
 
-class AmazonFiyatAyarla(models.Model):
+
+class CiceksepetiFiyatAyarla(models.Model):
     kdv1 = models.FloatField(verbose_name="KDV Oranı 1", blank=False, null=True)
     kdv2 = models.FloatField(verbose_name="KDV Oranı 2", blank=False, null=True)
-    commission = models.FloatField(verbose_name="Amazon Komisyonu", blank=False, null=True)
+    commission = models.FloatField(verbose_name="Çiçeksepeti Komisyonu", blank=False, null=True)
     service = models.FloatField(verbose_name="Hizmet Bedeli (KDV Dahil)", blank=False, null=True)
     kargo = models.FloatField(verbose_name="Kargo Maliyeti (KDV Dahil)", null=True, blank=False)
     indirim = models.FloatField(verbose_name="İndirim Tutarı", null=True, blank=False)
     created_at = models.DateField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
     update_at = models.DateField(auto_now=True, verbose_name="Güncellenme Tarihi")
 
-class AmazonKarMarji(models.Model):
-    amazon = models.ForeignKey(AmazonFiyatAyarla, on_delete=models.CASCADE, null=True, blank=False)
+class CiceksepetiKarMarji(models.Model):
+    ciceksepeti = models.ForeignKey(CiceksepetiFiyatAyarla, on_delete=models.CASCADE, null=True, blank=False)
     baslangic = models.FloatField(verbose_name="Başlangıç Fiyatı", null=True, blank=False)
     bitis = models.FloatField(verbose_name="Bitiş Fiyatı", null=True, blank=False)
     kar_maji = models.FloatField(verbose_name="Kar Marjı", null=True, blank=False)
@@ -596,6 +605,7 @@ class Task(models.Model):
     TASK_TIME = (
         ("Her Gün","Her Gün"),
         ("Belirli Gün","Belirli Gün"),
+        ("Son Gün", "Son Gün"),
     )
 
     name = models.CharField(max_length=500, null=True, blank=True, verbose_name="Görev Adı")
@@ -618,3 +628,13 @@ class UserTask(models.Model):
     all_completed = models.BooleanField(default=False, verbose_name="Hepsi Tamamladı Mı?")
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
+
+class FrontentHeaderCategory(models.Model):
+    title = models.CharField(max_length=30, null=True, blank=False, verbose_name="Başlık")
+    url = models.URLField(null=True, blank=False, verbose_name="Gideceği URL")
+    order = models.PositiveIntegerField(null=True, blank=True,verbose_name="Sırası")
+    is_publish = models.BooleanField(default=False, verbose_name="Yayın Durumu", null=True)
+    create_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
+
+

@@ -1,0 +1,25 @@
+div.page-container.faqs div.page-section div.question-categories div.nav-menu div.nav-menu__list a.nav-menu__list-item span.icon{
+    height: unset;
+    color: rgba(32,35,51,.8);
+    font-size: var(--text-fontSize4);
+}
+
+div.page-container.faqs div.page-section div.question-categories div.nav-menu div.nav-menu__list a.nav-menu__list-item.active span.icon,
+div.page-container.faqs div.page-section div.question-categories div.nav-menu div.nav-menu__list a.nav-menu__list-item:hover span.icon{
+    color: var(--primary-color);
+}
+
+div.page-container.faqs div.page-section div.question-categories div.nav-menu div.nav-menu__list a.nav-menu__list-item.active span.text,
+div.page-container.faqs div.page-section div.question-categories div.nav-menu div.nav-menu__list a.nav-menu__list-item:hover span.text{
+    color: var(--primary-color);
+}
+
+div.page-container.faqs div.page-section div.question-categories div.nav-menu div.nav-menu__list a.nav-menu__list-item.active::before{
+    background: var(--primary-color);
+}
+
+#liveHelp{
+    background: #25D366;
+    color: var(--white-color);
+    font-size: var(--text-fontSize1);
+}

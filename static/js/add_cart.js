@@ -42,7 +42,6 @@ $(document).ready(function () {
 
             },
             success: function (data) {
-                console.log(quantity)
                 $("#waitingCard").show()
                 $("#addingCard").hide()
                 $(".cart-popup").addClass('open')

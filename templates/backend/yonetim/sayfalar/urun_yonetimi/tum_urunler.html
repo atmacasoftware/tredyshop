@@ -86,7 +86,6 @@
                                                         id="select-platform" name="dropshipping" style="width: 100%;">
                                                     <option value="">--------</option>
                                                     <option value="modaymis">Modaymış</option>
-                                                    <option value="tahtakale">Tahtakale</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -97,7 +96,7 @@
                                                         id="select-publish" name="publish" style="width: 100%;">
                                                     <option value="">--------</option>
                                                     <option value="True">Satışta</option>
-                                                    <option value="tahtakale">Satışta Değil</option>
+                                                    <option value="False">Satışta Değil</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -288,7 +287,7 @@
                                             </td>
                                             <td data-label="Oluşturuma Tarihi">{{ product.create_at|date:'d-m-Y H:i' }}</td>
                                             <td data-label="İşlemler">
-                                                <a href="{% url 'product_detail' product.id %}"
+                                                <a href="{% url 'product_detail' product.barcode %}"
                                                    class="btn btn-primary btn-sm" target="_blank">Detaya
                                                     Git</a>
                                                 <div class="dropdown">

@@ -1,0 +1,823 @@
+// @*************************************************************************@
+// @ Software author: Mansur Altamirov (Mansur_TL)                           @
+// @ Author URL: https://themeforest.net/user/mansur_tl                      @
+// @ Author E-mails: vayart.help@gmail.com, vayart.web@gmail.com             @
+// @*************************************************************************@
+// @ DreaM - Electronics eCommerce HTML Template                             @
+// @ Copyright (c) 2021 DreaM. All rights reserved.                          @
+// @*************************************************************************@
+
+/*
+* Blog page [START]
+*/
+
+div.page-container.blog{
+	div.page-section{
+		&.blog-slider{	
+			margin-bottom: 20px;
+
+			div.swiper{
+				position: relative;
+				overflow: hidden;
+
+				div.swiper-wrapper{
+					display: flex;
+					align-items: stretch;
+					width: 100%;
+
+					div.swiper-slide{
+						flex-shrink: 0;
+
+						div.slide-cont{
+							height: 100%;
+
+							div.blog-slider__item{
+								position: relative;
+								height: 100%;
+								border: 1px solid $primary-border-color;
+								border-radius: ($card-corner-radius / 2);
+								overflow: hidden;
+
+								img{
+									width: 100%;
+								}
+
+								div.blog-slider__desc{
+									display: flex;
+									flex-direction: column;
+									position: absolute;
+									left: 0px;
+									right: 0px;
+									top: 0px;
+									bottom: 0px;
+									padding: 50px 100px;
+									z-index: 5;
+									max-width: 60%;
+									height: 100%;
+
+									div.post-type{
+										margin-bottom: 20px;
+
+										span{
+											font-size: 12px;
+											line-height: 1;
+											background: $primary-color;
+											color: $black-ctrl-color;
+											padding: 7px 20px;
+											border-radius: 5em;
+											font-weight: 500;
+										}
+									}
+
+									a{
+										h3{
+											color: $black-ctrl-color;
+											font-size: 36px;
+											font-weight: 500;
+											overflow: hidden;
+											text-overflow: ellipsis;
+											display: -webkit-box;
+											-webkit-line-clamp: 2;
+											-webkit-box-orient: vertical;
+											margin-bottom: 20px;
+											transition: all 0.27s ease;
+
+											&:hover, &:active{
+												color: $primary-color;
+											}
+										}
+									}
+
+									p{
+										color: $black-ctrl-color;
+										font-size: 16px;
+										overflow: hidden;
+										text-overflow: ellipsis;
+										display: -webkit-box;
+										-webkit-line-clamp: 4;
+										-webkit-box-orient: vertical;
+									}
+
+									div.post-author{
+										display: flex;
+										flex-direction: row;
+										flex-wrap: nowrap;
+										align-items: center;
+										margin-top: auto;
+
+										div.avatar{
+											width: 40px;
+											height: 40px;
+											border-radius: 100%;
+											overflow: hidden;
+											line-height: 1;
+											border-radius: 100%;
+
+											img{
+												width: 100%;
+												height: 100%;
+											}
+										}
+
+										div.name{
+											margin-left: 15px;
+											line-height: 1;
+
+											span{
+												font-size: 14px;
+												color: $black-ctrl-color;
+												line-height: 1.2;
+											}
+										}
+									}
+
+									@include media-breakpoint-down(xl){
+										position: static;
+										padding: 25px 25px;
+										max-width: 100%;
+										height: auto;
+
+										a h3{
+											font-size: 16px;
+											margin-bottom: 10px;
+											color: $primary-text-color;
+										}
+
+										p{
+											font-size: 14px;
+											color: $secondary-text-color;
+										}
+
+										div.post-author{
+											div.avatar{
+												width: 32px;
+												height: 32px;
+											}
+
+											div.name{
+												margin-left: 10px;
+
+												span{
+													font-size: 13px;
+													color: $secondary-text-color;
+												}
+											}
+										}
+									}
+								}
+
+								&::before{
+									position: absolute;
+									z-index: 1;
+									content: "";
+									top: 0;
+									left: 0;
+									bottom: 0;
+									right: 0;
+									height: 100%;
+									background: linear-gradient(90deg, rgba(#000000, 0.8), rgba(#000000, 0.1) 100%, rgba(0,0,0,1));
+								}
+
+								@include media-breakpoint-down(xl){
+									background: $secondary-bg-color;
+									box-shadow: $primary-box-shadow;
+
+									&::before{
+										display: none;
+									}
+								}
+							}
+
+							@include media-breakpoint-down(xl){
+								padding: 3px;
+							}
+						}
+					}
+				}
+
+				div.swiper-button-prev, div.swiper-button-next{
+					button.slider-btn{
+						width: 54px;
+						height: 54px;
+						top: calc(50% - 32px);
+
+						svg{
+							width: 30px;
+							height: 30px;
+						}
+					}
+				}
+			}
+		}
+
+		&.blog-posts{
+			div.blog-categories{
+				margin-bottom: 10px;
+			}
+
+			div.posts-list{
+				margin-bottom: 30px;
+
+				div.row{
+					align-items: stretch;
+					margin-left: -5px;
+					margin-right: -5px;
+
+					div.col-12{
+						padding-left: 5px;
+						padding-right: 5px;
+					}
+				}
+
+				div.posts-item-wrapper{
+					margin-bottom: 20px;
+				}
+
+				div.posts-item{
+					height: 100%;
+					display: flex;
+					flex-direction: column;
+					overflow: hidden;
+					border-radius: ($card-corner-radius / 2);
+					background: $secondary-bg-color;
+					border: 1px solid $primary-border-color;
+
+					div.posts-item__image{
+						overflow: hidden;
+						position: relative;
+
+						img{
+							width: 100%;
+							transition: all 0.27s ease;
+						}
+
+						&:hover, &:active{
+							img{
+								transform: scale(1.05);
+							}
+						}
+
+						div.posts-item__type{
+							position: absolute;
+							bottom: 15px;
+							left: 25px;
+
+							span{
+								font-size: 12px;
+								line-height: 1;
+								color: $black-ctrl-color;
+								background: $primary-color;
+								padding: 7px 20px;
+								border-radius: 5em;
+								font-weight: 500;
+							}
+						}
+					}
+
+					div.posts-item__description{
+						padding: 20px 25px;
+						display: flex;
+						flex-direction: column;
+						overflow: hidden;
+						flex: 1;
+
+						h4{
+							padding: 0;
+							margin: 0 0 10px 0;
+							font-size: 16px;
+							font-weight: 600;
+							color: $primary-text-color;
+							overflow: hidden;
+							text-overflow: ellipsis;
+							display: -webkit-box;
+							-webkit-line-clamp: 1;
+							-webkit-box-orient: vertical;
+							transition: all 0.27s ease;
+
+							&:hover, &:active{
+								color: $primary-color;
+							}
+						}
+
+						p{
+							font-size: 14px;
+							padding: 0;
+							margin: 0 0 15px 0;
+							color: $secondary-text-color;
+							overflow: hidden;
+							text-overflow: ellipsis;
+							display: -webkit-box;
+							-webkit-line-clamp: 2;
+							-webkit-box-orient: vertical;
+							flex: 1;
+						}
+					
+						div.posts-item__author{
+							display: flex;
+							flex-direction: row;
+							flex-wrap: nowrap;
+							align-items: center;
+
+							div.avatar{
+								width: 32px;
+								height: 32px;
+								line-height: 1;
+								overflow: hidden;
+								border-radius: 100%;
+
+								img{
+									width: 100%;
+									height: 100%;
+								}
+							}
+
+							div.name{
+								margin-left: 10px;
+								line-height: 1;
+
+								span{
+									font-size: 13px;
+									color: $secondary-text-color;
+									line-height: 1.2;
+								}
+							}
+						}
+					}
+
+					@include media-breakpoint-down(xl) {
+						border-radius: ($card-corner-radius / 3);
+					}
+				}
+			}
+
+			div.posts-pagination{
+				display: block;
+			}
+		}
+
+		&.post{
+			div.post-data{
+				div.post-data__header{
+					margin-bottom: 30px;
+
+					div.post-type{
+						margin-bottom: 20px;
+
+						span{
+							font-size: 12px;
+							line-height: 1;
+							background: $primary-color;
+							color: $black-ctrl-color;
+							padding: 7px 20px;
+							border-radius: 5em;
+							font-weight: 500;
+						}
+					}
+
+					div.post-data__title{
+						margin-bottom: 10px;
+						display: flex;
+						flex-direction: row;
+						justify-content: space-between;
+
+						h1{
+							font-size: 44px;
+							font-weight: 500;
+							color: $primary-text-color;
+							padding: 0;
+							margin: 0;
+						}
+
+						div.title-ctrls{
+							margin-left: 30px;
+
+							button.btn-icon-only{
+								background: transparent;
+								border: 1px solid $secondary-border-color;
+
+								svg{
+									stroke: $primary-color;
+								}
+
+								&:hover, &:active{
+									border-color: $primary-color;
+								}
+							}
+						}
+
+						@include media-breakpoint-down(xl) {
+							h1{
+								font-size: 22px;
+							}
+
+							div.title-ctrls{
+								button.btn{
+									width: 35px;
+									height: 35px;
+
+									svg{
+										width: 18px;
+										height: 18px;
+									}
+								}
+							}
+						}
+					}
+
+					div.post-data__desc{
+						margin-bottom: 30px;
+
+						p{
+							color: $secondary-text-color;
+							font-size: 26px;
+							max-width: 80%;
+							padding: 0;
+							margin: 0;
+						}
+
+						@include media-breakpoint-down(xl) {
+							margin-bottom: 10px;
+
+							p{
+								max-width: 100%;
+								font-size: 16px;
+							}
+						}
+					}
+
+					div.post-data__publisher{
+						display: flex;
+						align-items: center;
+						margin-bottom: 20px;
+
+						div.publisher{
+							display: flex;
+							align-items: center;
+							flex: 1;
+
+							div.publisher__avatar{
+								width: 60px;
+								height: 60px;
+								border: 1px solid $primary-border-color;
+								border-radius: 100%;
+								overflow: hidden;
+								flex-shrink: 0;
+
+								img{
+									width: 100%;
+									height: 100%;
+								}
+
+								@include media-breakpoint-down(xl) {
+									width: 45px;
+									height: 45px;
+								}
+							}
+
+							div.publisher__name{
+								margin-left: 15px;
+								line-height: 1;
+								flex: 1;
+
+								span.name{
+									font-size: 16px;
+									color: $primary-text-color;
+									line-height: 1.2;
+									white-space: nowrap;
+									font-weight: 500;
+
+									span{
+										display: block;
+
+										&:last-child{
+											font-weight: normal;
+											margin-top: 5px;
+											font-size: 14px;
+											color: $secondary-text-color;
+										}
+									}
+
+									@include media-breakpoint-down(xl) {
+										font-size: 14px;
+
+										span:last-child{
+											font-size: 12px;
+											margin-top: 5px;
+										}
+									}
+								}
+							}
+
+							div.publisher__date{
+								align-self: flex-end;
+
+								span.post-views{
+									margin-left: auto;
+									display: inline-flex;
+									align-items: center;
+
+									span.post-views__icon{
+										width: 20px;
+										height: 20px;
+										line-height: 1;
+
+										svg{
+											width: 100%;
+											height: 100%;
+											stroke: $secondary-text-color;
+										}
+									}
+
+									span.post-views__text{
+										font-size: 14px;
+										color: $secondary-text-color;
+										line-height: 1;
+										margin-right: 5px;
+
+										b{
+											color: $secondary-text-color;
+											font-weight: 500;
+											line-height: inherit;
+										}
+									}
+								}
+							}
+
+							@include media-breakpoint-down(xl) {
+								flex-wrap: wrap;
+
+								div.publisher__date{
+									order: -1;
+									width: 100%;
+									margin-bottom: 20px;
+
+									span.post-views{
+										span.post-views__icon{
+											width: 16px;
+											height: 16px;
+										}
+
+										span.post-views__text{
+											font-size: 13px;
+										}
+									}
+								}
+							}
+						}
+					}
+
+					div.post-data__preview{
+						overflow: hidden;
+						border-radius: $card-corner-radius / 2;
+						border: 1px solid $primary-border-color;
+
+						img{
+							width: 100%;
+						}
+					}
+
+					@include media-breakpoint-down(xl) {
+						margin-bottom: 20px;
+
+						div.post-data__preview{
+							border-radius: ($card-corner-radius / 3);
+						}
+					}
+				}
+
+				div.post-data__body{
+					margin-bottom: 15px;
+
+					div.p-header{
+						margin-bottom: 15px;
+
+						h4{
+							padding: 0;
+							margin: 0;
+							font-size: 22px;
+							color: $primary-text-color;
+							font-weight: 500;
+							line-height: 1;
+						}
+					}
+
+					div.p-image{
+						margin-bottom: 30px;
+						overflow: hidden;
+
+						img{
+							width: 100%;
+							display: inline-block;
+							border-radius: $secondary-corner-radius;
+						}
+					}
+
+					div.p-text{
+						margin-bottom: 30px;
+
+						p{
+							font-size: 16px;
+							color: $primary-text-color;
+							padding: 0;
+							margin: 0;
+						}
+
+						&.p-text_bold{
+							p{
+								font-weight: 500;
+								font-size: 18px;
+
+								@include media-breakpoint-down(xl) {
+									font-size: 13px;
+								}
+							}
+						}
+					}
+
+					@include media-breakpoint-down(xl) {
+						div.p-header{
+							h4{
+								font-size: 18px;
+							}
+						}
+
+						div.p-text{
+							p{
+								font-size: 14px;
+							}
+						}
+					}
+				}
+
+				div.post-data__footer{
+					div.reviewed-item{
+						display: flex;
+						flex-direction: row;
+						flex-wrap: nowrap;
+						padding: 20px 30px;
+						border: 2px solid $secondary-border-color;
+						border-radius: $card-corner-radius;
+
+						div.reviewed-item__image{
+							width: 90px;
+							height: 90px;
+							flex-shrink: 0;
+
+							img{
+								width: 100%;
+								border-radius: $secondary-corner-radius;
+								border: 1px solid $primary-border-color;
+							}
+						}
+
+						div.reviewed-item__body{
+							margin-left: 20px;
+							flex: 1;
+
+							div.reviewed-item__title{
+								margin-bottom: 5px;
+
+								a{
+									font-size: 16px;
+									color: $primary-text-color;
+									font-weight: 500;
+									transition: all 0.27s ease;
+									overflow: hidden;
+									text-overflow: ellipsis;
+									display: -webkit-box;
+									-webkit-line-clamp: 1;
+									-webkit-box-orient: vertical;
+
+									&:hover, &:active{
+										color: $primary-color;
+									}
+								}
+							}
+
+							div.reviewed-item__rating{
+								display: flex;
+								flex-direction: row;
+								align-items: center;
+								flex-wrap: nowrap;
+								margin-bottom: 5px;
+
+								div.stars{
+									display: flex;
+									flex-direction: row;
+									flex-wrap: nowrap;
+									align-items: center;
+
+									span.rating-star{
+										width: 17px;
+										height: 17px;
+										line-height: 1;
+										padding: 0;
+										margin: 0;
+
+										svg{
+											width: 100%;
+											height: 100%;
+											stroke: darken(#000000, 10);
+											fill: darken(#000000, 10);
+										}
+									}
+
+									span.rating-feedback{
+										font-size: 13px;
+										line-height: 13px;
+										color: $secondary-text-color;
+										margin-left: 5px;
+										font-weight: 500;
+									}
+								}
+
+								div.discount{
+									margin-left: 10px;
+
+									span{
+										font-size: 13px;
+										line-height: 13px;
+										color: #ffffff;
+										background: $primary-color;
+										padding: 5px 10px;
+										border-radius: 20px;
+										font-weight: 500;
+									}
+								}
+							}
+
+							div.reviewed-item__price{
+								b{
+									font-size: 18px;
+									font-weight: 500;
+									color: $primary-text-color;
+									display: inline-block;
+								}
+
+								span{
+									margin-left: 5px;
+									color: $secondary-text-color;
+									font-weight: normal;
+									font-size: 14px;
+									display: inline-block;
+									position: relative;
+
+									&:after{
+										position: absolute;
+										width: 100%;
+										height: 1px;
+										background: $danger-color;
+										content: "";
+										transform: rotate(-9deg);
+										left: 0;
+										top: 45%;
+										z-index: 1;
+									}
+								}
+							}
+						}
+
+						@include media-breakpoint-down(xl) {
+							padding: 15px;
+							border-radius: ($card-corner-radius / 3);
+
+							div.reviewed-item__body{
+								div.reviewed-item__title a{
+									-webkit-line-clamp: 3;
+								}
+							}
+						}
+
+						@include media-breakpoint-down(lg) {
+							display: block;
+
+							div.reviewed-item__image{
+								margin-bottom: 15px;
+							}
+
+							div.reviewed-item__body{
+								margin-left: 0px;
+							}
+						}
+
+						@include media-breakpoint-down(md) {
+							div.reviewed-item__image{
+								width: 100%;
+								height: auto;
+							}
+						}
+					}
+				}
+
+				@include media-breakpoint-down(xl) {
+					padding: 0px;
+					border: none;
+				}
+			}
+		}
+	}
+}
+
+/*
+* Blog page [END]
+*/

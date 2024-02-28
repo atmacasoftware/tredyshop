@@ -1,0 +1,41 @@
+// @*************************************************************************@
+// @ Software author: Mansur Altamirov (Mansur_TL)                           @
+// @ Author URL: https://themeforest.net/user/mansur_tl                      @
+// @ Author E-mails: vayart.help@gmail.com, vayart.web@gmail.com             @
+// @*************************************************************************@
+// @ DreaM - Electronics eCommerce HTML Template                             @
+// @ Copyright (c) 2021 DreaM. All rights reserved.                          @
+// @*************************************************************************@
+
+div.product-brand-item{
+	width: 100%;
+	display: block;
+	padding: 2px;
+
+	div.brand{
+		div.brand__logo{
+			display: block;
+			width: 100%;
+			margin-bottom: 20px;
+			padding: 20px 30px;
+			overflow: hidden;
+			background: $secondary-bg-color;
+			border: 1px solid $primary-border-color;
+			
+			img{
+				width: 100%;
+				transition: all 0.27s ease;
+			}
+
+			&:hover, &:active{
+				img{
+					transform: scale(1.05);
+				}
+			}
+
+			&:last-child{
+				margin-bottom: 0px;
+			}
+		}
+	}
+}

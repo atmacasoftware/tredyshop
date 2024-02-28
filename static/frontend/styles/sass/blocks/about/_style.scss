@@ -1,0 +1,274 @@
+// @*************************************************************************@
+// @ Software author: Mansur Altamirov (Mansur_TL)                           @
+// @ Author URL: https://themeforest.net/user/mansur_tl                      @
+// @ Author E-mails: vayart.help@gmail.com, vayart.web@gmail.com             @
+// @*************************************************************************@
+// @ DreaM - Electronics eCommerce HTML Template                             @
+// @ Copyright (c) 2021 DreaM. All rights reserved.                          @
+// @*************************************************************************@
+
+/*
+* About us page [START]
+*/
+
+div.page-container.aboutus{
+	div.page-section{
+		div.company-info{
+			color: $primary-text-color;
+
+			div.company-info__infobox{
+				margin-bottom: 70px;
+
+				div.aboutus-text{
+					border: 2px solid $primary-color;
+					padding: 50px;
+					border-radius: $card-corner-radius;
+
+					h1{
+						font-weight: 700;
+						color: $primary-text-color;
+						font-size: 36px;
+						padding: 0;
+						margin: 0 0 30px 0;
+						text-align: center;
+					}
+
+					p{
+						padding: 0;
+						margin: 0 0 20px 0;
+						font-size: 16px;
+						line-height: 1.6;
+						color: $secondary-text-color;
+						text-align: center;
+
+						&.mb-50{
+							margin-bottom: 50px;
+						}
+					}
+
+					a.a-block{
+						display: flex;
+						justify-content: center;
+					}
+
+					@include media-breakpoint-down(xl){
+						padding: 0px;
+						border: none;
+
+						h1{
+							font-size: 28px;
+						}
+
+						p{
+							font-size: 14px;
+
+							&.mb-50{
+								margin-bottom: 30px;
+							}
+						}
+					}
+				}
+
+				div.infobox-header{
+					margin-bottom: 30px;
+					display: flex;
+					align-items: center;
+					flex-direction: column;
+
+					h2{
+						padding: 0;
+						margin: 0;
+						display: flex;
+						align-items: center;
+						flex-wrap: nowrap;
+						justify-content: center;
+						font-size: 26px;
+						font-weight: 600;
+						margin-bottom: 12px;
+
+						span.icon{
+							margin-left: 10px;
+						}
+					}
+
+					p{
+						text-align: center;
+						font-size: 16px;
+						color: $secondary-text-color;
+						padding: 0;
+						margin: 0;
+						max-width: 75%;
+					}
+
+					@include media-breakpoint-down(xl){
+						margin-bottom: 30px;
+
+						h2{
+							font-size: 22px;
+						}
+
+						p{
+							font-size: 14px;
+						}
+					}
+				}
+
+				div.infobox-body{
+					div.aboutus-advantages{
+						div.advantage-trigger{
+							margin-bottom: 30px;
+
+							div.icon{
+								display: flex;
+								justify-content: center;
+								margin-bottom: 10px;
+
+								span{
+									background: $secondary-bg-contrast-bg;
+									display: flex;
+									align-items: center;
+									justify-content: center;
+									width: 70px;
+									height: 70px;
+									border-radius: 100%;
+
+									svg{
+										width: 30px;
+										height: 30px;
+									}
+								}
+							}
+
+							div.text{
+								b, span{
+									display: block;
+									width: 100%;
+									line-height: 1;
+									text-align: center;
+								}
+
+								b{
+									font-size: 45px;
+									margin-bottom: 5px;
+									color: $primary-text-color;
+									white-space: nowrap;
+									font-weight: 600;
+								}
+
+								span{
+									font-size: 14px;
+									font-weight: 500;
+									color: $secondary-text-color;
+								}
+
+								@include media-breakpoint-down(xl){
+									b{
+										font-size: 35px;
+									}
+								}
+
+								@include media-breakpoint-down(md){
+									b{
+										font-size: 27px;
+									}
+								}
+							}
+						}
+					}
+
+					div.aboutus-representatives{
+						div.representative{
+							display: flex;
+							flex-direction: column;
+							align-items: center;
+
+							div.representative__avatar{
+								margin-bottom: 15px;
+								width: 100%;
+								overflow: hidden;
+								border-radius: ($card-corner-radius / 2);
+								border: 2px solid $primary-color;
+
+								img{
+									width: 100%;
+								}
+							}
+
+							div.representative__name{
+								h4, span{
+									display: block;
+									width: 100%;
+									text-align: center;
+									padding: 0;
+									margin: 0;
+								}
+
+								h4{
+									font-size: 20px;
+									font-weight: 500;
+									margin-bottom: 5px;
+								}
+
+								span{
+									font-size: 14px;
+									color: $secondary-text-color;
+								}
+							}
+
+							@include media-breakpoint-down(xl){
+								margin-bottom: 30px;
+
+								div.representative__avatar{
+									margin-bottom: 10px;
+								}
+
+								div.representative__name{
+									h4{
+										font-size: 18px;
+									}
+
+									span{
+										font-size: 13px;
+									}
+								}
+							}
+						}
+					}
+
+					div.aboutus-news{
+						overflow: hidden;
+
+						div.swiper{
+							position: relative;
+
+							div.swiper-wrapper{
+								display: flex;
+								width: 100%;
+
+								div.swiper-slide{
+									flex-shrink: 0;
+
+									div.slide-cont{
+										@import "../../snippets/blog/blog_item";
+									}
+								}
+							}
+						}
+					}
+				}
+
+				&.no-mb{
+					margin-bottom: 0px;
+				}
+
+				@include media-breakpoint-down(xl){
+					margin-bottom: 40px;
+				}
+			}
+		}
+	}
+}
+
+/*
+* About us page [END]
+*/

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from product.models import *
 from categorymodel.models import *
+from adminpage.models import FrontentHeaderCategory, Banner
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -21,7 +22,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class ProductModelGroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductModelGroup
-        fields = ['get_product_title','kapak', 'get_product_slug', 'get_product_price', 'get_product_isdiscount', 'get_product_discountprice', 'third_category']
+        fields = ['get_product_title','kapak','get_kapak', 'get_product_slug', 'get_product_price', 'get_product_isdiscount', 'get_product_discountprice', 'third_category']
 
 class SecondCategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,3 +35,12 @@ class ThirdCategorySerializer(serializers.ModelSerializer):
         model = SubBottomCategory
         fields = '__all__'
 
+class FrontendHeaderCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FrontentHeaderCategory
+        fields = '__all__'
+
+class BannerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Banner
+        fields = '__all__'

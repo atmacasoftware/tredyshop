@@ -1,0 +1,82 @@
+{% extends 'frontend/v_2_0/base.html' %}
+{% load static %}
+
+{% block title %}<title>TredyShop | En Uygun Fiyatlı Ürünler</title>{% endblock %}
+
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'frontend/css/mainpage.css' %}">
+    <link rel="stylesheet" href="{% static 'frontend/css/skeleton.css' %}">
+{% endblock %}
+
+{% block anasayfa %}
+
+    <div class="page-container home">
+        <!-- ~~~~~~~~~~~~~~~~~ Homepage hero section [START] ~~~~~~~~~~~~~~~~~ -->
+        <div class="page-section hero">
+            <div class="page-section__body">
+                <div class="page-margin">
+                    <div class="page-margin__content">
+                        <div class="hero-slider">
+                            <div class="swiper" id="hero-slider">
+                                <div class="swiper-wrapper">
+                                    {% for b in banners %}
+                                        <div class="swiper-slide">
+                                            <a href="catalog-filter.html" class="a-block">
+                                                <div class="slide-cont">
+                                                    <img src="/media/{{ b.image }}" alt="IMG">
+                                                </div>
+                                            </a>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="swiper-button-prev">
+                                    <button class="btn slider-btn prev">
+                                        <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24"
+                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                             stroke-linecap="round" stroke-linejoin="round"
+                                             class="feather feather-chevron-left">
+                                            <polyline points="15 18 9 12 15 6"></polyline>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="swiper-button-next">
+                                    <button class="btn slider-btn next">
+                                        <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24"
+                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                             stroke-linecap="round" stroke-linejoin="round"
+                                             class="feather feather-chevron-right">
+                                            <polyline points="9 18 15 12 9 6"></polyline>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ~~~~~~~~~~~~~~~~~ Homepage hero section [END] ~~~~~~~~~~~~~~~~~ -->
+
+        <!-- ~~~~~~~~~~~~~~~~~ Öneriler [START] ~~~~~~~~~~~~~~~~~ -->
+        {% include 'frontend/v_2_0/sayfalar/anasayfa/skeleton/oneriler.html' %}
+        <!-- ~~~~~~~~~~~~~~~~~ Öneriler [END] ~~~~~~~~~~~~~~~~~ -->
+
+        <!-- ~~~~~~~~~~~~~~~~~ Yeni Ürünler [START] ~~~~~~~~~~~~~~~~~ -->
+        {% include 'frontend/v_2_0/sayfalar/anasayfa/skeleton/kategoriler.html' %}
+        <!-- ~~~~~~~~~~~~~~~~~ Yeni Ürünler [END] ~~~~~~~~~~~~~~~~~ -->
+
+        <!-- ~~~~~~~~~~~~~~~~~ Rastgele [START] ~~~~~~~~~~~~~~~~~ -->
+        {% include 'frontend/v_2_0/sayfalar/anasayfa/skeleton/rastgele.html' %}
+        <!-- ~~~~~~~~~~~~~~~~~ Rastgele [END] ~~~~~~~~~~~~~~~~~ -->
+
+        <!-- ~~~~~~~~~~~~~~~~~ En Beğenilenler [START] ~~~~~~~~~~~~~~~~~ -->
+        {% include 'frontend/v_2_0/sayfalar/anasayfa/skeleton/en_begenilenler.html' %}
+        <!-- ~~~~~~~~~~~~~~~~~ En Beğenilenler [END] ~~~~~~~~~~~~~~~~~ -->
+
+    </div>
+
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'frontend/js/mainpage.js' %}"></script>
+{% endblock %}

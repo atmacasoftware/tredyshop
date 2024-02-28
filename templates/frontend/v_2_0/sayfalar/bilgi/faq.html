@@ -1,0 +1,101 @@
+{% extends 'frontend/v_2_0/base.html' %}
+{% load static %}
+
+{% block title %}<title>Sıkça Sorulan Sorular</title>{% endblock %}
+
+{% block extra_style %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{% static 'frontend/css/bilgi.css' %}">
+{% endblock %}
+
+{% block bilgi %}
+    <div class="page-container faqs">
+        <!-- ~~~~~~~~~~~~~~~~~ F.A.Qs page breadcrumbs section [START] ~~~~~~~~~~~~~~~~~ -->
+        <div class="page-margin">
+            <div class="page-margin__content">
+                <nav class="breadcrumbs">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'mainpage' %}">Anasayfa</a>
+                        </li>
+                        <li class="breadcrumb-item active">
+                            Sıkça Sorulan Sorular
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <!-- ~~~~~~~~~~~~~~~~~ F.A.Qs page breadcrumbs section [END] ~~~~~~~~~~~~~~~~~ -->
+        <!-- ~~~~~~~~~~~~~~~~~ F.A.Qs content section [START] ~~~~~~~~~~~~~~~~~ -->
+        <div class="page-section">
+            <div class="page-margin">
+                <div class="page-margin__content">
+                    <div class="page-section__body">
+                        <div class="row">
+                            <div class="col-xxl-3 col-xl-3 col-12">
+                                {% include 'frontend/v_2_0/sayfalar/bilgi/__sidebar.html' %}
+                            </div>
+                            <div class="col-xxl-6 col-xl-6 col-12">
+                                <div class="popular-questions">
+                                    <div class="page-section__header">
+                                        <h2>
+                                            Sıkça Sorulan Sorular
+                                        </h2>
+                                    </div>
+                                    <div class="accordion">
+                                        {% for s in faq %}
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button"
+                                                            data-bs-toggle="collapse" data-bs-target="#faq-{{ s.id }}">
+                                                    <span class="text">
+                                                        <span class="emoji-inline">
+                                                            <i class="bi bi-{{ s.icon }}"></i>
+                                                        </span>
+                                                        {{ s.question }}
+                                                    </span>
+                                                        <span class="icons">
+                                                        <span class="plus">
+                                                            <svg role="img" xmlns="https://www.w3.org/2000/svg"
+                                                                 width="48px" height="48px" viewBox="0 0 24 24"
+                                                                 stroke="#2329D6" stroke-width="1"
+                                                                 stroke-linecap="square" stroke-linejoin="miter"
+                                                                 fill="none" color="#2329D6">
+                                                                <title>Plus</title>
+                                                                <path d="M20 12L4 12M12 4L12 20"></path>
+                                                            </svg>
+                                                        </span>
+                                                        <span class="minus">
+                                                            <svg role="img" xmlns="https://www.w3.org/2000/svg"
+                                                                 width="48px" height="48px" viewBox="0 0 24 24"
+                                                                 stroke="#2329D6" stroke-width="1"
+                                                                 stroke-linecap="square" stroke-linejoin="miter"
+                                                                 fill="none" color="#2329D6">
+                                                                <title>Minus</title>
+                                                                <path d="M20,12 L4,12"></path>
+                                                            </svg>
+                                                        </span>
+                                                    </span>
+                                                    </button>
+                                                </h2>
+                                                <div id="faq-{{ s.id }}" class="accordion-collapse collapse">
+                                                    <div class="accordion-body">
+                                                        {{ s.answer }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xxl-3 col-xl-3 col-12">
+                                {% include 'frontend/v_2_0/sayfalar/bilgi/__live_chat.html' %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ~~~~~~~~~~~~~~~~~ Teslimat Koşulları content section [END] ~~~~~~~~~~~~~~~~~ -->
+    </div>
+{% endblock %}

@@ -1,0 +1,15 @@
+form.form div.form-group div.form-field:hover,
+form.form div.form-group div.form-field:active,
+form.form div.form-group div.form-field:focus{
+    border: 2px solid var(--primary-color) !important;
+}
+
+form.form div.form-group div.form-field.focused-input,
+form.form div.form-group div.form-field:active,
+form.form div.form-group div.form-field:hover {
+  border-color: var(--primary-color) !important;
+}
+
+.btn-user{
+    background: var(--primary-color) !important;
+}

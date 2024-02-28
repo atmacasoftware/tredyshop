@@ -1,0 +1,501 @@
+{% extends 'frontend/v_2_0/base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>
+        {% if keyword %}
+            {{ keyword }}
+        {% else %}
+            {% if categroy_slug != None and subcategory_slug == None and subbottomcategory_slug == None and brands_slug == None %}
+                {{ category_s.title }} Ürünleri
+            {% elif categroy_slug != None and subcategory_slug != None and subbottomcategory_slug == None and brands_slug == None %}
+                {{ subcategory_s.title }} Ürünleri
+            {% elif categroy_slug != None and subcategory_slug != None and subbottomcategory_slug != None and brands_slug == None %}
+                {{ subbottomcategory_s.title }} Ürünleri
+            {% elif categroy_slug == None and subcategory_slug == None and brands_slug != None %}
+                {{ brands_s.title }} Marka Ürünleri
+            {% endif %}
+        {% endif %}
+    </title>
+{% endblock %}
+
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'frontend/css/katalog.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+{% endblock %}
+
+{% block store %}
+    <div class="page-container catalog">
+        <!-- ~~~~~~~~~~~~~~~~~ Catalog Filter page breadcrumbs section [START] ~~~~~~~~~~~~~~~~~ -->
+        <div class="page-margin">
+            <div class="page-margin__content">
+                <nav class="breadcrumbs">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'mainpage' %}">Anasayfa</a>
+                        </li>
+                        {% if keyword %}
+                            <li class="breadcrumb-item active"> {{ keyword }}</li>
+                        {% else %}
+                            <li class="breadcrumb-item">
+                                {{ category_s }}
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{{ subcategory_s.get_url }}">{{ subcategory_s }}</a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                {{ subbottomcategory_s }}
+                            </li>
+                        {% endif %}
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <!-- ~~~~~~~~~~~~~~~~~ Catalog Filter page breadcrumbs section [END] ~~~~~~~~~~~~~~~~~ -->
+        <!-- ~~~~~~~~~~~~~~~~~ Catalog Filter catalog section [START] ~~~~~~~~~~~~~~~~~ -->
+        <div class="page-section catalog-filter cont-mb-20">
+            <div class="page-margin">
+                <div class="page-margin__content">
+                    <div class="page-section__header">
+                        <h2>
+                            {{ subbottomcategory_s }}
+                        </h2>
+                    </div>
+                    <div class="page-section__body">
+                        <div class="catalog-listing">
+                            <div class="catalog-listing__filter">
+                                <div class="filter-layout-toggle" data-toggle="catalog-sidebar">
+                                    <div class="nav-toggle">
+                                        <span class="nav-toggle__icon">
+                                            <svg width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                 stroke-linecap="round" stroke-linejoin="round"
+                                                 class="feather feather-filter">
+                                                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                                            </svg>
+                                        </span>
+                                        <span class="nav-toggle__text">
+                                            Filter & Refinement
+                                        </span>
+                                        <span class="nav-toggle__icon">
+                                            <svg width="24" height="24"
+                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                 stroke-linecap="round" stroke-linejoin="round"
+                                                 class="feather feather-chevron-down">
+                                                <polyline points="6 9 12 15 18 9"></polyline>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="filter-layout-menu">
+                                    <div class="d-block">
+                                        <div class="filter-layout">
+                                            <form class="form" method="GET">
+                                                <div class="form-group">
+                                                    <div class="filter-item">
+                                                        <div class="filter-item__header">
+                                                            <span>
+                                                                Fiyat aralığı
+                                                            </span>
+                                                        </div>
+
+                                                        <div class="filter-item__body">
+                                                            <div class="input-range">
+                                                                <div class="input-item">
+                                                                    <input type="number" id="minPrice"
+                                                                           class="form-control"
+                                                                           placeholder="En düşük"
+                                                                           data-value="{{ minMaxPrice.price__min }}">
+                                                                </div>
+                                                                <div class="input-item">
+                                                                    <input type="number" id="maxPrice"
+                                                                           class="form-control"
+                                                                           placeholder="En yüksek"
+                                                                           data-value="{{ minMaxPrice.price__max }}">
+                                                                </div>
+
+                                                            </div>
+                                                            <button class="btn btn-icon" id="priceFilterBtn">
+                                                                <span class="icon">
+                                                                    <i class="bi bi-search"></i>
+                                                                </span>
+                                                                <span class="text">Fiyat Filtrele</span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="filter-item">
+                                                        <div class="filter-item__body">
+                                                            <div class="form-switch">
+                                                                <input class="form-check-input filter-checkbox"
+                                                                       type="checkbox"
+                                                                       id="switch-1" data-filter="discount">
+                                                                <label class="form-check-label" for="switch-1">
+                                                                    Sadece indirimli ürünler
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% if colors %}
+                                                        <div class="filter-item">
+                                                            <div class="filter-item__header">
+                                                            <span>
+                                                                Renk
+                                                            </span>
+                                                            </div>
+                                                            <div class="filter-item__body scrollable">
+                                                                {% for c in colors %}
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input filter-checkbox"
+                                                                               type="checkbox"
+                                                                               value="{{ c.color__id }}"
+                                                                               id="color-{{ c.color__id }}"
+                                                                               data-filter="color" name="color">
+                                                                        <label class="form-check-label"
+                                                                               for="color-{{ c.color__id }}">
+                                                                    <span style="background-color: {{ c.color__code }};"
+                                                                          class="color-circle"></span> {{ c.color__name }}
+                                                                        </label>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                    {% if sizes %}
+                                                        <div class="filter-item">
+                                                            <div class="filter-item__header">
+                                                            <span>
+                                                                Beden
+                                                            </span>
+                                                            </div>
+                                                            <div class="filter-item__body scrollable">
+                                                                {% for s in sizes %}
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input filter-checkbox"
+                                                                               type="checkbox"
+                                                                               value="{{ s.size__id }}"
+                                                                               id="size-{{ s.size__id }}"
+                                                                               data-filter="size" name="size">
+                                                                        <label class="form-check-label"
+                                                                               for="size-{{ s.size__id }}">
+                                                                            {{ s.size__name }}
+                                                                        </label>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                    <div class="filter-item">
+                                                        <div class="filter-item__header">
+                                                            <span>
+                                                                Yaş Grubu
+                                                            </span>
+                                                        </div>
+                                                        <div class="filter-item__body scrollable">
+                                                            <div class="form-check">
+                                                                <input class="form-check-input filter-checkbox"
+                                                                       type="checkbox"
+                                                                       value="Bebek"
+                                                                       id="age-Bebek"
+                                                                       data-filter="agegroup" name="age_group">
+                                                                <label class="form-check-label"
+                                                                       for="age-Bebek">
+                                                                    Bebek
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input filter-checkbox"
+                                                                       type="checkbox"
+                                                                       value="Bebek&Çocuk"
+                                                                       id="age-Bebek&Çocuk"
+                                                                       data-filter="agegroup" name="age_group">
+                                                                <label class="form-check-label"
+                                                                       for="age-Bebek&Çocuk">
+                                                                    Bebek&Çocuk
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input filter-checkbox"
+                                                                       type="checkbox"
+                                                                       value="Çocuk"
+                                                                       id="age-Çocuk"
+                                                                       data-filter="agegroup"
+                                                                       name="age_group">
+                                                                <label class="form-check-label"
+                                                                       for="age-Çocuk">
+                                                                    Çocuk
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input filter-checkbox"
+                                                                       type="checkbox"
+                                                                       value="Genç"
+                                                                       id="age-Genc"
+                                                                       data-filter="age_group"
+                                                                       name="age_group">
+                                                                <label class="form-check-label"
+                                                                       for="age-Genc">
+                                                                    Genç
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input filter-checkbox"
+                                                                       type="checkbox"
+                                                                       value="Yetişkin"
+                                                                       id="age-Yetiskin"
+                                                                       data-filter="age_group"
+                                                                       name="age_group">
+                                                                <label class="form-check-label"
+                                                                       for="age-Yetiskin">
+                                                                    Yetişkin
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    {% if fabrictype %}
+                                                        <div class="filter-item">
+                                                            <div class="filter-item__header">
+                                                            <span>
+                                                                Kumaş Tipi
+                                                            </span>
+                                                            </div>
+                                                            <div class="filter-item__body scrollable">
+                                                                {% for f in fabrictype %}
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input filter-checkbox"
+                                                                               type="checkbox"
+                                                                               value="{{ f.fabrictype__id }}"
+                                                                               id="fabrictype-{{ c.fabrictype__id }}"
+                                                                               data-filter="fabrictype"
+                                                                               name="fabrictype">
+                                                                        <label class="form-check-label"
+                                                                               for="fabrictype-{{ s.fabrictype__id }}">
+                                                                            {{ f.fabrictype__name }}
+                                                                        </label>
+                                                                    </div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="catalog-listing__result">
+                                <div class="content-section">
+                                    <div class="content-section__body">
+                                        <div class="listing-result">
+                                            <div class="listing-result__header">
+                                                <form class="form">
+                                                    <div class="form-group">
+                                                        <div class="sortby-filter">
+                                                            <div class="select-holder">
+                                                                <div class="dropdown dropdown-arrangement">
+                                                                    <button class="dropdown-toggle"
+                                                                            id="dropdownFilterBtn"
+                                                                            type="button" data-bs-toggle="dropdown"
+                                                                            aria-expanded="false">
+                                                                        <span class="text">
+                                                                            Önerilen
+                                                                        </span>
+                                                                        <span class="icon">
+                                                                            <i class="bi bi-arrow-down-up"></i>
+                                                                        </span>
+                                                                    </button>
+                                                                    <ul class="dropdown-menu">
+                                                                        <li>
+                                                                            <input type="radio"
+                                                                                   class="dropdown-item filter-checkbox"
+                                                                                   name="arrangement" id="arrangement-1"
+                                                                                   data-filter="arrangement" checked
+                                                                                   value="1" data-name="Önerilen">
+                                                                            <label for="arrangement-1">Önerilen</label>
+                                                                        </li>
+                                                                        <li>
+                                                                            <input type="radio"
+                                                                                   class="dropdown-item filter-checkbox"
+                                                                                   name="arrangement"
+                                                                                   data-filter="arrangement"
+                                                                                   id="arrangement-2" value="2"
+                                                                                   data-name="Puanı yüksek">
+                                                                            <label for="arrangement-2">Puanı yüksek
+                                                                                (↑)</label>
+                                                                        </li>
+                                                                        <li>
+                                                                            <input type="radio"
+                                                                                   class="dropdown-item filter-checkbox"
+                                                                                   name="arrangement"
+                                                                                   data-filter="arrangement"
+                                                                                   id="arrangement-3" value="3"
+                                                                                   data-name="Puanı düşük">
+                                                                            <label for="arrangement-3">Puanı düşük
+                                                                                (↓)</label>
+                                                                        </li>
+                                                                        <li>
+                                                                            <input type="radio"
+                                                                                   class="dropdown-item filter-checkbox"
+                                                                                   name="arrangement"
+                                                                                   data-filter="arrangement"
+                                                                                   id="arrangement-4" value="4"
+                                                                                   data-name="Fiyatı yüksek">
+                                                                            <label for="arrangement-4">Fiyatı yüksek
+                                                                                (↑)</label>
+                                                                        </li>
+                                                                        <li>
+                                                                            <input type="radio"
+                                                                                   class="dropdown-item filter-checkbox"
+                                                                                   name="arrangement"
+                                                                                   data-filter="arrangement"
+                                                                                   id="arrangement-5" value="5"
+                                                                                   data-name="Fiyatı düşük">
+                                                                            <label for="arrangement-5">Fiyatı düşük
+                                                                                (↓)</label>
+                                                                        </li>
+                                                                        <li>
+                                                                            <input type="radio"
+                                                                                   class="dropdown-item filter-checkbox"
+                                                                                   name="arrangement"
+                                                                                   data-filter="arrangement"
+                                                                                   id="arrangement-6"
+                                                                                   data-name="En yeniler" value="6">
+                                                                            <label for="arrangement-6">En
+                                                                                yeniler</label>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="items-total">
+                                                                {% if category_type == "search" %}
+                                                                    <span>
+                                                                    <b>{{ product_count }}</b> Ürün bulundu
+                                                                </span>
+                                                                {% else %}
+                                                                    <span>
+                                                                    <b>{{ product_count }}</b> Ürün bulundu
+                                                                </span>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="listing-result__body">
+                                                <div class="products-grid">
+                                                    <div class="row products-grid-row">
+                                                        {% for product in products %}
+                                                            <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-4 col-6 grid-item-col">
+                                                                <div class="grid-item">
+                                                                    <div class="product-grid-item">
+                                                                        <div class="product">
+                                                                            <a class="a-block"
+                                                                               href="{{ product.product.get_url }}">
+                                                                                <div class="product__image">
+                                                                                    <img src="{{ product.get_kapak }}"
+                                                                                         alt="IMG">
+                                                                                    {% if product.product.is_discountprice %}
+                                                                                        <div class="discount">
+                                                                                    <span>
+                                                                                        -{{ product.product.discountrate }}%
+                                                                                    </span>
+                                                                                        </div>
+                                                                                    {% endif %}
+                                                                                </div>
+                                                                            </a>
+                                                                            <div class="product__description">
+                                                                                <a class="a-block"
+                                                                                   href="{{ product.product.get_urş }}">
+                                                                                    <div class="product_prices">
+                                                                                        {% if product.product.is_discountprice %}
+                                                                                            <b>
+                                                                                                {{ product.product.discountprice }}
+                                                                                                TL
+                                                                                            </b>
+                                                                                            <span>
+                                                                                        {{ product.product.price }} TL
+                                                                                    </span>
+                                                                                        {% else %}
+                                                                                            <b>
+                                                                                                {{ product.product.price }}
+                                                                                                TL
+                                                                                            </b>
+                                                                                        {% endif %}
+                                                                                    </div>
+                                                                                    <div class="product_rating">
+                                                                                            <span class="rating">
+                                                    <i class="bi bi-star{% if product.product.averageReview > 0 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if product.product.averageReview > 1.5 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if product.product.averageReview > 2.5 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if product.product.averageReview > 3.5 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if product.product.averageReview > 4.5 %}-fill{% else %}{% endif %}"></i>
+                                                </span>
+                                                                                    </div>
+                                                                                </a>
+                                                                                <div class="product_name">
+                                                                                    <a href="{{ product.product.get_url }}">
+                                                                                        {{ product.product.title }}
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% if product_count > 16 %}
+                                        <div class="content-section__footer">
+                                            <div class="row justify-content-center mt-30">
+                                                <div class="col-md-4 col-12">
+                                                    <button class="btn btn-icon btn-lg outline" id="loadMore"
+                                                            data-total="{{ product_count }}" data-limit="16"
+                                                            data-category="{{ categroy_slug }}"
+                                                            data-subcategory="{{ subcategory_slug }}"
+                                                            data-bottomcategory="{{ subbottomcategory_slug }}"
+                                                            data-brands="{{ brands_slug }}" filter-color=""
+                                                            filter-sizer=""
+                                                            filter-minprice="{{ minMaxPrice.price__min }}"
+                                                            filter-maxprice="{{ minMaxPrice.price__max }}"
+                                                            filter-arrangement="">
+                                                    <span class="icon">
+                                                        <svg width="24" height="24"
+                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                             stroke-width="2" stroke-linecap="round"
+                                                             stroke-linejoin="round" class="feather feather-arrow-down">
+                                                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                                                            <polyline points="19 12 12 19 5 12"></polyline>
+                                                        </svg>
+                                                    </span>
+                                                        <span class="text">
+                                                        Daha Fazla Yükle
+                                                    </span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ~~~~~~~~~~~~~~~~~ Catalog Filter catalog section [END] ~~~~~~~~~~~~~~~~~ -->
+    </div>
+    <input type="hidden" value="{{ categroy_slug }}" id="data-category">
+    <input type="hidden" value="{{ subcategory_slug }}" id="data-subcategory">
+    <input type="hidden" value="{{ subbottomcategory_slug }}" id="data-bottomcategory">
+    <input type="hidden" value="{{ brands_slug }}" id="data-brands">
+    <input type="hidden" value="{{ keyword }}" id="data-search">
+{% endblock %}
+
+{% block extra_script %}
+    <script src="{% static 'frontend/js/pages/catalog/filter/script.master.js' %}"></script>
+    <script src="{% static 'frontend/js/filter.js' %}"></script>
+{% endblock %}

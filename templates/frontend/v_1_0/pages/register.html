@@ -1,0 +1,235 @@
+{% extends 'frontend/v_1_0/layout.html' %}
+{% load static %}
+{% load socialaccount %}
+{% providers_media_js %}
+
+{% block title %}<title>TredyShop - Kayıt Ol</title>{% endblock %}
+
+{% block account %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+
+    <div class="container container-240 page-container profile mt-20">
+        <div class="page-container auth">
+            <div class="page-section">
+                <div class="page-margin">
+                    <div class="page-margin__content">
+                        <div class="page-section__body">
+                            <div class="row"
+                                 style="display: flex; justify-content: center; align-items: center; flex-direction: column;">
+                                <div class="col-lg-6 col-md-8 col-sm-12">
+                                    <form action="#" class="form" method="POST" autocomplete="off">
+                                        {% csrf_token %}
+                                        <div class="d-block">
+                                            <div class="auth-form">
+                                                <div class="auth-form__header">
+                                                    <h3>
+                                                        Kayıt Ol
+                                                    </h3>
+                                                    <p>
+                                                        Kaydını oluştur, en uygun alışverişin tadını çıkar.
+                                                    </p>
+                                                </div>
+                                                <div class="auth-form__body no-mb">
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <div class="form-group mb-20">
+                                                                <div class="form-field">
+                                                                    <label for="first_name" class="form-control-label">
+                                                                        Ad
+                                                                    </label>
+                                                                    <input name="first_name" type="text"
+                                                                           class="form-control" id="first_name">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <div class="form-group mb-20">
+                                                                <div class="form-field">
+                                                                    <label for="last_name" class="form-control-label">
+                                                                        Soyad
+                                                                    </label>
+                                                                    <input name="last_name" type="text"
+                                                                           class="form-control" id="last_name">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group mb-20">
+                                                        <div class="form-field">
+                                                            <label for="email" class="form-control-label">
+                                                                E-Posta
+                                                            </label>
+                                                            <input name="email" type="email"
+                                                                   class="form-control" id="email">
+                                                        </div>
+                                                        <div class="warning mt-20">
+                                                            <i class="fa fa-exclamation-circle text-danger"></i>
+                                                            <span class="text-danger">Bu E-posta adresi mevcuttur.</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group mb-20">
+                                                        <div class="form-field">
+                                                            <label for="mobile" class="form-control-label">
+                                                                Cep Telefonu
+                                                            </label>
+                                                            <input name="mobile" type="text"
+                                                                   class="form-control" id="mobile"
+                                                                   placeholder="(555) 555-5555">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="form-field">
+                                                            <label for="password" class="form-control-label">
+                                                                Şifre
+                                                            </label>
+                                                            <input name="password" type="password" class="form-control"
+                                                                   id="password"
+                                                                   pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                                                                   title="En az 1 rakam içermeli, en az 1 büyük ve küçük harf içermeli ve en az 8 karakterli olmalıdır.">
+
+                                                            <button type="button"
+                                                                    class="form-field__password-vctrl vctrl-visible"
+                                                                    data-form-ctrl="password">
+                                                            <span class="btn-pw-icon_hidden">
+                                                                <svg xmlns="https://www.w3.org/2000/svg" width="24"
+                                                                     height="24" viewBox="0 0 24 24" fill="none"
+                                                                     stroke="currentColor" stroke-width="2"
+                                                                     stroke-linecap="round" stroke-linejoin="round"
+                                                                     class="feather feather-eye-off">
+                                                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                                                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                                                                </svg>
+                                                            </span>
+                                                                <span class="btn-pw-icon_visible">
+                                                                <svg xmlns="https://www.w3.org/2000/svg" width="24"
+                                                                     height="24" viewBox="0 0 24 24" fill="none"
+                                                                     stroke="currentColor" stroke-width="2"
+                                                                     stroke-linecap="round" stroke-linejoin="round"
+                                                                     class="feather feather-eye">
+                                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                                                    <circle cx="12" cy="12" r="3"></circle>
+                                                                </svg>
+                                                            </span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="info-password">
+                                                            <span style="margin-right: 10px;"><i class="fa fa-exclamation-circle"
+                                                                     aria-hidden="true"></i></span>
+                                                            <p>
+                                                                Şifreniz en az bir harf, rakam veya özel karakter
+                                                                içermeli. Ayrıca
+                                                                şifreniz en az 8
+                                                                karakterden oluşmalı.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group-text-sep">
+                                                    <span>
+                                                        Üye misiniz? <a href="{% url 'login' %}">Giriş Yap</a>
+                                                    </span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <button type="button"
+                                                                class="btn btn-gradient  btn-lg btn-block"
+                                                                id="register_btn">
+                                                            <i class="fas fa-sign-in-alt"
+                                                               style="margin-right: 10px;"></i>
+                                                            <span>Kayıt Ol</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="form-group-line-sep">
+                                                    <span>
+                                                        VEYA
+                                                    </span>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <a href="{% provider_login_url "google" %}"
+                                                           class="a-block social-login-btn google">
+                                                            <div class="btn btn-primary btn-icon btn-lg btn-block"
+                                                                 style="background: white!important;">
+                                                            <span class="icon">
+                                                                <svg width="24" height="24" viewBox="0 0 24 24"
+                                                                     fill="none" xmlns="https://www.w3.org/2000/svg">
+                                                                    <path d="M18.977 4.32196L16 7.29996C14.977 6.46196 13.674 5.94996 12.232 5.94996C9.542 5.94996 7.282 7.67996 6.492 10.102L3.052 7.46696C4.708 4.07996 8.186 1.76196 12.232 1.76196C14.837 1.76196 17.162 2.73896 18.977 4.32196Z"
+                                                                          fill="#EA4335"></path>
+                                                                    <path d="M6.186 11.9999C6.186 12.6599 6.288 13.2929 6.493 13.8899L3.05 16.5329C2.38 15.1699 2 13.6299 2 11.9999C2 10.3699 2.38 8.82692 3.05 7.46692L6.493 10.1019C6.289 10.6969 6.186 11.3399 6.186 11.9999Z"
+                                                                          fill="#FBBC05"></path>
+                                                                    <path d="M18.893 19.6879C17.107 21.3549 14.725 22.238 12.233 22.238C8.185 22.238 4.707 19.921 3.053 16.533L6.493 13.8979C7.283 16.3179 9.543 18.0499 12.233 18.0499C13.553 18.0499 14.707 17.742 15.628 17.155L18.893 19.6879Z"
+                                                                          fill="#34A853"></path>
+                                                                    <path d="M22 12C22 15.34 20.78 17.948 18.893 19.688L15.628 17.158C16.698 16.488 17.442 15.445 17.721 14.095H12.233V10.14H21.768C21.908 10.743 22.001 11.395 22.001 12H22Z"
+                                                                          fill="#4285F4"></path>
+                                                                </svg>
+                                                            </span>
+                                                                <span class="text">
+                                                                Google ile Giriş Yap
+                                                            </span>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="loader">
+        <div class="loader-gif">
+            <img src="{% static 'img/loader.gif' %}" alt="">
+        </div>
+    </div>
+
+    <div class="send-email" style="display: none;">
+        <div class="send-email__container">
+            <div class="send-email__header">
+                <img src="{% static 'img/email_otp.png' %}" alt="Send Email">
+            </div>
+            <div class="send-email-body">
+                <h3>E-POSTA DOĞRULAMASI</h3>
+                <p style="text-align: center;">Lütfen mail adresinize gönderilen 6 haneli kodu giriniz. Mail adresinizde
+                    mail göremiyorsanız lütfen
+                    "Spam veya Gereksiz E-Posta" klasörünü kontrol ediniz. Eğer bir sorun ile karşılaşırsanız
+                    <a href="https://wa.me/+908503098552" target="_blank" style="color: red;">Canlı Destek</a> üzerinden
+                    bizimle Whatsapp kanalı ile iletişime geçebilirsiniz. Keyifli alışverişler dileriz...</p>
+                <div class="otp-group">
+                    <form method="get" class="digit-group" data-group-name="digits" data-autosubmit="false"
+                          autocomplete="off">
+                        <input type="text" id="digit-1" name="digit-1" data-next="digit-2"/>
+                        <input type="text" id="digit-2" name="digit-2" data-next="digit-3" data-previous="digit-1"/>
+                        <input type="text" id="digit-3" name="digit-3" data-next="digit-4" data-previous="digit-2"/>
+                        <span class="splitter">&ndash;</span>
+                        <input type="text" id="digit-4" name="digit-4" data-next="digit-5" data-previous="digit-3"/>
+                        <input type="text" id="digit-5" name="digit-5" data-next="digit-6" data-previous="digit-4"/>
+                        <input type="text" id="digit-6" name="digit-6" data-previous="digit-5"/>
+                    </form>
+                </div>
+                <span id="errorOtp"></span>
+            </div>
+            <div class="send-email-footer">
+                <button id="confirm-otp" data-target="https://www.tredyshop.com/giris-yap"
+                        class="btn btn-gradient w-100 btn-block">Onayla
+                </button>
+                <button id="againBtn" class="btn btn-secondary w-100 btn-block" disabled></button>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="{% static 'js/check_email.js' %}"></script>
+    <script src="{% static 'js/register.js' %}"></script>
+    <script>
+        document.getElementById('mobile').addEventListener('input', function (e) {
+            var x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+    </script>
+
+{% endblock %}
