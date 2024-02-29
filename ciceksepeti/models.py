@@ -69,8 +69,8 @@ class CiceksepetiOrders(models.Model):
     status = models.CharField(choices=STATUS, verbose_name="Durum", null=True, max_length=255)
 
     class Meta:
-        verbose_name = "Trendyol Siparişler"
-        verbose_name_plural = "Trendyol Siparişler"
+        verbose_name = "3) Çiçeksepeti Siparişler"
+        verbose_name_plural = "3) Çiçeksepeti Siparişler"
         ordering = ['-order_date']
 
     def __str__(self):

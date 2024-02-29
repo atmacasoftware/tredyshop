@@ -166,3 +166,9 @@ header.main-header-section div.main-header-section__midline div.flex-item:nth-ch
 header.main-header-section div.main-header-section__midline div.flex-item:nth-child(4) div.user-nav-items a.nav-item:hover span.nav-item__btn span.icon svg {
   stroke: var(--primary-color);
 }
+
+@media screen and (max-width: 1199px) {
+    .search-result-box.search-sm{
+        position: fixed;
+    }
+}

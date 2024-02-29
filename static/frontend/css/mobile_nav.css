@@ -1,0 +1,7 @@
+div.main-mobnav-section a.main-mobnav-section__item-link.active span.main-mobnav-section__item span.icon svg{
+    stroke: var(--primary-color);
+}
+
+div.main-mobnav-section a.main-mobnav-section__item-link span.main-mobnav-section__item span.icon small.count-ind{
+    background: var(--primary-color);
+}

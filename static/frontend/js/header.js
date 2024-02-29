@@ -1,6 +1,13 @@
 var width = $(window).width();
 const baseUrl = "127.0.0.1/"
 $(window).resize(function () {
+    if ($(window).width() <= 1199) {
+        $(".search-result-box").addClass('search-sm')
+        var inputWidth = $("#generalSearch").width() + 25
+        $(".search-sm").css('width', `${inputWidth}`)
+
+    }
+
     if ($(window).width() <= 992) {
         $(".cat_ust-giyim").hide()
         $(".cat_alt-giyim").hide()
@@ -116,6 +123,13 @@ $(window).resize(function () {
     }
 });
 
+if (width <= 1199) {
+    $(".search-result-box").addClass('search-sm')
+    var inputWidth = $("#generalSearch").width() + 25
+    console.log(inputWidth)
+    $(".search-sm").css('width', `${inputWidth}`)
+}
+
 if (width <= 992) {
     $(".cat_ust-giyim").hide()
     $(".cat_alt-giyim").hide()
@@ -164,7 +178,8 @@ if (width <= 992) {
                 $(".cat_bebek").hide()
                 $(".cat_aksesuar").hide()
                 $(".cat_alt-giyim").hide()
-                $(".cat_esofman-pijama").toggle("slow", function () {})
+                $(".cat_esofman-pijama").toggle("slow", function () {
+                })
             }
 
             if (targetName == "Ayakkabi") {
@@ -175,7 +190,8 @@ if (width <= 992) {
                 $(".cat_aksesuar").hide()
                 $(".cat_alt-giyim").hide()
                 $(".cat_esofman-pijama").hide()
-                $(".cat_ayakkabi").toggle("slow", function () {})
+                $(".cat_ayakkabi").toggle("slow", function () {
+                })
             }
 
             if (targetName == "İç Giyim") {
@@ -186,7 +202,8 @@ if (width <= 992) {
                 $(".cat_alt-giyim").hide()
                 $(".cat_esofman-pijama").hide()
                 $(".cat_ayakkabi").hide
-                $(".cat_ic-giyim").toggle("slow", function () {})
+                $(".cat_ic-giyim").toggle("slow", function () {
+                })
             }
 
             if (targetName == "Elbise Tulum") {
@@ -197,7 +214,8 @@ if (width <= 992) {
                 $(".cat_esofman-pijama").hide()
                 $(".cat_ayakkabi").hide
                 $(".cat_ic-giyim").hide
-                $(".cat_elbise-tulum").toggle("slow", function () {})
+                $(".cat_elbise-tulum").toggle("slow", function () {
+                })
             }
 
             if (targetName == "Bebek") {
@@ -208,7 +226,8 @@ if (width <= 992) {
                 $(".cat_ayakkabi").hide
                 $(".cat_ic-giyim").hide
                 $(".cat_elbise-tulum").hide()
-                $(".cat_bebek").toggle("slow", function () {})
+                $(".cat_bebek").toggle("slow", function () {
+                })
             }
 
             if (targetName == "Aksesuar") {
@@ -219,14 +238,15 @@ if (width <= 992) {
                 $(".cat_ic-giyim").hide
                 $(".cat_elbise-tulum").hide()
                 $(".cat_bebek").hide
-                $(".cat_aksesuar").toggle("slow", function () {})
+                $(".cat_aksesuar").toggle("slow", function () {
+                })
             }
 
         })
     })
 }
 
-$(document).ready(function (){
+$(document).ready(function () {
     const topCat = document.querySelector('.main-header-section__topcatgs')
     $.ajax({
         url: `/apits/header-kategoriler/`,
