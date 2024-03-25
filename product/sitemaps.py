@@ -1,6 +1,6 @@
 from django.contrib.sitemaps import Sitemap
-from product.models import ApiProduct
+from product.models import Product
 
 class ProductSitemap(Sitemap):
     def items(self):
-        return ApiProduct.objects.all()
+        return Product.objects.all()

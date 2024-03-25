@@ -31,9 +31,7 @@
                                     <tr>
                                         <th scope="col">Görsel</th>
                                         <th scope="col">Ürün Adı</th>
-                                        <th scope="col">1. Seviye Kategori</th>
-                                        <th scope="col">2. Seviye Kategori</th>
-                                        <th scope="col">3. Seviye Kategori</th>
+                                        <th scope="col">Kategori</th>
                                         <th scope="col">İşlemler</th>
                                     </tr>
                                     </thead>
@@ -49,34 +47,12 @@
                                                 <td>{{ product.title }}</td>
                                                 <td>
                                                     <select class="form-control select2 kategoriSelect filter-checkbox"
-                                                            id="select-category1" name="kategori1-{{ product.id }}"
-                                                            style="width: 100%;">
-                                                        <option value="">--------</option>
-                                                        {% for c in seviye_1 %}
-                                                            <option value="{{ c.id }}"
-                                                                    {% if c.id == product.category.id %}selected{% endif %}>{{ c.title }}</option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <select class="form-control select2 kategoriSelect filter-checkbox"
-                                                            id="select-category2" name="kategori2-{{ product.id }}"
-                                                            style="width: 100%;">
-                                                        <option value="">--------</option>
-                                                        {% for c in seviye_2 %}
-                                                            <option value="{{ c.id }}"
-                                                                    {% if c.id == product.subcategory.id %}selected{% endif %}>{{ c.title }}</option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <select class="form-control select2 kategoriSelect filter-checkbox"
                                                             id="select-category2" name="kategori3-{{ product.id }}"
                                                             style="width: 100%;">
                                                         <option value="">--------</option>
                                                         {% for c in seviye_3 %}
                                                             <option value="{{ c.id }}"
-                                                                    {% if c.id == product.subbottomcategory.id %}selected{% endif %}>{{ c.title }}</option>
+                                                                    {% if c.id == product.subbottomcategory.id %}selected{% endif %}>{{ c }}</option>
                                                         {% endfor %}
                                                     </select>
                                                 </td>
@@ -97,8 +73,6 @@
                                                                     url: `/yonetim/urunler/kategorisi-hatali-urunler/kategori-duzelt/`,
                                                                     data: {
                                                                         'productID': {{ product.id }},
-                                                                        'kategori1': $("select[name='kategori1-{{ product.id }}']").val(),
-                                                                        'kategori2': $("select[name='kategori2-{{ product.id }}']").val(),
                                                                         'kategori3': $("select[name='kategori3-{{ product.id }}']").val(),
                                                                     },
                                                                     dataType: 'json',
@@ -110,9 +84,6 @@
                                                                         $(".waiting").css('display', 'none')
                                                                         $(".waiting").css('visibility', 'hidden')
                                                                         swal('Kategori Güncellendi', '', 'success');
-                                                                        if (data === 'success') {
-                                                                            window.location.reload()
-                                                                        }
                                                                     },
                                                                     error: function (e) {
                                                                         iziToast.error({

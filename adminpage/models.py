@@ -7,7 +7,7 @@ from unidecode import unidecode
 from hepsiburada.models import HepsiburadaSiparisler
 from categorymodel.models import MainCategory, SubBottomCategory
 from orders.models import Order
-from product.models import ApiProduct, Question
+from product.models import Product, Question
 from trendyol.models import TrendyolOrders
 from user_accounts.models import User
 
@@ -300,7 +300,7 @@ class Campaign(models.Model):
 
 class CampaingProduct(models.Model):
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name="campaing_products")
-    product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE, null=True, verbose_name="Kampanya Ürünü")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, verbose_name="Kampanya Ürünü")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
 

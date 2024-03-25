@@ -1,0 +1,69 @@
+{% extends 'backend/yonetim/base.html' %}
+{% load static %}
+
+{% block title %}<title>Leyna XML</title>{% endblock %}
+
+{% block xml_yonetimi %}
+
+    <section class="section">
+        <div class="section-header">
+            <h1>Leyna XML</h1>
+            <div class="section-header-breadcrumb">
+                <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
+                <div class="breadcrumb-item">Leyna XML</div>
+            </div>
+        </div>
+
+        <div class="section-body">
+            <div class="row">
+                <div class="col-lg-6 col-12">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h4>Veri Yükle</h4>
+                        </div>
+                        <div class="card-body">
+                            <a href="{% url 'leyna_product_load' %}" id="addLeynaBtn"
+                               class="btn btn-primary btn-block">Veri
+                                Yükle <i
+                                        class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-12">
+                    <div class="card card-warning">
+                        <div class="card-header">
+                            <h4>Veri Güncelle</h4>
+                        </div>
+                        <div class="card-body">
+                            <a href="{% url 'leyna_product_update' %}" id="updateLeynaBtn"
+                               class="btn btn-warning btn-block">Veri
+                                Güncelle <i
+                                        class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 col-12">
+                    <div class="card card-danger">
+                        <div class="card-header">
+                            <h4>Aktif Olmayan Ürünler</h4>
+                        </div>
+                        <div class="card-body">
+                            <a href="{% url 'leyna_find_not_active_product' %}" id="leynaNotActiveBtn"
+                               class="btn btn-danger btn-block">Aktif Olmayan Ürünleri Bul <i
+                                    class="fas fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_script %}
+
+{% endblock %}
+
+
+

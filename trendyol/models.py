@@ -1,4 +1,6 @@
 from django.db import models
+from product.models import Product, ProductVariant
+
 
 # Create your models here.
 
@@ -107,3 +109,77 @@ class LogRecords(models.Model):
 
     class Meta:
         ordering = ['-create_at']
+
+class TrendyolProduct(models.Model):
+    product = models.ForeignKey(ProductVariant, on_delete=models.CASCADE, verbose_name="Trendyol Ürün")
+    is_publish = models.BooleanField(default=False, verbose_name="Yayında Mı?")
+    category = models.CharField(max_length=255, verbose_name="Trendyol Kategori", null=True, blank=True)
+    category_id = models.BigIntegerField(verbose_name="Kategori ID", null=True, blank=True)
+    is_ready = models.BooleanField(default=False, verbose_name="Hazır mı?", null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, verbose_name="Oluşturulma Tarihi")
+    updated_at = models.DateTimeField(auto_now=True, null=True, verbose_name="Güncellenme Tarihi")
+
+    class Meta:
+        verbose_name = "Trendyol Ürünler"
+        verbose_name_plural = "Trendyol Ürünler"
+
+    def __str__(self):
+        return f"{str(self.product.title)}"
+
+    def get_attributes(self, attributeId, allowcustom):
+        try:
+            attributes = TrendyolAttributes.objects.get(trendyol_product=self, code=attributeId)
+            if allowcustom == False:
+                return int(attributes.value)
+            else:
+                return attributes.value
+        except:
+            return None
+
+    def save(self, *args, **kwargs):
+        if self.product.is_publish_trendyol == True:
+            self.is_publish = True
+        super(TrendyolProduct, self).save(*args, **kwargs)
+
+class TrendyolAttributes(models.Model):
+    trendyol_product = models.ForeignKey(TrendyolProduct, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255, verbose_name="Özellik Adı", null=True, blank=True)
+    code = models.CharField(verbose_name="Özellik ID", null=True, blank=True, max_length=255)
+    value = models.CharField(verbose_name="Özellik Değeri", null=True, blank=True, max_length=255)
+    customStatus = models.BooleanField(default=False, verbose_name="Custom", null=True, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, verbose_name="Oluşturulma Tarihi")
+    updated_at = models.DateTimeField(auto_now=True, null=True, verbose_name="Güncellenme Tarihi")
+
+    class Meta:
+        verbose_name = "Trendyol Ürün Özellikleri"
+        verbose_name_plural = "Trendyol Ürün Özellikleri"
+
+    def __str__(self):
+        return f"{str(self.trendyol_product.product.title)} - {self.name}"
+
+class TrendyolReport(models.Model):
+    name = models.CharField(max_length=255, verbose_name="Rapor Adı", null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, verbose_name="Oluşturulma Tarihi")
+    updated_at = models.DateTimeField(auto_now=True, null=True, verbose_name="Güncellenme Tarihi")
+
+    class Meta:
+        verbose_name = "Trendyol Rapor"
+        verbose_name_plural = "Trendyol Rapor"
+
+    def __str__(self):
+        return f"{str(self.name)}"
+
+class TrendyolReportProduct(models.Model):
+    report = models.ForeignKey(TrendyolReport, on_delete=models.CASCADE, null=True)
+    product = models.ForeignKey(ProductVariant, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Ürünler")
+    created_at = models.DateTimeField(auto_now_add=True, null=True, verbose_name="Oluşturulma Tarihi")
+    updated_at = models.DateTimeField(auto_now=True, null=True, verbose_name="Güncellenme Tarihi")
+
+    class Meta:
+        verbose_name = "Trendyol Rapor Ürünler"
+        verbose_name_plural = "Trendyol Rapor Ürünler"
+
+    def __str__(self):
+        return f"{str(self.product.product.title)}"
+
+

@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 
 from categorymodel.models import *
 from mainpage.models import *
-from product.models import ReviewRating, ApiProduct
+from product.models import ReviewRating, Product
 
 
 def categories(request):
@@ -27,8 +27,8 @@ def most_search(request):
 
 def top_product(request):
     reviewrating = ReviewRating.objects.all()
-    liked_product = ApiProduct.objects.all().filter(reviewrating__rating__gte=4, reviewrating__rating__lte=6)[:3]
-    most_count = ApiProduct.objects.filter(reviewrating__in=reviewrating).annotate(rating_count=Count('id')).order_by(
+    liked_product = Product.objects.all().filter(reviewrating__rating__gte=4, reviewrating__rating__lte=6)[:3]
+    most_count = Product.objects.filter(reviewrating__in=reviewrating).annotate(rating_count=Count('id')).order_by(
         '-rating_count')[:3]
-    most_selling = ApiProduct.objects.all()[:3]
+    most_selling = Product.objects.all()[:3]
     return dict(liked_product=liked_product, most_count=most_count, most_selling=most_selling)

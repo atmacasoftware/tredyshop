@@ -383,10 +383,61 @@ table, th, td {
     line-height: 1;
     display: block;
 }
-div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item:first-child{
+
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item:first-child {
     border-top: 0;
 }
 
-div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item:last-child{
+div.page-container.product div.page-section.page-section.prod-reviews div.page-section__body div.reviews div.reviews__body div.reviews__list div.reviews__list-item:last-child {
     border-bottom: 0;
+}
+
+.vbox-container img {
+    max-width: 430px !important;
+}
+
+@media screen and (max-width: 480px) {
+    .vbox-container img {
+        max-width: 350px !important;
+    }
+}
+
+
+.input-container input[type=radio] {
+  position: absolute;
+  visibility: hidden;
+  display: none;
+}
+
+.input-container label {
+  color: var(--black-color);
+  display: inline-block;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 5px 20px;
+}
+
+.input-container input[type=radio]:checked + label{
+  color: var(--white-color);
+  background: var(--primary-color);
+}
+
+.input-container label + input[type=radio] + label {
+  border-left: solid var(--primary-color);
+}
+
+.input-container {
+  border: 2px solid var(--black-color);
+  display: inline-block;
+  margin: 10px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.input-container input[type=radio]:disabled + label {
+  color: var(--bg-softGray);
+  display: inline-block;
+  cursor: not-allowed;
+  font-weight: bold;
+  padding: 5px 20px;
 }

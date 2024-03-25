@@ -38,7 +38,7 @@ class MainCategory(models.Model):
         return reverse('first_category', args=[self.slug])
 
     def product_count(self):
-        return self.api_main_category.filter(is_publish=True).count()
+        return self.main_category.filter(is_publish=True).count()
 
     def exist_subbottomcategories(self):
         c = self.maincategories.filter(maincategory_id=self.id)
@@ -104,7 +104,7 @@ class SubCategory(models.Model):
         return reverse('second_category', args=[self.slug])
 
     def product_count(self):
-        return self.api_sub_category.filter(is_publish=True).count()
+        return self.sub_category.filter(is_publish=True).count()
 
     def save(self, *args, **kwargs):
 
@@ -146,7 +146,7 @@ class SubBottomCategory(models.Model):
         ordering = ('title',)
 
     def __str__(self):
-        return f"{self.title}"
+        return f"{self.maincategory.title} > {self.subcategory.title} > {self.title}"
 
     def image_tag(self):
         return mark_safe('<img src="{}" height="50"/>'.format(self.image.url))
@@ -156,11 +156,14 @@ class SubBottomCategory(models.Model):
     def get_url(self):
         return reverse('product_by_subbottomcategory', args=[self.maincategory.slug,self.subcategory.slug,self.slug])
 
+    def get_title(self):
+        return self.title
+
     def get_absolute_url(self):
         return reverse('third_category', args=[self.slug])
 
     def product_count(self):
-        return self.api_subbottom_category.filter(is_publish=True).count()
+        return self.subbottom_category.filter(is_publish=True).count()
 
     def save(self, *args, **kwargs):
         if not self.id and not self.slug:

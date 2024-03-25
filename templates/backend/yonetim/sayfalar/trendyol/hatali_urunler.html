@@ -85,7 +85,8 @@
                                             <label for="size">Sıralama</label>
                                             <select class="form-control select2"
                                                     id="size" name="size" style="width: 100%;">
-                                                <option value="1000">1000</option>
+                                                <option value="200" {% if size == 200 %}selected{% endif %}>200</option>
+                                                <option value="1000" {% if size == 1000 %}selected{% endif %}>1000</option>
                                             </select>
                                         </div>
                                     </div>

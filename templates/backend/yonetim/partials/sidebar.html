@@ -63,8 +63,10 @@
                 <ul class="dropdown-menu">
                     <li {% if request.path == '/yonetim/xml-yonetimi/haydigiy/veri-yukle-guncelle/' %}class="active"{% endif %}>
                         <a class="nav-link" href="{% url 'haydigiy_product' %}">HaydiGiy/Modaymış</a></li>
-                    <li {% if request.path == '/yonetim/xml-yonetimi/xml-dunyasi/veri-yukle-guncelle/' %}class="active"{% endif %}>
-                        <a class="nav-link" href="{% url 'xmldunyasi_product' %}">XML Dünyası</a></li>
+                    <li {% if request.path == '/yonetim/xml-yonetimi/gecelik-dolabi/' %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'gecelik_dolabi' %}">Gecelik Dolabı</a></li>
+                    <li {% if request.path == '/yonetim/xml-yonetimi/leyna/' %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'leyna_product' %}">Leyna</a></li>
                     <li {% if '/yonetim/xml-yonetimi/fiyat-ayarla/' in request.path %}class="active"{% endif %}>
                         <a class="nav-link" href="{% url 'xml_fiyat_ayarla' %}">Fiyat Ayarla</a></li>
                 </ul>
@@ -108,19 +110,16 @@
                 <ul class="dropdown-menu">
                     <li {% if '/trendyol/hesap-bilgileri/' in request.path %}class="active"{% endif %}>
                         <a class="nav-link" href="{% url 'trendyol_hesap_bilgileri' %}">Hesap Bilgileri</a></li>
-                    <li {% if '/trendyol/urun-giris/' in request.path %}class="active"{% endif %}>
-                        <a class="nav-link" href="{% url 'trendyol_urun_girisi' %}">Ürün Girişi</a></li>
+                    <li {% if '/trendyol/kategori-eslestir/' in request.path %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'trendyol_kategori_eslestir' %}">Kategori Eşleştir</a></li>
+                    <li {% if '/trendyol/entegrasyon-islemleri/' in request.path %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'trendyol_engtegrasyon_islemleri' %}">Entegrasyon İşlemleri</a></li>
+                    <li {% if '/trendyol/beden-renk-eslestir/' in request.path %}class="active"{% endif %}>
+                        <a class="nav-link" href="{% url 'trendyol_beden_eslestir' %}">Beden/Renk Eşleştir</a></li>
                     <li {% if '/trendyol/ozellik-eslestir/' in request.path %}class="active"{% endif %}>
                         <a class="nav-link" href="{% url 'trendyol_ozellik_eslestir' %}">Özellik Eşleştir</a></li>
                     <li {% if '/trendyol/indirim-olustur/' in request.path %}class="active"{% endif %}>
                         <a class="nav-link" href="{% url 'trendyol_indirim_olustur' %}">İndirim Oluştur</a></li>
-                    <li {% if '/trendyol/stok-fiyat-guncelleme/' in request.path %}class="active"{% endif %}>
-                        <a class="nav-link" href="{% url 'trendyol_stok_fiyat_guncelle' %}">Stok & Fiyat Güncelleme</a>
-                    </li>
-                    <li {% if '/trendyol/bilgi-guncelleme/' in request.path %}class="active"{% endif %}>
-                        <a class="nav-link" href="{% url 'trendyol_bilgi_guncelle' %}">Bilgi Güncelleme</a></li>
-                    <li {% if '/trendyol/urun-silme/' in request.path %}class="active"{% endif %}>
-                        <a class="nav-link" href="{% url 'trendyol_delete_product' %}">Ürün Silme</a></li>
                     <li {% if '/trendyol/urunler/' in request.path %}class="active"{% endif %}>
                         <a class="nav-link" href="{% url 'trendyol_yuklu_urunler' %}">Ürünler</a></li>
                     <li {% if '/trendyol/hatali-urunler/' in request.path %}class="active"{% endif %}>

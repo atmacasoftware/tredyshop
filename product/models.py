@@ -202,17 +202,20 @@ class TabletModel(models.Model):
     def __str__(self):
         return str(self.name)
 
+
 class TableCaseType(models.Model):
     name = models.CharField(max_length=50, verbose_name="Kılıf Modeli")
 
     def __str__(self):
         return str(self.name)
 
+
 class SleepMode(models.Model):
     name = models.CharField(max_length=50, verbose_name="Uyku Modu")
 
     def __str__(self):
         return str(self.name)
+
 
 class BagPattern(models.Model):
     name = models.CharField(max_length=50, verbose_name="Çanta Deseni")
@@ -227,19 +230,77 @@ class BijuteriTheme(models.Model):
     def __str__(self):
         return str(self.name)
 
-class ProductKapak(models.Model):
-    def product_photo_directory_path(instance, filename):
-        return f"products/kapak/{filename}"
-
-    kapak = ResizedImageField(force_format="WEBP", quality=50, upload_to=product_photo_directory_path, null=True,
-                              blank=True)
-    modal_code = models.CharField(verbose_name="Model Kodu", null=True, blank=False, max_length=150, unique=True)
+class Desen(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Desen")
 
     def __str__(self):
-        return self.modal_code
+        return str(self.name)
 
 
-class ApiProduct(models.Model):
+class PaketIcerigi(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Paket İçeriği")
+
+    def __str__(self):
+        return str(self.name)
+
+
+class Koleksiyon(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Koleksiyon")
+
+    def __str__(self):
+        return str(self.name)
+
+
+class DokumaTipi(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Dokuma Tipi")
+
+    def __str__(self):
+        return str(self.name)
+
+class Ozellik(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Özellik")
+
+    def __str__(self):
+        return str(self.name)
+
+
+class UrunDetay(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Ürün Detay")
+
+    def __str__(self):
+        return str(self.name)
+
+class Persona(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Persona")
+
+    def __str__(self):
+        return str(self.name)
+
+class Siluet(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Silüet")
+
+    def __str__(self):
+        return str(self.name)
+
+class AltSiluet(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Alt Silüet")
+
+    def __str__(self):
+        return str(self.name)
+
+class UstSiluet(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Üst Silüet")
+
+    def __str__(self):
+        return str(self.name)
+
+class PadDetay(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Pad Detay")
+
+    def __str__(self):
+        return str(self.name)
+
+class Product(models.Model):
     AGE_GROUP = (
         ("Bebek", "Bebek"),
         ("Bebek&Çocuk", "Bebek&Çocuk"),
@@ -253,50 +314,18 @@ class ApiProduct(models.Model):
         ("2", "Hayır"),
     )
 
-    WARRANTY_TYPE = (
-        ('Belirtilmemiş','Belirtilmemiş'),
-        ('1 Yıl','1 Yıl'),
-        ('2 Yıl','2 Yıl'),
-        ('3 Yıl','3 Yıl'),
-        ('4 Yıl','4 Yıl'),
-        ('5 Yıl','5 Yıl'),
-        ('6 Ay','6 Ay'),
-    )
-
-    COMPATİBLE_BRAND = (
-        ("Alcatel Uyumlu","Alcatel Uyumlu"),
-        ("Apple Uyumlu","Apple Uyumlu"),
-        ("Asus Uyumlu","Asus Uyumlu"),
-        ("Casper Uyumlu","Casper Uyumlu"),
-        ("General Mobile Uyumlu","General Mobile Uyumlu"),
-        ("Honor Uyumlu","Honor Uyumlu"),
-        ("Huawei Uyumlu","Huawei Uyumlu"),
-        ("Lenovo Uyumlu","Lenovo Uyumlu"),
-        ("Oppo Uyumlu","Oppo Uyumlu"),
-        ("POCO Uyumlu","POCO Uyumlu"),
-        ("Realme Uyumlu","Realme Uyumlu"),
-        ("Reeder Uyumlu","Reeder Uyumlu"),
-        ("Samsung Uyumlu","Samsung Uyumlu"),
-        ("TCL Uyumlu","TCL Uyumlu"),
-        ("Xiaomi Uyumlu","Xiaomi Uyumlu"),
-    )
-
     xml_id = models.CharField(max_length=100, null=True, blank=True, verbose_name="XML ID")
     barcode = models.CharField(verbose_name="Barkod", null=True, unique=True, max_length=100)
     model_code = models.CharField(verbose_name="Model Kodu", null=True, blank=True, max_length=100)
-    stock_code = models.CharField(verbose_name="Stok Kodu", null=True, blank=True, max_length=100)
     dropshipping = models.CharField(verbose_name="Platform", null=True, blank=True, max_length=255)
     category = models.ForeignKey(MainCategory, on_delete=models.CASCADE, null=True, blank=False,
-                                 verbose_name="1. Düzey Kategori", related_name="api_main_category")
+                                 verbose_name="1. Düzey Kategori", related_name="main_category")
     subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE, null=True, blank=False,
-                                    verbose_name="2. Düzey Kategori", related_name="api_sub_category")
+                                    verbose_name="2. Düzey Kategori", related_name="sub_category")
     subbottomcategory = models.ForeignKey(SubBottomCategory, on_delete=models.CASCADE, null=True, blank=True,
-                                          verbose_name="3. Düzey Kategori", related_name="api_subbottom_category")
+                                          verbose_name="3. Düzey Kategori", related_name="subbottom_category")
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Marka",
-                              related_name="api_brands")
-    trendyol_category_id = models.BigIntegerField(null=True, verbose_name="Trendyol Kategori Numarası", blank=True)
-    hepsiburada_category_id = models.BigIntegerField(null=True, verbose_name="Hepsiburada Kategori Numarası",
-                                                     blank=True)
+                              related_name="brands")
     title = models.CharField(max_length=255, verbose_name="Başlık")
     description = models.CharField(max_length=355, verbose_name="Açıklama")
     image_url1 = models.CharField(max_length=500, verbose_name="Resim Link 1", null=True, blank=False)
@@ -307,8 +336,6 @@ class ApiProduct(models.Model):
     image_url6 = models.CharField(max_length=500, verbose_name="Resim Link 6", null=True, blank=True)
     image_url7 = models.CharField(max_length=500, verbose_name="Resim Link 7", null=True, blank=True)
     image_url8 = models.CharField(max_length=500, verbose_name="Resim Link 8", null=True, blank=True)
-    color = models.ForeignKey(Color, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Renk")
-    size = models.ForeignKey(Size, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Boyut/Beden")
     fabrictype = models.ForeignKey(FabricType, on_delete=models.CASCADE, null=True, blank=True,
                                    verbose_name="Kumaş Tipi")
     height = models.ForeignKey(Height, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Boy")
@@ -328,33 +355,33 @@ class ApiProduct(models.Model):
     heelsize = models.ForeignKey(HeelSize, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Topuk Boyu")
     price = models.DecimalField(verbose_name="Fiyat", decimal_places=2, max_digits=20)
     quantity = models.BigIntegerField(verbose_name="Miktar", null=True, default=0)
-    detail = RichTextUploadingField()
-    trendyol_price = models.DecimalField(verbose_name="Trendyol Fiyatı", decimal_places=2, max_digits=20, null=True)
-    trendyol_discountprice = models.DecimalField(verbose_name="Trendyol İndirimli Fiyatı", decimal_places=2, max_digits=20, null=True)
-    is_trendyol_discountprice = models.BooleanField(default=False, verbose_name="Trendyol İndirim Durumu", null=True, blank=True)
+    detail = RichTextUploadingField(null=True)
     discountprice = models.DecimalField(verbose_name="İndirimli Fiyat", decimal_places=2, max_digits=20, null=True,
                                         blank=True)
     is_discountprice = models.BooleanField(default=False, verbose_name="İndirimli Yayınla", null=True, blank=True)
-    ciceksepeti_price = models.DecimalField(verbose_name="Çiçeksepeti Fiyatı", decimal_places=2, max_digits=20, null=True, blank=True)
-    ciceksepeti_discountprice = models.DecimalField(verbose_name="Çiçeksepeti İndirimli Fiyatı", decimal_places=2,
-                                                 max_digits=20, null=True)
-    is_ciceksepeti_discountprice = models.BooleanField(default=False, verbose_name="Çiçeksepeti İndirim Durumu", null=True,
-                                                    blank=True)
     age_group = models.CharField(choices=AGE_GROUP, max_length=50, verbose_name="Yaş Grubu", null=True, blank=True)
     sextype = models.ForeignKey(Sex, verbose_name="Cinsiyet", null=True, blank=True, on_delete=models.CASCADE)
-    warranty = models.CharField(choices=WARRANTY_TYPE, default="Belirtilmemiş", null=True, blank=True, verbose_name="Garanti Süresi", max_length=100)
-    compatible = models.CharField(choices=COMPATİBLE_BRAND, null=True, blank=True, verbose_name="Uyumlu Marka", max_length=100)
-    tabletmodel = models.ForeignKey(TabletModel, on_delete=models.CASCADE, verbose_name="Elektronik Model", null=True, blank=True)
-    casetype = models.ForeignKey(TableCaseType, on_delete=models.CASCADE, verbose_name="Kılıf Modeli", null=True, blank=True)
-    sleepmode = models.ForeignKey(SleepMode, on_delete=models.CASCADE, verbose_name="Uyku Modu", null=True, blank=True)
-    bag_pattern = models.ForeignKey(BagPattern, on_delete=models.CASCADE, verbose_name="Çanta Deseni", null=True, blank=True)
-    bijuteri_theme = models.ForeignKey(BijuteriTheme, on_delete=models.CASCADE, verbose_name="Tema/Stil", null=True, blank=True)
+    bag_pattern = models.ForeignKey(BagPattern, on_delete=models.CASCADE, verbose_name="Çanta Deseni", null=True,
+                                    blank=True)
+    bijuteri_theme = models.ForeignKey(BijuteriTheme, on_delete=models.CASCADE, verbose_name="Tema/Stil", null=True,
+                                       blank=True)
+    desen = models.ForeignKey(Desen, on_delete=models.CASCADE, verbose_name="Desen", null=True,
+                                       blank=True)
+    paket_icerigi = models.ForeignKey(PaketIcerigi, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Paket İçeriği")
+    koleksiyon = models.ForeignKey(Koleksiyon, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Koleksiyon")
+    dokuma_tipi = models.ForeignKey(DokumaTipi, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Dokuma Tipi")
+    ozellik = models.ForeignKey(Ozellik, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Özellik")
+    urundetay = models.ForeignKey(UrunDetay, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Ürün Detay")
+    persona = models.ForeignKey(Persona, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Persona")
+    siluet = models.ForeignKey(Siluet, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Silüet")
+    altsiluet = models.ForeignKey(AltSiluet, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Alt Silüet")
+    usttsiluet = models.ForeignKey(UstSiluet, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Üst Silüet")
+    peddetay = models.ForeignKey(PadDetay, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Pad Detay")
     is_publish = models.BooleanField(default=True, verbose_name="Yayında mı?", null=True)
-    is_publish_trendyol = models.BooleanField(default=False, verbose_name="Trendyolda Yayında Mı?", null=True)
-    is_publish_hepsiburada = models.BooleanField(default=False, verbose_name="Hepsiburadada Yayında Mı?", null=True)
-    is_publish_ciceksepeti = models.BooleanField(default=False, verbose_name="Çiçeksepetinde Yayında Mı?", null=True)
+    is_completed_category = models.BooleanField(default=False, verbose_name="Tüm Kategoriler Dolduruldu Mu?", null=True)
+    sell_count = models.BigIntegerField(default=0, verbose_name="Toplam Satış Sayısı", null=True, blank=True)
     slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
-    status = models.BooleanField(default=True)
+    kdv = models.PositiveIntegerField(null=True, blank=True, verbose_name="KDV Oranı")
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
 
@@ -367,40 +394,6 @@ class ApiProduct(models.Model):
 
     def change_float(self):
         return float(self.price)
-
-    def get_data(self):
-        category_title = "Yok"
-        size_name = "-"
-        discountprice = "-"
-        satis_durumu = "Hayır"
-        if self.subbottomcategory:
-            category_title = self.subbottomcategory.title
-
-        if self.size:
-            size_name = self.size.name
-
-        if self.discountprice:
-            discountprice = self.discountprice
-
-        if self.is_publish:
-            satis_durumu = "Evet"
-
-        return {
-            'ID': self.id,
-            'Başlık': f'<div class="product__info"><div class="product__image"><img src="{self.image_url1}" alt=""></div><div class="product__title"><p><b><a href="{self.get_url()}">{self.title}</a></b></p><span>Stok Kodu: {self.stock_code}</span></div></div>',
-            'Barkod': self.barcode,
-            'Model Kodu': self.model_code,
-            'Platform': self.dropshipping,
-            'Kategori': category_title,
-            'Marka': self.brand.title,
-            'Renk': self.color.name,
-            'Beden': size_name,
-            'Fiyat (TL)': self.price,
-            'İndirimli Fiyat (TL)': discountprice,
-            'Stok': self.quantity,
-            'Satışta Mı?': satis_durumu,
-            'İşlemler': f'<a href="/yonetim/urunler/urun_id={self.id}" class="btn btn-danger btn-sm">Detaya Git</a><div class="dropdown"><button class="btn btn-sm mt-2 btn-secondary dropdown-toggle" type="button"data-toggle="dropdown"aria-expanded="false">İşlemler</button><div class="dropdown-menu"><a class="dropdown-item" href="#">Action</a><a class="dropdown-item" href="#">Another action</a><a class="dropdown-item" href="#">Something else here</a></div></div>'
-        }
 
     def get_url(self):
         return reverse('products_detail', args=[self.slug])
@@ -500,6 +493,114 @@ class ApiProduct(models.Model):
         else:
             return None
 
+    def get_sized(self):
+        size_list = []
+        for v in ProductVariant.objects.filter(product=self).order_by('-size__name'):
+            size_list.append(v.size.name)
+        return size_list
+
+    def get_sized_all(self):
+        size_list = []
+        for v in ProductVariant.objects.filter(product=self).order_by('-size__name'):
+            data = {
+                'name': v.size.name,
+                'id' : v.size.id,
+                'barcode': v.barcode,
+            }
+            size_list.append(data)
+        return size_list
+
+    def save(self, *args, **kwargs):
+        if self.category is not None and self.subcategory is not None and self.subbottomcategory is not None:
+            self.is_completed_category = True
+
+        if not self.id and not self.slug:
+            slug = defaultfilters.slugify(unidecode(self.title))
+            slug_exists = True
+            counter = 1
+            self.slug = slug
+            while slug_exists:
+                try:
+                    slug_exits = Product.objects.get(slug=slug)
+                    if slug_exits:
+                        slug = self.slug + '_' + str(counter)
+                        counter += 1
+                except Product.DoesNotExist:
+                    self.slug = slug
+                    break
+        super(Product, self).save(*args, **kwargs)
+
+class ProductVariant(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=False, verbose_name="Ürün")
+    title = models.CharField(max_length=255, verbose_name="Başlık")
+    description = models.CharField(max_length=355, verbose_name="Açıklama")
+    color = models.ForeignKey(Color, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Renk")
+    size = models.ForeignKey(Size, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Boyut/Beden")
+    barcode = models.CharField(verbose_name="Barkod", null=True, unique=True, max_length=100)
+    model_code = models.CharField(verbose_name="Model Kodu", null=True, blank=True, max_length=100)
+    stock_code = models.CharField(verbose_name="Stok Kodu", null=True, blank=True, max_length=100)
+    is_publish = models.BooleanField(default=True, verbose_name="Yayında mı?", null=True)
+    is_publish_trendyol = models.BooleanField(default=False, verbose_name="Trendyolda Yayında Mı?", null=True)
+    is_publish_hepsiburada = models.BooleanField(default=False, verbose_name="Hepsiburadada Yayında Mı?", null=True)
+    is_publish_ciceksepeti = models.BooleanField(default=False, verbose_name="Çiçeksepetinde Yayında Mı?", null=True)
+    quantity = models.BigIntegerField(verbose_name="Miktar", null=True, default=0)
+    trendyol_price = models.DecimalField(verbose_name="Trendyol Fiyatı", decimal_places=2, max_digits=20, null=True)
+    trendyol_discountprice = models.DecimalField(verbose_name="Trendyol İndirimli Fiyatı", decimal_places=2,
+                                                 max_digits=20, null=True)
+    is_trendyol_discountprice = models.BooleanField(default=False, verbose_name="Trendyol İndirim Durumu", null=True,
+                                                    blank=True)
+    ciceksepeti_price = models.DecimalField(verbose_name="Çiçeksepeti Fiyatı", decimal_places=2, max_digits=20,
+                                            null=True, blank=True)
+    ciceksepeti_discountprice = models.DecimalField(verbose_name="Çiçeksepeti İndirimli Fiyatı", decimal_places=2,
+                                                    max_digits=20, null=True, blank=True)
+    is_ciceksepeti_discountprice = models.BooleanField(default=False, verbose_name="Çiçeksepeti İndirim Durumu",
+                                                       null=True,
+                                                       blank=True)
+    slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
+    create_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Varyant"
+        verbose_name_plural = "Varyant"
+
+    def __str__(self):
+        return str(self.title)
+
+    def get_data(self):
+        category_title = "Yok"
+        size_name = "-"
+        discountprice = "-"
+        satis_durumu = "Hayır"
+        if self.product.subbottomcategory:
+            category_title = self.product.subbottomcategory.title
+
+        if self.size:
+            size_name = self.size.name
+
+        if self.product.discountprice:
+            discountprice = self.product.discountprice
+
+        if self.is_publish:
+            satis_durumu = "Evet"
+
+        return {
+            'ID': self.id,
+            'Başlık': f'<div class="product__info"><div class="product__image"><img src="{self.product.image_url1}" alt=""></div><div class="product__title"><p><b><a href="{self.product.get_url()}">{self.title}</a></b></p><span>Stok Kodu: {self.stock_code}</span></div></div>',
+            'Barkod': self.product.barcode,
+            'Model Kodu': self.product.model_code,
+            'Platform': self.product.dropshipping,
+            'Kategori': category_title,
+            'Marka': self.product.title,
+            'Renk': self.color.name,
+            'Beden': size_name,
+            'Fiyat (TL)': self.product.price,
+            'İndirimli Fiyat (TL)': discountprice,
+            'Stok': self.quantity,
+            'Satışta Mı?': satis_durumu,
+            'İşlemler': f'<a href="/yonetim/urunler/urun_id={self.id}" class="btn btn-danger btn-sm">Detaya Git</a><div class="dropdown"><button class="btn btn-sm mt-2 btn-secondary dropdown-toggle" type="button"data-toggle="dropdown"aria-expanded="false">İşlemler</button><div class="dropdown-menu"><a class="dropdown-item" href="#">Action</a><a class="dropdown-item" href="#">Another action</a><a class="dropdown-item" href="#">Something else here</a></div></div>'
+        }
+
     def save(self, *args, **kwargs):
         if not self.id and not self.slug:
             slug = defaultfilters.slugify(unidecode(self.title))
@@ -508,70 +609,18 @@ class ApiProduct(models.Model):
             self.slug = slug
             while slug_exists:
                 try:
-                    slug_exits = ApiProduct.objects.get(slug=slug)
+                    slug_exits = ProductVariant.objects.get(slug=slug)
                     if slug_exits:
                         slug = self.slug + '_' + str(counter)
                         counter += 1
-                except ApiProduct.DoesNotExist:
+                except ProductVariant.DoesNotExist:
                     self.slug = slug
                     break
-        super(ApiProduct, self).save(*args, **kwargs)
-
-
-class ProductModelGroup(models.Model):
-    def product_photo_directory_path(instance, filename):
-        return f"products/kapak/{filename}"
-
-    kapak = ResizedImageField(force_format="WEBP", quality=50, upload_to=product_photo_directory_path, null=True,
-                              blank=True)
-    model_code = models.CharField(verbose_name="Model Kodu", null=True, blank=False, max_length=150, unique=True)
-    product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE, null=True)
-
-    def __str__(self):
-        return self.model_code
-
-    def get_kapak(self):
-        return self.kapak.url
-
-    def get_product_title(self):
-        title = self.product.title
-        return str(title)
-
-    def get_product_slug(self):
-        slug = self.product.slug
-        return str(slug)
-
-    def get_product_price(self):
-        price = self.product.price
-        return price
-
-    def get_product_isdiscount(self):
-        is_discountprice = self.product.is_discountprice
-        return is_discountprice
-
-    def get_product_discountprice(self):
-        discountprice = self.product.discountprice
-        return discountprice
-
-    def third_category(self):
-        category_name = self.product.subbottomcategory.title
-        return str(category_name)
-
-    def total_stok(self):
-        products = ApiProduct.objects.filter(model_code=self.model_code)
-        stok = 0
-
-        for p in products:
-            stok += p.quantity
-        return stok
-
-    def delete(self, using=None, keep_parents=False):
-        self.kapak.delete()
-        super().delete()
+        super(ProductVariant, self).save(*args, **kwargs)
 
 
 class ReviewRating(models.Model):
-    product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     review = models.TextField(max_length=200, blank=True)
     rating = models.FloatField(blank=True)
@@ -595,7 +644,7 @@ class ReviewRating(models.Model):
 
 class ReviewRatingImages(models.Model):
     review = models.ForeignKey(ReviewRating, on_delete=models.CASCADE, null=True)
-    product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE, null=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
     images = models.ImageField(blank=True, upload_to="img/product/comments/", verbose_name="Fotoğraf")
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -614,7 +663,7 @@ class ReviewRatingImages(models.Model):
 
 class LikeProduct(models.Model):
     customer = models.ForeignKey(User, null=True, related_name='like_product', on_delete=models.CASCADE)
-    product = models.ForeignKey(ApiProduct, null=True, blank=True, on_delete=models.CASCADE,
+    product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.CASCADE,
                                 related_name='like_product')
     comment = models.ForeignKey(ReviewRating, null=True, on_delete=models.CASCADE)
     ip = models.CharField(max_length=50, blank=True)
@@ -641,7 +690,7 @@ class LikeProduct(models.Model):
 
 class DisLikeProduct(models.Model):
     customer = models.ForeignKey(User, null=True, related_name='dislike_product', on_delete=models.CASCADE)
-    product = models.ForeignKey(ApiProduct, null=True, blank=True, on_delete=models.CASCADE,
+    product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.CASCADE,
                                 related_name='dislike_product')
     comment = models.ForeignKey(ReviewRating, null=True, on_delete=models.CASCADE)
     ip = models.CharField(max_length=50, blank=True)
@@ -668,7 +717,7 @@ class DisLikeProduct(models.Model):
 
 class Favorite(models.Model):
     customer = models.ForeignKey(User, null=True, related_name='favorite_product', on_delete=models.CASCADE)
-    product = models.ForeignKey(ApiProduct, null=True, blank=True, on_delete=models.CASCADE,
+    product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.CASCADE,
                                 related_name='favorite_product')
     ip = models.CharField(max_length=50, blank=True)
     status = models.BooleanField(default=True)
@@ -684,7 +733,7 @@ class Favorite(models.Model):
 
 class Question(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Müşteri", null=True, blank=False)
-    product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE, verbose_name="Ürün", null=True, blank=False)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Ürün", null=True, blank=False)
     question = models.CharField(max_length=300, verbose_name="Soru", null=True, blank=False)
     answer = models.CharField(max_length=300, verbose_name="Cevap", null=True, blank=True)
     ip = models.CharField(max_length=50, blank=True)
@@ -716,8 +765,9 @@ class Question(models.Model):
                 passing = f"{math.floor(pass_time.seconds / 3600)} sa."
         return passing
 
+
 class StockAlarm(models.Model):
-    product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE, null=True, verbose_name="Ürün")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, verbose_name="Ürün")
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     ip = models.CharField(max_length=120, verbose_name="İp Adresi")
     is_active = models.BooleanField(default=False)

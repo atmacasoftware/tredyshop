@@ -32,7 +32,6 @@ sitemaps = {
 }
 
 urlpatterns = [
-    path('admin/', include('admin_honeypot.urls')),
     path('yonetim-paneli/', admin.site.urls),
     path('yonetim/', include('adminpage.urls')),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}),

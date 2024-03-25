@@ -217,22 +217,22 @@
                                                                                         <div class="col-lg-9 col-sm-12">
                                                                                             <div class="item-info">
                                                                                                 <div class="item-info__image">
-                                                                                                    <a href="{{ product.product.get_url }}"
+                                                                                                    <a href="{{ product.product.product.get_url }}"
                                                                                                        class="a-block">
-                                                                                                        <img src="{{ product.product.image_url1 }}"
+                                                                                                        <img src="{{ product.product.product.image_url1 }}"
                                                                                                              alt="IMG"
                                                                                                              style="height: 75px; width: 75px">
                                                                                                     </a>
                                                                                                 </div>
                                                                                                 <div class="item-info__name">
-                                                                                                    <a href="{% url 'products_detail' product.product.slug %}">
-                                                                                                        {{ product.product.title }}
-                                                                                                        {% if product.product.color %}
+                                                                                                    <a href="{% url 'products_detail' product.product.product.slug %}">
+                                                                                                        {{ product.title }}
+                                                                                                        {% if product.color %}
                                                                                                             ,
-                                                                                                            {{ product.product.color }}{% endif %}
-                                                                                                        {% if product.product.size %}
+                                                                                                            {{ product.color }}{% endif %}
+                                                                                                        {% if product.size %}
                                                                                                             ,
-                                                                                                            {{ product.product.size }}{% endif %}
+                                                                                                            {{ product.size }}{% endif %}
                                                                                                     </a>
 
                                                                                                     {% if order.status == "Yeni" or order.status == 'Hazırlanıyor' %}
@@ -266,7 +266,7 @@
                                                                                                                                     <div class="form-group mb-20">
                                                                                                                                         <div class="form-field"
                                                                                                                                              style="border: none;">
-                                                                                                                                            <img src="{{ product.product.image_url1 }}"
+                                                                                                                                            <img src="{{ product.product.product.image_url1 }}"
                                                                                                                                                  alt="Product"
                                                                                                                                                  style="height: 100px;">
                                                                                                                                             <p>{{ product.product.title }}

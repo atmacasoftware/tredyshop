@@ -76,8 +76,7 @@ INSTALLED_APPS = [
     'dj_rest_auth.registration',
     'corsheaders',
 
-    'admin_honeypot',
-    'django_crontab'
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -120,6 +119,10 @@ TEMPLATES = [
                 'carts.context_processors.counter',
                 'adminpage.context_processors.okunmamis_bildirimler',
             ],
+
+            'libraries': {
+                'custom_tags': 'trendyol.templatetags.custom_tags',
+            }
         },
     },
 ]
@@ -170,12 +173,16 @@ AUTH_USER_MODEL = 'user_accounts.User'
 CRONJOBS = [
     ('*/30 * * * * ', 'ecommerce.cron.update_modaymis'),
     ('*/15 * * * * ', 'ecommerce.cron.find_not_active_modaymis'),
-    ('*/30 * * * * ', 'ecommerce.cron.trendyol_update_stok_fiyat'),
+    ('*/45 * * * * ', 'ecommerce.cron.trendyol_update_stok_fiyat'),
     ('*/5 * * * * ', 'ecommerce.cron.trendyol_orders'),
     ('0 8 * * * ', 'ecommerce.cron.create_modaymis'),
-    ('0 */2 * * * ', 'ecommerce.cron.updatexmldunyasi'),
-    ('0 */6 * * * ', 'ecommerce.cron.find_not_active_xmldunyasi'),
-    ('0 */3 * * * ', 'ecommerce.cron.updatexmldunyasi_diger'),
+    ('0 7 * * * ', 'ecommerce.cron.create_gecelikdolabi'),
+    ('*/20 * * * * ', 'ecommerce.cron.update_gecelikdolabi'),
+    ('*/50 * * * * ', 'ecommerce.cron.find_not_active_gecelikdolabi'),
+    ('0 6 * * * ', 'ecommerce.cron.create_leyna'),
+    ('*/55 * * * * ', 'ecommerce.cron.update_gecelikdolabi'),
+    ('*/75 * * * * ', 'ecommerce.cron.find_not_active_gecelikdolabi'),
+    ('0 23 * * * ', 'ecommerce.cron.trendyol_send_product'),
     ('0 0 * * * ', 'ecommerce.cron.task_cron'),
 ]
 

@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from user_accounts.models import User
 from adminpage.custom import productStatistic, sendOrderInfoEmail
 from adminpage.models import Trendyol, Notification
-from product.models import ApiProduct
+from product.models import ProductVariant
 from trendyol.api import TrendyolApiClient
 from trendyol.models import TrendyolOrders, TrendyolMoreProductOrder, TrendyolCommission
 from trendyol.services import OrderIntegrationService
@@ -88,23 +88,23 @@ def get_trendyol_orders():
                     title = l['productName']
                     barcode = l['barcode']
                     try:
-                        seller_product = get_object_or_404(ApiProduct, barcode=str(l['barcode']))
-                        if seller_product.subcategory == "Üst Giyim":
+                        seller_product = get_object_or_404(ProductVariant, barcode=str(l['barcode']))
+                        if seller_product.product.subcategory == "Üst Giyim":
                             komisyon_orani = TrendyolCommission.objects.get(kategori_adi="Üst Giyim").komisyon_tutari
                             komisyon_tutari = l['amount'] * komisyon_orani / 100
-                        elif seller_product.subcategory == "Alt Giyim":
+                        elif seller_product.product.subcategory == "Alt Giyim":
                             komisyon_orani = TrendyolCommission.objects.get(kategori_adi="Alt Giyim").komisyon_tutari
                             komisyon_tutari = l['amount'] * komisyon_orani / 100
-                        elif seller_product.subcategory == "Dış Giyim":
+                        elif seller_product.product.subcategory == "Dış Giyim":
                             komisyon_orani = TrendyolCommission.objects.get(kategori_adi="Dış Giyim").komisyon_tutari
                             komisyon_tutari = l['amount'] * komisyon_orani / 100
-                        elif seller_product.subcategory == "İç Giyim":
+                        elif seller_product.product.subcategory == "İç Giyim":
                             komisyon_orani = TrendyolCommission.objects.get(kategori_adi="İç Giyim").komisyon_tutari
                             komisyon_tutari = l['amount'] * komisyon_orani / 100
-                        elif seller_product.subcategory == "Ayakkabı":
+                        elif seller_product.product.subcategory == "Ayakkabı":
                             komisyon_orani = TrendyolCommission.objects.get(kategori_adi="Ayakkabı").komisyon_tutari
                             komisyon_tutari = l['amount'] * komisyon_orani / 100
-                        elif seller_product.subcategory == "Aksesuar":
+                        elif seller_product.product.subcategory == "Aksesuar":
                             komisyon_orani = TrendyolCommission.objects.get(kategori_adi="Çanta").komisyon_tutari
                             komisyon_tutari = l['amount'] * komisyon_orani / 100
                         else:
@@ -160,23 +160,23 @@ def get_trendyol_orders():
                     title = l['productName']
                     barcode = l['barcode']
                     try:
-                        seller_product = get_object_or_404(ApiProduct, barcode=str(l['barcode']))
-                        if seller_product.subcategory == "Üst Giyim":
+                        seller_product = get_object_or_404(ProductVariant, barcode=str(l['barcode']))
+                        if seller_product.product.subcategory == "Üst Giyim":
                             komisyon_orani = TrendyolCommission.objects.get(kategori_adi="Üst Giyim").komisyon_tutari
                             komisyon_tutari = l['amount'] * komisyon_orani / 100
-                        elif seller_product.subcategory == "Alt Giyim":
+                        elif seller_product.product.subcategory == "Alt Giyim":
                             komisyon_orani = TrendyolCommission.objects.get(kategori_adi="Alt Giyim").komisyon_tutari
                             komisyon_tutari = l['amount'] * komisyon_orani / 100
-                        elif seller_product.subcategory == "Dış Giyim":
+                        elif seller_product.product.subcategory == "Dış Giyim":
                             komisyon_orani = TrendyolCommission.objects.get(kategori_adi="Dış Giyim").komisyon_tutari
                             komisyon_tutari = l['amount'] * komisyon_orani / 100
-                        elif seller_product.subcategory == "İç Giyim":
+                        elif seller_product.product.subcategory == "İç Giyim":
                             komisyon_orani = TrendyolCommission.objects.get(kategori_adi="İç Giyim").komisyon_tutari
                             komisyon_tutari = l['amount'] * komisyon_orani / 100
-                        elif seller_product.subcategory == "Ayakkabı":
+                        elif seller_product.product.subcategory == "Ayakkabı":
                             komisyon_orani = TrendyolCommission.objects.get(kategori_adi="Ayakkabı").komisyon_tutari
                             komisyon_tutari = l['amount'] * komisyon_orani / 100
-                        elif seller_product.subcategory == "Aksesuar":
+                        elif seller_product.product.subcategory == "Aksesuar":
                             komisyon_orani = TrendyolCommission.objects.get(kategori_adi="Çanta").komisyon_tutari
                             komisyon_tutari = l['amount'] * komisyon_orani / 100
                         else:

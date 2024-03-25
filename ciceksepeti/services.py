@@ -10,7 +10,7 @@ class BaseService:
         if self._api.is_test:
             self.base_url = "https://sandbox-apis.ciceksepeti.com/api/"
         else:
-            self.base_url = "https://sandbox-apis.ciceksepeti.com/api/"
+            self.base_url = "https://apis.ciceksepeti.com/api/"
 
 class ProductIntegrationService(BaseService):
 

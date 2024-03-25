@@ -8,6 +8,7 @@ from orders.models import Order, ExtraditionRequestResult
 from product.models import *
 from trendyol.models import TrendyolOrders, TrendyolCommission
 
+
 class MainCategoryForm(forms.ModelForm):
     class Meta:
         model = MainCategory
@@ -79,13 +80,14 @@ class SiteSettingsForm(forms.ModelForm):
             else:
                 field.widget.attrs['class'] = 'form-control rounded-4'
 
+
 class IssuedInvoicesAddForm(forms.ModelForm):
     edited_date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}))
 
     class Meta:
         model = IssuedInvoices
         fields = '__all__'
-        exclude = ['tax_amount','price_amount','created_at','is_cancelling', 'updated_at']
+        exclude = ['tax_amount', 'price_amount', 'created_at', 'is_cancelling', 'updated_at']
         widgets = {
             'tax_number': forms.NumberInput(attrs={'value': '11111111111'})
         }
@@ -106,7 +108,7 @@ class IssuedInvoicesUpdateForm(forms.ModelForm):
     class Meta:
         model = IssuedInvoices
         fields = '__all__'
-        exclude = ['tax_amount','price_amount','created_at', 'updated_at']
+        exclude = ['tax_amount', 'price_amount', 'created_at', 'updated_at']
         widgets = {
             'tax_number': forms.NumberInput(attrs={'value': '11111111111'})
         }
@@ -120,11 +122,12 @@ class IssuedInvoicesUpdateForm(forms.ModelForm):
             else:
                 field.widget.attrs['class'] = 'form-control rounded-4'
 
+
 class InvoicesReceivedAddForm(forms.ModelForm):
     class Meta:
         model = InvoicesReceived
         fields = '__all__'
-        exclude = ['tax_amount','price_amount','is_cancelling','created_at', 'updated_at']
+        exclude = ['tax_amount', 'price_amount', 'is_cancelling', 'created_at', 'updated_at']
 
     def __init__(self, *args, **kwargs):
         super(InvoicesReceivedAddForm, self).__init__(*args, **kwargs)
@@ -139,7 +142,7 @@ class InvoicesReceivedUpdateForm(forms.ModelForm):
     class Meta:
         model = InvoicesReceived
         fields = '__all__'
-        exclude = ['tax_amount','price_amount','created_at', 'updated_at']
+        exclude = ['tax_amount', 'price_amount', 'created_at', 'updated_at']
 
     def __init__(self, *args, **kwargs):
         super(InvoicesReceivedUpdateForm, self).__init__(*args, **kwargs)
@@ -148,34 +151,6 @@ class InvoicesReceivedUpdateForm(forms.ModelForm):
                 field.widget.attrs['class'] += ' form-control rounded-4'
             else:
                 field.widget.attrs['class'] = 'form-control rounded-4'
-
-class TrendyolAddForm(forms.ModelForm):
-    class Meta:
-        model = Trendyol
-        fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        super(TrendyolAddForm, self).__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            if field.widget.attrs.get('class'):
-                field.widget.attrs['class'] += ' form-control rounded-4'
-            else:
-                field.widget.attrs['class'] = 'form-control rounded-4'
-
-
-class TrendyolUpdateForm(forms.ModelForm):
-    class Meta:
-        model = Trendyol
-        fields = '__all__'
-
-    def __init__(self, *args, **kwargs):
-        super(TrendyolUpdateForm, self).__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            if field.widget.attrs.get('class'):
-                field.widget.attrs['class'] += ' form-control rounded-4'
-            else:
-                field.widget.attrs['class'] = 'form-control rounded-4'
-
 
 class HepsiburadaForm(forms.ModelForm):
     class Meta:
@@ -189,6 +164,7 @@ class HepsiburadaForm(forms.ModelForm):
                 field.widget.attrs['class'] += ' form-control rounded-4'
             else:
                 field.widget.attrs['class'] = 'form-control rounded-4'
+
 
 class AboutUsForm(forms.ModelForm):
     class Meta:
@@ -237,13 +213,9 @@ class ExtraditionRequestResultForm(forms.ModelForm):
 
 class ProductForm(forms.ModelForm):
     class Meta:
-        model = ApiProduct
-        fields = ['title','brand', 'description', 'model_code','barcode', 'stock_code', 'xml_id', 'dropshipping', 'category','subcategory', 'subbottomcategory',  'trendyol_category_id','image_url1', 'image_url2', 'image_url3', 'image_url4', 'image_url5',
-                  'image_url6', 'image_url7', 'image_url8', 'price', 'discountprice', 'quantity', 'trendyol_price',
-                  'is_discountprice', 'color', 'size', 'fabrictype', 'height','waist','pattern','armtype', 'collartype',
-                  'weavingtype', 'material', 'environment','legtype','pocket','heeltype','heelsize', 'age_group', 'sextype','warranty', 'sleepmode','casetype','tabletmodel', 'compatible','bag_pattern', 'bijuteri_theme','is_publish', 'is_publish_trendyol', 'detail',  'slug'
-                  ]
-        exclude = ['created_at', 'updated_at','status']
+        model = Product
+        fields = '__all__'
+        exclude = ['created_at', 'updated_at', 'status']
 
     def __init__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)
@@ -253,20 +225,12 @@ class ProductForm(forms.ModelForm):
             else:
                 field.widget.attrs['class'] = 'form-control rounded-4'
 
+
 class ErrorProductForm(forms.ModelForm):
     class Meta:
-        model = ApiProduct
-        fields = ['title', 'brand', 'description', 'model_code', 'barcode', 'stock_code', 'xml_id', 'dropshipping',
-                  'category', 'subcategory', 'subbottomcategory', 'trendyol_category_id', 'image_url1', 'image_url2',
-                  'image_url3', 'image_url4', 'image_url5',
-                  'image_url6', 'image_url7', 'image_url8', 'price', 'discountprice', 'quantity', 'trendyol_price',
-                  'is_discountprice', 'color', 'size', 'fabrictype', 'height', 'waist', 'pattern', 'armtype',
-                  'collartype',
-                  'weavingtype', 'material', 'environment', 'legtype', 'pocket', 'heeltype', 'heelsize', 'age_group',
-                  'sextype', 'warranty', 'sleepmode', 'casetype', 'tabletmodel', 'compatible', 'bag_pattern', 'bijuteri_theme',
-                  'is_publish', 'is_publish_trendyol', 'detail', 'slug'
-                  ]
-        exclude = ['created_at', 'updated_at','status']
+        model = Product
+        fields = '__all__'
+        exclude = ['created_at', 'updated_at', 'status']
 
     def __init__(self, *args, **kwargs):
         super(ErrorProductForm, self).__init__(*args, **kwargs)
@@ -276,8 +240,9 @@ class ErrorProductForm(forms.ModelForm):
             else:
                 field.widget.attrs['class'] = 'form-control rounded-4'
 
+
 class TrendyolOrderForm(forms.ModelForm):
-    order_date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}),label="Sipariş Tarihi")
+    order_date = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}), label="Sipariş Tarihi")
 
     class Meta:
         model = TrendyolOrders
@@ -306,12 +271,13 @@ class TrendyolUpdateOrderForm(forms.ModelForm):
             else:
                 field.widget.attrs['class'] = 'form-control rounded-4'
 
+
 class HarcamalarForm(forms.ModelForm):
-    created_at = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}),label="Harcama Tarihi")
+    created_at = forms.DateField(widget=forms.TextInput(attrs={'type': 'date'}), label="Harcama Tarihi")
 
     class Meta:
         model = Harcamalar
-        fields = ["harcama_tipi","harcama_adi","harcama_tutari","harcama_notu","durum", "created_at"]
+        fields = ["harcama_tipi", "harcama_adi", "harcama_tutari", "harcama_notu", "durum", "created_at"]
         exclude = ["updated_at"]
         widgets = {
             'harcama_notu': forms.Textarea(attrs={'rows': 2, 'cols': 15}),
@@ -325,12 +291,12 @@ class HarcamalarForm(forms.ModelForm):
             else:
                 field.widget.attrs['class'] = 'form-control rounded-4'
 
-class TrendyolCommissionForm(forms.ModelForm):
 
+class TrendyolCommissionForm(forms.ModelForm):
     class Meta:
         model = TrendyolCommission
         fields = "__all__"
-        exclude = ["create_at","update_at"]
+        exclude = ["create_at", "update_at"]
 
     def __init__(self, *args, **kwargs):
         super(TrendyolCommissionForm, self).__init__(*args, **kwargs)
@@ -385,6 +351,7 @@ class CampaingForm(forms.ModelForm):
             else:
                 field.widget.attrs['class'] = 'form-control rounded-4 pl-3 pr-2'
 
+
 class TredyShopFiyatAyarlaForm(forms.ModelForm):
     class Meta:
         model = TredyShopFiyatAyarla
@@ -398,6 +365,7 @@ class TredyShopFiyatAyarlaForm(forms.ModelForm):
                 field.widget.attrs['class'] += 'form-control rounded-4'
             else:
                 field.widget.attrs['class'] = 'form-control rounded-4'
+
 
 class TrendyolFiyatAyarlaForm(forms.ModelForm):
     class Meta:
@@ -413,6 +381,7 @@ class TrendyolFiyatAyarlaForm(forms.ModelForm):
             else:
                 field.widget.attrs['class'] = 'form-control rounded-4'
 
+
 class HepsiburadaFiyatAyarlaForm(forms.ModelForm):
     class Meta:
         model = HepsiburadaFiyatAyarla
@@ -426,6 +395,7 @@ class HepsiburadaFiyatAyarlaForm(forms.ModelForm):
                 field.widget.attrs['class'] += 'form-control rounded-4'
             else:
                 field.widget.attrs['class'] = 'form-control rounded-4'
+
 
 class CiceksepetiFiyatAyarlaForm(forms.ModelForm):
     class Meta:
@@ -441,6 +411,7 @@ class CiceksepetiFiyatAyarlaForm(forms.ModelForm):
             else:
                 field.widget.attrs['class'] = 'form-control rounded-4'
 
+
 class PttAvmFiyatAyarlaForm(forms.ModelForm):
     class Meta:
         model = PttAvmFiyatAyarla
@@ -454,6 +425,7 @@ class PttAvmFiyatAyarlaForm(forms.ModelForm):
                 field.widget.attrs['class'] += 'form-control rounded-4'
             else:
                 field.widget.attrs['class'] = 'form-control rounded-4'
+
 
 class TredyShopKarMarjiForm(forms.ModelForm):
     class Meta:
@@ -469,10 +441,12 @@ class TredyShopKarMarjiForm(forms.ModelForm):
             else:
                 field.widget.attrs['class'] = 'form-control rounded-4'
 
-TredyShopKarMarjiFormSet =inlineformset_factory(
+
+TredyShopKarMarjiFormSet = inlineformset_factory(
     TredyShopFiyatAyarla, TredyShopKarMarji, form=TredyShopKarMarjiForm,
     extra=1, can_delete=False
 )
+
 
 class TrendyolKarMarjiForm(forms.ModelForm):
     class Meta:
@@ -488,10 +462,12 @@ class TrendyolKarMarjiForm(forms.ModelForm):
             else:
                 field.widget.attrs['class'] = 'form-control rounded-4'
 
-TrendyolKarMarjiFormSet =inlineformset_factory(
+
+TrendyolKarMarjiFormSet = inlineformset_factory(
     TrendyolFiyatAyarla, TrendyolKarMarji, form=TrendyolKarMarjiForm,
     extra=1, can_delete=False
 )
+
 
 class HepsiburadaKarMarjiForm(forms.ModelForm):
     class Meta:
@@ -507,10 +483,12 @@ class HepsiburadaKarMarjiForm(forms.ModelForm):
             else:
                 field.widget.attrs['class'] = 'form-control rounded-4'
 
-HepsiburadaKarMarjiFormSet =inlineformset_factory(
+
+HepsiburadaKarMarjiFormSet = inlineformset_factory(
     HepsiburadaFiyatAyarla, HepsiburadaKarMarji, form=HepsiburadaKarMarjiForm,
     extra=1, can_delete=False
 )
+
 
 class CiceksepetiKarMarjiForm(forms.ModelForm):
     class Meta:
@@ -526,10 +504,12 @@ class CiceksepetiKarMarjiForm(forms.ModelForm):
             else:
                 field.widget.attrs['class'] = 'form-control rounded-4'
 
-CiceksepetiKarMarjiFormSet =inlineformset_factory(
+
+CiceksepetiKarMarjiFormSet = inlineformset_factory(
     CiceksepetiFiyatAyarla, CiceksepetiKarMarji, form=CiceksepetiKarMarjiForm,
     extra=1, can_delete=False
 )
+
 
 class PttAvmKarMarjiForm(forms.ModelForm):
     class Meta:
@@ -545,7 +525,8 @@ class PttAvmKarMarjiForm(forms.ModelForm):
             else:
                 field.widget.attrs['class'] = 'form-control rounded-4'
 
-PttAvmKarMarjiFormSet =inlineformset_factory(
+
+PttAvmKarMarjiFormSet = inlineformset_factory(
     PttAvmFiyatAyarla, PttAvmKarMarji, form=PttAvmKarMarjiForm,
     extra=1, can_delete=False
 )
@@ -555,7 +536,7 @@ class BlogCategoryForm(forms.ModelForm):
     class Meta:
         model = BlogCategory
         fields = '__all__'
-        exclude = ['user','slug', 'created_at', 'updated_at']
+        exclude = ['user', 'slug', 'created_at', 'updated_at']
 
     def __init__(self, *args, **kwargs):
         super(BlogCategoryForm, self).__init__(*args, **kwargs)
@@ -565,11 +546,12 @@ class BlogCategoryForm(forms.ModelForm):
             else:
                 field.widget.attrs['class'] = 'form-control rounded-4'
 
+
 class BlogForm(forms.ModelForm):
     class Meta:
         model = Blog
         fields = '__all__'
-        exclude = ['user', 'slug','is_active', 'created_at', 'updated_at', 'blog_views']
+        exclude = ['user', 'slug', 'is_active', 'created_at', 'updated_at', 'blog_views']
         widgets = {
             'is_publish': forms.CheckboxInput(attrs={'class': 'custom-control-input '})
         }
@@ -581,6 +563,7 @@ class BlogForm(forms.ModelForm):
                 field.widget.attrs['class'] += ' form-control'
             else:
                 field.widget.attrs['class'] = 'form-control'
+
 
 class TaskDetailForm(forms.ModelForm):
     class Meta:

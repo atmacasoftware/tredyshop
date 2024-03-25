@@ -1,4 +1,4 @@
-div.page-container.catalog div.page-section.catalog-filter div.catalog-listing div.catalog-listing__filter div.filter-layout-menu div.filter-layout div.filter-item div.filter-item__body.scrollable::-webkit-scrollbar-thumb{
+div.page-container.catalog div.page-section.catalog-filter div.catalog-listing div.catalog-listing__filter div.filter-layout-menu div.filter-layout div.filter-item div.filter-item__body.scrollable::-webkit-scrollbar-thumb {
     background-color: var(--primary-color);
 }
 
@@ -42,12 +42,12 @@ div.page-container.catalog div.page-section.catalog-filter div.catalog-listing d
     font-size: var(--text-fontSize1);
 }
 
-#priceFilterBtn .icon{
+#priceFilterBtn .icon {
     margin-right: 10px;
 }
 
-.filter-item:last-child{
-    border-bottom: 0!important;
+.filter-item:last-child {
+    border-bottom: 0 !important;
 }
 
 .dropdown-arrangement input[type="radio"] {
@@ -60,11 +60,11 @@ div.page-container.catalog div.page-section.catalog-filter div.catalog-listing d
     opacity: 0;
 }
 
-.dropdown-arrangement input[type="radio"]:checked ~ label{
+.dropdown-arrangement input[type="radio"]:checked ~ label {
     color: #D31027;
 }
 
-.dropdown-arrangement button{
+.dropdown-arrangement button {
     border: 2px solid var(--bg-softGray2);
     border-radius: 10px;
     outline: none;
@@ -77,32 +77,66 @@ div.page-container.catalog div.page-section.catalog-filter div.catalog-listing d
     transition: .2s linear;
 }
 
-.dropdown-arrangement button::after{
-    content: none!important;
+.dropdown-arrangement button::after {
+    content: none !important;
 }
 
 .dropdown-arrangement button:hover,
 .dropdown-arrangement button:focus,
-.dropdown-arrangement button:active{
+.dropdown-arrangement button:active {
     border: 2px solid var(--primary-color)
 }
 
-.dropdown-arrangement .dropdown-menu{
+.dropdown-arrangement .dropdown-menu {
     min-width: 175px;
-    margin-top: 5px!important;
+    margin-top: 5px !important;
     border-radius: 10px;
     padding: 10px 10px;
 }
 
-.dropdown-arrangement .dropdown-menu li{
+.dropdown-arrangement .dropdown-menu li {
     padding: 5px 5px;
     transition: .2s linear;
 }
 
-.dropdown-arrangement .dropdown-menu li label{
+.dropdown-arrangement .dropdown-menu li label {
     font-size: var(--text-fontSize1);
 }
 
-.dropdown-arrangement .dropdown-menu li:hover{
+.dropdown-arrangement .dropdown-menu li:hover {
     color: var(--primary-color);
+}
+
+div.page-container.catalog div.page-section.catalog-departments div.catalog-department div.catalog-department__navigation div.catalog-department__nav-toggle {
+    border: 2px solid var(--primary-color);
+}
+
+div.page-container.catalog div.page-section.catalog-departments div.catalog-department div.catalog-department__navigation.open div.catalog-department__nav-toggle div.nav-toggle span.nav-toggle__icon:last-child svg {
+    stroke: var(--primary-color);
+}
+
+div.page-container.catalog div.page-section.catalog-departments div.catalog-department div.catalog-department__navigation.open div.catalog-department__nav-menu div.catalog-department__nav {
+    border-color: var(--primary-color);
+}
+
+div.page-container.catalog div.page-section.catalog-filter div.catalog-listing div.catalog-listing__filter div.filter-layout-toggle{
+    border: 2px solid var(--primary-color);
+}
+
+div.page-container.catalog div.page-section.catalog-filter div.catalog-listing div.catalog-listing__filter.open div.filter-layout-toggle div.nav-toggle span.nav-toggle__icon:last-child svg {
+    stroke: var(--primary-color);
+}
+
+div.page-container.catalog div.page-section.catalog-filter div.catalog-listing div.catalog-listing__filter.open div.filter-layout-menu div.filter-layout{
+    border-color: var(--primary-color);
+}
+
+.product__image{
+    background: none!important;
+}
+
+.product__image img{
+    width: 200px;
+    height: 250px;
+    object-fit: contain;
 }

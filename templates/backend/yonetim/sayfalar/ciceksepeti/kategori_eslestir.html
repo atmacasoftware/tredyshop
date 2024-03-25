@@ -98,31 +98,31 @@
                                         <tr>
                                             <form action="" method="get">
                                                 <td>
-                                                    {% if product.product.id %}
+                                                    {% if product.product.image_url1 %}
                                                         <img src="{{ product.product.image_url1 }}" alt=""
                                                              style="width: 50px; height: auto;">
                                                     {% else %}
-                                                        <img src="{{ product.image_url1 }}" alt=""
+                                                        <img src="{{ product.urun.product.image_url1 }}" alt=""
                                                              style="width: 50px; height: auto;">
                                                     {% endif %}
                                                 </td>
                                                 <td>
-                                                    {% if product.product.id %}
-                                                        {{ product.product.title }}
+                                                    {% if product.urun.title %}
+                                                        {{ product.urun.title }}
                                                     {% else %}
                                                         {{ product.title }}
                                                     {% endif %}
                                                 </td>
                                                 <td>
-                                                    {% if product.product.id %}
+                                                    {% if product.product.subbottomcategory.title %}
                                                         {{ product.product.subbottomcategory.title }}
                                                     {% else %}
-                                                        {{ product.subbottomcategory.title }}
+                                                        {{ product.urun.product.subbottomcategory.title }}
                                                     {% endif %}
                                                 </td>
 
                                                 <td>
-                                                    {% if product.product.id %}
+                                                    {% if product.ciceksepeti_kategori_id %}
                                                         <span class="badge badge-dark">{{ product.ciceksepeti_kategori_id }}</span>
                                                     {% else %}
                                                         <span class="badge badge-danger">-</span>
@@ -130,16 +130,17 @@
                                                 </td>
 
                                                 <td class="ciceksepeti_kategoriler">
-                                                    {% if product.product.id %}
+                                                    {% if product.product.product.id %}
                                                         <select class="form-control select2 kategoriSelect filter-checkbox"
                                                                 id="select-category2"
-                                                                name="kategori2-{{ product.product.id }}"
+                                                                name="kategori2-{{ product.urun.id }}"
                                                                 style="width: 100%;">
                                                             <option value="">--------</option>
                                                         </select>
                                                     {% else %}
                                                         <select class="form-control select2 kategoriSelect filter-checkbox"
-                                                                id="select-category2" name="kategori2-{{ product.id }}"
+                                                                id="select-category2"
+                                                                name="kategori2-{{ product.id }}"
                                                                 style="width: 100%;">
                                                             <option value="">--------</option>
                                                         </select>
@@ -149,23 +150,22 @@
                                                 <td>
                                                     <div class="btn-group-vertical" role="group"
                                                          aria-label="Basic example">
-                                                        <button class="btn btn-success" id="update-{{ product.id }}">
-                                                            Güncelle
-                                                        </button>
-                                                        {% if product.product.id %}
-                                                            <a href="{% url 'product_detail' product.product.barcode %}"
+                                                        {% if product.urun.barcode %}
+                                                            <button class="btn btn-success"
+                                                                    id="update-{{ product.urun.id }}">
+                                                                Güncelle
+                                                            </button>
+                                                            <a href="{% url 'product_detail' product.urun.barcode %}"
                                                                class="btn btn-primary">Ürüne Git</a>
                                                             <script>
-                                                                $("#update-{{ product.id }}").on('click', function (e) {
+                                                                $("#update-{{ product.urun.id }}").on('click', function (e) {
                                                                     e.preventDefault();
                                                                     $.ajax({
                                                                         type: "GET",
                                                                         url: `/yonetim/ciceksepeti/kategori-eslestir/ajax/`,
                                                                         data: {
                                                                             'product_id': {{ product.product.id }},
-                                                                            'kategori_id': $(
-                                                                                "select[name='kategori2-{{ product.id }}']"
-                                                                            ).val(),
+                                                                            'kategori_id': $("select[name='kategori2-{{ product.urun.id }}']").val(),
                                                                         },
                                                                         dataType: 'json',
                                                                         beforeSend: function () {
@@ -193,6 +193,10 @@
                                                                 })
                                                             </script>
                                                         {% else %}
+                                                            <button class="btn btn-success"
+                                                                    id="update-{{ product.id }}">
+                                                                Güncelle
+                                                            </button>
                                                             <a href="{% url 'product_detail' product.barcode %}"
                                                                class="btn btn-primary">Ürüne Git</a>
                                                             <script>

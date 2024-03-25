@@ -22,9 +22,28 @@ class TrendyolCommissionAdmin(ImportExportModelAdmin):
     list_per_page = 100
     resource_class = TrendyolCommissionResource
 
+class ProductAttributeInline(admin.TabularInline):
+    model = TrendyolAttributes
+
+class TrendyolProductAdmin(ImportExportModelAdmin):
+    list_display = ['product','category','category_id','is_publish','is_ready']
+    search_fields = ['id']
+    list_per_page = 200
+    inlines = [ProductAttributeInline]
+
+
+class TrendyolReportInline(admin.TabularInline):
+    model = TrendyolReportProduct
+
+class TrendyolReportAdmin(ImportExportModelAdmin):
+    list_display = ['name','created_at','updated_at']
+    search_fields = ['name']
+    list_per_page = 200
+    inlines = [TrendyolReportInline]
 
 admin.site.register(LogRecords, LogRecordAdmin)
 admin.site.register(TrendyolOrders, TrendyolOrderAdmin)
 admin.site.register(TrendyolCommission, TrendyolCommissionAdmin)
 admin.site.register(TrendyolMoreProductOrder)
-
+admin.site.register(TrendyolProduct, TrendyolProductAdmin)
+admin.site.register(TrendyolReport, TrendyolReportAdmin)

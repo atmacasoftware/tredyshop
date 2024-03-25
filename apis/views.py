@@ -4,16 +4,16 @@ from rest_framework.renderers import JSONRenderer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from apis.serializers import *
-from product.models import ApiProduct
+from product.models import Product
 from categorymodel.models import *
 
 class AllProductApiView(APIView):
     def get(self, request):
         try:
-            product = ApiProduct.objects.all()
+            product = Product.objects.all()
             serializer = ProductSerializer(product, many=True)
             return Response({'items': serializer.data})
-        except ApiProduct.DoesNotExist:
+        except Product.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
 
     def post(self, request):
@@ -23,10 +23,10 @@ class AllProductApiView(APIView):
 class ProductApiView(APIView):
     def get(self, request):
         try:
-            product = ApiProduct.objects.filter(is_publish=True, dropshipping="Modaymış")
+            product = Product.objects.filter(is_publish=True, dropshipping="Modaymış")
             serializer = ProductSerializer(product, many=True)
             return Response({'data': serializer.data})
-        except ApiProduct.DoesNotExist:
+        except Product.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
 
     def post(self, request):
@@ -66,14 +66,14 @@ class FlashDealProductApiView(APIView):
     def get(self, request):
         try:
             flash_deals = []
-            products = ApiProduct.objects.filter(is_publish=True, dropshipping="Modaymış")
+            products = Product.objects.filter(is_publish=True, dropshipping="Modaymış")
             for product in products:
                 if product.is_discountprice:
                     if 100 - ((product.discountprice * 100) / product.price) >= 0:
                         flash_deals.append(product)
             serializer = ProductSerializer(flash_deals, many=True)
             return Response({'data': serializer.data})
-        except ApiProduct.DoesNotExist:
+        except Product.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
 
     def post(self, request):
@@ -83,11 +83,11 @@ class FlashDealProductApiView(APIView):
 class NewProductApiView(APIView):
     def get(self, request):
         try:
-            products = ProductModelGroup.objects.filter(product__is_publish=True, product__subcategory__title__isnull=False, product__subbottomcategory__title__isnull=False, product__dropshipping="Modaymış").order_by(
-                "-product__create_at")[:12]
-            serializer = ProductModelGroupSerializer(products, many=True)
+            products = Product.objects.filter(is_publish=True, subcategory__title__isnull=False, subbottomcategory__title__isnull=False).order_by(
+                "-create_at")[:12]
+            serializer = ProductSerializer(products, many=True)
             return Response({'data': serializer.data})
-        except ProductModelGroup.DoesNotExist:
+        except Product.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
 
     def post(self, request):
@@ -97,16 +97,15 @@ class NewProductApiView(APIView):
 class MostLikeroductApiView(APIView):
     def get(self, request):
         try:
-            products = ProductModelGroup.objects.all().filter(product__is_publish=True, product__dropshipping="Modaymış",
-                                                       product__subcategory__title__isnull=False, product__subbottomcategory__title__isnull=False,
-                                                       product__reviewrating__rating__gte=4, product__reviewrating__rating__lte=6)[:12]
+            products = Product.objects.all().filter(is_publish=True, subcategory__title__isnull=False, subbottomcategory__title__isnull=False,
+                                                      reviewrating__rating__gte=4,reviewrating__rating__lte=6)[:12]
 
             if products.count() < 4:
-                products = ProductModelGroup.objects.filter(product__is_publish=True, product__subcategory__title__isnull=False,  product__subbottomcategory__title__isnull=False, product__dropshipping="Modaymış").order_by("?")[:12]
+                products = Product.objects.filter(is_publish=True, subcategory__title__isnull=False,  subbottomcategory__title__isnull=False).order_by("?")[:12]
 
-            serializer = ProductModelGroupSerializer(products, many=True)
+            serializer = ProductSerializer(products, many=True)
             return Response({'data': serializer.data})
-        except ProductModelGroup.DoesNotExist:
+        except Product.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
 
     def post(self, request):
@@ -117,19 +116,19 @@ class MostPointProductApiView(APIView):
     def get(self, request):
         try:
             reviewrating = ReviewRating.objects.all()
-            products = ProductModelGroup.objects.filter(product__is_publish=True, product__subcategory__title__isnull=False, product__subbottomcategory__title__isnull=False, product__dropshipping="Modaymış",
-                                                 product__reviewrating__in=reviewrating).annotate(
-                product__rating_count=Count('id')).order_by(
+            products = Product.objects.filter(is_publish=True, subcategory__title__isnull=False, subbottomcategory__title__isnull=False,
+                                                 reviewrating__in=reviewrating).annotate(
+                rating_count=Count('id')).order_by(
                 '-product__rating_count')
 
             if products.count() < 16:
-                products = ProductModelGroup.objects.filter(product__is_publish=True, product__subcategory__title__isnull=False, product__subbottomcategory__title__isnull=False,  product__dropshipping="Modaymış").order_by("?")[:10]
+                products = Product.objects.filter(is_publish=True, subcategory__title__isnull=False, subbottomcategory__title__isnull=False).order_by("?")[:10]
             else:
                 products = products[:16]
 
-            serializer = ProductModelGroupSerializer(products, many=True)
+            serializer = ProductSerializer(products, many=True)
             return Response({'data': serializer.data})
-        except ProductModelGroup.DoesNotExist:
+        except Product.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
 
     def post(self, request):
@@ -139,10 +138,10 @@ class MostPointProductApiView(APIView):
 class UstGiyimUrunleriApiView(APIView):
     def get(self, request):
         try:
-            product = ProductModelGroup.objects.filter(product__is_publish=True,product__subcategory_id=1, product__subbottomcategory__title__isnull=False)[:10]
-            serializer = ProductModelGroupSerializer(product, many=True)
+            product = Product.objects.filter(is_publish=True, subcategory_id=1, subbottomcategory__title__isnull=False)[:10]
+            serializer = ProductSerializer(product, many=True)
             return Response({'data': serializer.data})
-        except ProductModelGroup.DoesNotExist:
+        except Product.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
 
     def post(self, request):
@@ -152,10 +151,10 @@ class UstGiyimUrunleriApiView(APIView):
 class AltGiyimUrunleriApiView(APIView):
     def get(self, request):
         try:
-            product = ProductModelGroup.objects.filter(product__is_publish=True,product__subcategory_id=2, product__subbottomcategory__title__isnull=False)[:10]
-            serializer = ProductModelGroupSerializer(product, many=True)
+            product = Product.objects.filter(is_publish=True, subcategory_id=2, subbottomcategory__title__isnull=False)[:10]
+            serializer = ProductSerializer(product, many=True)
             return Response({'data': serializer.data})
-        except ProductModelGroup.DoesNotExist:
+        except Product.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
 
     def post(self, request):
@@ -165,10 +164,10 @@ class AltGiyimUrunleriApiView(APIView):
 class EsofmanUrunleriApiView(APIView):
     def get(self, request):
         try:
-            product = ProductModelGroup.objects.filter(product__is_publish=True,product__subcategory_id=3, product__subbottomcategory__title__isnull=False)[:10]
-            serializer = ProductModelGroupSerializer(product, many=True)
+            product = Product.objects.filter(is_publish=True, subcategory_id=3, subbottomcategory__title__isnull=False)[:10]
+            serializer = ProductSerializer(product, many=True)
             return Response({'data': serializer.data})
-        except ProductModelGroup.DoesNotExist:
+        except Product.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
 
     def post(self, request):
@@ -178,10 +177,10 @@ class EsofmanUrunleriApiView(APIView):
 class ElbiseUrunleriApiView(APIView):
     def get(self, request):
         try:
-            product = ProductModelGroup.objects.filter(product__is_publish=True, product__subcategory_id=4, product__subbottomcategory__title__isnull=False)[:10]
-            serializer = ProductModelGroupSerializer(product, many=True)
+            product = Product.objects.filter(is_publish=True, subcategory_id=4, subbottomcategory__title__isnull=False)[:10]
+            serializer = ProductSerializer(product, many=True)
             return Response({'data': serializer.data})
-        except ProductModelGroup.DoesNotExist:
+        except Product.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
 
     def post(self, request):
@@ -191,10 +190,10 @@ class ElbiseUrunleriApiView(APIView):
 class AyakkabiUrunleriApiView(APIView):
     def get(self, request):
         try:
-            product = ProductModelGroup.objects.filter(product__is_publish=True, product__subcategory_id=5, product__subbottomcategory__title__isnull=False)[:10]
-            serializer = ProductModelGroupSerializer(product, many=True)
+            product = Product.objects.filter(is_publish=True, subcategory_id=5, subbottomcategory__title__isnull=False)[:10]
+            serializer = ProductSerializer(product, many=True)
             return Response({'data': serializer.data})
-        except ProductModelGroup.DoesNotExist:
+        except Product.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
 
     def post(self, request):
@@ -204,10 +203,10 @@ class AyakkabiUrunleriApiView(APIView):
 class AksesuarUrunleriApiView(APIView):
     def get(self, request):
         try:
-            product = ProductModelGroup.objects.filter(product__is_publish=True, product__subcategory_id=6, product__subbottomcategory__title__isnull=False)[:10]
-            serializer = ProductModelGroupSerializer(product, many=True)
+            product = Product.objects.filter(is_publish=True, subcategory_id=6, subbottomcategory__title__isnull=False)[:10]
+            serializer = ProductSerializer(product, many=True)
             return Response({'data': serializer.data})
-        except ProductModelGroup.DoesNotExist:
+        except Product.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
 
     def post(self, request):
@@ -217,10 +216,10 @@ class AksesuarUrunleriApiView(APIView):
 class IcGiyimUrunleriApiView(APIView):
     def get(self, request):
         try:
-            product = ProductModelGroup.objects.filter(product__is_publish=True, product__subcategory_id=7, product__subbottomcategory__title__isnull=False)[:10]
-            serializer = ProductModelGroupSerializer(product, many=True)
+            product = Product.objects.filter(is_publish=True, subcategory_id=7, subbottomcategory__title__isnull=False)[:10]
+            serializer = ProductSerializer(product, many=True)
             return Response({'data': serializer.data})
-        except ProductModelGroup.DoesNotExist:
+        except Product.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
 
     def post(self, request):
@@ -230,10 +229,10 @@ class IcGiyimUrunleriApiView(APIView):
 class MostSellerApiView(APIView):
     def get(self, request):
         try:
-            product = ProductModelGroup.objects.filter(product__is_publish=True, product__subcategory__title__isnull=False, product__subbottomcategory__title__isnull=False, product__dropshipping="Modaymış").order_by("-product__sell_count")[:12]
-            serializer = ProductModelGroupSerializer(product, many=True)
+            product = Product.objects.filter(is_publish=True, subcategory__title__isnull=False, subbottomcategory__title__isnull=False).order_by("-sell_count")[:12]
+            serializer = ProductSerializer(product, many=True)
             return Response({'data': serializer.data})
-        except ProductModelGroup.DoesNotExist:
+        except Product.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
 
     def post(self, request):
@@ -244,15 +243,15 @@ class FlashDealsApiView(APIView):
     def get(self, request):
         try:
             flash_deals = []
-            products = ProductModelGroup.objects.filter(product__is_publish=True, product__subcategory__title__isnull=False, product__subbottomcategory__title__isnull=False, product__dropshipping="Modaymış")
+            products = Product.objects.filter(is_publish=True, subcategory__title__isnull=False, subbottomcategory__title__isnull=False)
             for product in products:
-                if product.product.is_discountprice:
-                    if 100 - ((product.get_product_discountprice() * 100) / product.get_product_price()) >= 0:
+                if product.is_discountprice:
+                    if 100 - ((product.discountprice * 100) / product.price) >= 0:
                         flash_deals.append(product)
 
-            serializer = ProductModelGroupSerializer(flash_deals, many=True)
+            serializer = ProductSerializer(flash_deals, many=True)
             return Response({'data': serializer.data})
-        except ProductModelGroup.DoesNotExist:
+        except Product.DoesNotExist:
             return Response({'msg': 'Ürün bulunmamaktadır.'})
 
     def post(self, request):

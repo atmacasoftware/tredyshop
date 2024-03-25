@@ -1,6 +1,82 @@
-from product.models import Pattern, ApiProduct, FabricType, EnvironmentType, CollerType, Waist, Height, LegType, Sex
+from categorymodel.models import SubCategory
+from product.models import Pattern, Product, FabricType, EnvironmentType, CollerType, Waist, Height, LegType, Sex, \
+    Product, ProductVariant, Size
 
 
+def beden():
+    ic_giyim_products = ProductVariant.objects.filter(product__subcategory_id=7)
+    for product in ic_giyim_products:
+        if product.size is not None:
+            if product.size.name == "S-M":
+                product.size = Size.objects.get(id=442)
+                product.save()
+
+            if product.size.name == "L-XL":
+                product.size = Size.objects.get(id=443)
+                product.save()
+    sweat_products = ProductVariant.objects.filter(product__subbottomcategory_id=65)
+    for product in sweat_products:
+        if product.size is not None:
+            if product.size.name == "STD":
+                product.size = Size.objects.get(id=210)
+                product.save()
+            if product.size.name == "Standart":
+                product.size = Size.objects.get(id=210)
+                product.save()
+            if product.size.name == "S-M":
+                product.size = Size.objects.get(id=442)
+                product.save()
+            if product.size.name == "L-XL":
+                product.size = Size.objects.get(id=443)
+                product.save()
+            if product.size.name == "XXL":
+                product.size = Size.objects.get(id=13)
+                product.save()
+    bluz_products = ProductVariant.objects.filter(product__subbottomcategory_id=2)
+    for product in bluz_products:
+        if product.size is not None:
+            if product.size.name == "S-M":
+                product.size = Size.objects.get(id=442)
+                product.save()
+            if product.size.name == "L-XL":
+                product.size = Size.objects.get(id=443)
+                product.save()
+    atlet_products = ProductVariant.objects.filter(product__subbottomcategory_id=1)
+    for product in atlet_products:
+        if product.size is not None:
+            if product.size.name == "S-M":
+                product.size = Size.objects.get(id=442)
+                product.save()
+            if product.size.name == "L-XL":
+                product.size = Size.objects.get(id=443)
+                product.save()
+    tshirt_products = ProductVariant.objects.filter(product__subbottomcategory_id=5)
+    for product in tshirt_products:
+        if product.size is not None:
+            if product.size.name == "S-M":
+                product.size = Size.objects.get(id=442)
+                product.save()
+            if product.size.name == "L-XL":
+                product.size = Size.objects.get(id=443)
+                product.save()
+    pijama_products = ProductVariant.objects.filter(product__subbottomcategory_id=94)
+    for product in pijama_products:
+        if product.size is not None:
+            if product.size.name == "XXL":
+                product.size = Size.objects.get(id=13)
+                product.save()
+    esofman_products = ProductVariant.objects.filter(product__subbottomcategory_id=12)
+    for product in esofman_products:
+        if product.size is not None:
+            if product.size.name == "XXL":
+                product.size = Size.objects.get(id=13)
+                product.save()
+    esofman_alti = ProductVariant.objects.filter(product__subbottomcategory_id=13)
+    for product in esofman_alti:
+        if product.size is not None:
+            if product.size.name == "XXL":
+                product.size = Size.objects.get(id=13)
+                product.save()
 def kalip():
     kalip_liste = ['Normal', 'Rahat', 'Dar']
 
@@ -9,7 +85,7 @@ def kalip():
     dar_pattern = Pattern.objects.get(name='Dar')
     slim_pattern = Pattern.objects.get(name='Slim')
 
-    product = ApiProduct.objects.filter(dropshipping="Modaymış").exclude(subcategory__category_no=5 or 6)
+    product = Product.objects.all().exclude(subcategory__category_no=5 or 6)
 
     data = 'failed'
 
@@ -35,7 +111,7 @@ def kalip():
 
 def kumas():
     kumas_list = ['deri','triko', 'dokuma', 'dantel', 'denim', 'kot denim', 'kaşkorse', 'poplin', 'örme', 'flamlı']
-    product = ApiProduct.objects.filter(dropshipping="Modaymış").exclude(subcategory__category_no=5 or 6)
+    product = Product.objects.all().exclude(subcategory__category_no=5 or 6)
     suni_deri = FabricType.objects.get(id=6)
     dokuma = FabricType.objects.get(id=3)
     dantel = FabricType.objects.get(id=1)
@@ -47,47 +123,42 @@ def kumas():
     flamli = FabricType.objects.get(id=7)
 
     for p in product:
+
+        if p.fabrictype == '' or p.fabrictype == None or p.fabrictype == 'None':
+            p.fabrictype = dokuma
+            p.save()
+            for liste in kumas_list:
+                if liste.lower() in p.title.lower().split():
+                    if liste == 'deri':
+                        p.fabrictype = suni_deri
+                    if liste == 'triko':
+                        p.fabrictype = triko
+                    if liste == 'dokuma':
+                        p.fabrictype = dokuma
+                    if liste == 'dantel':
+                        p.fabrictype = dantel
+                    if liste == 'örme':
+                        p.fabrictype = orme
+                    if liste == 'denim':
+                        p.fabrictype = denim
+                    if liste == 'poplin':
+                        p.fabrictype = poplin
+                    if liste == 'kaşkorse':
+                        p.fabrictype = dokuma
+                    if liste == 'flamlı':
+                        p.fabrictype = dokuma
+                    p.save()
         try:
             if p.subbottomcategory.category_no == "1015":
                 p.fabrictype = denim
                 p.save()
         except:
             pass
-
-        if p.fabrictype == '' or p.fabrictype == None or p.fabrictype == 'None':
-            if p.subbottomcategory.category_no == "1015":
-                p.fabrictype = denim
-                p.save()
-            else:
-                p.fabrictype = dokuma
-                p.save()
-                for liste in kumas_list:
-                    if liste.lower() in p.title.lower().split():
-                        if liste == 'deri':
-                            p.fabrictype = suni_deri
-                        if liste == 'triko':
-                            p.fabrictype = triko
-                        if liste == 'dokuma':
-                            p.fabrictype = dokuma
-                        if liste == 'dantel':
-                            p.fabrictype = dantel
-                        if liste == 'örme':
-                            p.fabrictype = orme
-                        if liste == 'denim':
-                            p.fabrictype = denim
-                        if liste == 'poplin':
-                            p.fabrictype = poplin
-                        if liste == 'kaşkorse':
-                            p.fabrictype = dokuma
-                        if liste == 'flamlı':
-                            p.fabrictype = dokuma
-                        p.save()
-
     return 'success'
 
 
 def ortam():
-    product = ApiProduct.objects.filter(dropshipping="Modaymış").exclude(subcategory__category_no=5 or 6)
+    product = Product.objects.all().exclude(subcategory__category_no=5 or 6)
     casual = EnvironmentType.objects.get(id=4)
 
     for p in product:
@@ -96,7 +167,7 @@ def ortam():
             p.save()
 
 def yaka():
-    product = ApiProduct.objects.filter(subcategory__category_no=1)
+    product = Product.objects.filter(subcategory__category_no=1)
 
     yaka_list = ['hakim', 'kare', 'balıkçı', 'bisiklet', 'u', 'v', 'dik', 'polo', 'dantel', 'fermuarlı', 'düğmeli', 'madonna']
 
@@ -143,15 +214,19 @@ def yaka():
                         p.collartype = madonna
                     p.save()
 
-
 def cinsiyet():
-    product = ApiProduct.objects.filter(category_id=1)
+    products = Product.objects.filter(category_id=1, is_publish=True)
+    men = Sex.objects.get(id=1)
     women = Sex.objects.get(id=2)
 
-    for p in product:
-        if p.sextype == '' or p.sextype == None or p.sextype == 'None':
-            p.sextype = women
-            p.save()
+    for product in products:
+        if "Erkek" in product.title:
+            product.sextype = men
+            product.save()
+
+        else:
+            product.sextype = women
+            product.save()
 
     return 'success'
 
@@ -171,7 +246,7 @@ def bel():
     extra_yuksek = Waist.objects.get(id=123)
     dusuk_bel = Waist.objects.get(id=122)
 
-    for p in ApiProduct.objects.filter(subbottomcategory_id=8):
+    for p in Product.objects.filter(subbottomcategory_id=8):
         if p.waist == '' or p.waist == None or p.waist == 'None':
             if p.subbottomcategory.category_no == "1015":
                 p.waist = yuksek_bel
@@ -206,7 +281,7 @@ def bel():
                         p.waist = normal
                         p.save()
 
-    for p in ApiProduct.objects.filter(subbottomcategory_id=7):
+    for p in Product.objects.filter(subbottomcategory_id=7):
         if p.waist == '' or p.waist == None or p.waist == 'None':
             for liste in bel_list:
                 if liste.lower() in p.title.lower():
@@ -237,7 +312,7 @@ def bel():
                     p.waist = normal
                     p.save()
 
-    for p in ApiProduct.objects.filter(subbottomcategory_id=9):
+    for p in Product.objects.filter(subbottomcategory_id=9):
         if p.waist == '' or p.waist == None or p.waist == 'None':
             for liste in bel_list:
                 if liste.lower() in p.title.lower():
@@ -268,7 +343,7 @@ def bel():
                     p.waist = normal
                     p.save()
 
-    for p in ApiProduct.objects.filter(subbottomcategory_id=10):
+    for p in Product.objects.filter(subbottomcategory_id=10):
         if p.waist == '' or p.waist == None or p.waist == 'None':
             for liste in bel_list:
                 if liste.lower() in p.title.lower():
@@ -298,7 +373,7 @@ def bel():
                 else:
                     p.waist = normal
                     p.save()
-        for p in ApiProduct.objects.filter(subbottomcategory_id=11):
+        for p in Product.objects.filter(subbottomcategory_id=11):
             if p.waist == '' or p.waist == None or p.waist == 'None':
                 for liste in bel_list:
                     if liste.lower() in p.title.lower():
@@ -329,7 +404,38 @@ def bel():
                         p.waist = normal
                         p.save()
 
-        for p in ApiProduct.objects.filter(subbottomcategory_id=12):
+        for p in Product.objects.filter(subbottomcategory_id=12):
+            if p.waist == '' or p.waist == None or p.waist == 'None':
+                for liste in bel_list:
+                    if liste.lower() in p.title.lower():
+                        if liste == 'yüksek bel':
+                            p.waist = yuksek_bel
+                        if liste == 'süper yüksek bel':
+                            p.productwaist = super_yuksek_bel
+                        if liste == 'regular':
+                            p.waist = regular
+                        if liste == 'paperbag':
+                            p.waist = paperbag
+                        if liste == 'normal bel':
+                            p.waist = normal
+                        if liste == 'lastikli':
+                            p.waist = lastikli
+                        if liste == 'kuşaklı':
+                            p.waist = kusakli
+                        if liste == 'kemerli':
+                            p.waist = kemerli
+                        if liste == 'jogger lastik bel':
+                            p.waist = jogger_lastik
+                        if liste == 'extra yüksek bel':
+                            p.waist = extra_yuksek
+                        if liste == 'düşük bel':
+                            p.waist = dusuk_bel
+                        p.save()
+                    else:
+                        p.waist = normal
+                        p.save()
+
+        for p in Product.objects.filter(subbottomcategory_id=13):
             if p.waist == '' or p.waist == None or p.waist == 'None':
                 for liste in bel_list:
                     if liste.lower() in p.title.lower():
@@ -360,38 +466,7 @@ def bel():
                         p.waist = normal
                         p.save()
 
-        for p in ApiProduct.objects.filter(subbottomcategory_id=13):
-            if p.waist == '' or p.waist == None or p.waist == 'None':
-                for liste in bel_list:
-                    if liste.lower() in p.title.lower():
-                        if liste == 'yüksek bel':
-                            p.waist = yuksek_bel
-                        if liste == 'süper yüksek bel':
-                            p.waist = super_yuksek_bel
-                        if liste == 'regular':
-                            p.waist = regular
-                        if liste == 'paperbag':
-                            p.waist = paperbag
-                        if liste == 'normal bel':
-                            p.waist = normal
-                        if liste == 'lastikli':
-                            p.waist = lastikli
-                        if liste == 'kuşaklı':
-                            p.waist = kusakli
-                        if liste == 'kemerli':
-                            p.waist = kemerli
-                        if liste == 'jogger lastik bel':
-                            p.waist = jogger_lastik
-                        if liste == 'extra yüksek bel':
-                            p.waist = extra_yuksek
-                        if liste == 'düşük bel':
-                            p.waist = dusuk_bel
-                        p.save()
-                    else:
-                        p.waist = normal
-                        p.save()
-
-        for p in ApiProduct.objects.filter(subbottomcategory_id=14):
+        for p in Product.objects.filter(subbottomcategory_id=14):
             if p.waist == '' or p.waist == None or p.waist == 'None':
                 for liste in bel_list:
                     if liste.lower() in p.title.lower():
@@ -425,7 +500,7 @@ def bel():
 
 
 def boy():
-    product = ApiProduct.objects.filter(dropshipping="Modaymış").exclude(subcategory_id=7 or 6 or 5)
+    product = Product.objects.all().exclude(subcategory_id=7 or 6 or 5)
 
     boy_list = ['bilek boy', 'crop', 'kısa', 'maxi','midi', 'mini', 'regular', 'standart', 'uzun', 'kapri']
 
@@ -471,7 +546,7 @@ def boy():
     return 'success'
 
 def paca():
-    product = ApiProduct.objects.filter(subbottomcategory_id=7 or 8 or 9 or 11 or 13 or 14)
+    product = Product.objects.filter(subbottomcategory_id=7 or 8 or 9 or 11 or 13 or 14)
     paca_list = LegType.objects.all()
 
     for p in product:
@@ -484,93 +559,259 @@ def paca():
     return 'success'
 
 def kategori():
-    product = ApiProduct.objects.filter(dropshipping="Modaymış")
+    product = Product.objects.all()
 
     for p in product:
-        if p.subbottomcategory == '' or p.subbottomcategory == None or p.subbottomcategory == 'None':
-            if product.filter(subcategory_id=3):
-                if 'takım' in p.title.lower():
-                    p.subbottomcategory_id = 12
-            if product.filter(subcategory_id=5):
-                if 'terlik' in p.title.lower():
-                    p.subbottomcategory_id = 19
-                if 'ev terliği' in p.title.lower():
-                    p.subbottomcategory_id = 80
-                if 'bot' in p.title.lower():
-                    p.subbottomcategory_id = 73
-                if 'ev botu' in p.title.lower():
-                    p.subbottomcategory_id = 81
-                if 'çizme' in p.title.lower():
-                    p.subbottomcategory_id = 78
-                if 'panduf' in p.title.lower():
-                    p.subbottomcategory_id = 76
-                if 'babet' in p.title.lower():
-                    p.subbottomcategory_id = 19
-            if product.filter(subcategory_id=1):
-                if 'süveter' in p.title.lower():
-                    p.subbottomcategory_id = 75
-                if 'kazak' in p.title.lower():
-                    p.subbottomcategory_id = 74
-                if 'panço' in p.title.lower():
-                    p.subbottomcategory_id = 77
-                if 'body' in p.title.lower():
-                    p.subbottomcategory_id = 2
-            if product.filter(subcategory_id=2):
-                if 'pantolon' in p.title.lower():
-                    p.subbottomcategory_id = 8
+        if p.is_completed_category == False:
+            if p.subbottomcategory:
+                if p.subbottomcategory.category_no == "1010" and p.subcategory == None:
+                    p.subcategory = SubCategory.objects.get(category_no="1")
+                    p.save()
 
-            if 'deri pantolon' in p.title.lower():
-                p.subcategory_id = 2
-                p.subbottomcategory_id = 8
+                if p.subbottomcategory.category_no == "1038" and p.subcategory == None:
+                    p.subcategory = SubCategory.objects.get(category_no="7")
+                    p.save()
 
-            if 'sweat' in p.title.lower():
+            if 'çorap' in p.title.lower() or 'çorabı' in p.title.lower():
+                p.subcategory_id = 7
+                p.subbottomcategory_id = 105
+                p.save()
+
+            if 'havlu' in p.title.lower():
+                p.subcategory_id = 86
+                p.subbottomcategory_id = 106
+                p.save()
+
+            if 'eşofman altı' in p.title.lower():
+                p.subcategory_id = 3
+                p.subbottomcategory_id = 13
+                p.save()
+
+            if 'bebek zıbın' in p.title.lower() or 'çocuk zıbın' in p.title.lower():
+                p.subcategory_id = 86
+                p.subbottomcategory_id = 102
+                p.save()
+
+            if 'bebek tulum' in p.title.lower():
+                p.subcategory_id = 86
+                p.subbottomcategory_id = 103
+                p.save()
+
+            if 'bebek takım' in p.title.lower():
+                p.subcategory_id = 86
+                p.subbottomcategory_id = 104
+                p.save()
+
+            if 'tişört' in p.title.lower():
                 p.subcategory_id = 1
-                p.subbottomcategory_id = 65
+                p.subbottomcategory_id = 5
+                p.save()
+
+            if 'poliviskon takım' in p.title.lower() or 'poliviskon önü düğmeli takım' in p.title.lower() or 'poliviskon düğmeli takım' in p.title.lower():
+                p.subcategory_id = 3
+                p.subbottomcategory_id = 94
+                p.save()
+
+            if 'süet takım' in p.title.lower():
+                p.subcategory_id = 3
+                p.subbottomcategory_id = 94
+                p.save()
+
+            if 'peluş takım' in p.title.lower():
+                p.subcategory_id = 3
+                p.subbottomcategory_id = 94
+                p.save()
+
+            if 'fitilli takım' in p.title.lower():
+                p.subcategory_id = 3
+                p.subbottomcategory_id = 94
+                p.save()
+
+            if 'panço' in p.title.lower():
+                p.subcategory_id = 1
+                p.subbottomcategory_id = 77
+                p.save()
+
+            if 'kostüm' in p.title.lower():
+                p.subcategory_id = 7
+                p.subbottomcategory_id = 87
+                p.save()
+
+            if 'babydoll' in p.title.lower():
+                p.subcategory_id = 7
+                p.subbottomcategory_id = 85
+                p.save()
+
+            if 'crop triko' in p.title.lower():
+                p.subcategory_id = 1
+                p.subbottomcategory_id = 100
+                p.save()
+
+            if 'bluz' in p.title.lower():
+                p.subcategory_id = 1
+                p.subbottomcategory_id = 2
+                p.save()
+
+            if 'body' in p.title.lower():
+                p.subcategory_id = 1
+                p.subbottomcategory_id = 100
+                p.save()
+
+            if 'hırka' in p.title.lower():
+                p.subcategory_id = 1
+                p.subbottomcategory_id = 66
+                p.save()
+
+            if 'terlik' in p.title.lower() or 'ev terliği' in p.title.lower():
+                p.subcategory_id = 5
+                p.subbottomcategory_id = 80
+                p.save()
+
+            if 'bot' in p.title.lower():
+                p.subcategory_id = 5
+                p.subbottomcategory_id = 73
+                p.save()
+
+            if 'sandalet' in p.title.lower():
+                p.subcategory_id = 5
+                p.subbottomcategory_id = 90
+                p.save()
+
+            if 'ev botu' in p.title.lower():
+                p.subcategory_id = 5
+                p.subbottomcategory_id = 81
+                p.save()
+
+            if 'çizme' in p.title.lower():
+                p.subcategory_id = 5
+                p.subbottomcategory_id = 78
+                p.save()
+
+            if 'panduf' in p.title.lower():
+                p.subcategory_id = 5
+                p.subbottomcategory_id = 76
+                p.save()
+
+            if 'pijama takımı' in p.title.lower():
+                p.subcategory_id = 3
+                p.subbottomcategory_id = 94
+                p.save()
+
+            if 'sabahlık' in p.title.lower():
+                p.subcategory_id = 3
+                p.subbottomcategory_id = 94
+                p.save()
+
+            if 'peluş takımı' in p.title.lower():
+                p.subcategory_id = 3
+                p.subbottomcategory_id = 94
+                p.save()
+
+            if 'şortlu takım' in p.title.lower():
+                p.subcategory_id = 3
+                p.subbottomcategory_id = 94
+                p.save()
+
+            if 'çocuk takım' in p.title.lower():
+                p.subcategory_id = 3
+                p.subbottomcategory_id = 94
+                p.save()
+
+            if 'bileklik' in p.title.lower():
+                p.subcategory_id = 6
+                p.subbottomcategory_id = 98
+                p.save()
+
+            if 'kolye' in p.title.lower():
+                p.subcategory_id = 6
+                p.subbottomcategory_id = 97
+                p.save()
+
+            if 'küpe' in p.title.lower():
+                p.subcategory_id = 6
+                p.subbottomcategory_id = 99
+                p.save()
+
+            if 'atlet' in p.title.lower():
+                p.subcategory_id = 1
+                p.subbottomcategory_id = 1
+                p.save()
+
+            if 'ceket' in p.title.lower():
+                p.subcategory_id = 1
+                p.subbottomcategory_id = 3
+                p.save()
+
+            if 'yağmurluk' in p.title.lower():
+                p.subcategory_id = 1
+                p.subbottomcategory_id = 68
+                p.save()
+
+            if 'babet' in p.title.lower():
+                p.subcategory_id = 5
+                p.subbottomcategory_id = 89
+                p.save()
 
             if 'günlük ayakkabı' in p.title.lower():
                 p.subcategory_id = 5
                 p.subbottomcategory_id = 21
+                p.save()
 
-            if 'topuklu ayakkabı' in p.title.lower():
-                p.subcategory_id = 5
-                p.subbottomcategory_id = 22
-
-            if 'sandalet' in p.title.lower():
-                p.subcategory_id = 5
-                p.subbottomcategory_id = 19
-
-            if 'şapka' in p.title.lower() or 'kep' in p.title.lower():
-                p.subcategory_id = 6
-                p.subbottomcategory_id = 23
-
-            if 'sırt çantası' in p.title.lower() or 'çanta' in p.title.lower():
+            if 'çanta' in p.title.lower():
                 p.subcategory_id = 6
                 p.subbottomcategory_id = 24
+                p.save()
 
-            if 'ev botu' in p.title.lower():
-                p.subcategory_id = 5
-                p.subbottomcategory_id = 19
+            if 'şal' in p.title.lower():
+                p.subcategory_id = 6
+                p.subbottomcategory_id = 62
+                p.save()
 
-            if 'çocuk' in p.title.lower():
-                p.age_group = "Çocuk"
+            if 'kaza' in p.title.lower():
+                p.subcategory_id = 1
+                p.subbottomcategory_id = 74
+                p.save()
 
-            if 'bebek' in p.title.lower():
-                p.age_group = "Bebek"
+            if 'kaban' in p.title.lower():
+                p.subcategory_id = 1
+                p.subbottomcategory_id = 74
+                p.save()
 
-            if 'süet takım' in p.title.lower():
-                p.subcategory_id = 3
-                p.subbottomcategory_id = 12
+            if 'sweat' in p.title.lower():
+                p.subcategory_id = 1
+                p.subbottomcategory_id = 65
+                p.save()
 
-            if 'çorabı' in p.title.lower() or 'çorab' in p.title.lower():
-                p.subbottomcategory_id = 79
+            if 'çocuk bornoz' in p.title.lower() or 'bebek bornoz' in p.title.lower():
+                p.subcategory_id = 86
+                p.subbottomcategory_id = 106
+                p.save()
 
-            p.save()
+            if 'sütyen tek damla desen' in p.title.lower() or 'sütyen tek damla desenli' in p.title.lower():
+                p.subcategory_id = 7
+                p.subbottomcategory_id = 27
+                p.save()
+
+            if 'tayt' in p.title.lower():
+                p.subcategory_id = 2
+                p.subbottomcategory_id = 11
+                p.save()
+
+            if 'salopet' in p.title.lower():
+                p.subcategory_id = 4
+                p.subbottomcategory_id = 86
+                p.save()
+
+            if 'fantezi sütyen takım' in p.title.lower() or 'jartiyer sütyen takım' in p.title.lower():
+                p.subcategory_id = 7
+                p.subbottomcategory_id = 88
+                p.save()
 
     return 'success'
 
 
 def yas_grubu():
-    products = ApiProduct.objects.filter(is_publish=True)
+    products = Product.objects.filter(is_publish=True)
     for product in products:
         for t in product.title.split(' '):
             if t == "Çocuk":
@@ -584,4 +825,4 @@ def yas_grubu():
     return "success"
 
 def topukTipi():
-    product = ApiProduct.objects.filter(subcategory_id=5)
+    product = Product.objects.filter(subcategory_id=5)

@@ -61,16 +61,16 @@
                                                                 <div class="col-xxl-7 col-xl-7 col-12">
                                                                     <div class="cart-item__info">
                                                                         <div class="cart-item__image">
-                                                                            <a href="{{ cart_item.product.get_url }}"
+                                                                            <a href="{{ cart_item.product.product.get_url }}"
                                                                                class="a-block">
-                                                                                <img src="{{ cart_item.product.image_url1 }}"
+                                                                                <img src="{{ cart_item.product.product.image_url1 }}"
                                                                                      alt="IMG"
                                                                                      style="width: auto; height: 100px;">
                                                                             </a>
                                                                         </div>
                                                                         <div class="cart-item__text">
                                                                             <div class="cart-item__title">
-                                                                                <a href="{{ cart_item.product.get_url }}">
+                                                                                <a href="{{ cart_item.product.product.get_url }}">
                                                                                     {{ cart_item.product.title }}
                                                                                 </a>
                                                                             </div>

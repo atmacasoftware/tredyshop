@@ -4,20 +4,27 @@ from import_export.admin import ImportExportModelAdmin
 from product.resource import *
 from product.models import *
 
+class ProductVariantInline(admin.TabularInline):
+    model = ProductVariant
 
-class ProductApiAdmin(ImportExportModelAdmin):
-    list_display = ['id', 'barcode', 'title', 'subbottomcategory',
-                    'brand', 'price', 'trendyol_price', 'status',
-                    'create_at', 'is_publish', 'update_at']
-    search_fields = ['title', 'id', 'barcode', 'model_code']
-    list_filter = ['status', 'is_discountprice']
+
+class ProductAdmin(ImportExportModelAdmin):
+    list_display = ['title','price','quantity','is_publish', 'create_at','update_at']
+    search_fields = ['id','barcode','model_code','title']
     list_per_page = 5000
+    inlines = [ProductVariantInline]
 
 
 class BrandAdmin(ImportExportModelAdmin):
     list_display = ['id','title', 'is_active']
     list_filter = ['is_active']
     resource_class = BrandResource
+
+class ProductVariantAdmin(ImportExportModelAdmin):
+    list_display = ['title','barcode','quantity', 'is_publish_trendyol','is_publish_ciceksepeti','create_at','update_at']
+    search_fields = ['barcode','title','model_code']
+    list_filter = ['is_publish_trendyol', 'is_publish_ciceksepeti']
+    resource_class = ProductVariantResource
 
 
 class QuestionAdmin(admin.ModelAdmin):
@@ -116,12 +123,6 @@ class KadinJeanBedenAdmin(ImportExportModelAdmin):
     list_display = ['beden_adi','basen','bel']
     resource_class = KadinJeanBedenResource
 
-class ProductGroupAdmin(ImportExportModelAdmin):
-    list_display = ['model_code','product']
-    search_fields = ['model_code']
-    list_per_page = 1000
-    resource_class = ProductGroupResource
-
 class TabletModelAdmin(ImportExportModelAdmin):
     list_display = ['name']
     resource_class = TabletModelResource
@@ -142,6 +143,49 @@ class BijuteriThemeAdmin(ImportExportModelAdmin):
     list_display = ['name']
     resource_class = BijuteriThemeResource
 
+class DesenAdmin(ImportExportModelAdmin):
+    list_display = ['id','name']
+    resource_class = DesenResource
+
+class PaketIcerigiAdmin(ImportExportModelAdmin):
+    list_display = ['id','name']
+    resource_class = PaketIcerigiResource
+
+class KoleksyionAdmin(ImportExportModelAdmin):
+    list_display = ['id','name']
+    resource_class = KoleksiyonResource
+
+class DokumaTipiAdmin(ImportExportModelAdmin):
+    list_display = ['id','name']
+    resource_class = DokumaTipiResource
+
+class OzellikAdmin(ImportExportModelAdmin):
+    list_display = ['id','name']
+    resource_class = OzellikResource
+
+class UrunDetayAdmin(ImportExportModelAdmin):
+    list_display = ['id','name']
+    resource_class = UrunDetayResource
+
+class PersonaAdmin(ImportExportModelAdmin):
+    list_display = ['id','name']
+    resource_class = PersonaResource
+
+class SiluetAdmin(ImportExportModelAdmin):
+    list_display = ['id','name']
+    resource_class = SiluetResource
+
+class AltSiluetAdmin(ImportExportModelAdmin):
+    list_display = ['id','name']
+    resource_class = AltSiluetResource
+
+class UstSiluetAdmin(ImportExportModelAdmin):
+    list_display = ['id','name']
+    resource_class = UstSiluetResource
+
+class PadDetayAdmin(ImportExportModelAdmin):
+    list_display = ['id','name']
+    resource_class = PadDetayResource
 
 admin.site.register(Brand, BrandAdmin)
 admin.site.register(LikeProduct)
@@ -158,7 +202,7 @@ admin.site.register(ArmType, ArmTypeAdmin)
 admin.site.register(WeavingType, WeavingTypeAdmin)
 admin.site.register(MaterialType, MaterialTypeAdmin)
 admin.site.register(StockAlarm, StockAlarmAdmin)
-admin.site.register(ApiProduct, ProductApiAdmin)
+admin.site.register(Product, ProductAdmin)
 admin.site.register(EnvironmentType, EnvironmentTypeAdmin)
 admin.site.register(Waist, WaistAdmin)
 admin.site.register(LegType, LegTypeAdmin)
@@ -171,10 +215,20 @@ admin.site.register(KadinUstBuyukBedenTablosu, KadinUstBuyukAdmin)
 admin.site.register(KadinAltBedenTablosu, KadinAltBedenAdmin)
 admin.site.register(KadinAltBuyukBedenTablosu, KadinAltBuyukBedenAdmin)
 admin.site.register(KadinJeanBedenTablosu, KadinJeanBedenAdmin)
-admin.site.register(ProductKapak)
-admin.site.register(ProductModelGroup, ProductGroupAdmin)
 admin.site.register(TabletModel, TabletModelAdmin)
 admin.site.register(TableCaseType, TableCaseTypeAdmin)
 admin.site.register(SleepMode, SleepModeAdmin)
 admin.site.register(BagPattern, BagPatternAdmin)
 admin.site.register(BijuteriTheme, BijuteriThemeAdmin)
+admin.site.register(ProductVariant, ProductVariantAdmin)
+admin.site.register(Desen, DesenAdmin)
+admin.site.register(PaketIcerigi, PaketIcerigiAdmin)
+admin.site.register(Koleksiyon, KoleksyionAdmin)
+admin.site.register(DokumaTipi, DokumaTipiAdmin)
+admin.site.register(Ozellik, OzellikAdmin)
+admin.site.register(UrunDetay, UrunDetayAdmin)
+admin.site.register(Persona, PersonaAdmin)
+admin.site.register(Siluet, SiluetAdmin)
+admin.site.register(AltSiluet, AltSiluetAdmin)
+admin.site.register(UstSiluet, UstSiluetAdmin)
+admin.site.register(PadDetay, PadDetayAdmin)

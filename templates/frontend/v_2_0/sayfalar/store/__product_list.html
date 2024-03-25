@@ -4,14 +4,14 @@
             <div class="product-grid-item">
                 <div class="product">
                     <a class="a-block"
-                       href="{{ product.product.get_url }}">
+                       href="{{ product.get_url }}">
                         <div class="product__image">
-                            <img src="{{ product.get_kapak }}"
+                            <img src="{{ product.image_url1 }}"
                                  alt="IMG">
-                            {% if product.product.is_discountprice %}
+                            {% if product.is_discountprice %}
                                 <div class="discount">
                                                                                     <span>
-                                                                                        -{{ product.product.discountrate }}%
+                                                                                        -{{ product.discountrate }}%
                                                                                     </span>
                                 </div>
                             {% endif %}
@@ -19,36 +19,36 @@
                     </a>
                     <div class="product__description">
                         <a class="a-block"
-                           href="{{ product.product.get_urş }}">
+                           href="{{ product.get_urş }}">
                             <div class="product_prices">
-                                {% if product.product.is_discountprice %}
+                                {% if product.is_discountprice %}
                                     <b>
-                                        {{ product.product.discountprice }}
+                                        {{ product.discountprice }}
                                         TL
                                     </b>
                                     <span>
-                                                                                        {{ product.product.price }} TL
+                                                                                        {{ product.price }} TL
                                                                                     </span>
                                 {% else %}
                                     <b>
-                                        {{ product.product.price }}
+                                        {{ product.price }}
                                         TL
                                     </b>
                                 {% endif %}
                             </div>
                             <div class="product_rating">
                                                                                             <span class="rating">
-                                                    <i class="bi bi-star{% if product.product.averageReview > 0 %}-fill{% else %}{% endif %}"></i>
-                                                    <i class="bi bi-star{% if product.product.averageReview > 1.5 %}-fill{% else %}{% endif %}"></i>
-                                                    <i class="bi bi-star{% if product.product.averageReview > 2.5 %}-fill{% else %}{% endif %}"></i>
-                                                    <i class="bi bi-star{% if product.product.averageReview > 3.5 %}-fill{% else %}{% endif %}"></i>
-                                                    <i class="bi bi-star{% if product.product.averageReview > 4.5 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if product.averageReview > 0 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if product.averageReview > 1.5 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if product.averageReview > 2.5 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if product.averageReview > 3.5 %}-fill{% else %}{% endif %}"></i>
+                                                    <i class="bi bi-star{% if product.averageReview > 4.5 %}-fill{% else %}{% endif %}"></i>
                                                 </span>
                             </div>
                         </a>
                         <div class="product_name">
-                            <a href="{{ product.product.get_url }}">
-                                {{ product.product.title }}
+                            <a href="{{ product.get_url }}">
+                                {{ product.title }}
                             </a>
                         </div>
                     </div>

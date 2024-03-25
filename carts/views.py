@@ -29,23 +29,25 @@ from django.contrib.auth import logout as auth_logout
 from django.shortcuts import render, HttpResponse
 
 
-def add_cart(request, product_id):
+def add_cart(request, barcode):
     quantity = int(request.GET.get('quantity', 1))
+    barcode = request.POST.get('barcode')
     data = None
     url = request.META.get('HTTP_REFERER')
-    product = ApiProduct.objects.get(id=product_id, is_publish=True)
+    product = ProductVariant.objects.get(barcode=barcode, is_publish=True)
+
     same_product = 0
     if request.user.is_authenticated:
 
-        checkinproduct = CartItem.objects.filter(product_id=product_id, user_id=request.user.id)
+        checkinproduct = CartItem.objects.filter(product=product, user_id=request.user.id)
         if checkinproduct:
             control = 1
         else:
             control = 2
 
-        if request.method == 'GET':
+        if request.method == 'POST':
             if control == 1:
-                data = CartItem.objects.get(product_id=product_id, user_id=request.user.id)
+                data = CartItem.objects.get(product=product, user_id=request.user.id)
                 same_product = 1
                 data.quantity += quantity
                 try:
@@ -65,14 +67,14 @@ def add_cart(request, product_id):
                 cart.save()
                 data = CartItem()
                 data.user = request.user
-                data.product_id = product_id
+                data.product = product
                 data.cart = cart
                 data.quantity = quantity
                 data.save()
             return JsonResponse({'data': 'added', 'plus': '1', 'control': control, 'same_product': same_product})
         else:  # if there is no post
             if control == 1:
-                data = CartItem.objects.get(product_id=product_id, user_id=request.user.id)
+                data = CartItem.objects.get(product=product, user_id=request.user.id)
                 data.quantity += 1
                 try:
                     cart = Cart.objects.get(
@@ -90,7 +92,7 @@ def add_cart(request, product_id):
                 cart.save()
                 data = CartItem()
                 data.user = request.user
-                data.product_id = product_id
+                data.product = product
                 data.quantity = 1
                 data.cart = cart
                 data.variant_id = None
@@ -102,7 +104,7 @@ def add_cart(request, product_id):
 
 def remove_cart(request, product_id, cart_item_id):
     cart = Cart.objects.get(cart_id=request.user.id)
-    product = get_object_or_404(ApiProduct, id=product_id)
+    product = get_object_or_404(ProductVariant, id=product_id)
     try:
         cart_item = CartItem.objects.get(product=product, cart=cart, id=cart_item_id, user=request.user)
         cart_item.delete()
@@ -114,7 +116,7 @@ def remove_cart(request, product_id, cart_item_id):
 
 def minus_quantity(request, product_id, cart_item_id):
     cart = Cart.objects.get(cart_id=request.user.id)
-    product = get_object_or_404(ApiProduct, id=product_id)
+    product = get_object_or_404(ProductVariant, id=product_id)
     try:
         cart_item = CartItem.objects.get(product=product, cart=cart, id=cart_item_id, user=request.user)
         if cart_item.quantity > 1:
@@ -129,7 +131,7 @@ def minus_quantity(request, product_id, cart_item_id):
 def plus_quantity(request, product_id, cart_item_id):
 
     cart = Cart.objects.get(cart_id=request.user.id)
-    product = get_object_or_404(ApiProduct, id=product_id)
+    product = get_object_or_404(ProductVariant, id=product_id)
 
     try:
         cart_item = CartItem.objects.get(product=product, cart=cart, id=cart_item_id, user=request.user)
@@ -152,7 +154,7 @@ def cart(request, cart_items=None):
     cart = None
     cartitem_count = 0
     favourite_status = 0
-    products = ProductModelGroup.objects.filter(product__is_publish=True).order_by('?')[:8]
+    products = ProductVariant.objects.filter(is_publish=True).order_by('?')[:8]
 
     try:
         cart = Cart.objects.get(cart_id=request.user.id)
@@ -173,6 +175,7 @@ def cart(request, cart_items=None):
         if request.user.is_authenticated:
             cart_items = CartItem.objects.filter(user=request.user, is_active=True)
             for c in cart_items:
+
                 try:
                     favourite_product = Favorite.objects.filter(product=c.product, customer=request.user)
                     if favourite_product.count() > 0:
@@ -184,7 +187,6 @@ def cart(request, cart_items=None):
                     return redirect('cart')
 
         if 'sendCheckout' in request.POST:
-            print("111")
             coupon = request.POST.get('coupon')
             yr = int(date.today().strftime('%Y'))
             dt = int(date.today().strftime('%d'))
@@ -303,10 +305,10 @@ def createOrder(request, address, order_number, order_amount, order_total, is_in
         orderproduct.quantity = item.quantity
         orderproduct.size = item.product.size.name
         orderproduct.color = item.product.color.name
-        if item.product.is_discountprice == True:
-            orderproduct.product_price = item.product.discountprice
+        if item.product.product.is_discountprice == True:
+            orderproduct.product_price = item.product.product.discountprice
         else:
-            orderproduct.product_price = item.product.price
+            orderproduct.product_price = item.product.product.price
         item_price = float(orderproduct.product_price)
         item_weight = item_price / (float(data.order_amount) - float(data.delivery_price))
         orderproduct.forward_sale = order_total * item_weight
@@ -314,7 +316,7 @@ def createOrder(request, address, order_number, order_amount, order_total, is_in
         orderproduct.ordered = True
         orderproduct.save()
 
-        product = ApiProduct.objects.get(id=item.product.id)
+        product = ProductVariant.objects.get(id=item.product.id)
         product.quantity -= item.quantity
         productStatistic(barcode=orderproduct.product.barcode, title=orderproduct.title, quantity=orderproduct.quantity, satis=orderproduct.product_price)
         if product.quantity <= 0:
@@ -334,7 +336,7 @@ def checkout(request, total=0, cart_items=None):
     pre_order = None
     cart_items = CartItem.objects.filter(user=request.user)
     for i in cart_items:
-        if i.product.is_discountprice == True:
+        if i.product.product.is_discountprice == True:
             items.append([str(i.product.title).replace("İ", "I").replace("ş", "s").replace("ü", "u").replace("Ş",
                                                                                                              "S").replace(
                 "Ü", "U").replace("ğ", "g").replace("ç", "c").replace("Ç", "C").replace("ö", "o").replace("Ö", "O"),
@@ -343,7 +345,7 @@ def checkout(request, total=0, cart_items=None):
             items.append([(i.product.title).replace("İ", "I").replace("ş", "s").replace("ü", "u").replace("Ş",
                                                                                                           "S").replace(
                 "Ü", "U").replace("ğ", "g").replace("ç", "c").replace("Ç", "C").replace("ö", "o").replace("Ö", "O"),
-                          float(i.product.price), i.quantity])
+                          float(i.product.product.price), i.quantity])
     add_form = AddressForm(data=request.POST or None, files=request.FILES or None)
 
     all_address = CustomerAddress.objects.all().filter(user=request.user)
@@ -366,10 +368,10 @@ def checkout(request, total=0, cart_items=None):
         cart_items = CartItem.objects.filter(user=request.user, is_active=True)
         setting = Setting.objects.filter().last()
         for cart_item in cart_items:
-            if cart_item.product.is_discountprice:
-                total += (float(cart_item.product.discountprice) * cart_item.quantity)
+            if cart_item.product.product.is_discountprice:
+                total += (float(cart_item.product.product.discountprice) * cart_item.quantity)
             else:
-                total += (float(cart_item.product.price) * cart_item.quantity)
+                total += (float(cart_item.product.product.price) * cart_item.quantity)
             context.update({
                 'total': total,
                 'cart': cart,
@@ -522,8 +524,7 @@ def completed_checkout(request, order_number):
         })
 
     else:
-        cart = Cart.objects.get(cart_id=request.user.id)
-        pre_order = PreOrder.objects.get(cart=cart)
+        pre_order = PreOrder.objects.get(order_number=order_number)
         sorgu_durum = paytr_sorgu(order_number=order_number)
         taksit_durum = False
         if int(sorgu_durum['taksit']) != 0:
@@ -533,7 +534,7 @@ def completed_checkout(request, order_number):
                             order_total=float(sorgu_durum['payment_total']),
                             is_installment=taksit_durum, installment=int(sorgu_durum['taksit']), status="Yeni")
         total = 0
-        order_list = OrderProduct.objects.filter(order=order[1])
+        order_list = OrderProduct.objects.filter(order__order_number=order_number)
         for p in order_list:
             total += (float(p.quantity * p.product_price))
 
@@ -542,7 +543,7 @@ def completed_checkout(request, order_number):
         sendOrderInfoEmail(email="atmacaahmet5261@hotmail.com", platform="TredyShop", order=order[1])
 
         if order[0] == 'success':
-            cart.delete()
+            Cart.objects.get(cart_id=request.user.id).delete()
             try:
                 pre_order.delete()
             except:

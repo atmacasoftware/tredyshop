@@ -21,7 +21,7 @@ from django.shortcuts import render
 def products_detail(request, product_slug):
     context = {}
     query = ''
-    product = ApiProduct.objects.get(slug=product_slug)
+    product = Product.objects.get(slug=product_slug)
 
     image_urls = [
         product.image_url1, product.image_url2, product.image_url3, product.image_url4, product.image_url5,
@@ -50,8 +50,8 @@ def products_detail(request, product_slug):
     else:
         beden_tablosu = None
 
-    same_products = ApiProduct.objects.filter(model_code=product.model_code).order_by('-size__name')
-    similar_product = ApiProduct.objects.filter(subbottomcategory=product.subbottomcategory).exclude(slug=product.slug).order_by(
+    same_products = None
+    similar_product = Product.objects.filter(subbottomcategory=product.subbottomcategory).exclude(slug=product.slug).order_by(
         "?")[:6]
 
     product_question_count = Question.objects.all().filter(product=product).count()
@@ -97,7 +97,7 @@ def products_detail(request, product_slug):
     try:
         orderproduct = None
         if request.user.is_authenticated:
-            orderproduct = OrderProduct.objects.filter(user=request.user, product=product).exists()
+            orderproduct = OrderProduct.objects.filter(user=request.user, product=ProductVariant.objects.filter(product=product).last()).exists()
     except OrderProduct.DoesNotExist:
         orderproduct = None
     try:
@@ -147,7 +147,7 @@ def products_detail(request, product_slug):
 
 def degerlendirme_sayfasi(request, slug):
     context = {}
-    product = get_object_or_404(ApiProduct, slug=slug)
+    product = get_object_or_404(Product, slug=slug)
 
     reviews = ReviewRating.objects.filter(product=product).order_by("created_at")
     reviews_count = ReviewRating.objects.filter(product=product).count()
@@ -159,7 +159,7 @@ def degerlendirme_sayfasi(request, slug):
     try:
         orderproduct = None
         if request.user.is_authenticated:
-            orderproduct = OrderProduct.objects.filter(user=request.user, product=product).exists()
+            orderproduct = OrderProduct.objects.filter(user=request.user, product=ProductVariant.objects.filter(product=product).last()).exists()
     except OrderProduct.DoesNotExist:
         orderproduct = None
 
@@ -188,14 +188,14 @@ def degerlendirme_sayfasi(request, slug):
     return render(request, 'frontend/v_2_0/sayfalar/urun/yorum.html', context)
 
 def filter_yorum(request, id):
-    product = get_object_or_404(ApiProduct, id=id)
+    product = get_object_or_404(Product, id=id)
     filtered = request.GET.get('filter')
     reviews = ReviewRating.objects.filter(product=product).order_by(filtered)[:10]
     t = render_to_string('frontend/v_2_0/partials/__filter_degerlendirme.html', {'reviews': reviews})
     return JsonResponse({'data': t})
 
 def load_more_degerlendirme(request, id):
-    product = get_object_or_404(ApiProduct, id=id)
+    product = get_object_or_404(Product, id=id)
 
     filtered = request.GET.get('filter')
     offset = int(request.GET['offset'])
@@ -209,7 +209,7 @@ def load_more_degerlendirme(request, id):
 
 def soru_sayfasi(request, slug):
     context = {}
-    product = get_object_or_404(ApiProduct, slug=slug)
+    product = get_object_or_404(Product, slug=slug)
 
     question_reviews = Question.objects.filter(product=product).order_by("created_at")[:20]
     question_count = Question.objects.filter(product=product).count()
@@ -236,7 +236,7 @@ def soru_sayfasi(request, slug):
 
 
 def load_more_question(request, id):
-    product = get_object_or_404(ApiProduct, id=id)
+    product = get_object_or_404(Product, id=id)
     offset = int(request.GET['offset'])
     product_id = request.GET.get('product_id')
     limit = int(request.GET['limit'])
@@ -249,7 +249,7 @@ def load_more_question(request, id):
 
 def ajax_favourite(request):
     product_id = request.GET.get('product_id')
-    product = ApiProduct.objects.get(id=product_id)
+    product = Product.objects.get(id=product_id)
     favourite = Favorite.objects.filter(customer=request.user, product=product)
     data = {}
     if favourite.count() > 0:
@@ -262,7 +262,7 @@ def ajax_favourite(request):
 
 
 def deleted_favourite(request, product_id):
-    product = ApiProduct.objects.get(id=product_id)
+    product = Product.objects.get(id=product_id)
     Favorite.objects.get(customer=request.user, product=product).delete()
     data = {'favourite': 'deleted'}
     return JsonResponse({'data': data})
@@ -270,7 +270,7 @@ def deleted_favourite(request, product_id):
 
 def ajax_stockalarm(request):
     product_id = request.GET.get('product_id')
-    product = ApiProduct.objects.get(id=product_id)
+    product = Product.objects.get(id=product_id)
     ip = request.META.get('REMOTE_ADDR')
     data = {}
     try:

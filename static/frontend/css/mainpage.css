@@ -18,3 +18,12 @@
     font-size: var(--text-fontSize9);
 }
 
+.product__image{
+    background: none!important;
+}
+
+.product__image img{
+    height: 250px;
+    width: 200px;
+    object-fit: contain;
+}

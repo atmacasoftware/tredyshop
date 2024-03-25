@@ -105,7 +105,7 @@ class Order(models.Model):
 class OrderProduct(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name="Sipariş")
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Müşteri")
-    product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE, null=True, blank=False, verbose_name="Ürün")
+    product = models.ForeignKey(ProductVariant, on_delete=models.CASCADE, null=True, blank=False, verbose_name="Ürün")
     title = models.CharField(verbose_name="Ürün Başlığı", null=True, max_length=500)
     product_slug = models.CharField(verbose_name="Ürün Slug", null=True, max_length=500)
     color = models.CharField(max_length=50, verbose_name="Renk")
@@ -161,7 +161,7 @@ class ExtraditionRequest(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Müşteri")
     order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name="Sipariş", null=True)
-    product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE, null=True, blank=False, verbose_name="Ürün")
+    product = models.ForeignKey(ProductVariant, on_delete=models.CASCADE, null=True, blank=False, verbose_name="Ürün")
     extradition_type = models.CharField(choices=TYPE, max_length=255, verbose_name="İade Nedeni", null=True)
     description = models.TextField(verbose_name="Açıklama", help_text="İade talebeinizin daha hızlı sonuçlanması için açıklama yazabilirsiniz.")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi", null=True)
@@ -187,7 +187,7 @@ class ExtraditionRequestResult(models.Model):
 class CancellationRequest(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name="Sipariş", null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Müşteri", null=True)
-    product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE, null=True, blank=False, verbose_name="Ürün")
+    product = models.ForeignKey(ProductVariant, on_delete=models.CASCADE, null=True, blank=False, verbose_name="Ürün")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi", null=True)
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi",null=True)
 

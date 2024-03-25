@@ -19,7 +19,7 @@ from ecommerce.settings import EMAIL_HOST_USER
 from orders.models import Order, OrderProduct, ExtraditionRequest, ExtraditionRequestResult, \
     CancellationRequest
 from user_accounts.models import User
-from product.models import Favorite, ReviewRating, Question, ApiProduct
+from product.models import Favorite, ReviewRating, Question, Product, ProductVariant
 
 
 # Create your views here.
@@ -372,7 +372,7 @@ def order_detail(request, order_number):
         extradition_type = request.POST.get('extraditiontype')
         desc = request.POST.get('description')
         product_id = request.POST.get('product_id')
-        product = ApiProduct.objects.get(id=product_id)
+        product = ProductVariant.objects.get(id=product_id)
         orderproduct = OrderProduct.objects.get(order=order, product=product)
         extradition = ExtraditionRequest.objects.create(order=order, user=request.user,
                                                         extradition_type=extradition_type, description=desc,
@@ -390,7 +390,7 @@ def order_detail(request, order_number):
 @login_required(login_url="/giris-yap")
 def cancellig_order_product(request, order_number, product_id):
     order = Order.objects.get(order_number=order_number)
-    product = ApiProduct.objects.get(id=product_id)
+    product = ProductVariant.objects.get(id=product_id)
     orderproduct = OrderProduct.objects.get(order=order, product=product)
     cancelling = CancellationRequest.objects.create(order=order, user=request.user, product=product)
     orderproduct.is_cancelling = True

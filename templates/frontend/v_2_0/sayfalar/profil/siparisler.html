@@ -84,7 +84,7 @@
                                                                         </div>
                                                                         <div class="order-date">
                                                                             <div class="order-date__topline">
-                                                                            <span>Sipariş Tarihi {{ order.created_at }} − <a
+                                                                            <span>Sipariş Tarihi {{ order.created_at|date:"d-m-y H:i" }} − <a
                                                                                     href="{% url 'order_detail' order.order_number %}">Numarası {{ order.order_number }}</a></span>
                                                                             </div>
                                                                         </div>
@@ -100,11 +100,6 @@
                                                                                 <div class="order-item__total-topline">
                                                                                     <b>{{ order.order_total|floatformat:2 }}
                                                                                         TL</b>
-                                                                                </div>
-                                                                                <div class="order-item__total-botline">
-                                                                                <span>
-                                                                                    Tahmini Kargolanma: {{ order.delivered_time|date:'m/d/y' }}
-                                                                                </span>
                                                                                 </div>
                                                                             </div>
                                                                         </div>

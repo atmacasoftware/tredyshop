@@ -1,0 +1,6 @@
+<option value="">---------</option>
+{% for c in kategori_list %}
+    <option value="{{ c.id }}" data-name="{{ c.name }}"
+            {% if product.category_id == c.id %}selected{% endif %}>{{ c.name }}</option>
+{% endfor %}
+

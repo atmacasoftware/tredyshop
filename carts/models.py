@@ -1,7 +1,7 @@
 from django.db import models
 from user_accounts.models import User
 from customer.models import CustomerAddress, Coupon
-from product.models import ApiProduct
+from product.models import ProductVariant
 from mainpage.models import Setting
 # Create your models here.
 
@@ -15,25 +15,25 @@ class Cart(models.Model):
     def total_price(self):
         total = 0
         for item in CartItem.objects.filter(cart=self):
-            if item.product.is_discountprice == True:
-                total += (item.product.discountprice * item.quantity)
+            if item.product.product.is_discountprice == True:
+                total += (item.product.product.discountprice * item.quantity)
             else:
-                total += (item.product.price * item.quantity)
+                total += (item.product.product.price * item.quantity)
 
         return total
 
     def total_not_discuntprice(self):
         total = 0
         for item in CartItem.objects.filter(cart=self):
-                total += (item.product.price * item.quantity)
+                total += (item.product.product.price * item.quantity)
         return total
 
     def total_discount(self):
         minus = 0
         for item in CartItem.objects.filter(cart=self):
-            if item.product.is_discountprice == True:
-                total_discount_price = item.product.discountprice * item.quantity
-                total_price = item.product.price * item.quantity
+            if item.product.product.is_discountprice == True:
+                total_discount_price = item.product.product.discountprice * item.quantity
+                total_price = item.product.product.price * item.quantity
                 minus = total_price - total_discount_price
         return minus
 
@@ -50,6 +50,14 @@ class Cart(models.Model):
             return coupon
         except:
             return "Not available"
+
+    def delivery_price(self):
+        setting = Setting.objects.all().last()
+        total_price = self.total_price()
+        if total_price > setting.free_shipping:
+            return "Ücretsiz"
+        else:
+            return setting.shipping_price
 
     def total_quantity(self):
         quantity = 0
@@ -85,21 +93,19 @@ class Cart(models.Model):
 
 class CartItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE)
+    product = models.ForeignKey(ProductVariant, on_delete=models.CASCADE)
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     is_active = models.BooleanField(default=True)
 
     def sub_total(self):
-        if self.product.is_discountprice == True:
-            return self.product.discountprice * self.quantity
+        if self.product.product.is_discountprice == True:
+            return self.product.product.discountprice * self.quantity
         else:
-            return self.product.price * self.quantity
+            return self.product.product.price * self.quantity
 
     def not_discount_sub_total(self):
-        return self.product.price * self.quantity
-
-
+        return self.product.product.price * self.quantity
 
     def __str__(self):
         return f"{str(self.product.title)}"

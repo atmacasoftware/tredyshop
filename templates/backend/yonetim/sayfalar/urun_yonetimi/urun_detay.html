@@ -563,7 +563,7 @@
                                                         </div>
                                                     </div>
                                                 {% endif %}
-                                            {% elif product.subbottomcategory.category_no == "1028" or product.subbottomcategory.category_no == "1029" or product.subbottomcategory.category_no == "1031" or product.subbottomcategory.category_no == "1033" or product.subbottomcategory.category_no == "1034" or product.subbottomcategory.category_no == "1035" or product.subbottomcategory.category_no == "1036" or product.subbottomcategory.category_no == "1037" or product.subbottomcategory.category_no == "1038" or product.subbottomcategory.category_no == "1040" %}
+                                            {% elif product.subbottomcategory.category_no == "1036" or product.subbottomcategory.category_no == "1040" %}
                                                 {% if field.name == "color" or field.name == "size" or field.name == "age_group" or field.name == "sextype"  or field.name == "fabrictype" %}
                                                     <div class="form-group row">
                                                         <label for="{{ field.id_for_label }}"
@@ -576,8 +576,125 @@
                                                         </div>
                                                     </div>
                                                 {% endif %}
+                                            {% elif product.subbottomcategory.category_no == "1028"  %}
+                                                {% if field.name == "color" or field.name == "size" or field.name == "age_group" or field.name == "sextype"  or field.name == "fabrictype" or field.name == "material" or field.name == "collartype" or field.name == "desen" or field.name == "paket_icerigi" or field.name == "koleksiyon" or field.name == "environment" or field.name == "dokuma_tipi" or field.name == "ozellik" %}
+                                                    <div class="form-group row">
+                                                        <label for="{{ field.id_for_label }}"
+                                                               class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                        <div class="col-sm-9">
+                                                            {{ field }}
+                                                            {% for error in field.errors %}
+                                                                <p style="color: red">{{ error }}</p>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% elif product.subbottomcategory.category_no == "1029"  %}
+                                                {% if field.name == "color" or field.name == "size" or field.name == "age_group" or field.name == "sextype"  or field.name == "fabrictype" or field.name == "material" or field.name == "collartype" or field.name == "armtype" or field.name == "desen" or field.name == "paket_icerigi" or field.name == "koleksiyon" or field.name == "pattern" or field.name == "urundetay" or field.name == "environment" or field.name == "dokuma_tipi" or field.name == "persona" or field.name == "siluet" %}
+                                                    <div class="form-group row">
+                                                        <label for="{{ field.id_for_label }}"
+                                                               class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                        <div class="col-sm-9">
+                                                            {{ field }}
+                                                            {% for error in field.errors %}
+                                                                <p style="color: red">{{ error }}</p>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% elif product.subbottomcategory.category_no == "1031"  %}
+                                                {% if field.name == "color" or field.name == "size" or field.name == "age_group" or field.name == "sextype"  or field.name == "fabrictype" or field.name == "material" or field.name == "collartype" or field.name == "desen" or field.name == "paket_icerigi" or field.name == "koleksiyon" or field.name == "environment" %}
+                                                    <div class="form-group row">
+                                                        <label for="{{ field.id_for_label }}"
+                                                               class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                        <div class="col-sm-9">
+                                                            {{ field }}
+                                                            {% for error in field.errors %}
+                                                                <p style="color: red">{{ error }}</p>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% elif product.subbottomcategory.category_no == "1033" %}
+                                                {% if field.name == "color" or field.name == "size" or field.name == "age_group" or field.name == "sextype" or field.name == "fabrictype" or field.name == "material" or field.name == "desen" or field.name == "paket_icerigi" or field.name == "koleksiyon" or field.name == "environment" or field.name == "altsiluet" %}
+                                                    <div class="form-group row">
+                                                        <label for="{{ field.id_for_label }}"
+                                                               class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                        <div class="col-sm-9">
+                                                            {{ field }}
+                                                            {% for error in field.errors %}
+                                                                <p style="color: red">{{ error }}</p>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
                                             {% elif product.subbottomcategory.category_no == "1032" %}
-                                                {% if field.name == "color" or field.name == "size" or field.name == "age_group" or field.name == "sextype" or field.name == "fabrictype" %}
+                                                {% if field.name == "color" or field.name == "size" or field.name == "age_group" or field.name == "sextype" or field.name == "fabrictype" or field.name == "material" or field.name == "collartype" %}
+                                                    <div class="form-group row">
+                                                        <label for="{{ field.id_for_label }}"
+                                                               class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                        <div class="col-sm-9">
+                                                            {{ field }}
+                                                            {% for error in field.errors %}
+                                                                <p style="color: red">{{ error }}</p>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% elif product.subbottomcategory.category_no == "1034" %}
+                                                {% if field.name == "color" or field.name == "size" or field.name == "age_group" or field.name == "sextype" or field.name == "fabrictype" or field.name == "material" or field.name == "desen" or field.name == "paket_icerigi" or field.name == "koleksiyon" or field.name == "environment" or field.name == "usttsiluet" %}
+                                                    <div class="form-group row">
+                                                        <label for="{{ field.id_for_label }}"
+                                                               class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                        <div class="col-sm-9">
+                                                            {{ field }}
+                                                            {% for error in field.errors %}
+                                                                <p style="color: red">{{ error }}</p>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% elif product.subbottomcategory.category_no == "1035" %}
+                                                {% if field.name == "color" or field.name == "size" or field.name == "age_group" or field.name == "sextype" or field.name == "fabrictype" or field.name == "material" or field.name == "armtype" or field.name == "collartype" or field.name == "desen" or field.name == "paket_icerigi" or field.name == "pattern" or field.name == "urundetay" or field.name == "koleksiyon" or field.name == "persona" or field.name == "siluet" or field.name == "environment" or field.name == "dokuma_tipi" %}
+                                                    <div class="form-group row">
+                                                        <label for="{{ field.id_for_label }}"
+                                                               class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                        <div class="col-sm-9">
+                                                            {{ field }}
+                                                            {% for error in field.errors %}
+                                                                <p style="color: red">{{ error }}</p>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% elif product.subbottomcategory.category_no == "1037" %}
+                                                {% if field.name == "color" or field.name == "size" or field.name == "age_group" or field.name == "sextype" or field.name == "fabrictype" or field.name == "material" or field.name == "desen" or field.name == "paket_icerigi" or field.name == "urundetay" or field.name == "koleksiyon" or field.name == "siluet" or field.name == "altsiluet" or field.name == "environment" or field.name == "dokuma_tipi" %}
+                                                    <div class="form-group row">
+                                                        <label for="{{ field.id_for_label }}"
+                                                               class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                        <div class="col-sm-9">
+                                                            {{ field }}
+                                                            {% for error in field.errors %}
+                                                                <p style="color: red">{{ error }}</p>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% elif product.subbottomcategory.category_no == "1038" %}
+                                                {% if field.name == "color" or field.name == "size" or field.name == "age_group" or field.name == "sextype" or field.name == "fabrictype" or field.name == "material" or field.name == "collartype" or field.name == "desen" or field.name == "paket_icerigi" or field.name == "urundetay" or field.name == "koleksiyon" or field.name == "siluet" or field.name == "usttsiluet" or field.name == "environment" or field.name == "dokuma_tipi" or field.name == "peddetay" %}
+                                                    <div class="form-group row">
+                                                        <label for="{{ field.id_for_label }}"
+                                                               class="col-sm-3 col-form-label">{{ field.label }}</label>
+                                                        <div class="col-sm-9">
+                                                            {{ field }}
+                                                            {% for error in field.errors %}
+                                                                <p style="color: red">{{ error }}</p>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% elif product.subbottomcategory.category_no == "1041" %}
+                                                {% if field.name == "color" or field.name == "size" or field.name == "age_group" or field.name == "sextype" or field.name == "fabrictype" or field.name == "material" or field.name == "collartype" or field.name == "desen" or field.name == "paket_icerigi" or field.name == "urundetay" or field.name == "koleksiyon" or field.name == "usttsiluet" or field.name == "altsiluet" or field.name == "environment" or field.name == "dokuma_tipi" or field.name == "persona" %}
                                                     <div class="form-group row">
                                                         <label for="{{ field.id_for_label }}"
                                                                class="col-sm-3 col-form-label">{{ field.label }}</label>
@@ -671,28 +788,110 @@
                                 </div>
                             </div>
                             <div class="card-body collapse" id="varyant">
-                                <table class="table table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">Ürün Adı</th>
-                                        <th scope="col">Barkod</th>
-                                        <th scope="col">Beden</th>
-                                        <th scope="col">Renk</th>
-                                        <th scope="col">Güncellenme Tarihi</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for v in variants %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover text-nowrap">
+                                        <thead>
                                         <tr>
-                                            <td><a href="{% url 'product_detail' v.id %}">{{ v.title }}</a></td>
-                                            <td>{{ v.barcode }}</td>
-                                            <td>{{ v.size }}</td>
-                                            <td>{{ v.color }}</td>
-                                            <td>{{ v.update_at }}</td>
+                                            <th scope="col">Ürün Adı</th>
+                                            <th scope="col">Barkod</th>
+                                            <th scope="col">Stok Kodu</th>
+                                            <th scope="col">Beden</th>
+                                            <th scope="col">Renk</th>
+                                            <th scope="col">Trendyol Fiyatı (TL)</th>
+                                            <th scope="col">Miktar</th>
+                                            <th scope="col">Yayın Durumu</th>
+                                            <th scope="col">Trendyol</th>
+                                            <th scope="col">Çiçeksepeti</th>
+                                            <th scope="col">Güncellenme Tarihi</th>
+                                            <th scope="col">İşlemler</th>
                                         </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                        {% for v in variants %}
+                                            <tr>
+                                                <td>{{ v.title }}</td>
+                                                <td>{{ v.barcode }}</td>
+                                                <td>{{ v.stock_code }}</td>
+                                                <td>
+                                                    <div class="form-group mt-2">
+                                                        <select class="form-control select2 form-control-sm"
+                                                                name="size-{{ v.id }}" id="size-{{ v.id }}">
+                                                            {% for s in sizes %}
+                                                                <option value="{{ s.id }}"
+                                                                        {% if v.size.id == s.id %}selected{% endif %}>{{ s.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="form-group mt-2">
+                                                        <select class="form-control select2 form-control-sm"
+                                                                name="color-{{ v.id }}" id="color-{{ v.id }}">
+                                                            {% for c in colors %}
+                                                                <option value="{{ c.id }}"
+                                                                        {% if v.color.id == c.id %}selected{% endif %}>{{ c.name }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="d-block">{% if v.trendyol_price %}
+                                                        {{ v.trendyol_price }}{% else %}-{% endif %}</span>
+                                                    <span class="d-block">{% if v.trendyol_discountprice %}
+                                                        {{ v.trendyol_discountprice }}{% endif %}</span>
+                                                </td>
+                                                <td>{{ v.quantity }}</td>
+                                                <td>
+                                                    {% if v.is_publish %}Yayında{% else %}Yayında Değil{% endif %}
+                                                </td>
+                                                <td>
+                                                    <a href="{% url 'urun_trendyol_yayina_al_kaldir' v.barcode %}"
+                                                       class="btn btn-{% if v.is_publish_trendyol %}warning{% else %}primary{% endif %} text-white">
+                                                        {% if v.is_publish_trendyol %}Yayından Kaldır{% else %}
+                                                            Yayınla{% endif %}</a>
+                                                </td>
+                                                <td>{% if v.is_publish_ciceksepeti %}Yayında{% else %}Yayında
+                                                    Değil{% endif %}</td>
+                                                <td>{{ v.update_at|date:"d-m-Y H:i" }}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-primary"
+                                                            id="variant-{{ v.id }}">Güncelle
+                                                    </button>
+                                                    <script>
+                                                        $("#variant-{{ v.id }}").on('click', function () {
+                                                            $.ajax({
+                                                                type: "GET",
+                                                                url: `/yonetim/urunler/varyant-islemleri/barkod={{ v.barcode }}/`,
+                                                                data: {
+                                                                    'size': $("select[name='size-{{ v.id }}']").val(),
+                                                                    'color': $("select[name='color-{{ v.id }}']").val(),
+                                                                },
+                                                                dataType: 'json',
+                                                                beforeSend: function () {
+                                                                    $(".waiting").css('display', 'flex')
+                                                                    $(".waiting").css('visibility', 'visible')
+                                                                },
+                                                                success: function (data) {
+                                                                    $(".waiting").css('display', 'none')
+                                                                    $(".waiting").css('visibility', 'hidden')
+                                                                    swal('Beden Güncellendi', '', 'success');
+                                                                },
+                                                                error: function (e) {
+                                                                    iziToast.error({
+                                                                        title: 'Hata !',
+                                                                        message: `Bir hata meydana geldi. ${e}.`,
+                                                                        position: 'topRight'
+                                                                    });
+                                                                }
+                                                            });
+                                                        })
+                                                    </script>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -728,4 +927,5 @@
     <script src="{% static 'backend/js/product.js' %}"></script>
     <script src="{% static 'backend/modules/chocolat/dist/js/jquery.chocolat.min.js' %}"></script>
     <script src="{% static 'backend/modules/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'backend/modules/sweetalert/sweetalert.min.js' %}"></script>
 {% endblock %}

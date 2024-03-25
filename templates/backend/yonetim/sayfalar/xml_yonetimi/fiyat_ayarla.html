@@ -79,7 +79,7 @@
                         </div>
                         <div class="card-body">
                             <a href="{% if ciceksepeti != None %}
-                                        {% url 'ciceksepeti_fiyat_guncelle' amazon.id %}
+                                        {% url 'ciceksepeti_fiyat_guncelle' ciceksepeti.id %}
                                       {% else %}
                                         {% url 'ciceksepeti_fiyat_ayarla' %}
                                       {% endif %}"

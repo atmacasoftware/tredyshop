@@ -1,7 +1,6 @@
 from django.db import models
 
-from product.models import ApiProduct
-
+from product.models import ProductVariant
 
 # Create your models here.
 
@@ -19,7 +18,7 @@ class Ciceksepeti(models.Model):
 
 
 class CiceksepetiUrunler(models.Model):
-    product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE, verbose_name="Ürün")
+    urun = models.ForeignKey(ProductVariant, on_delete=models.CASCADE, verbose_name="Ürün")
     ciceksepeti_kategori_id = models.BigIntegerField(verbose_name="Çiceksepeti Kategori ID", null=True)
     yayin_durumu = models.BooleanField(default=False, verbose_name="Yayın Durumu")
     create_at = models.DateTimeField(auto_now_add=True)
@@ -30,7 +29,7 @@ class CiceksepetiUrunler(models.Model):
         verbose_name_plural = '2) Çiçeksepeti Ürünler'
 
     def __str__(self):
-        return str(self.product.title)
+        return str(self.urun.title)
 
 
 class CiceksepetiOrders(models.Model):

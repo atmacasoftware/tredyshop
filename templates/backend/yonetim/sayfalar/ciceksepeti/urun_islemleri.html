@@ -88,7 +88,8 @@
                         <div class="card-header">
                             <h4>Çiçeksepeti Ürünler</h4>
                             <div class="card-header-action">
-                                <a href="{% url 'ciceksepeti_stok_fiyat_guncelle' %}" class="btn btn-primary">Stok & Fiyat Güncelle</a>
+                                <a href="{% url 'ciceksepeti_stok_fiyat_guncelle' %}" class="btn btn-primary">Stok &
+                                    Fiyat Güncelle</a>
                             </div>
                         </div>
                         <div class="card-body p-0">
@@ -112,33 +113,33 @@
                                                 <td>
                                                     <div class="gallery gallery-md">
                                                         <div class="gallery-item"
-                                                             data-image="{{ product.product.image_url1 }}"
+                                                             data-image="{{ product.urun.product.image_url1 }}"
                                                              data-title="Image 1" style="width: 50px;"></div>
                                                         <div class="gallery-item d-none"
-                                                             data-image="{{ product.product.image_url2 }}"
+                                                             data-image="{{ product.urun.product.image_url2 }}"
                                                              data-title="Image 1" style="width: 50px;"></div>
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <p style="line-height: 0.2px;">
                                                         <strong><a
-                                                                href="{% url 'product_detail' product.product.barcode %}"
-                                                                class="font-weight-bold text-dark">{{ product.product.title|truncatechars_html:35 }}</a></strong>
+                                                                href="{% url 'product_detail' product.urun.barcode %}"
+                                                                class="font-weight-bold text-dark">{{ product.urun.title|truncatechars_html:35 }}</a></strong>
                                                     </p>
-                                                    <span id="{{ product.product.barcode }}">Barcode: {{ product.product.barcode }}</span>
-                                                    <span id="copy-{{ product.product.id }}" title="Kopyala"
-                                                          onclick="copyFunction({{ product.product.barcode }})"
+                                                    <span id="{{ product.urun.barcode }}">Barcode: {{ product.urun.barcode }}</span>
+                                                    <span id="copy-{{ product.urun.id }}" title="Kopyala"
+                                                          onclick="copyFunction({{ product.urun.barcode }})"
                                                           style="background: none; outline: none; border: none; cursor:pointer;">
                                                         <i class="fa fa-copy"></i></span>
                                                 </td>
-                                                <td>{{ product.product.subbottomcategory }}</td>
+                                                <td>{{ product.urun.product.subbottomcategory }}</td>
                                                 <td>
                                                     {{ product.ciceksepeti_kategori_id }}
                                                     <input type="hidden" id="{{ product.product.id }}-categoryID"
                                                            value="{{ product.ciceksepeti_kategori_id }}">
                                                 </td>
-                                                <td>{{ product.product.quantity }}</td>
-                                                <td id="yayin-durumu-{{ product.product.id }}">
+                                                <td>{{ product.urun.quantity }}</td>
+                                                <td id="yayin-durumu-{{ product.urun.id }}">
                                                     {% if product.yayin_durumu == True %}
                                                         <span class="btn btn-icon btn-success">
                                                             <i class="fas fa-check"></i>
@@ -158,19 +159,19 @@
                                                             </button>
                                                         {% else %}
                                                             <button class="btn btn-success"
-                                                                    id="update-{{ product.product.id }}">
+                                                                    id="update-{{ product.urun.id }}">
                                                                 Gönder <i class="fa fa-send"></i>
                                                             </button>
                                                             <script>
 
-                                                                $("#update-{{ product.product.id }}").on('click', function (e) {
+                                                                $("#update-{{ product.urun.id }}").on('click', function (e) {
                                                                     e.preventDefault();
                                                                     $.ajax({
                                                                         type: "GET",
                                                                         url: `/yonetim/ciceksepeti/urun-girisi/urun-gonder/`,
                                                                         data: {
-                                                                            'productID': {{ product.product.id }},
-                                                                            'kategoriID': $("#{{ product.product.id }}-categoryID").val(),
+                                                                            'productID': {{ product.urun.id }},
+                                                                            'kategoriID': $("#{{ product.urun.id }}-categoryID").val(),
                                                                         },
                                                                         dataType: 'json',
                                                                         beforeSend: function () {

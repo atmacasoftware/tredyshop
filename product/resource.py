@@ -98,10 +98,6 @@ class KadinJeanBedenResource(resources.ModelResource):
     class Meta:
         model = KadinJeanBedenTablosu
 
-class ProductGroupResource(resources.ModelResource):
-    class Meta:
-        model = ProductModelGroup
-
 class TabletModelResource(resources.ModelResource):
     class Meta:
         model = TabletModel
@@ -121,3 +117,51 @@ class BagPatternResource(resources.ModelResource):
 class BijuteriThemeResource(resources.ModelResource):
     class Meta:
         model = BijuteriTheme
+
+class DesenResource(resources.ModelResource):
+    class Meta:
+        model = Desen
+
+class PaketIcerigiResource(resources.ModelResource):
+    class Meta:
+        model = PaketIcerigi
+
+class KoleksiyonResource(resources.ModelResource):
+    class Meta:
+        model = Koleksiyon
+
+class DokumaTipiResource(resources.ModelResource):
+    class Meta:
+        model = DokumaTipi
+
+class OzellikResource(resources.ModelResource):
+    class Meta:
+        model = Ozellik
+
+class UrunDetayResource(resources.ModelResource):
+    class Meta:
+        model = UrunDetay
+
+class PersonaResource(resources.ModelResource):
+    class Meta:
+        model = Persona
+
+class SiluetResource(resources.ModelResource):
+    class Meta:
+        model = Siluet
+
+class AltSiluetResource(resources.ModelResource):
+    class Meta:
+        model = AltSiluet
+
+class UstSiluetResource(resources.ModelResource):
+    class Meta:
+        model = UstSiluet
+
+class PadDetayResource(resources.ModelResource):
+    class Meta:
+        model = PadDetay
+
+class ProductVariantResource(resources.ModelResource):
+    class Meta:
+        model = ProductVariant

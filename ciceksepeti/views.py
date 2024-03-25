@@ -12,7 +12,7 @@ from ciceksepeti.services import *
 from ciceksepeti.api import *
 from django.contrib.auth.decorators import login_required
 
-from product.models import ApiProduct
+from product.models import Product, ProductVariant
 
 
 # Create your views here.
@@ -48,12 +48,11 @@ def kategorileri_al(request):
                                supplier_id=ciceksepeti.last().saticiid)
     service = ProductIntegrationService(api)
     response = service.get_categories()
-
     kategori_list = []
 
     for seviye1 in response['categories']:
         name = ""
-        if seviye1['name'] == 'Extra':
+        if seviye1['name'] == 'Hediye':
             for seviye2 in seviye1['subCategories']:
                 name = seviye2['name']
                 if seviye2['subCategories'] == []:
@@ -95,7 +94,6 @@ def kategorileri_al(request):
                                                                        seviye8['name']
                                                                 kategori_list.append(
                                                                     {'name': name, 'id': seviye8['id']})
-
     t = render_to_string('backend/yonetim/sayfalar/ciceksepeti/kategoriler.html',
                          {'ciceksepeti_kategoriler': kategori_list})
     return JsonResponse({'data': t})
@@ -105,7 +103,7 @@ def kategorileri_al(request):
 def ciceksepeti_kategori_eslestir(request):
     context = {}
     tredyshop_categoriler = SubBottomCategory.objects.all()
-    urunler = ApiProduct.objects.filter(is_publish=True)
+    urunler = Product.objects.filter(is_publish=True)
     ciceksepeti = Ciceksepeti.objects.all()
 
     durum = request.GET.get('durum', 'eslestirilmemis')
@@ -120,11 +118,11 @@ def ciceksepeti_kategori_eslestir(request):
         if durum == 'eslestirilmiş':
             urunler = CiceksepetiUrunler.objects.all()
         elif durum == 'eslestirilmemis':
-            urunler = ApiProduct.objects.filter(is_publish=True)
+            urunler = ProductVariant.objects.filter(is_publish=True)
 
     if kategori:
         select_category = SubBottomCategory.objects.get(id=kategori)
-        urunler = ApiProduct.objects.filter(subbottomcategory_id=kategori).order_by(
+        urunler = ProductVariant.objects.filter(product__subbottomcategory_id=kategori).order_by(
             "-create_at")
         context.update({
             'select_category': select_category,
@@ -132,14 +130,14 @@ def ciceksepeti_kategori_eslestir(request):
 
     if barkod:
         barcode = barkod
-        urunler = ApiProduct.objects.filter(barcode=barkod).order_by("-create_at")
+        urunler = ProductVariant.objects.filter(barcode=barkod).order_by("-create_at")
         context.update({
             'barcode': barcode,
         })
 
     if baslik:
         title = baslik
-        urunler = ApiProduct.objects.filter(title__icontains=baslik).order_by(
+        urunler = ProductVariant.objects.filter(title__icontains=baslik).order_by(
             "-create_at")
         context.update({
             'title': title,
@@ -170,8 +168,8 @@ def ciceksepeti_kategori_eslestir_ajax(request):
     product_id = request.GET.get('product_id')
     kategori_id = request.GET.get('kategori_id')
 
-    if CiceksepetiUrunler.objects.filter(product=ApiProduct.objects.get(id=product_id)).count() < 1:
-        CiceksepetiUrunler.objects.create(product=ApiProduct.objects.get(id=product_id),
+    if CiceksepetiUrunler.objects.filter(urun=ProductVariant.objects.get(id=product_id)).count() < 1:
+        CiceksepetiUrunler.objects.create(urun=ProductVariant.objects.get(id=product_id),
                                           ciceksepeti_kategori_id=kategori_id)
     else:
         cickeksepeti_kategori = get_object_or_404(CiceksepetiUrunler, product__id=product_id)
@@ -189,16 +187,16 @@ def ciceksepeti_send_api(request, urun, kategori_id):
     service = ProductIntegrationService(api)
 
     image_list = []
-    if urun.image_url1:
-        image_list.append(urun.image_url1)
-    if urun.image_url2:
-        image_list.append(urun.image_url2)
-    if urun.image_url3:
-        image_list.append(urun.image_url3)
-    if urun.image_url4:
-        image_list.append(urun.image_url4)
-    if urun.image_url5:
-        image_list.append(urun.image_url5)
+    if urun.product.image_url1:
+        image_list.append(urun.product.image_url1)
+    if urun.product.image_url2:
+        image_list.append(urun.product.image_url2)
+    if urun.product.image_url3:
+        image_list.append(urun.product.image_url3)
+    if urun.product.image_url4:
+        image_list.append(urun.product.image_url4)
+    if urun.product.image_url5:
+        image_list.append(urun.product.image_url5)
 
     category_attribute = service.get_category_attributes(kategori_id)
 
@@ -208,15 +206,15 @@ def ciceksepeti_send_api(request, urun, kategori_id):
         if attribute['attributeId'] == 7 and attribute['attributeName'] == "Beden":
             for value in attribute['attributeValues']:
                 if urun.size.name == value['name']:
-                   attribute_list.append({
-                       "id": 7,
-                       "ValueId": value['id'],
-                       "TextLength": 0
-                   })
+                    attribute_list.append({
+                        "id": 7,
+                        "ValueId": value['id'],
+                        "TextLength": 0
+                    })
 
         if attribute['attributeId'] == 2001498 and attribute['attributeName'] == 'Yaş Grubu':
             for value in attribute['attributeValues']:
-                if urun.age_group == value['name']:
+                if urun.product.age_group == value['name']:
                     attribute_list.append({
                         "id": 2001498,
                         "ValueId": value['id'],
@@ -234,13 +232,12 @@ def ciceksepeti_send_api(request, urun, kategori_id):
 
         if attribute['attributeId'] == 2000396 and attribute['attributeName'] == 'Cinsiyet':
             for value in attribute['attributeValues']:
-                if urun.sextype.name == value['name']:
+                if urun.product.sextype.name == value['name']:
                     attribute_list.append({
                         "id": 2000396,
                         "ValueId": value['id'],
                         "TextLength": 0
                     })
-
 
     items = {
         "products": [
@@ -249,7 +246,7 @@ def ciceksepeti_send_api(request, urun, kategori_id):
                 "mainProductCode": str(urun.model_code),
                 "stockCode": str(urun.stock_code),
                 "categoryId": 13349,
-                "description": str(urun.detail),
+                "description": str(urun.product.detail),
                 "supplierDescription": "",
                 "mediaLink": "",
                 "deliveryMessageType": 18,
@@ -266,9 +263,7 @@ def ciceksepeti_send_api(request, urun, kategori_id):
 
     response = service.create_products(items=items)
     result = service.get_batch_requests(batch_request_id=response['batchId'])
-
-    for item in result['items']:
-        print(item['status'])
+    return result
 
 
 @login_required(login_url="/yonetim/giris-yap/")
@@ -329,7 +324,7 @@ def ciceksepeti_urun_gonder(request):
     context.update({
         'products': products,
         'query': query,
-        'category': category
+        'category': category,
     })
 
     return render(request, 'backend/yonetim/sayfalar/ciceksepeti/urun_islemleri.html', context)
@@ -339,15 +334,16 @@ def ciceksepeti_urun_gonder(request):
 def ciceksepeti_urun_gonder_ajax(request):
     product_id = request.GET.get('productID')
     kategori_id = request.GET.get('kategoriID')
-
-    urun = get_object_or_404(ApiProduct, id=product_id)
+    data = "failed"
+    urun = get_object_or_404(ProductVariant, id=product_id)
     if urun:
         ciceksepeti_send_api(request, urun=urun, kategori_id=kategori_id)
         urun.is_publish_ciceksepeti = True
-        ciceksepeti_urun = get_object_or_404(CiceksepetiUrunler, product_id=product_id)
+        ciceksepeti_urun = get_object_or_404(CiceksepetiUrunler, urun_id=product_id)
         ciceksepeti_urun.yayin_durumu = True
+        ciceksepeti_urun.urun.is_publish_ciceksepeti = True
         ciceksepeti_urun.save()
-
+        ciceksepeti_urun.urun.save()
     data = "success"
     return JsonResponse(data=data, safe=False)
 
@@ -362,6 +358,7 @@ def ciceksepetiUpdateData(stock_code, quantity, list_price, sale_price):
 
     return data
 
+
 def ciceksepeti_update_function(products):
     items = []
     product_data = None
@@ -370,20 +367,21 @@ def ciceksepeti_update_function(products):
 
     if products.count() > 0:
         for p in products:
-            listprice = p.product.ciceksepeti_price
-            saleprice = p.product.ciceksepeti_price
-            if p.product.is_ciceksepeti_discountprice:
-                saleprice = p.product.ciceksepeti_discountprice
+            listprice = p.urun.ciceksepeti_price
+            saleprice = p.urun.ciceksepeti_price
+            if p.urun.is_ciceksepeti_discountprice:
+                saleprice = p.urun.ciceksepeti_discountprice
 
-            if p.product.quantity > 2:
+            if p.urun.quantity > 2:
                 items.append(
-                    ciceksepetiUpdateData(stock_code=p.product.stock_code, quantity=p.product.quantity, list_price=listprice,
-                                       sale_price=saleprice)
+                    ciceksepetiUpdateData(stock_code=p.urun.stock_code, quantity=p.urun.quantity,
+                                          list_price=listprice,
+                                          sale_price=saleprice)
                 )
             else:
                 items.append(
-                    ciceksepetiUpdateData(stock_code=p.product.stock_code, quantity=0, list_price=listprice,
-                                       sale_price=saleprice)
+                    ciceksepetiUpdateData(stock_code=p.urun.stock_code, quantity=0, list_price=listprice,
+                                          sale_price=saleprice)
                 )
 
             product_data = {

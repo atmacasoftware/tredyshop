@@ -74,7 +74,7 @@
                                                         id="select-category" name="kategori" style="width: 100%;">
                                                     <option value="">--------</option>
                                                     {% for c in categories %}
-                                                        <option value="{{ c.id }}">{{ c.title }}</option>
+                                                        <option value="{{ c.id }}" {% if kategori == c.id %}selected{% endif %}>{{ c.title }}</option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
@@ -85,7 +85,9 @@
                                                 <select class="form-control select2 dropshippingSelect filter-checkbox"
                                                         id="select-platform" name="dropshipping" style="width: 100%;">
                                                     <option value="">--------</option>
-                                                    <option value="modaymis">Modaymış</option>
+                                                    <option value="Modaymış" {% if dropshipping == "Modaymış" %}selected{% endif %}>Modaymış</option>
+                                                    <option value="Bella Notte" {% if dropshipping == "Bella Notte" %}selected{% endif %}>Bella Notte</option>
+                                                    <option value="Leyna" {% if dropshipping == "Leyna" %}selected{% endif %}>Leyna</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -95,24 +97,11 @@
                                                 <select class="form-control select2 publishSelect filter-checkbox"
                                                         id="select-publish" name="publish" style="width: 100%;">
                                                     <option value="">--------</option>
-                                                    <option value="True">Satışta</option>
-                                                    <option value="False">Satışta Değil</option>
+                                                    <option value="True" {% if publish == "True" %}selected{% endif %}>Satışta</option>
+                                                    <option value="False" {% if publish == "False" %}selected{% endif %}>Satışta Değil</option>
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-lg-3 col-md-4 col-sm-12">
-                                            <div class="form-group">
-                                                <label for="select-publish">Satış Durumu</label>
-                                                <select class="form-control select2 stockSelect filter-checkbox"
-                                                        id="select-stock" name="stock" style="width: 100%;">
-                                                    <option value="">--------</option>
-                                                    <option value="True">Stokta Mevcut</option>
-                                                    <option value="tahtakale">Stok Biten</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-2">
                                         <div class="col-lg-3 col-md-4 col-sm-12">
                                             <div class="form-group">
                                                 <label for="select-publish">Sıralama</label>
@@ -128,6 +117,9 @@
                                                 </select>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="row mt-2">
+
 
                                         <div class="col-lg-9 col-md-8 col-sm-12">
                                             <div class="row mt-3">
@@ -246,7 +238,7 @@
                                             </td>
                                             <td data-label="Ürün Bilgisi">
                                                 <div class="product__info">
-                                                    <div class="product__image"><img src="{{ product.image_url1 }}"
+                                                    <div class="product__image"><img src="{{ product.product.image_url1 }}"
                                                                                      alt="">
                                                     </div>
                                                     <div class="product__title">
@@ -263,29 +255,27 @@
                                                 </div>
                                             </td>
                                             <td data-label="Kategori">
-                                                <p>{% if product.category %}{{ product.category.title }}{% else %}
-                                                    -{% endif %}</p>
-                                                <p>{% if product.subcategory %}{{ product.subcategory.title }}{% else %}
-                                                    -{% endif %}</p>
-                                                <p>{% if product.subbottomcategory %}
-                                                    {{ product.subbottomcategory.title }}{% else %}-{% endif %}</p>
-                                            </td>
-                                            <td data-label="Marka">{{ product.brand.title }}</td>
-                                            <td data-label="Fiyat Bilgisi">
-                                                <p><b>Satış Fiyatı: </b>{{ product.price }} TL</p>
-                                                <p><b>İndirimli Fiyatı: </b>{% if product.discountprice %}
-                                                    {{ product.discountprice }} TL{% else %}
-                                                    -{% endif %}</p>
-                                            </td>
+                                                {% if product.product.is_completed_category == False %}
+                                                    <p> - </p>
+                                                {% else %}
+                                                    <p>{% if product.product.subbottomcategory %}
+                                                    {{ product.product.subbottomcategory }}{% else %}-{% endif %}</p>
+                                                {% endif %}
 
+                                            </td>
+                                            <td data-label="Marka">{{ product.product.brand.title }}</td>
+                                            <td data-label="Fiyat Bilgisi">
+                                                <p><b>Satış Fiyatı: </b>{{ product.product.price }} TL</p>
+                                                <p><b>İndirimli Fiyatı: </b>{% if product.product.discountprice %}
+                                                    {{ product.product.discountprice }} TL{% else %}
+                                                    -{% endif %}</p>
+                                            </td>
                                             <td data-label="Stok">{{ product.quantity }}</td>
                                             <td data-label="Satışta Mı?">
-                                                <p>TredyShop: {% if product.is_publish %}Evet{% else %}
-                                                    Hayır{% endif %}</p>
-                                                <p>Trendyol: {% if product.is_publish_trendyol %}Evet{% else %}
+                                                <p>{% if product.is_publish %}Evet{% else %}
                                                     Hayır{% endif %}</p>
                                             </td>
-                                            <td data-label="Oluşturuma Tarihi">{{ product.create_at|date:'d-m-Y H:i' }}</td>
+                                            <td data-label="Güncellenme Tarihi">{{ product.update_at|date:'d-m-Y H:i' }}</td>
                                             <td data-label="İşlemler">
                                                 <a href="{% url 'product_detail' product.barcode %}"
                                                    class="btn btn-primary btn-sm" target="_blank">Detaya
@@ -296,8 +286,8 @@
                                                             data-toggle="dropdown" aria-expanded="false">İşlemler
                                                     </button>
                                                     <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="#">Sil</a>
-                                                        <a class="dropdown-item" href="#">Trendyol Yayında Yap</a>
+                                                        <a class="dropdown-item" href="{% url 'urun_sil' product.barcode %}">Sil</a>
+                                                        <a class="dropdown-item" href="{% url 'urun_trendyol_yayina_al_kaldir' product.barcode %}">{% if product.is_publish_trendyol == True %}Trendyol Yayından Kaldır{% else %}Trendyol Yayında Yap{% endif %}</a>
                                                     </div>
                                                 </div>
                                             </td>

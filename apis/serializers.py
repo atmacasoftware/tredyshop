@@ -11,18 +11,14 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
     class Meta:
-        model = ApiProduct
-        fields = ['id', 'barcode', 'model_code', 'stock_code', 'dropshipping', 'category', 'subcategory',
-                  'subbottomcategory',
-                  'brand', 'title', 'description', 'image_url1', 'image_url2', 'image_url3', 'image_url4', 'image_url5',
-                  'image_url6', 'image_url7', 'image_url8', 'color', 'size', 'price', 'quantity', 'detail',
-                  'discountprice', 'is_discountprice', 'age_group', 'sextype', 'is_publish', 'slug']
+        model = Product
+        fields = '__all__'
 
 
 class ProductModelGroupSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ProductModelGroup
-        fields = ['get_product_title','kapak','get_kapak', 'get_product_slug', 'get_product_price', 'get_product_isdiscount', 'get_product_discountprice', 'third_category']
+        model = ProductVariant
+        fields = '__all__'
 
 class SecondCategorySerializer(serializers.ModelSerializer):
     class Meta:

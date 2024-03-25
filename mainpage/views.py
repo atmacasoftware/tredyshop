@@ -10,7 +10,7 @@ from adminpage.models import *
 from ciceksepeti.models import CiceksepetiOrders
 from customer.models import Subscription
 from mainpage.models import *
-from product.models import Brand, ReviewRating, ApiProduct, Pattern, EnvironmentType, ProductModelGroup
+from product.models import Brand, ReviewRating, Product, Pattern, EnvironmentType, ProductVariant
 from categorymodel.models import *
 from store.views import listToString
 
@@ -44,7 +44,7 @@ def ajax_search(request):
         else:
             MostSearchingKeyword.objects.create(keyword=series, ip=ip)
 
-    products = ProductModelGroup.objects.filter(product__title__icontains=series, product__is_publish=True)[:15]
+    products = ProductVariant.objects.filter(product__title__icontains=series, product__is_publish=True)[:15]
 
     categories = SubBottomCategory.objects.filter(Q(title__icontains=series))
 
@@ -85,7 +85,7 @@ def search(request):
 
     category_type = "search"
 
-    minMaxPrice = ApiProduct.objects.filter().aggregate(
+    minMaxPrice = Product.objects.filter().aggregate(
         Min('discountprice'),
         Max('discountprice'))
 
@@ -96,7 +96,7 @@ def search(request):
     })
 
     if keyword:
-        products = ProductModelGroup.objects.filter(Q(product__title__icontains=keyword) | Q(product__category__title__icontains=keyword) | Q(
+        products = ProductVariant.objects.filter(Q(product__title__icontains=keyword) | Q(product__category__title__icontains=keyword) | Q(
             product__subcategory__title__icontains=keyword) | Q(product__subbottomcategory__title__icontains=keyword) | Q(product__brand__title__icontains=keyword), product__is_publish=True)
 
         minMaxPrice = products.aggregate(
@@ -144,7 +144,7 @@ def search_product_filter(request):
     data = []
 
     if keyword:
-        data = ProductModelGroup.objects.filter(Q(product__title__icontains=keyword) | Q(product__category__title__icontains=keyword) | Q(
+        data = ProductVariant.objects.filter(Q(product__title__icontains=keyword) | Q(product__category__title__icontains=keyword) | Q(
             product__subcategory__title__icontains=keyword) | Q(product__brand__title__icontains=keyword), product__price__gte=minPrice,
                                       product__price__lte=maxPrice, product__is_publish=True).order_by(order_type)
 
@@ -243,7 +243,7 @@ def aboutus(request):
     about = Hakkimizda.objects.all().last()
 
     orders = Order.objects.all().count() + TrendyolOrders.objects.all().count() + HepsiburadaSiparisler.objects.all().count() + CiceksepetiOrders.objects.all().count()
-    product = ProductModelGroup.objects.all().count()
+    product = ProductVariant.objects.all().count()
     category = SubBottomCategory.objects.filter(maincategory_id=1).count()
 
     context.update({'about':about, 'orders':orders, 'product':product, 'category':category})

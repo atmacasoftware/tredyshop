@@ -1,5 +1,6 @@
 $(document).ready(function () {
     const baseUrl = "https://www.tredyshop.com"
+
     $.ajax({
         url: `${baseUrl}/apits/en-cok-satilan/`,
         dataType: 'json',
@@ -16,22 +17,22 @@ $(document).ready(function () {
                             <div class="grid-item">
                                 <div class="product-grid-item">
                                     <div class="product">
-                                        <a class="a-block" href="${baseUrl}/urun/${item.get_product_slug}">
+                                        <a class="a-block" href="${baseUrl}/urun/${item.slug}">
                                             <div class="product__image">
-                                                <img src="${baseUrl}${item.get_kapak}" alt="IMG" width="400" height="400">
+                                                <img src="${item.image_url1}" alt="IMG" width="400" height="400">
                                             </div>
                                         </a>
                                         <div class="product__description">
-                                            <a class="a-block" href="https://www.tredyshop.com/urun/${item.get_product_slug}">
+                                            <a class="a-block" href="https://www.tredyshop.com/urun/${item.slug}">
                                                 <div class="product_prices">
-                                                            ${item.get_product_isdiscount == "True" ? `<b>${item.get_product_discountprice} TL</b>` : `<b>${item.get_product_price} TL</b>`}
-                                                            ${item.get_product_isdiscount == "True" ? `<b>${item.get_product_price} TL TL</b>` : ''}
+                                                            ${item.is_discountprice == "True" ? `<b>${item.discountprice} TL</b>` : `<b>${item.price} TL</b>`}
+                                                            ${item.is_discountprice == "False" ? `<b>${item.price} TL TL</b>` : ''}
                                       
                                                 </div>
                                             </a>
                                             <div class="product_name">
-                                               <a href="https://www.tredyshop.com/urun/${item.get_product_slug}">
-                                                  ${item.get_product_title}
+                                               <a href="https://www.tredyshop.com/urun/${item.slug}">
+                                                  ${item.title}
                                                </a>
                                             </div>
                                         </div>
@@ -60,22 +61,22 @@ $(document).ready(function () {
                             <div class="grid-item">
                                 <div class="product-grid-item">
                                     <div class="product">
-                                        <a class="a-block" href="https://www.tredyshop.com/urun/${item.get_product_slug}">
+                                        <a class="a-block" href="${baseUrl}/urun/${item.slug}">
                                             <div class="product__image">
-                                                <img src="${baseUrl}${item.get_kapak}" alt="IMG" width="400" height="400">
+                                                <img src="${item.image_url1}" alt="IMG" width="400" height="400">
                                             </div>
                                         </a>
                                         <div class="product__description">
-                                            <a class="a-block" href="https://www.tredyshop.com/urun/${item.get_product_slug}">
+                                            <a class="a-block" href="https://www.tredyshop.com/urun/${item.slug}">
                                                 <div class="product_prices">
-                                                            ${item.get_product_isdiscount == "True" ? `<b>${item.get_product_discountprice} TL</b>` : `<b>${item.get_product_price} TL</b>`}
-                                                            ${item.get_product_isdiscount == "True" ? `<b>${item.get_product_price} TL TL</b>` : ''}
+                                                            ${item.is_discountprice == "True" ? `<b>${item.discountprice} TL</b>` : `<b>${item.price} TL</b>`}
+                                                            ${item.is_discountprice == "False" ? `<b>${item.price} TL TL</b>` : ''}
                                       
                                                 </div>
                                             </a>
                                             <div class="product_name">
-                                               <a href="https://www.tredyshop.com/urun/${item.get_product_slug}">
-                                                  ${item.get_product_title}
+                                               <a href="https://www.tredyshop.com/urun/${item.slug}">
+                                                  ${item.title}
                                                </a>
                                             </div>
                                         </div>
@@ -104,22 +105,22 @@ $(document).ready(function () {
                             <div class="grid-item">
                                 <div class="product-grid-item">
                                     <div class="product">
-                                        <a class="a-block" href="https://www.tredyshop.com/urun/${item.get_product_slug}">
+                                        <a class="a-block" href="${baseUrl}/urun/${item.slug}">
                                             <div class="product__image">
-                                                <img src="${baseUrl}${item.get_kapak}" alt="IMG" width="400" height="400">
+                                                <img src="${item.image_url1}" alt="IMG" width="400" height="400">
                                             </div>
                                         </a>
                                         <div class="product__description">
-                                            <a class="a-block" href="https://www.tredyshop.com/urun/${item.get_product_slug}">
+                                            <a class="a-block" href="https://www.tredyshop.com/urun/${item.slug}">
                                                 <div class="product_prices">
-                                                            ${item.get_product_isdiscount == "True" ? `<b>${item.get_product_discountprice} TL</b>` : `<b>${item.get_product_price} TL</b>`}
-                                                            ${item.get_product_isdiscount == "True" ? `<b>${item.get_product_price} TL TL</b>` : ''}
+                                                            ${item.is_discountprice == "True" ? `<b>${item.discountprice} TL</b>` : `<b>${item.price} TL</b>`}
+                                                            ${item.is_discountprice == "False" ? `<b>${item.price} TL TL</b>` : ''}
                                       
                                                 </div>
                                             </a>
                                             <div class="product_name">
-                                               <a href="https://www.tredyshop.com/urun/${item.get_product_slug}">
-                                                  ${item.get_product_title}
+                                               <a href="https://www.tredyshop.com/urun/${item.slug}">
+                                                  ${item.title}
                                                </a>
                                             </div>
                                         </div>

@@ -1,0 +1,96 @@
+{% load custom_tags %}
+
+<form action="" id="form-attribute-{{ product_id }}">
+    <div class="row py-3">
+        {% for ozellik in ozellik_list %}
+            {% get_attribute product_id ozellik.id ozellik.allowCustom as result %}
+            <div class="col-lg-3">
+                {% if ozellik.allowCustom == False %}
+                    <div class="form-group" style="padding: 5px" data-id="{{ ozellik.id }}">
+                        <label for="{{ ozellik.id }}-{{ product_id }}">{{ ozellik.name }}
+                            {% if ozellik.required == True %}<span style="color: red">*</span>{% endif %}</label>
+                        <select class="form-control select2 ozellikSelect filter-checkbox"
+                                id="{{ ozellik.id }}-{{ product_id }}"
+                                name="{{ ozellik.id }}-{{ product_id }}"
+                                {% if ozellik.required == True %}required{% endif %}
+                                style="width: 100%;">
+                            <option value="">--------</option>
+                            {% for v in ozellik.values %}
+                                <option value="{{ v.id }}" data-name="{{ v.name }}"
+                                        data-parent-name = "{{ ozellik.name }}"
+                                        data-custom = "{{ ozellik.allowCustom }}"
+                                        {% if result == v.id %}selected{% endif %}
+                                >
+                                    {{ v.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% else %}
+                    <div class="form-group">
+                        <div class="form-group">
+                            <label for="{{ ozellik.id }}">{{ ozellik.name }} {% if ozellik.required == True %}
+                                <span style="color: red">*</span>{% endif %}</label>
+                            <input type="text" data-name="{{ ozellik.name }}" data-id="{{ ozellik.id }}"
+                                   name="{{ ozellik.id }}-{{ product_id }}"
+                                   data-custom = "{{ ozellik.allowCustom }}"
+                                   {% if result %}value="{{ result }}" {% endif %}
+                                   {% if ozellik.required == True %}required{% endif %} class="form-control">
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <div class="col-lg-3">
+            <button id="attribute-{{ product_id }}" class="btn btn-primary mt-4">Kaydet</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    $("#attribute-{{ product_id }}").on('click', function (e) {
+        if ($("#form-attribute-{{ product_id }}").valid()) {
+            e.preventDefault();
+            var attributes = []
+            var selectField = document.querySelectorAll('#form-attribute-{{ product_id }} select');
+            selectField.forEach((select) => {
+                attributes.push(JSON.stringify($(select).find('option:selected').attr('data-parent-name') + "/*/" + $(select).val() + "/*/" + $(select).parent().attr('data-id') + "/*/" + "False"))
+            })
+
+            var inputField = document.querySelectorAll('#form-attribute-{{ product_id }} input');
+            inputField.forEach((input) => {
+                attributes.push(JSON.stringify($(input).attr('data-name') + "/*/" + $(input).val() + "/*/" + $(input).attr('data-id') + "/*/" + "True"))
+            })
+
+            $.ajax({
+                type: "GET",
+                url: '/yonetim/trendyol/kategori-eslestir/ozellik-kaydet/',
+                data: {
+                    'product_id': {{ product_id }},
+                    'category_id': {{ category_id }},
+                    'category_name': `{{ category_name }}`,
+                    'attributes[]': attributes,
+                },
+                dataType: 'json',
+                beforeSend: function () {
+                    $(".waiting").css('display', 'flex');
+                    $(".waiting").css('visibility', 'visible');
+                },
+                success: function (data) {
+                    $(".waiting").css('display', 'none');
+                    $(".waiting").css('visibility', 'hidden');
+                    swal('Özellik Güncellendi', '', 'success');
+                },
+                error: function (e) {
+                    iziToast.error({
+                        title: 'Hata !',
+                        message: `Bir hata meydana geldi. ${e}.`,
+                        position: 'topRight'
+                    });
+                }
+            });
+        }
+    });
+
+</script>
+

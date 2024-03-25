@@ -27,8 +27,8 @@ def katalog(request, categroy_slug, subcategory_slug):
         data = {
             'kategori_id': kategori.id,
             'kategori_adi': kategori.title,
-            'product_count': ProductModelGroup.objects.filter(product__subbottomcategory_id=kategori.id).count(),
-            'products': ProductModelGroup.objects.filter(product__subbottomcategory_id=kategori.id)[:8]
+            'product_count': Product.objects.filter(subbottomcategory_id=kategori.id).count(),
+            'products': Product.objects.filter(subbottomcategory_id=kategori.id)[:8]
         }
 
         if data['product_count'] > 0:
@@ -55,24 +55,21 @@ def store_page(request, categroy_slug=None, subcategory_slug=None, subbottomcate
         category_s = MainCategory.objects.get(slug=categroy_slug)
         subcategory_s = SubCategory.objects.get(slug=subcategory_slug)
         subbottomcategory_s = SubBottomCategory.objects.get(slug=subbottomcategory_slug)
-        colors = ApiProduct.objects.filter(subbottomcategory__slug=subbottomcategory_slug,
+        colors = ProductVariant.objects.filter(product__subbottomcategory__slug=subbottomcategory_slug,
                                            color_id__isnull=False, quantity__gte=1).distinct().values(
             'color__name', 'color__id', 'color__code')
-        sizes = ApiProduct.objects.filter(subbottomcategory__slug=subbottomcategory_slug,
+        sizes = ProductVariant.objects.filter(product__subbottomcategory__slug=subbottomcategory_slug,
                                           size_id__isnull=False, quantity__gte=1).distinct().values(
             'size__name', 'size__id', 'size__code')
-        fabrictype = ApiProduct.objects.filter(subbottomcategory__slug=subbottomcategory_slug,
+        fabrictype = Product.objects.filter(subbottomcategory__slug=subbottomcategory_slug,
                                           fabrictype_id__isnull=False, quantity__gte=1).distinct().values(
             'fabrictype__name', 'fabrictype__id')
         category_type = "sub"
-        products = ProductModelGroup.objects.filter(product__subbottomcategory__slug=subbottomcategory_slug,
-                                             product__dropshipping="Modaymış", product__quantity__gte=1).distinct()[:16]
+        products = Product.objects.filter(subbottomcategory__slug=subbottomcategory_slug, quantity__gte=1).distinct()[:16]
 
-        product_count = ProductModelGroup.objects.filter(product__subbottomcategory__slug=subbottomcategory_slug,
-                                                    product__dropshipping="Modaymış",
-                                                    product__quantity__gte=1).distinct().count()
-        minMaxPrice = ApiProduct.objects.filter(subbottomcategory__slug=subbottomcategory_slug,
-                                                dropshipping="Modaymış").distinct().aggregate(
+        product_count = Product.objects.filter(subbottomcategory__slug=subbottomcategory_slug,
+                                                    quantity__gte=1).distinct().count()
+        minMaxPrice = Product.objects.filter(subbottomcategory__slug=subbottomcategory_slug).distinct().aggregate(
             Min('price'),
             Max('price'))
         context.update(
@@ -81,7 +78,7 @@ def store_page(request, categroy_slug=None, subcategory_slug=None, subbottomcate
              'sizes': sizes, 'fabrictype':fabrictype})
     elif categroy_slug == None and subcategory_slug == None and brands_slug != None:
         brands_s = Brand.objects.get(slug=brands_slug)
-        products = ProductModelGroup.objects.filter(product__brand__slug=brands_slug, product__dropshipping="Modaymış", product__quantity__gte=1)[:15]
+        products = Product.objects.filter(brand__slug=brands_slug, quantity__gte=1)[:15]
         context.update({'brands_s': brands_s, 'products': products})
 
     context.update({'categroy_slug': categroy_slug, 'subcategory_slug': subcategory_slug,
@@ -135,86 +132,86 @@ def product_list(request):
     brands = request.GET['brands']
 
     if category != 'None' and subcategory == 'None' and subbottomcategory == 'None' and brands == 'None':
-        data = ProductModelGroup.objects.filter(product__category__slug=category, product__dropshipping="Modaymış", product__price__gte=minPrice,
-                                         product__price__lte=maxPrice, product__quantity__gte=1, product__is_discountprice=is_discount).order_by(order_type)[
+        data = Product.objects.filter(category__slug=category, price__gte=minPrice,
+                                         price__lte=maxPrice, quantity__gte=1, is_discountprice=is_discount).order_by(order_type)[
                offset:offset + limit]
         if len(colors) and colors != '' and colors != [] and colors != ['']:
-            data = ProductModelGroup.objects.filter(product__category__slug=category,product__color_id__in=colors, product__price__gte=minPrice,
-                                             product__price__lte=maxPrice, product__quantity__gte=1).order_by(order_type)[
+            data = Product.objects.filter(category__slug=category, productvariant__color_id__in=colors, price__gte=minPrice,
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
                    offset:offset + limit]
         if len(sizes) and sizes != '' and sizes != [] and sizes != ['']:
-            data = ProductModelGroup.objects.filter(product__category__slug=category,product__size_id__in=sizes, product__price__gte=minPrice,
-                                             product__price__lte=maxPrice, product__quantity__gte=1).order_by(order_type)[
+            data = Product.objects.filter(category__slug=category, productvariant__size_id__in=sizes, price__gte=minPrice,
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
                    offset:offset + limit]
         if len(fabrictype) and fabrictype != '' and fabrictype != [] and fabrictype != ['']:
-            data = ProductModelGroup.objects.filter(product__category__slug=category, product__fabrictype_id__in=fabrictype, product__price__gte=minPrice,
-                                             product__price__lte=maxPrice, product__quantity__gte=1).order_by(order_type)[
+            data = Product.objects.filter(category__slug=category, fabrictype_id__in=fabrictype, price__gte=minPrice,
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
                    offset:offset + limit]
         if len(agegroup) and agegroup != '' and agegroup != [] and agegroup != ['']:
-            data = ProductModelGroup.objects.filter(product__category__slug=category, product__age_group=agegroup, product__price__gte=minPrice,
-                                             product__price__lte=maxPrice, product__quantity__gte=1).order_by(order_type)[
+            data = Product.objects.filter(category__slug=category, age_group=agegroup, price__gte=minPrice,
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
                    offset:offset + limit]
     elif category != 'None' and subcategory != 'None' and subbottomcategory == 'None' and brands == 'None':
 
-        data = ProductModelGroup.objects.filter(product__subcategory__slug=subcategory, product__dropshipping="Modaymış", product__price__gte=minPrice,
-                                         product__price__lte=maxPrice, product__quantity__gte=1, product__is_discountprice=is_discount).order_by(order_type)[
+        data = Product.objects.filter(subcategory__slug=subcategory, price__gte=minPrice,
+                                         price__lte=maxPrice, quantity__gte=1, is_discountprice=is_discount).order_by(order_type)[
                offset:offset + limit]
         if len(colors) and colors != '' and colors != [] and colors != ['']:
-            data = ProductModelGroup.objects.filter(product__subcategory__slug=subcategory, product__color_id__in=colors, product__price__gte=minPrice,
-                                             product__price__lte=maxPrice, product__quantity__gte=1).order_by(order_type)[
+            data = Product.objects.filter(subcategory__slug=subcategory, productvariant__color_id__in=colors, price__gte=minPrice,
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
                    offset:offset + limit]
         if len(sizes) and sizes != '' and sizes != [] and sizes != ['']:
-            data = ProductModelGroup.objects.filter(product__subcategory__slug=subcategory, product__size_id__in=sizes, product__price__gte=minPrice,
-                                             product__price__lte=maxPrice, product__quantity__gte=1).order_by(order_type)[
+            data = Product.objects.filter(subcategory__slug=subcategory, productvariant__size_id__in=sizes, price__gte=minPrice,
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
                    offset:offset + limit]
         if len(fabrictype) and fabrictype != '' and fabrictype != [] and fabrictype != ['']:
-            data = ProductModelGroup.objects.filter(product__subcategory__slug=subcategory, product__fabrictype_id__in=fabrictype, product__price__gte=minPrice,
-                                             product__price__lte=maxPrice, product__quantity__gte=1).order_by(order_type)[
+            data = Product.objects.filter(subcategory__slug=subcategory, fabrictype_id__in=fabrictype, price__gte=minPrice,
+                                             price__lte=maxPrice, _quantity__gte=1).order_by(order_type)[
                    offset:offset + limit]
         if len(agegroup) and agegroup != '' and agegroup != [] and agegroup != ['']:
-            data = ProductModelGroup.objects.filter(product__subcategory__slug=subcategory, product__age_group=agegroup, product__price__gte=minPrice,
-                                             product__price__lte=maxPrice, product__quantity__gte=1).order_by(order_type)[
+            data = Product.objects.filter(_subcategory__slug=subcategory, age_group=agegroup, price__gte=minPrice,
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
                    offset:offset + limit]
     elif category != 'None' and subcategory != 'None' and subbottomcategory != 'None' and brands == 'None':
-        data = ProductModelGroup.objects.filter(product__subbottomcategory__slug=subbottomcategory, product__dropshipping="Modaymış",
-                                         product__price__gte=minPrice,
-                                         product__price__lte=maxPrice, product__quantity__gte=1, product__is_discountprice=is_discount).order_by(order_type)[
+        data = Product.objects.filter(subbottomcategory__slug=subbottomcategory,
+                                         price__gte=minPrice,
+                                         price__lte=maxPrice, quantity__gte=1, is_discountprice=is_discount).order_by(order_type)[
                offset:offset + limit]
         if len(colors) and colors != '' and colors != [] and colors != ['']:
-            data = ProductModelGroup.objects.filter(product__subbottomcategory__slug=subbottomcategory, product__color_id__in=colors, product__price__gte=minPrice,
-                                             product__price__lte=maxPrice, product__quantity__gte=1).order_by(order_type)[
+            data = Product.objects.filter(subbottomcategory__slug=subbottomcategory, productvariant__color_id__in=colors, price__gte=minPrice,
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
                    offset:offset + limit]
         if len(sizes) and sizes != '' and sizes != [] and sizes != ['']:
-            data = ProductModelGroup.objects.filter(product__subbottomcategory__slug=subbottomcategory, product__size_id__in=sizes, product__price__gte=minPrice,
-                                             product__price__lte=maxPrice, product__quantity__gte=1).order_by(order_type)[
+            data = Product.objects.filter(subbottomcategory__slug=subbottomcategory, productvariant__size_id__in=sizes, price__gte=minPrice,
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
                    offset:offset + limit]
         if len(fabrictype) and fabrictype != '' and fabrictype != [] and fabrictype != ['']:
-            data = ProductModelGroup.objects.filter(product__subbottomcategory__slug=subbottomcategory, product__fabrictype_id__in=fabrictype, product__price__gte=minPrice,
-                                             product__price__lte=maxPrice, product__quantity__gte=1).order_by(order_type)[
+            data = Product.objects.filter(subbottomcategory__slug=subbottomcategory, fabrictype_id__in=fabrictype, price__gte=minPrice,
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
                    offset:offset + limit]
         if len(agegroup) and agegroup != '' and agegroup != [] and agegroup != ['']:
-            data = ProductModelGroup.objects.filter(product__subbottomcategory__slug=subbottomcategory, product__age_group=agegroup, product__price__gte=minPrice,
-                                             product__price__lte=maxPrice, product__quantity__gte=1).order_by(order_type)[
+            data = Product.objects.filter(subbottomcategory__slug=subbottomcategory, age_group=agegroup, price__gte=minPrice,
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
                    offset:offset + limit]
     elif category == 'None' and subcategory == 'None' and subbottomcategory == 'None' and brands != 'None':
-        data = ProductModelGroup.objects.filter(product__brand__slug=brands, product__dropshipping="Modaymış", product__price__gte=minPrice,
-                                         product__price__lte=maxPrice, product__quantity__gte=1, product__is_discountprice=is_discount).order_by(order_type)[
+        data = Product.objects.filter(brand__slug=brands, price__gte=minPrice,
+                                         price__lte=maxPrice,quantity__gte=1, is_discountprice=is_discount).order_by(order_type)[
                offset:offset + limit]
         if len(colors) and colors != '' and colors != [] and colors != ['']:
-            data = ProductModelGroup.objects.filter(product__brand__slug=brands, product__color_id__in=colors, product__price__gte=minPrice,
-                                             product__price__lte=maxPrice, product__quantity__gte=1).order_by(order_type)[
+            data = Product.objects.filter(brand__slug=brands, productvariant__color_id__in=colors, price__gte=minPrice,
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
                    offset:offset + limit]
         if len(sizes) and sizes != '' and sizes != [] and sizes != ['']:
-            data = ProductModelGroup.objects.filter(product__brand__slug=brands, product__size_id__in=sizes, product__price__gte=minPrice,
-                                             product__price__lte=maxPrice, product__quantity__gte=1).order_by(order_type)[
+            data = Product.objects.filter(brand__slug=brands, productvariant__size_id__in=sizes, price__gte=minPrice,
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
                    offset:offset + limit]
         if len(fabrictype) and fabrictype != '' and fabrictype != [] and fabrictype != ['']:
-            data = ProductModelGroup.objects.filter(product__brand__slug=brands, product__fabrictype_id__in=fabrictype, product__price__gte=minPrice,
-                                             product__price__lte=maxPrice, product__quantity__gte=1).order_by(order_type)[
+            data = Product.objects.filter(brand__slug=brands, fabrictype_id__in=fabrictype, price__gte=minPrice,
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
                    offset:offset + limit]
         if len(agegroup) and agegroup != '' and agegroup != [] and agegroup != ['']:
-            data = ProductModelGroup.objects.filter(product__brand__slug=brands, product__age_group=agegroup, product__price__gte=minPrice,
-                                             product__price__lte=maxPrice, product__quantity__gte=1).order_by(order_type)[
+            data = Product.objects.filter(brand__slug=brands, age_group=agegroup, price__gte=minPrice,
+                                             price__lte=maxPrice, quantity__gte=1).order_by(order_type)[
                    offset:offset + limit]
     t = render_to_string('frontend/v_2_0/sayfalar/store/__product_list.html', {'data': data})
     return JsonResponse({'data': t})
@@ -234,7 +231,7 @@ def listToString(s):
 
 def filter_data(request, categroy_slug=None, subcategoryslug=None, subottomcategoryslug=None, brandsslug=None):
     colors = request.GET.getlist('color[]')
-    sizes = request.GET.getlist('sizes[]')
+    sizes = request.GET.getlist('size[]')
     minPrice = request.GET['minPrice']
     maxPrice = request.GET['maxPrice']
     fabrictype = request.GET.getlist('fabrictype[]')
@@ -270,60 +267,61 @@ def filter_data(request, categroy_slug=None, subcategoryslug=None, subottomcateg
     products = None
     if subcategoryslug != None and subottomcategoryslug == None and brandsslug == None:
         subcategory = SubCategory.objects.get(slug=subcategoryslug)
-        products = ProductModelGroup.objects.filter(product__subcategory=subcategory, product__dropshipping="Modaymış", product__price__gte=minPrice,
-                                             product__price__lte=maxPrice, product__quantity__gte=1, product__is_discountprice=is_discount).distinct().order_by(order_type)[:16]
+        products = Product.objects.filter(subcategory=subcategory,price__gte=minPrice,
+                                             price__lte=maxPrice,quantity__gte=1, is_discountprice=is_discount).distinct().order_by(order_type)[:16]
         if len(colors) > 0:
-            products = ProductModelGroup.objects.filter(product__subcategory=subcategory, product__color_id__in=colors, product__price__gte=minPrice,
-                                                 product__price__lte=maxPrice, product__quantity__gte=1).distinct().order_by(order_type)[:16]
+            products = Product.objects.filter(subcategory=subcategory, productvariant__color_id__in=colors, price__gte=minPrice,
+                                                 price__lte=maxPrice, quantity__gte=1).distinct().order_by(order_type)[:16]
         if len(sizes) > 0:
-            products = ProductModelGroup.objects.filter(product__subcategory=subcategory,product__size_id__in=sizes, product__price__gte=minPrice,
-                                                 product__price__lte=maxPrice, product__quantity__gte=1).distinct().order_by(order_type)[:16]
+            products = Product.objects.filter(subcategory=subcategory,productvariant__size_id__in=sizes, price__gte=minPrice,
+                                                 price__lte=maxPrice, quantity__gte=1).distinct().order_by(order_type)[:16]
         if len(fabrictype) > 0:
-            products = ProductModelGroup.objects.filter(product__subcategory=subcategory,product__fabrictype_id__in=fabrictype, product__price__gte=minPrice,
-                                                 product__price__lte=maxPrice, product__quantity__gte=1).distinct().order_by(order_type)[:16]
+            products = Product.objects.filter(subcategory=subcategory,fabrictype_id__in=fabrictype, price__gte=minPrice,
+                                                 price__lte=maxPrice, quantity__gte=1).distinct().order_by(order_type)[:16]
         if len(agegroup) > 0:
-            products = ProductModelGroup.objects.filter(product__subcategory=subcategory, product__age_group=agegroup, product__price__gte=minPrice,
-                                                 product__price__lte=maxPrice, product__quantity__gte=1).distinct().order_by(order_type)[:16]
+            products = Product.objects.filter(subcategory=subcategory, age_group=agegroup, price__gte=minPrice,
+                                                 price__lte=maxPrice, quantity__gte=1).distinct().order_by(order_type)[:16]
     elif subcategoryslug != None and subottomcategoryslug != None and brandsslug == None:
         bottomcategory = SubBottomCategory.objects.get(slug=subottomcategoryslug)
-        products = ProductModelGroup.objects.filter(product__subbottomcategory=bottomcategory, product__dropshipping="Modaymış",
-                                             product__price__gte=minPrice,
-                                             product__price__lte=maxPrice, product__quantity__gte=1, product__is_discountprice=is_discount).distinct().order_by(order_type)[:16]
+        products = Product.objects.filter(subbottomcategory=bottomcategory,
+                                             price__gte=minPrice,
+                                             price__lte=maxPrice, quantity__gte=1, is_discountprice=is_discount).distinct().order_by(order_type)[:16]
         if len(colors) > 0:
-            products = ProductModelGroup.objects.filter(product__subbottomcategory=bottomcategory,
-                                                 product__color_id__in=colors, product__price__gte=minPrice,
-                                                 product__price__lte=maxPrice, product__quantity__gte=1).distinct().order_by(order_type)[:16]
+            products = Product.objects.filter(subbottomcategory=bottomcategory,
+                                                 productvariant__color_id__in=colors, price__gte=minPrice,
+                                                 price__lte=maxPrice,quantity__gte=1).distinct().order_by(order_type)[:16]
         if len(sizes) > 0:
-            products = ProductModelGroup.objects.filter(product__subbottomcategory=bottomcategory, product__size_id__in=sizes,
-                                                 product__price__gte=minPrice,
-                                                 product__price__lte=maxPrice, product__quantity__gte=1).distinct().order_by(order_type)[
+            products = Product.objects.filter(subbottomcategory=bottomcategory, productvariant__size_id__in=sizes,
+                                                 price__gte=minPrice,
+                                                 price__lte=maxPrice, quantity__gte=1).distinct().order_by(order_type)[
                        :16]
+
         if len(fabrictype) > 0:
-            products = ProductModelGroup.objects.filter(product__subbottomcategory=bottomcategory, product__fabrictype_id__in=fabrictype,
-                                                 product__price__gte=minPrice,
-                                                 product__price__lte=maxPrice, product__quantity__gte=1).distinct().order_by(order_type)[
+            products = Product.objects.filter(subbottomcategory=bottomcategory, fabrictype_id__in=fabrictype,
+                                                 price__gte=minPrice,
+                                                 price__lte=maxPrice, quantity__gte=1).distinct().order_by(order_type)[
                        :16]
         if len(agegroup) > 0:
-            products = ProductModelGroup.objects.filter(product__subbottomcategory=bottomcategory, product__age_group=agegroup,
-                                                 product__price__gte=minPrice,
-                                                 product__price__lte=maxPrice, product__quantity__gte=1).distinct().order_by(order_type)[
+            products = Product.objects.filter(subbottomcategory=bottomcategory, age_group=agegroup,
+                                                 price__gte=minPrice,
+                                                 price__lte=maxPrice, quantity__gte=1).distinct().order_by(order_type)[
                        :16]
     elif subcategoryslug == None and subottomcategoryslug == None and brandsslug != None:
         brand = Brand.objects.get(slug=brandsslug)
-        products = ProductModelGroup.objects.filter(product__brand=brand, product__dropshipping="Modaymış", price__gte=minPrice,
-                                             price__lte=maxPrice, quantity__gte=1, product__is_discountprice=is_discount).distinct()[:15]
+        products = Product.objects.filter(brand=brand, price__gte=minPrice,
+                                             price__lte=maxPrice, quantity__gte=1, is_discountprice=is_discount).distinct()[:15]
         if len(colors) > 0:
-            products = ProductModelGroup.objects.filter(product__brand=brand, product__color_id__in=colors, product__price__gte=minPrice,
-                                                 product__price__lte=maxPrice, product__quantity__gte=1).distinct().order_by(order_type)[:16]
+            products = Product.objects.filter(brand=brand, productvariant__color_id__in=colors, price__gte=minPrice,
+                                                 price__lte=maxPrice, quantity__gte=1).distinct().order_by(order_type)[:16]
         if len(sizes) > 0:
-            products = ProductModelGroup.objects.filter(product__brand=brand, product__size_id__in=sizes, product__price__gte=minPrice,
-                                                 product__price__lte=maxPrice, product__quantity__gte=1).distinct().order_by(order_type)[:16]
+            products = Product.objects.filter(brand=brand, productvarian__size_id__in=sizes, price__gte=minPrice,
+                                                 price__lte=maxPrice, quantity__gte=1).distinct().order_by(order_type)[:16]
         if len(fabrictype) > 0:
-            products = ProductModelGroup.objects.filter(product__brand=brand, product__fabrictype_id__in=fabrictype, product__price__gte=minPrice,
-                                                 product__price__lte=maxPrice, product__quantity__gte=1).distinct().order_by(order_type)[:16]
+            products = Product.objects.filter(brand=brand, fabrictype_id__in=fabrictype, price__gte=minPrice,
+                                                 price__lte=maxPrice,quantity__gte=1).distinct().order_by(order_type)[:16]
         if len(agegroup) > 0:
-            products = ProductModelGroup.objects.filter(product__brand=brand, product__age_group=agegroup, product__price__gte=minPrice,
-                                                 product__price__lte=maxPrice, product__quantity__gte=1).distinct().order_by(order_type)[:16]
+            products = Product.objects.filter(brand=brand, age_group=agegroup, price__gte=minPrice,
+                                                 price__lte=maxPrice, quantity__gte=1).distinct().order_by(order_type)[:16]
 
     t = render_to_string('frontend/v_2_0/sayfalar/store/__product_list.html', {'data': products})
     return JsonResponse({'data': t})
@@ -332,7 +330,7 @@ def filter_data(request, categroy_slug=None, subcategoryslug=None, subottomcateg
 def new_product(request):
     context = {}
 
-    products = ApiProduct.objects.all().filter(dropshipping="Modaymış").order_by("-create_at")
+    products = Product.objects.all().order_by("-create_at")
 
     page_number = 20
 
@@ -355,7 +353,7 @@ def new_product(request):
 def most_sell_product(request):
     context = {}
 
-    products = ApiProduct.objects.all().filter(dropshipping="Modaymış").order_by("-sell_count")
+    products = Product.objects.all().order_by("-sell_count")
 
     page_number = 20
 
@@ -379,7 +377,7 @@ def most_discount_product(request):
     context = {}
 
     product = []
-    allproducts = ApiProduct.objects.all().filter(dropshipping="Modaymış")
+    allproducts = Product.objects.all()
 
     for p in allproducts:
         if p.is_discountprice == True:

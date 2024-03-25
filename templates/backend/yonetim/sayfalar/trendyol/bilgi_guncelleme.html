@@ -1,66 +1,336 @@
 {% extends 'backend/yonetim/base.html' %}
 {% load static %}
+{% load mathfilters %}
 
 {% block title %}<title>Trendyol | Bilgi Güncelleme</title>{% endblock %}
+
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'backend/modules/chocolat/dist/css/chocolat.css' %}">
+    <link rel="stylesheet" href="{% static 'backend/css/table.css' %}">
+{% endblock %}
 
 {% block trendyol %}
 
     <section class="section">
         <div class="section-header">
-            <h1>Bilgi Güncellem</h1>
+            <h1>Bilgi Güncelleme</h1>
             <div class="section-header-breadcrumb">
                 <div class="breadcrumb-item active"><a href="{% url 'admin_mainpage' %}">Anasayfa</a></div>
-                <div class="breadcrumb-item">Bilgi Güncellem</div>
+                <div class="breadcrumb-item">Bilgi Güncelleme</div>
             </div>
         </div>
 
         <div class="section-body">
             <div class="row">
-                <div class="col-6">
-                    <div class="card card-info">
-                        <div class="card-header">
-                            <h4>Bilgi Güncelle</h4>
+                <div class="col-12">
+                    <form action="" method="get">
+                        <div class="row mb-4">
+                            <div class="col-lg-3 col-md-4 col-sm-12">
+                                <div class="form-group">
+                                    <label for="barcode">Barkod</label>
+                                    <input type="text" name="barcode" id="barcode"
+                                           class="form-control float-right filter-checkbox"
+                                           value="{% if barcode %}{{ barcode }}{% endif %}">
+                                </div>
+                            </div>
+                            <div class="col-lg-9 col-md-8 col-sm-12 mt-4">
+                                <button class="btn btn-lg btn-primary float-right">Ara</button>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <p>Trendyol bilgi güncelleme işlemi için aşağıda bulunan "Bilgi Güncelle" butonuna tıklayınız.</p>
-                            <form action="" method="post">
-                                {% csrf_token %}
-                                <button type="submit" name="updateBtn" class="btn btn-block btn-info"
-                                        id="updateBtn">
-                                    Bilgi Güncelle
-                                </button>
-                            </form>
-                        </div>
-                    </div>
+                    </form>
                 </div>
-                <div class="col-6">
+            </div>
+            <div class="row">
+                <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Log Kayıtları</h4>
+                            <h4>Bilgi Güncelleme</h4>
+                            <div class="card-header-action">
+                                <a href="" class="btn btn-primary">Tüm Ürünleri Güncelle</a>
+                            </div>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table class="table table-hover text-nowrap">
-                                    <thead>
+                                <table class="table table-striped table-hover text-nowrap" id="productTable">
+                                    <thead class="bg-light">
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Log Tipi</th>
-                                        <th>Batch Request ID</th>
-                                        <th>Oluşturulma Tarihi</th>
+                                        <th>Görsel</th>
+                                        <th>Ürün Adı</th>
+                                        <th>Kategori ID</th>
+                                        <th>Stok</th>
+                                        <th>Durum</th>
+                                        <th>İşlemler</th>
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for r in log_records %}
+                                    {% for product in response %}
                                         <tr>
-                                            <td>{{ r.id }}</td>
-                                            <td>{{ r.get_log_type_display }}</td>
-                                            <td>{{ r.batch_id }}</td>
-                                            <td>{{ r.create_at }}</td>
+                                            <form action="" method="get">
+                                                <td>
+                                                    <div class="gallery gallery-md">
+                                                        {% for i in product.images %}
+                                                            {% if forloop.first %}
+                                                                <div class="gallery-item"
+                                                                     data-image="{{ i.url }}"
+                                                                     data-title="Image 1" style="width: 50px;"></div>
+                                                            {% endif %}
+                                                            {% if forloop.last %}
+                                                                <div class="gallery-item d-none"
+                                                                     data-image="{{ i.url }}"
+                                                                     data-title="Image 1" style="width: 50px;"></div>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <p style="line-height: 0.2px;">
+                                                        <strong><a
+                                                                href="{% url 'product_detail' product.barcode %}"
+                                                                target="_blank"
+                                                                class="font-weight-bold text-dark">{{ product.title|truncatechars_html:35 }}</a></strong>
+                                                    </p>
+                                                    <span id="{{ product.barcode }}">Barcode: {{ product.barcode }}</span>
+                                                    <span id="copy-{{ product.barcode }}" title="Kopyala"
+                                                          onclick="copyFunction({{ product.barcode }})"
+                                                          style="background: none; outline: none; border: none; cursor:pointer;">
+                                                        <i class="fa fa-copy"></i></span>
+                                                </td>
+                                                <td>{{ product.pimCategoryId }}</td>
+                                                <td>{{ product.quantity }}</td>
+                                                <td id="yayin-durumu-{{ product.id }}">
+                                                    {% if product.approved == True %}
+                                                        <span class="btn btn-icon btn-success">
+                                                            <i class="fas fa-check"></i>
+                                                        </span>
+                                                    {% else %}
+                                                        <span class="btn btn-icon btn-danger">
+                                                            <i class="fas fa-times"></i>
+                                                        </span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group-vertical" role="group"
+                                                         aria-label="Basic example">
+                                                        <button class="btn btn-success"
+                                                                id="update-{{ product.barcode }}">
+                                                            Güncelle <i class="fa fa-send"></i>
+                                                        </button>
+                                                        <script>
+
+                                                            $("#update-{{ product.barcode }}").on('click', function (e) {
+                                                                e.preventDefault();
+                                                                $.ajax({
+                                                                    type: "GET",
+                                                                    url: `/yonetim/trendyol/bilgi-guncelleme/urun-bilgi-guncelle/`,
+                                                                    data: {
+                                                                        'productBarcode': `{{ product.barcode }}`,
+                                                                        'productCategory': `{{ product.pimCategoryId }}`,
+                                                                    },
+                                                                    dataType: 'json',
+                                                                    beforeSend: function () {
+                                                                        $(".waiting").css('display', 'flex')
+                                                                        $(".waiting").css('visibility', 'visible')
+                                                                    },
+                                                                    success: function (data) {
+                                                                        setTimeout(function () {
+                                                                            $(".waiting").css('display', 'none')
+                                                                            $(".waiting").css('visibility', 'hidden')
+
+                                                                            if (data === "success") {
+                                                                                swal('Ürün Gönderildi', '', 'success');
+                                                                                window.location.reload();
+                                                                            } else {
+                                                                                swal('Bir Hata Oluştu', '', 'error');
+                                                                            }
+                                                                        }, 5000)
+                                                                    },
+                                                                    error: function (e) {
+                                                                        iziToast.error({
+                                                                            title: 'Hata !',
+                                                                            message: `Bir hata meydana geldi. ${e}.`,
+                                                                            position: 'topRight'
+                                                                        });
+                                                                    }
+                                                                });
+                                                            })
+                                                        </script>
+                                                    </div>
+                                                </td>
+                                            </form>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="6" class="text-center">
+                                                <div style="width: 100%; height: 250px; display:flex; justify-content: center; align-items: center; flex-direction: column;">
+                                                    <i class="fa fa-2x fa-computer-mouse mb-3"></i>
+                                                    <h5>Ürün bulunmamaktadır.</h5>
+                                                </div>
+                                            </td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                        <div class="card-footer">
+                            <nav aria-label="pagination" class="pagination_area">
+                                <div class="row">
+
+                                    <div class="col-sm-12 col-md-5 d-none d-md-block">
+                                        <p>Toplam {{ total_element }} ürün bulunmaktadır.</p>
+                                    </div>
+
+                                    <div class="col-md-7 col-sm-12">
+                                        <div class="paginator float-right">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <a class="page-link "
+                                                   data-page=""
+                                                   href="?page={% if counter < "1" %}0{% else %}{{ counter|sub:1 }}{% endif %}">
+                                                    <i class="fa fa-angle-left"></i>
+                                                </a>
+                                                <a class="page-link "
+                                                   data-page=""
+                                                   href="?page=
+                                                           {% if counter >= total_page %}{{ total_page }}{% else %}{{ counter|add:1 }}{% endif %}">
+                                                    <i class="fa fa-angle-right"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <div class="section-title mt-0">Log Kayıtları</div>
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Tip</th>
+                                        <th scope="col">Batch Request ID</th>
+                                        <th scope="col">Oluşturulma Tarihi</th>
+                                        <th scope="col">İşlem</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for kayit in log_kayitlari %}
+                                        <tr>
+                                            <th scope="row">{{ kayit.id }}</th>
+                                            <td>
+                                                {{ kayit.get_log_type_display }}
+                                            </td>
+                                            <td>{{ kayit.batch_id }}</td>
+                                            <td>{{ kayit.create_at|date:"d-m-Y H:i:s" }}
+                                            </td>
+                                            <td>
+                                                <div class="btn-group mb-3" role="group" aria-label="Basic example">
+                                                    <a href="{% url 'trendyol_batch_request_detail' kayit.batch_id %}"
+                                                       class="btn btn-primary"><i class="fa fa-eye"></i></a>
+                                                    <a href="{% url 'trendyol_batch_request_delete' kayit.id %}"
+                                                       class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <td colspan="5" style="text-align: center;height: 200px;">
+                                            <i class="fa fa-4x fa-sad-cry mb-3"></i>
+                                            <h5>Herhangi bir kayıt bulunmamaktadır.</h5>
+                                        </td>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <nav aria-label="pagination" class="pagination_area">
+                                <div class="row">
+                                    {% if log_kayitlari.end_index > 0 %}
+                                        <div class="col-sm-12 col-md-5 d-none d-md-block">
+                                            <p>Showing {{ log_kayitlari.start_index }} to {{ log_kayitlari.end_index }}
+                                                of {{ log_kayitlari.paginator.count }}.</p>
+                                        </div>
+                                    {% endif %}
+                                    {% if log_kayitlari.paginator.num_pages > 1 %}
+                                        <div class="col-sm-12 col-md-7 dataTables_pager">
+                                            <ul class="pagination">
+                                                {% if log_kayitlari.has_previous %}
+
+                                                    <li class="page-item">
+                                                        <a class="page-link" data-page="1"
+                                                           href="?page=1">
+                                                            <i class="fa fa-angle-double-left"></i>
+                                                        </a>
+                                                    </li>
+                                                    {% if log_kayitlari.previous_page_number > 1 %}
+                                                        <li class="page-item">
+                                                            <a class="page-link "
+                                                               data-page="{{ log_kayitlari.previous_page_number }}"
+                                                               href="?page={{ log_kayitlari.previous_page_number }}">
+                                                                <i class="fa fa-angle-left"></i>
+                                                            </a>
+                                                        </li>
+                                                    {% endif %}
+
+                                                {% endif %}
+
+                                                {% if log_kayitlari.previous_page_number > 2 %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ log_kayitlari.number|add:'-2' }}"
+                                                           href="?page={{ log_kayitlari.number|add:'-2' }}"> {{ log_kayitlari.number|add:"-2" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ log_kayitlari.number|add:'-1' }}"
+                                                           href="?page={{ log_kayitlari.number|add:'-1' }}"> {{ log_kayitlari.number|add:"-1" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                <li class="page-item active"><span
+                                                        class="page-link ">{{ log_kayitlari.number }}</span></li>
+
+                                                {% if log_kayitlari.paginator.num_pages > log_kayitlari.number|add:"2" %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ log_kayitlari.number|add:'1' }}"
+                                                           href="?page={{ log_kayitlari.number|add:'1' }}"> {{ log_kayitlari.number|add:"1" }} </a>
+                                                    </li>
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ log_kayitlari.number|add:'2' }}"
+                                                           href="?page={{ log_kayitlari.number|add:'2' }}"> {{ log_kayitlari.number|add:"2" }} </a>
+                                                    </li>
+                                                {% endif %}
+
+                                                {% if log_kayitlari.has_next %}
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ log_kayitlari.next_page_number }}"
+                                                           href="?page={{ log_kayitlari.next_page_number }}">
+                                                            <i class="fa fa-angle-right"></i>
+                                                        </a>
+                                                    </li>
+
+                                                    <li class="page-item">
+                                                        <a class="page-link "
+                                                           data-page="{{ log_kayitlari.paginator.num_pages }}"
+                                                           href="?page={{ log_kayitlari.paginator.num_pages }}">
+                                                            <i class="fa fa-angle-double-right"></i>
+                                                        </a>
+                                                    </li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </nav>
                         </div>
                     </div>
                 </div>
@@ -70,7 +340,15 @@
 {% endblock %}
 
 {% block extra_script %}
-
+    <script src="{% static 'backend/js/product.js' %}"></script>
+    <script src="{% static 'backend/modules/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'backend/modules/sweetalert/sweetalert.min.js' %}"></script>
+    <script src="{% static 'backend/modules/chocolat/dist/js/jquery.chocolat.min.js' %}"></script>
+    <script>
+        function copyFunction(element) {
+            navigator.clipboard.writeText(element.id);
+        }
+    </script>
 {% endblock %}
 
 
