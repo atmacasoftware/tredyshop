@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="{% static 'backend/modules/select2/dist/css/select2.min.css' %}">
     <link rel="stylesheet" href="{% static 'backend/modules/chocolat/dist/css/chocolat.css' %}">
     <style>
-        .active{
-            display: table-row!important;
+        .table-active {
+            display: table-row !important;
         }
     </style>
 {% endblock %}
@@ -47,8 +47,12 @@
                                     <label for="select-category">Durum</label>
                                     <select class="form-control select2 durumSelect filter-checkbox"
                                             id="select-durum" name="durum" style="width: 100%;">
-                                        <option value="eslestirilmemis" {% if durum != 'eslestirilmis' %}selected{% endif %}>Eşleştirilmemiş</option>
-                                        <option value="eslestirilmis" {% if durum == 'eslestirilmis' %}selected{% endif %}>Eşleştirilmiş</option>
+                                        <option value="eslestirilmemis"
+                                                {% if durum != 'eslestirilmis' %}selected{% endif %}>Eşleştirilmemiş
+                                        </option>
+                                        <option value="eslestirilmis"
+                                                {% if durum == 'eslestirilmis' %}selected{% endif %}>Eşleştirilmiş
+                                        </option>
                                     </select>
                                 </div>
                             </div>
@@ -58,9 +62,14 @@
                                     <select class="form-control select2 kaynakSelect filter-checkbox"
                                             id="select-kaynak" name="kaynak" style="width: 100%;">
                                         <option value="None" selected>----------</option>
-                                        <option value="Modaymış" {% if kaynak == 'Modaymış' %}selected{% endif %}>Modaymış</option>
-                                        <option value="Bella Notte" {% if kaynak == 'Bella Notte' %}selected{% endif %}>Bella Notte</option>
-                                        <option value="Leyna" {% if kaynak == 'Leyna' %}selected{% endif %}>Leyna</option>
+                                        <option value="Modaymış" {% if kaynak == 'Modaymış' %}selected{% endif %}>
+                                            Modaymış
+                                        </option>
+                                        <option value="Bella Notte" {% if kaynak == 'Bella Notte' %}selected{% endif %}>
+                                            Bella Notte
+                                        </option>
+                                        <option value="Leyna" {% if kaynak == 'Leyna' %}selected{% endif %}>Leyna
+                                        </option>
                                     </select>
                                 </div>
                             </div>
@@ -70,8 +79,11 @@
                                     <select class="form-control select2 yayinSelect filter-checkbox"
                                             id="select-yayin" name="yayin" style="width: 100%;">
                                         <option value="None" selected>----------</option>
-                                        <option value="False" {% if yayin == 'False' %}selected{% endif %}>Yayında Değil</option>
-                                        <option value="True" {% if yayin == 'True' %}selected{% endif %}>Yayında</option>
+                                        <option value="False" {% if yayin == 'False' %}selected{% endif %}>Yayında
+                                            Değil
+                                        </option>
+                                        <option value="True" {% if yayin == 'True' %}selected{% endif %}>Yayında
+                                        </option>
                                     </select>
                                 </div>
                             </div>
@@ -106,93 +118,94 @@
                                                 <td style="width: 5%;">
                                                     <div class="gallery gallery-md">
                                                         {% if product.product.image_url1 %}
-                                                        <div class="gallery-item"
-                                                             data-image="{{ product.product.image_url1 }}"
-                                                             data-title="Image 1" style="width: 50px;"></div>
-                                                        <div class="gallery-item d-none"
-                                                             data-image="{{ product.product.image_url2 }}"
-                                                             data-title="Image 1" style="width: 50px;"></div>
+                                                            <div class="gallery-item"
+                                                                 data-image="{{ product.product.image_url1 }}"
+                                                                 data-title="Image 1" style="width: 50px;"></div>
+                                                            <div class="gallery-item d-none"
+                                                                 data-image="{{ product.product.image_url2 }}"
+                                                                 data-title="Image 1" style="width: 50px;"></div>
                                                         {% else %}
-                                                        <div class="gallery-item"
-                                                             data-image="{{ product.product.product.image_url1 }}"
-                                                             data-title="Image 1" style="width: 50px;"></div>
-                                                        <div class="gallery-item d-none"
-                                                             data-image="{{ product.product.product.image_url2 }}"
-                                                             data-title="Image 1" style="width: 50px;"></div>
+                                                            <div class="gallery-item"
+                                                                 data-image="{{ product.product.product.image_url1 }}"
+                                                                 data-title="Image 1" style="width: 50px;"></div>
+                                                            <div class="gallery-item d-none"
+                                                                 data-image="{{ product.product.product.image_url2 }}"
+                                                                 data-title="Image 1" style="width: 50px;"></div>
                                                         {% endif %}
                                                     </div>
                                                 </td>
                                                 <td>
                                                     {% if product.barcode %}
-                                                    <a href="{% url 'product_detail' product.product.barcode %}"
-                                                       style="width: 25%;display: block;"><strong>{{ product.title|truncatechars_html:50 }}</strong>
-                                                    </a>
-                                                    <span id="{{ product.barcode }}">Barcode: {{ product.barcode }}</span>
-                                                    <span id="copy-{{ product.id }}"
-                                                          onclick="copyFunction({{ product.barcode }})"
-                                                          style="background: none; outline: none; border: none; cursor:pointer;">
+                                                        <a href="{% url 'product_detail' product.product.barcode %}"
+                                                           style="width: 25%;display: block;"><strong>{{ product.title|truncatechars_html:50 }}</strong>
+                                                        </a>
+                                                        <span id="{{ product.barcode }}">Barcode: {{ product.barcode }}</span>
+                                                        <span id="copy-{{ product.id }}"
+                                                              onclick="copyFunction({{ product.barcode }})"
+                                                              style="background: none; outline: none; border: none; cursor:pointer;">
                                                         <i class="fa fa-copy"></i></span>
-                                                    <div class="d-block">
-                                                        <span>Beden: {{ product.size.name }}</span>,
-                                                        <span>Renk: {{ product.color.name }}</span>
-                                                    </div>
-                                                    <span class="d-block">Stok: {{ product.quantity }}</span>
+                                                        <div class="d-block">
+                                                            <span>Beden: {{ product.size.name }}</span>,
+                                                            <span>Renk: {{ product.color.name }}</span>
+                                                        </div>
+                                                        <span class="d-block">Stok: {{ product.quantity }}</span>
                                                     {% else %}
-                                                    <a href="{% url 'product_detail' product.product.product.barcode %}"
-                                                       style="width: 25%;display: block;"><strong>{{ product.product.title|truncatechars_html:50 }}</strong>
-                                                    </a>
-                                                    <span id="{{ product.product.barcode }}">Barcode: {{ product.product.barcode }}</span>
-                                                    <span id="copy-{{ product.product.id }}"
-                                                          onclick="copyFunction({{ product.product.barcode }})"
-                                                          style="background: none; outline: none; border: none; cursor:pointer;">
+                                                        <a href="{% url 'product_detail' product.product.product.barcode %}"
+                                                           style="width: 25%;display: block;"><strong>{{ product.product.title|truncatechars_html:50 }}</strong>
+                                                        </a>
+                                                        <span id="{{ product.product.barcode }}">Barcode: {{ product.product.barcode }}</span>
+                                                        <span id="copy-{{ product.product.id }}"
+                                                              onclick="copyFunction({{ product.product.barcode }})"
+                                                              style="background: none; outline: none; border: none; cursor:pointer;">
                                                         <i class="fa fa-copy"></i></span>
-                                                    <div class="d-block">
-                                                        <span>Beden: {{ product.product.size.name }}</span>,
-                                                        <span>Renk: {{ product.product.color.name }}</span>
-                                                    </div>
-                                                    <span class="d-block">Stok: {{ product.product.quantity }}</span>
+                                                        <div class="d-block">
+                                                            <span>Beden: {{ product.product.size.name }}</span>,
+                                                            <span>Renk: {{ product.product.color.name }}</span>
+                                                        </div>
+                                                        <span class="d-block">Stok: {{ product.product.quantity }}</span>
                                                     {% endif %}
                                                 </td>
                                                 <td style="width: 20%;">
                                                     {% if product.product.subbottomcategory %}
-                                                    {{ product.product.subbottomcategory }}
+                                                        {{ product.product.subbottomcategory }}
                                                     {% else %}
-                                                    {{ product.product.product.subbottomcategory }}
+                                                        {{ product.product.product.subbottomcategory }}
                                                     {% endif %}
                                                 </td>
                                                 <td style="width: 50%;">
                                                     {% if product.product.subbottomcategory %}
-                                                    <select class="form-control select2 kategoriSelect filter-checkbox"
-                                                            id="kategori-{{ product.id }}"
-                                                            name="kategori2-{{ product.id }}"
-                                                            onchange="getval(this, {{ product.id }});"
-                                                            style="width: 100%;">
-                                                        <option value="">--------</option>
-                                                    </select>
+                                                        <select class="form-control select2 kategoriSelect filter-checkbox"
+                                                                id="kategori-{{ product.id }}"
+                                                                name="kategori2-{{ product.id }}"
+                                                                onchange="getval(this, {{ product.id }});"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                        </select>
                                                     {% else %}
-                                                    <small class="d-block">{{ product.category }}</small>
-                                                    <select class="form-control select2 kategoriSelect filter-checkbox"
-                                                            id="kategori-{{ product.product.id }}"
-                                                            name="kategori2-{{ product.product.id }}"
+                                                        <small class="d-block">{{ product.category }}</small>
+                                                        <select class="form-control select2 kategoriSelect filter-checkbox"
+                                                                id="kategori-{{ product.product.id }}"
+                                                                name="kategori2-{{ product.product.id }}"
 
-                                                            onchange="getval(this, {{ product.product.id }});"
-                                                            style="width: 100%;">
-                                                        <option value="">--------</option>
-                                                    </select>
+                                                                onchange="getval(this, {{ product.product.id }});"
+                                                                style="width: 100%;">
+                                                            <option value="">--------</option>
+                                                        </select>
                                                     {% endif %}
                                                 </td>
                                             </form>
                                         </tr>
                                         <tr style="display: none;">
                                             <td colspan="4">
-                                             {% if product.product.subbottomcategory %}
-                                                <div class="collapse" id="{{ product.id }}-collapse" style="">
+                                                {% if product.product.subbottomcategory %}
+                                                    <div class="collapse" id="{{ product.id }}-collapse" style="">
 
-                                                </div>
-                                             {% else %}
-                                             <div class="collapse" id="{{ product.product.id }}-collapse" style="">
+                                                    </div>
+                                                {% else %}
+                                                    <div class="collapse" id="{{ product.product.id }}-collapse"
+                                                         style="">
 
-                                                </div>
+                                                    </div>
                                                 {% endif %}
                                             </td>
                                         </tr>
@@ -316,11 +329,11 @@
 
             $.ajax({
                 type: "GET",
-                url: `/yonetim/trendyol/kategori-eslestir/ozellikleri-getir/`,
+                url: '/yonetim/trendyol/kategori-eslestir/ozellikleri-getir/',
                 data: {
                     'product_id': product_id,
                     'category_id': select.value,
-                    'category_name': $(select).find('option:selected').text(),
+                    'category_name': $(select).find('option:selected').text()
                 },
                 dataType: 'json',
                 beforeSend: function () {
@@ -335,11 +348,9 @@
                     $(".waiting").css('visibility',
                         'hidden')
 
-                    $(`#${product_id}-collapse`).parent().parent().addClass('active')
-                    $(`#${product_id}-collapse`).addClass('show')
-
-                    $(`#${product_id}-collapse`).html(data.data)
-
+                    document.getElementById(`${product_id}-collapse`).parentElement.parentElement.classList.add('table-active');
+                    document.getElementById(`${product_id}-collapse`).classList.add('show');
+                    document.getElementById(`${product_id}-collapse`).innerHTML = data.data;
 
                 },
                 error: function (e) {
@@ -349,9 +360,10 @@
                         position: 'topRight'
                     });
                 }
-            });
+            })
         }
 
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 {% endblock %}
