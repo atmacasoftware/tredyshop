@@ -28,7 +28,7 @@ $(document).ready(function () {
             const csrftoken = getCookie('csrftoken');
 
             $.ajax({
-                url: `/urun_ekle/${barcode}`,
+                url: `/urun_ekle/`,
                 headers: {'X-CSRFToken': csrftoken},
                 type: 'POST',
                 data: {

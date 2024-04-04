@@ -34,7 +34,6 @@ class BINListAdmin(ImportExportModelAdmin):
     resource_class = BINListResource
 
 admin.site.register(Order, OrderAdmin)
-admin.site.register(PreOrder)
 admin.site.register(ExtraditionRequest)
 admin.site.register(OrderProduct, OrderProductAdmin)
 admin.site.register(BankInfo, BankInfoAdmin)

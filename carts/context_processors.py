@@ -8,7 +8,7 @@ def counter(request):
         try:
             cart = Cart.objects.filter(cart_id=request.META.get('REMOTE_ADDR'))
             if request.user.is_authenticated:
-                cart_items = CartItem.objects.all().filter(user=request.user)
+                cart_items = CartItem.objects.all().filter()
             else:
                 cart_items = CartItem.objects.all().filter(cart=cart[:1])
             for cart_item in cart_items:

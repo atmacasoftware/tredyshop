@@ -462,6 +462,7 @@ def updateGecelikDolabi():
     for p in gecelikdolabi.getroot():
         barcode = str(p.find('Barkod').text)
         if Product.objects.filter(barcode=barcode).count() == 1:
+            print(barcode)
             title = p.find('Baslik').text
             model_code = p.find("Barkod").text
             stok = int(p.find('Stok').text)

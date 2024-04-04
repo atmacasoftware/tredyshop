@@ -37,25 +37,11 @@ class Cart(models.Model):
                 minus = total_price - total_discount_price
         return minus
 
-    def used_coupon(self):
-        is_used = Coupon.objects.filter(user_id=self.cart_id, is_active=True).exists()
-        return is_used
-
-    def coupon(self):
-        try:
-            coupon = Coupon.objects.get(user_id=self.cart_id, is_active=True)
-            if CartItem.objects.filter(cart=self).count() == 0:
-                coupon.is_active = False
-                coupon.save()
-            return coupon
-        except:
-            return "Not available"
-
     def delivery_price(self):
         setting = Setting.objects.all().last()
         total_price = self.total_price()
         if total_price > setting.free_shipping:
-            return "Ücretsiz"
+            return 0
         else:
             return setting.shipping_price
 
@@ -63,14 +49,13 @@ class Cart(models.Model):
         quantity = 0
         for cart_item in CartItem.objects.filter(cart=self):
             quantity += cart_item.quantity
-
         return quantity
 
     def general_total(self):
         setting = Setting.objects.all().last()
         delivery_price = setting.shipping_price
-        is_coupon = self.used_coupon()
-        coupon = self.coupon()
+        is_coupon = False
+        coupon = None
         total = self.total_price()
         general_total = 0
         if CartItem.objects.filter(cart=self).count() > 0:
@@ -97,6 +82,7 @@ class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     is_active = models.BooleanField(default=True)
+
 
     def sub_total(self):
         if self.product.product.is_discountprice == True:

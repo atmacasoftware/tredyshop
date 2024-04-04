@@ -12,27 +12,24 @@
 {% block kullanici_islemleri %}
     <div class="page-container auth">
 
-        <!-- ~~~~~~~~~~~~~~~~~ Auth content (Login page) section [START] ~~~~~~~~~~~~~~~~~ -->
         <div class="page-section">
             <div class="page-margin">
                 <div class="page-margin__content">
                     <div class="page-section__body">
                         <div class="row">
                             <div class="col-xxl-4 offset-xxl-4 col-xl-6 offset-xl-3 col-12">
-                                <form action="#" class="form" method="POST">
+                                <form class="form" method="POST">
                                     {% csrf_token %}
                                     <div class="d-block">
                                         <div class="auth-form">
                                             <div class="auth-form__header">
                                                 <div class="icon">
                                                     <span>
-                                                        <svg width="36" height="23" viewBox="0 0 36 23" fill="none" xmlns="https://www.w3.org/2000/svg">
-                                                            <path d="M16.6876 22.2624C16.0996 22.2624 15.5756 21.8924 15.3776 21.3384L8.42457 1.87043C8.27257 1.44443 8.33757 0.998429 8.59757 0.628429C8.85857 0.259429 9.28257 0.0654297 9.73457 0.0654297H26.0476C26.6046 0.0654297 27.1066 0.370429 27.3266 0.882429L35.6696 20.3374C35.8536 20.7674 35.8096 21.2544 35.5536 21.6444C35.2946 22.0344 34.8576 22.2624 34.3906 22.2624H16.6876Z" fill="#F4900C" />
-                                                            <path d="M1.39044 22.262C0.923443 22.262 0.486443 22.026 0.228443 21.637C-0.0275574 21.246 -0.0715574 20.752 0.112443 20.322L8.46044 0.843C8.67844 0.333 9.18244 0 9.73844 0C10.2954 0 10.7994 0.333 11.0174 0.843L19.3654 20.322C19.5494 20.753 19.5044 21.246 19.2484 21.637C18.9924 22.026 18.5554 22.262 18.0874 22.262H1.39044Z" fill="#FFCC4D" />
-                                                            <path d="M9.73415 3.44434L6.95215 22.2623H12.5151L9.73415 3.44434Z" fill="#292F33" />
-                                                            <path d="M15.3357 20.7178L15.9567 22.2618H12.5157L15.3357 20.7178ZM4.13272 20.7178L3.51172 22.2618H6.95272L4.13272 20.7178Z" fill="#FFAC33" />
-                                                            <path d="M12.5155 22.2623C12.5155 22.2623 15.0445 21.6173 16.2815 20.4763L9.73452 3.44434L12.5155 22.2623ZM6.95252 22.2623C6.95252 22.2623 4.42352 21.6173 3.18652 20.4763L9.73252 3.44534L6.95252 22.2623V22.2623Z" fill="#FFE8B6" />
-                                                        </svg>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                                             fill="currentColor" class="bi bi-person"
+                                                             viewBox="0 0 16 16">
+  <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+</svg>
                                                     </span>
                                                 </div>
                                                 <h3>
@@ -48,7 +45,8 @@
                                                         <label class="form-control-label">
                                                             E-Posta
                                                         </label>
-                                                        <input name="email" value="" type="email" class="form-control" placeholder="E-posta adresiniz">
+                                                        <input name="email" value="" type="email" class="form-control"
+                                                               placeholder="E-posta adresiniz">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -56,16 +54,27 @@
                                                         <label class="form-control-label">
                                                             Şifre
                                                         </label>
-                                                        <input name="password" type="password" class="form-control" placeholder="Şifreniz">
-                                                        <button type="button" class="form-field__password-vctrl vctrl-visible" data-form-ctrl="password">
+                                                        <input name="password" type="password" class="form-control"
+                                                               placeholder="Şifreniz">
+                                                        <button type="button"
+                                                                class="form-field__password-vctrl vctrl-visible"
+                                                                data-form-ctrl="password">
                                                             <span class="btn-pw-icon_hidden">
-                                                                <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye-off">
+                                                                <svg xmlns="https://www.w3.org/2000/svg" width="24"
+                                                                     height="24" viewBox="0 0 24 24" fill="none"
+                                                                     stroke="currentColor" stroke-width="2"
+                                                                     stroke-linecap="round" stroke-linejoin="round"
+                                                                     class="feather feather-eye-off">
                                                                     <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
                                                                     <line x1="1" y1="1" x2="23" y2="23"></line>
                                                                 </svg>
                                                             </span>
                                                             <span class="btn-pw-icon_visible">
-                                                                <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye">
+                                                                <svg xmlns="https://www.w3.org/2000/svg" width="24"
+                                                                     height="24" viewBox="0 0 24 24" fill="none"
+                                                                     stroke="currentColor" stroke-width="2"
+                                                                     stroke-linecap="round" stroke-linejoin="round"
+                                                                     class="feather feather-eye">
                                                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                                                     <circle cx="12" cy="12" r="3"></circle>
                                                                 </svg>
@@ -73,15 +82,26 @@
                                                         </button>
                                                     </div>
                                                 </div>
+                                                <div class="form-group mt-3 d-flex justify-content-start align-items-center">
+                                                    <input type="checkbox" name="remember_me" id="remember_me"
+                                                           style="width: 20px; height: 20px; margin-right: 10px;">
+                                                    <label class="form-control-label mt-2" for="remember_me">Beni
+                                                        hatırla</label>
+                                                </div>
                                                 <div class="form-group-text-sep">
                                                     <span>
                                                         Şifrenimi unuttun <a href="{% url 'reset_password' %}">Şifreni sıfırla</a>
                                                     </span>
                                                 </div>
                                                 <div class="form-group">
-                                                    <button type="submit" class="btn btn-user btn-primary btn-icon btn-lg btn-block">
+                                                    <button type="submit" name="login_btn"
+                                                            class="btn btn-user btn-primary btn-icon btn-lg btn-block">
                                                         <span class="icon">
-                                                            <svg xmlns="https://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-in">
+                                                            <svg xmlns="https://www.w3.org/2000/svg" width="24"
+                                                                 height="24" viewBox="0 0 24 24" fill="none"
+                                                                 stroke="currentColor" stroke-width="2"
+                                                                 stroke-linecap="round" stroke-linejoin="round"
+                                                                 class="feather feather-log-in">
                                                                 <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
                                                                 <polyline points="10 17 15 12 10 7"></polyline>
                                                                 <line x1="15" y1="12" x2="3" y2="12"></line>
@@ -98,14 +118,20 @@
                                                     </span>
                                                 </div>
                                                 <div class="form-group">
-                                                    <a href="{% provider_login_url "google" %}" class="a-block social-login-btn google">
+                                                    <a href="{% provider_login_url "google" %}"
+                                                       class="a-block social-login-btn google">
                                                         <div class="btn btn-primary btn-icon btn-lg btn-block">
                                                             <span class="icon">
-                                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="https://www.w3.org/2000/svg">
-                                                                    <path d="M18.977 4.32196L16 7.29996C14.977 6.46196 13.674 5.94996 12.232 5.94996C9.542 5.94996 7.282 7.67996 6.492 10.102L3.052 7.46696C4.708 4.07996 8.186 1.76196 12.232 1.76196C14.837 1.76196 17.162 2.73896 18.977 4.32196Z" fill="#EA4335"></path>
-                                                                    <path d="M6.186 11.9999C6.186 12.6599 6.288 13.2929 6.493 13.8899L3.05 16.5329C2.38 15.1699 2 13.6299 2 11.9999C2 10.3699 2.38 8.82692 3.05 7.46692L6.493 10.1019C6.289 10.6969 6.186 11.3399 6.186 11.9999Z" fill="#FBBC05"></path>
-                                                                    <path d="M18.893 19.6879C17.107 21.3549 14.725 22.238 12.233 22.238C8.185 22.238 4.707 19.921 3.053 16.533L6.493 13.8979C7.283 16.3179 9.543 18.0499 12.233 18.0499C13.553 18.0499 14.707 17.742 15.628 17.155L18.893 19.6879Z" fill="#34A853"></path>
-                                                                    <path d="M22 12C22 15.34 20.78 17.948 18.893 19.688L15.628 17.158C16.698 16.488 17.442 15.445 17.721 14.095H12.233V10.14H21.768C21.908 10.743 22.001 11.395 22.001 12H22Z" fill="#4285F4"></path>
+                                                                <svg width="24" height="24" viewBox="0 0 24 24"
+                                                                     fill="none" xmlns="https://www.w3.org/2000/svg">
+                                                                    <path d="M18.977 4.32196L16 7.29996C14.977 6.46196 13.674 5.94996 12.232 5.94996C9.542 5.94996 7.282 7.67996 6.492 10.102L3.052 7.46696C4.708 4.07996 8.186 1.76196 12.232 1.76196C14.837 1.76196 17.162 2.73896 18.977 4.32196Z"
+                                                                          fill="#EA4335"></path>
+                                                                    <path d="M6.186 11.9999C6.186 12.6599 6.288 13.2929 6.493 13.8899L3.05 16.5329C2.38 15.1699 2 13.6299 2 11.9999C2 10.3699 2.38 8.82692 3.05 7.46692L6.493 10.1019C6.289 10.6969 6.186 11.3399 6.186 11.9999Z"
+                                                                          fill="#FBBC05"></path>
+                                                                    <path d="M18.893 19.6879C17.107 21.3549 14.725 22.238 12.233 22.238C8.185 22.238 4.707 19.921 3.053 16.533L6.493 13.8979C7.283 16.3179 9.543 18.0499 12.233 18.0499C13.553 18.0499 14.707 17.742 15.628 17.155L18.893 19.6879Z"
+                                                                          fill="#34A853"></path>
+                                                                    <path d="M22 12C22 15.34 20.78 17.948 18.893 19.688L15.628 17.158C16.698 16.488 17.442 15.445 17.721 14.095H12.233V10.14H21.768C21.908 10.743 22.001 11.395 22.001 12H22Z"
+                                                                          fill="#4285F4"></path>
                                                                 </svg>
                                                             </span>
                                                             <span class="text">

@@ -88,6 +88,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware',
 ]
 
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
@@ -100,6 +101,8 @@ CORS_ALLOWED_ORIGINS = [
     "https://tredyshop.com",
     "https://www.tredyshop.com",
 ]
+
+USER_AGENTS_CACHE = 'default'
 
 TEMPLATES = [
     {
@@ -135,12 +138,12 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'httpdyme_tredyshopdb',
-        'USER': 'httpdyme_tredyshopadmin',
-        'PASSWORD': 'NHrH0EoT)b=.',
-        'HOST': 'localhost',
-        'PORT': '',
+        'ENGINE': config('ENGINE'),
+        'NAME': config('NAME'),
+        'USER': config('USER'),
+        'PASSWORD': config('PASSWORD'),
+        'HOST': config('HOST'),
+        'PORT': config('PORT'),
         "OPTION": {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1",
             "autocommit": True,
@@ -182,7 +185,6 @@ CRONJOBS = [
     ('0 6 * * * ', 'ecommerce.cron.create_leyna'),
     ('*/55 * * * * ', 'ecommerce.cron.update_gecelikdolabi'),
     ('*/75 * * * * ', 'ecommerce.cron.find_not_active_gecelikdolabi'),
-    ('0 23 * * * ', 'ecommerce.cron.trendyol_send_product'),
     ('0 0 * * * ', 'ecommerce.cron.task_cron'),
 ]
 

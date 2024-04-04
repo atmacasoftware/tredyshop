@@ -13,6 +13,7 @@ from adminpage.custom import sendAccountVerificationEmail, customerTredyShopExtr
     sendExtraditionRequestInfoEmail
 from adminpage.models import Notification
 from carts.models import Cart, CartItem
+from carts.views import _cart_id
 from customer.forms import *
 from customer.models import CustomerAddress
 from ecommerce.settings import EMAIL_HOST_USER
@@ -42,13 +43,30 @@ def login(request):
                 if user_obj is not None:
                     if user_obj.is_activated == True:
                         try:
-                            cart = Cart.objects.get(cart_id=request.META.get('REMOTE_ADDR'))
+                            cart = Cart.objects.get(cart_id=_cart_id(request))
+                            user_cart_items = CartItem.objects.filter(user=user_obj)
+                            user_cart_items_exists = CartItem.objects.filter(user=user_obj).exists()
+
                             is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
-                            if is_cart_item_exists:
+
+                            if is_cart_item_exists and user_cart_items_exists == False:
                                 cart_item = CartItem.objects.filter(cart=cart)
                                 for item in cart_item:
                                     item.user = user_obj
                                     item.save()
+
+                            elif is_cart_item_exists and user_cart_items_exists:
+                                cart_item = CartItem.objects.filter(cart=cart)
+                                for item in cart_item:
+                                    for user_items in user_cart_items:
+                                        if user_items.product.barcode == item.product.barcode:
+                                            item.quantity += user_items.quantity
+                                            item.user = user_obj
+                                            item.save()
+                                            user_items.delete()
+                                        else:
+                                            item.user = user_obj
+                                            item.save()
                         except:
                             pass
                         auth_login(request, user_obj)

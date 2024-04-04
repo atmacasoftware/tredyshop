@@ -44,7 +44,7 @@ def trendyol_hesap_bilgileri(request):
 def trendyol_kategori_eslestir(request):
     context = {}
     trendyol_product = TrendyolProduct.objects.all()
-    urunler = ProductVariant.objects.filter(is_publish=True, quantity__gte=2).exclude(trendyolproduct__in=trendyol_product)
+    urunler = ProductVariant.objects.filter(is_publish=True, quantity__gte=3).exclude(trendyolproduct__in=trendyol_product).order_by("model_code", "-quantity")
     subbottomcategory = SubBottomCategory.objects.all()
     category = request.GET.get('kategori')
     durum = request.GET.get('durum')

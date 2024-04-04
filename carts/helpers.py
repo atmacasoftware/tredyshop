@@ -42,6 +42,8 @@ def paytr_api(email, payment_amount, merchant_oid, full_name, address, mobile, i
 
     email = email
 
+    str_payment = str(payment_amount)
+
     payment_amount = int(payment_amount * 100)
     currency = 'TL'
     payment_type = 'card'
@@ -62,9 +64,9 @@ def paytr_api(email, payment_amount, merchant_oid, full_name, address, mobile, i
 
     # Alabileceği değerler; advantage, axess, combo, bonus, cardfinans, maximum, paraf, world, saglamkart
 
-    installment_count = str(installment_count)
+    installment_count = "0"
 
-    hash_str = merchant_id + user_ip + merchant_oid + email + str(payment_amount) + payment_type + installment_count + currency + test_mode + non_3d
+    hash_str = merchant_id + user_ip + merchant_oid + email + str_payment + payment_type + installment_count + currency + test_mode + non_3d
     paytr_token = base64.b64encode(hmac.new(merchant_key, hash_str.encode() + merchant_salt, hashlib.sha256).digest())
 
     data = {
@@ -113,9 +115,9 @@ def paytr_post(email, payment_amount, merchant_oid, full_name, address, mobile, 
     debug_on = '1'
 
     # 3d'siz işlem
-    non_3d = '0'
+    non_3d = "0"
 
-    client_lang = 'tr'
+    client_lang = "tr"
 
     non3d_test_failed = '0'
 
@@ -144,7 +146,7 @@ def paytr_post(email, payment_amount, merchant_oid, full_name, address, mobile, 
 
     max_installment = 0
 
-    installment_count = str(installment_count)
+    installment_count = "0"
 
     hash_str = merchant_id + user_ip + merchant_oid + email + str(
         payment_amount) + payment_type + installment_count + currency + test_mode + non_3d
@@ -192,7 +194,7 @@ def create_order_token(user_ip, merchant_oid, email, payment_amount, installment
     payment_amount = payment_amount
     currency = 'TL'
     payment_type = 'card'
-    test_mode = "1"
+    test_mode = "0"
     non_3d = '0'
 
     hash_str = merchant_id + user_ip + merchant_oid + email + str(

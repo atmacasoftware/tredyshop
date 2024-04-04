@@ -1,5 +1,5 @@
 import json
-
+from datetime import datetime
 from django.db.models import Q, Count, Min, Max
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -9,6 +9,7 @@ import requests
 from adminpage.models import *
 from ciceksepeti.models import CiceksepetiOrders
 from customer.models import Subscription
+from ecommerce.logrecords import log_records
 from mainpage.models import *
 from product.models import Brand, ReviewRating, Product, Pattern, EnvironmentType, ProductVariant
 from categorymodel.models import *
@@ -21,6 +22,11 @@ def index(request):
     context = {}
     flash_deals = []
     new_release = []
+
+    log_records(datetime.today().day, "deneme", "error")
+    user_agent = request.META['HTTP_USER_AGENT']
+
+
 
     banners = Banner.objects.filter(is_publish=True).order_by('order')
 

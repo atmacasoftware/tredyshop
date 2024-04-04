@@ -24,7 +24,7 @@
                                         <div class="checkout-basket open">
                                             <div class="checkout-basket__header" data-toggle="checkout-cart-items">
                                                 <h2>
-                                                    Sepetim <sup>{{ cart.total_quantity }}</sup>
+                                                    Sepetim <sup>{{ total_quantity }}</sup>
                                                 </h2>
                                                 <div class="btn-control">
                                                     <span class="minus">
@@ -187,7 +187,7 @@
                                                 </div>
                                             </div>
                                             <div class="checkout-basket__footer">
-                                                Toplam {{ cart.total_quantity }} ürün— <b>{{ cart.total_price }} TL</b>
+                                                Toplam {{ total_quantity }} ürün— <b>{{ total|floatformat:2 }} TL</b>
                                             </div>
                                         </div>
                                         <div class="row align-items-stretch">
@@ -196,7 +196,7 @@
                                                     <div class="checkout-submit__header">
                                                         <h2>
                                                             <span>Ödeme Yöntemi</span>
-                                                            <span>Ödenecek Tutar: {{ cart.general_total|floatformat:2 }} TL</span>
+                                                            <span>Ödenecek Tutar: {{ grand_total|floatformat:2 }} TL</span>
                                                         </h2>
                                                     </div>
                                                     <div class="checkout-submit__body">
@@ -316,7 +316,7 @@
                                                                         <input type="hidden" name="payment_type"
                                                                                value="{{ paytr_data.payment_type }}">
                                                                         <input type="hidden" name="payment_amount"
-                                                                               value="{{ cart.general_total }}" id="paytrPaymentAmount">
+                                                                               value="{{ paytr_data.payment_amount }}" id="paytrPaymentAmount">
                                                                         <input type="hidden" name="currency"
                                                                                value="{{ paytr_data.currency }}">
                                                                         <input type="hidden" name="test_mode"
@@ -368,7 +368,7 @@
                                                                     </svg>
                                                                 </span>
                                                             <span class="text">
-                                                                    Ödeme Yap ({{ cart.general_total|floatformat:2 }} TL)
+                                                                    Ödeme Yap ({{ grand_total|floatformat:2 }} TL)
                                                                 </span>
                                                         </button>
 
@@ -405,10 +405,10 @@
                                                     <div class="checkout-summary__body">
                                                         <div class="info-line">
                                                             <span class="info-line__label">
-                                                                Toplam ({{ cart.total_quantity }}) parça
+                                                                Toplam ({{ total_quantity }}) parça
                                                             </span>
                                                             <span class="info-line__value">
-                                                                {{ cart.total_not_discuntprice|floatformat:2 }} TL
+                                                                {{ total|floatformat:2 }} TL
                                                             </span>
                                                         </div>
                                                         <div class="info-line">
@@ -435,7 +435,7 @@
                                                                                value="{{ setting.shipping_price|floatformat:2 }}"
                                                                                name="delivery_price">
                                                                     {% else %}
-                                                                        Ücretsiz
+                                                                        0.00 TL
                                                                     {% endif %}
                                                                 {% else %}
                                                                     -
@@ -447,7 +447,7 @@
                                                                 İndirim
                                                             </span>
                                                             <span class="info-line__value">
-                                                                {{ cart.total_discount }} TL
+                                                                {{ minus|floatformat:2 }} TL
                                                             </span>
                                                         </div>
                                                         <div class="info-line">
@@ -461,7 +461,7 @@
                                                                            name="coupon">
                                                                     {{ coupon.coupon_price|floatformat:2 }} TL
                                                                 {% else %}
-                                                                    -
+                                                                    0.00 TL
                                                                 {% endif %}
                                                             </span>
                                                         </div>
@@ -536,11 +536,11 @@
                                                 <div class="text-value">
                                                     <span>
                                                         {% if total != 0 %}
-                                                            <input type="hidden" value="{{ cart.general_total }}"
+                                                            <input type="hidden" value="{{ grand_total }}"
                                                                    name="order_total">
-                                                            {{ cart.general_total|floatformat:2 }} TL
+                                                            {{ grand_total|floatformat:2 }} TL
                                                         {% else %}
-                                                            0 TL
+                                                            0.00 TL
                                                         {% endif %}
                                                     </span>
                                                 </div>

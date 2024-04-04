@@ -350,8 +350,7 @@
 
                     document.getElementById(`${product_id}-collapse`).parentElement.parentElement.classList.add('table-active');
                     document.getElementById(`${product_id}-collapse`).classList.add('show');
-                    document.getElementById(`${product_id}-collapse`).innerHTML = data.data;
-
+                    $(`#${product_id}-collapse`).html(data.data);
                 },
                 error: function (e) {
                     iziToast.error({

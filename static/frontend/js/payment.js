@@ -67,7 +67,6 @@ $cc.validate = function (e) {
         }
     }
 
-
     //if the number passes the Luhn algorithm add the class 'active'
     if (isLuhn == true) {
         e.target.nextElementSibling.className = 'card-valid active'
@@ -77,73 +76,66 @@ $cc.validate = function (e) {
         $("#paytrCardNumber").val(card_nospace_number)
         let bin_code = parseInt($("#cardnumber").val().replaceAll(" ", "").slice(0, 8))
 
-        console.log(bin_code)
-
         $.ajax({
             url: `/checkout`,
             data: {'bin_code': bin_code},
             dataType: 'json',
-
             success: function (res) {
                 $("#kartTipi").val(res[1])
-
                 var tek_cekim = parseFloat($("#0Installment").val())
-
-                 function getCookie(name) {
-                        let cookieValue = null;
-                        if (document.cookie && document.cookie !== '') {
-                            const cookies = document.cookie.split(';');
-                            for (let i = 0; i < cookies.length; i++) {
-                                const cookie = cookies[i].trim();
-                                // Does this cookie string begin with the name we want?
-                                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                                    break;
-                                }
+                function getCookie(name) {
+                    let cookieValue = null;
+                    if (document.cookie && document.cookie !== '') {
+                        const cookies = document.cookie.split(';');
+                        for (let i = 0; i < cookies.length; i++) {
+                            const cookie = cookies[i].trim();
+                            // Does this cookie string begin with the name we want?
+                            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
                             }
                         }
-                        return cookieValue;
                     }
+                    return cookieValue;
+                }
 
                 const csrftoken = getCookie('csrftoken');
 
-                    $.ajax({
-                        type: "POST",
-                        headers: {'X-CSRFToken': csrftoken},
-                        url: `/token-olustur`,
-                        data: {
-                            'user_ip': $("input[name='user_ip']").val(),
-                            'merchant_oid': $("input[name='merchant_oid']").val(),
-                            'email': $("input[name='email']").val(),
-                            'payment_amount': $("input[name='order_total']").val(),
-                            'installment_count': 0,
-                        },
-                        dataType: 'json',
-                        success: function (res) {
-                            $("input[name='paytr_token']").val(res)
-                        }
-                    });
+                $.ajax({
+                    type: "POST",
+                    headers: {'X-CSRFToken': csrftoken},
+                    url: `/token-olustur`,
+                    data: {
+                        'user_ip': $("input[name='user_ip']").val(),
+                        'merchant_oid': $("input[name='merchant_oid']").val(),
+                        'email': $("input[name='email']").val(),
+                        'payment_amount': $("input[name='order_total']").val(),
+                        'installment_count': $("input[name='installment_count']").val(),
+                    },
+                    dataType: 'json',
+                    success: function (res) {
+                        console.log(res)
+                        $("input[name='paytr_token']").val(res)
+                    }
+                });
 
 
-                    $.ajax({
-                        type: "POST",
-                        url: `/sozlesme-onayi`,
-                        headers: {'X-CSRFToken': csrftoken},
-                        data: {
-                            'order_number': $("input[name='merchant_oid']").val(),
-                            'preliminary_form': $("textarea[name='preliminary_form']").val(),
-                            'distance_selling_contract': $("textarea[name='distance_selling_form']").val(),
-                        },
-                        dataType: 'json',
-                        success: function (res) {
+                $.ajax({
+                    type: "POST",
+                    url: `/sozlesme-onayi`,
+                    headers: {'X-CSRFToken': csrftoken},
+                    data: {
+                        'order_number': $("input[name='merchant_oid']").val(),
+                        'preliminary_form': $("textarea[name='preliminary_form']").val(),
+                        'distance_selling_contract': $("textarea[name='distance_selling_form']").val(),
+                    },
+                    dataType: 'json',
+                    success: function (res) {
 
-                        }
-                    });
+                    }
+                });
             }
         });
-
-
-
 
     } else {
         e.target.nextElementSibling.className = 'card-valid invalid'
@@ -199,7 +191,6 @@ $cc.validate = function (e) {
 }
 
 
-
 $cc.expiry = function (e) {
     if (e.key != 'Backspace') {
         var number = String(this.value);
@@ -243,57 +234,54 @@ $cc.expiry = function (e) {
 }
 
 
-$("input[name='cc_owner']").keyup(function (){
-    if($(this).val().length < 1){
+$("input[name='cc_owner']").keyup(function () {
+    if ($(this).val().length < 1) {
         $(this).addClass('invalid-form')
-    }else{
-        if($(this).hasClass('invalid-form')){
+    } else {
+        if ($(this).hasClass('invalid-form')) {
             $(this).removeClass('invalid-form')
         }
     }
 
 })
 
-$("input[name='expiry_month']").keyup(function (){
+$("input[name='expiry_month']").keyup(function () {
 
-    if (/\D/g.test(this.value))
-    {
+    if (/\D/g.test(this.value)) {
         // Filter non-digits from input value.
         this.value = this.value.replace(/\D/g, '');
     }
 
-    if($(this).val() > 12 || $(this).val() == 0){
+    if ($(this).val() > 12 || $(this).val() == 0) {
         $(this).addClass('invalid-form')
-    }else{
-        if($(this).hasClass('invalid-form')){
+    } else {
+        if ($(this).hasClass('invalid-form')) {
             $(this).removeClass('invalid-form')
         }
     }
 
 })
 
-$("input[name='cvv']").keyup(function (){
+$("input[name='cvv']").keyup(function () {
 
-    if (/\D/g.test(this.value))
-    {
+    if (/\D/g.test(this.value)) {
         // Filter non-digits from input value.
         this.value = this.value.replace(/\D/g, '');
     }
 
 })
 
-$("input[name='expiry_year']").keyup(function (){
+$("input[name='expiry_year']").keyup(function () {
 
-    if (/\D/g.test(this.value))
-    {
+    if (/\D/g.test(this.value)) {
         // Filter non-digits from input value.
         this.value = this.value.replace(/\D/g, '');
     }
 
-    if($(this).val() < 23){
+    if ($(this).val() < 23) {
         $(this).addClass('invalid-form')
-    }else{
-        if($(this).hasClass('invalid-form')){
+    } else {
+        if ($(this).hasClass('invalid-form')) {
             $(this).removeClass('invalid-form')
         }
     }

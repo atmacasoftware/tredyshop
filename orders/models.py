@@ -10,21 +10,6 @@ from user_accounts.models import User
 
 # Create your models here.
 
-class PreOrder(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    order_number = models.CharField(verbose_name="Sipariş Numarası", null=True, blank=False, max_length=255)
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, null=True)
-    coupon = models.FloatField(null=True, blank=True)
-    bonuses = models.FloatField(verbose_name="Verdiği Bonus", blank=True, null=True)
-    cart_total = models.FloatField(null=True, blank=True)
-    delivery_price = models.CharField(max_length=100, verbose_name="Kargo Ücreti", null=True, blank=True)
-    address = models.ForeignKey(CustomerAddress, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Sipariş Adresi")
-    preliminary_information_form = RichTextUploadingField(verbose_name='Ön Bilgilendirme Formu', null=True, blank=True)
-    distance_selling_contract = RichTextUploadingField(verbose_name='Mesafeli Satış Sözleşmesi', null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Oluşturulma Tarihi")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="Güncellenme Tarihi")
-
-
 class Order(models.Model):
 
     STATUS = (

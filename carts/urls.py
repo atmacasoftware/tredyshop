@@ -3,7 +3,7 @@ from carts.views import *
 
 urlpatterns = [
     path('sepetim', cart, name="cart"),
-    path('urun_ekle/<str:barcode>', add_cart, name="add_cart"),
+    path('urun_ekle/', add_cart, name="add_cart"),
     path('urun_sil/<int:product_id>/<int:cart_item_id>', remove_cart, name="remove_cart"),
     path('urun_miktari/azalt/<int:product_id>/<int:cart_item_id>', minus_quantity, name="minus_quantity"),
     path('urun_miktari/arttir/<int:product_id>/<int:cart_item_id>', plus_quantity, name="plus_quantity"),

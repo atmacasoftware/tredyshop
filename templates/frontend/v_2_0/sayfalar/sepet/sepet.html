@@ -1,7 +1,15 @@
 {% extends 'frontend/v_2_0/base.html' %}
 {% load static %}
 
-{% block title %}<title>{{ request.user.get_full_name }} | Sepetim</title>{% endblock %}
+{% block title %}
+    <title>
+        {% if request.user.is_authenticated %}
+            {{ request.user.get_full_name }} | Sepetim
+        {% else %}
+            Sepetim
+        {% endif %}
+    </title>
+{% endblock %}
 
 {% block extra_style %}
     <link rel="stylesheet" href="{% static 'frontend/css/sepet.css' %}">
@@ -11,7 +19,7 @@
 {% block sepet %}
     <div class="page-container basket">
         <!-- ~~~~~~~~~~~~~~~~~ Basket buyer cart section [START] ~~~~~~~~~~~~~~~~~ -->
-        {% if cart.total_quantity > 0 %}
+        {% if cartitem_count > 0 %}
             <div class="page-section checkout-cart">
                 <div class="page-margin">
                     <div class="page-margin__content">
@@ -24,7 +32,11 @@
                                             <div class="checkout-basket open">
                                                 <div class="checkout-basket__header" data-toggle="checkout-cart-items">
                                                     <h2>
-                                                        Sepetim <sup>{{ cart.total_quantity }}</sup>
+                                                        {% if request.user.is_authenticated %}
+                                                            Sepetim <sup>{{ total_count }}</sup>
+                                                        {% else %}
+                                                            Sepetim <sup>{{ cart.total_quantity }}</sup>
+                                                        {% endif %}
                                                     </h2>
                                                     <div class="btn-control">
                                                     <span class="minus">
@@ -119,16 +131,16 @@
                                                                                     </svg>
                                                                                 </a>
                                                                                 <span data-count="1" class="count__num">
-                                                                            <input type="hidden" step="1" min="1"
-                                                                                   max="{{ cart_item.product.quantity }}"
-                                                                                   name="quantity"
-                                                                                   value="{{ cart_item.quantity }}"
-                                                                                   disabled="disabled"
-                                                                                   title="Qty"
-                                                                                   class="qty input-text js-number"
-                                                                                   size="4">
+                                                                                <input type="hidden" step="1" min="1"
+                                                                                       max="{{ cart_item.product.quantity }}"
+                                                                                       name="quantity"
+                                                                                       value="{{ cart_item.quantity }}"
+                                                                                       disabled="disabled"
+                                                                                       title="Qty"
+                                                                                       class="qty input-text js-number"
+                                                                                       size="4">
                                                                                 {{ cart_item.quantity }}
-                                                                        </span>
+                                                                                </span>
                                                                                 <a href="{% url 'plus_quantity' cart_item.product.id cart_item.id %}"
                                                                                    class="btn count__ctrl shadow-none"
                                                                                    id=plus>
@@ -189,8 +201,14 @@
                                                     </div>
                                                 </div>
                                                 <div class="checkout-basket__footer">
-                                                    Toplam {{ cart.total_quantity }} ürün— <b>{{ cart.total_price }}
-                                                    TL</b>
+                                                    {% if request.user.is_authenticated %}
+                                                        Toplam {{ total_count }} ürün—
+                                                        <b>{{ total_price|floatformat:2 }}
+                                                            TL</b>
+                                                    {% else %}
+                                                        Toplam {{ cart.total_quantity }} ürün— <b>{{ cart.total_price }}
+                                                        TL</b>
+                                                    {% endif %}
                                                 </div>
                                             </div>
 
@@ -207,14 +225,25 @@
                                                 <div class="checkout-sidebar__body">
                                                     <div class="checkout-summary">
                                                         <div class="checkout-summary__body">
-                                                            <div class="info-line">
+                                                            {% if request.user.is_authenticated %}
+                                                                <div class="info-line">
+                                                            <span class="info-line__label">
+                                                                Toplam ({{ total_count }}) parça
+                                                            </span>
+                                                                    <span class="info-line__value">
+                                                                {{ total_price|floatformat:2 }} TL
+                                                            </span>
+                                                                </div>
+                                                            {% else %}
+                                                                <div class="info-line">
                                                             <span class="info-line__label">
                                                                 Toplam ({{ cart.total_quantity }}) parça
                                                             </span>
-                                                                <span class="info-line__value">
+                                                                    <span class="info-line__value">
                                                                 {{ cart.total_not_discuntprice|floatformat:2 }} TL
                                                             </span>
-                                                            </div>
+                                                                </div>
+                                                            {% endif %}
                                                             <div class="info-line">
                                                             <span class="info-line__label">
                                                                 Kargo Ücreti <small data-toggle="tooltip"
@@ -231,20 +260,45 @@
                                                                         <line x1="12" y1="8" x2="12.01" y2="8"></line>
                                                                     </svg></small>
                                                             </span>
-                                                                <span class="info-line__value">
-                                                                {{ cart.delivery_price|floatformat:2 }} {% if cart.delivery_price != "Ücretsiz" %}TL{% endif %}
-                                                                 <input type="hidden"
-                                                                        value="{% if cart.delivery_price != "Ücretsiz" %}{{ cart.delivery_price|floatformat:2 }}{% else %}0{% endif %}"
-                                                                        name="delivery_price">
+                                                                {% if request.user.is_authenticated %}
+                                                                    <span class="info-line__value">
+                                                                {{ delivery_price|floatformat:2 }}
+                                                                        {% if cart.delivery_price != "Ücretsiz" %}
+                                                                            TL{% endif %}
+                                                                        <input type="hidden"
+                                                                               value="{% if delivery_price != 0 %}
+                                                                                      {{ delivery_price|floatformat:2 }}
+                                                                                      {% else %}
+                                                                                      0
+                                                                                      {% endif %}"
+                                                                               name="delivery_price">
                                                             </span>
+                                                                {% else %}
+                                                                    <span class="info-line__value">
+                                                                    {{ cart.delivery_price|floatformat:2 }}
+                                                                        {% if cart.delivery_price != "Ücretsiz" %}
+                                                                            TL{% endif %}
+                                                                        <input type="hidden"
+                                                                               value="{% if cart.delivery_price != 0 %}
+                                                                            {{ cart.delivery_price|floatformat:2 }}
+                                                                            {% else %}
+                                                                            0
+                                                                            {% endif %}"
+                                                                               name="delivery_price">
+                                                                    </span>
+                                                                {% endif %}
                                                             </div>
                                                             <div class="info-line">
                                                             <span class="info-line__label">
                                                                 İndirim
                                                             </span>
                                                                 <span class="info-line__value">
-                                                                {{ cart.total_discount }} TL
-                                                            </span>
+                                                                    {% if request.user.is_authenticated %}
+                                                                        {{ minus|floatformat:2 }} TL
+                                                                    {% else %}
+                                                                        {{ cart.total_discount }} TL
+                                                                    {% endif %}
+                                                                </span>
                                                             </div>
                                                             <div class="info-line">
                                                             <span class="info-line__label">
@@ -257,7 +311,10 @@
                                                                            name="coupon">
                                                                     {{ coupon.coupon_price|floatformat:2 }} TL
                                                                 {% else %}
-                                                                    -
+                                                                    0.00 TL
+                                                                    <input type="hidden"
+                                                                           value="0"
+                                                                           name="coupon">
                                                                 {% endif %}
                                                             </span>
                                                             </div>
@@ -333,23 +390,36 @@
                                                     </div>
                                                     <div class="text-value">
                                                     <span>
-                                                        {% if total != 0 %}
-                                                            <input type="hidden" value="{{ cart.general_total }}"
-                                                                   name="order_total">
-                                                            {{ cart.general_total|floatformat:2 }} TL
+                                                        {% if request.user.is_authenticated %}
+                                                            {% if total != 0 %}
+                                                                <input type="hidden" value="{{ general_total }}"
+                                                                       name="order_total">
+                                                                {{ general_total|floatformat:2 }} TL
+                                                            {% else %}
+                                                                0 TL
+                                                            {% endif %}
                                                         {% else %}
-                                                            0 TL
+                                                            {% if total != 0 %}
+                                                                <input type="hidden" value="{{ cart.general_total }}"
+                                                                       name="order_total">
+                                                                {{ cart.general_total|floatformat:2 }} TL
+                                                            {% else %}
+                                                                0 TL
+                                                            {% endif %}
                                                         {% endif %}
                                                     </span>
                                                     </div>
 
                                                 </div>
                                                 <div class="checkout-sidebar__footer">
-                                                    <button {% if cart.total_quantity > 0 %}type="submit"
-                                                            {% else %} data-toggle="modal"
-                                                            data-target="#emptyCart" {% endif %} name="sendCheckout"
-                                                            class="btn btn-checkout shadow-none">Sepeti Onayla
-                                                    </button>
+                                                    {% if request.user.is_authenticated %}
+                                                        <button id="sendCheckout" type="button"
+                                                                class="btn btn-checkout shadow-none">Sepeti Onayla
+                                                        </button>
+                                                    {% else %}
+                                                        <a href="{% url 'login' %}"
+                                                           class="btn btn-checkout shadow-none">Sepeti Onaylı</a>
+                                                    {% endif %}
                                                 </div>
                                             </div>
                                         </div>
@@ -358,6 +428,11 @@
                             </form>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="loader">
+                <div class="loader-gif">
+                    <img src="{% static 'img/loader.gif' %}" alt="">
                 </div>
             </div>
         {% else %}
