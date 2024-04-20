@@ -44,7 +44,8 @@ def trendyol_hesap_bilgileri(request):
 def trendyol_kategori_eslestir(request):
     context = {}
     trendyol_product = TrendyolProduct.objects.all()
-    urunler = ProductVariant.objects.filter(is_publish=True, quantity__gte=3).exclude(trendyolproduct__in=trendyol_product).order_by("model_code", "-quantity")
+    urunler = ProductVariant.objects.filter(is_publish=True, quantity__gte=10).exclude(trendyolproduct__in=trendyol_product).order_by("-create_at","model_code", "-quantity")
+
     subbottomcategory = SubBottomCategory.objects.all()
     category = request.GET.get('kategori')
     durum = request.GET.get('durum')
@@ -79,7 +80,7 @@ def trendyol_kategori_eslestir(request):
 
     query = f"?kategori={category}&durum={durum}&kaynak={kaynak}&yayin={yayin}"
 
-    paginator = Paginator(urunler, 15)
+    paginator = Paginator(urunler, 10)
     page = request.GET.get('page')
 
     try:
@@ -208,7 +209,6 @@ def trendyol_ozellik_kaydet(request):
 
 def trendyol_urun_gonder(request):
     trendyol_product = TrendyolProduct.objects.filter(is_publish=False, is_ready=True)
-    print(trendyol_product)
     product_data = []
     items = []
     trendyol = Trendyol.objects.all().last()
@@ -239,6 +239,21 @@ def trendyol_urun_gonder(request):
         if p.product.product.image_url8:
             images.append({'url': p.product.product.image_url8})
 
+        sevkiyat = trendyol.sevkiyatadresid_2
+        iade = trendyol.iadeadresid_2
+
+        if p.product.product.dropshipping == "Modaymış":
+            sevkiyat = trendyol.sevkiyatadresid_1
+            iade = trendyol.iadeadresid_1
+
+        elif p.product.product.dropshipping == "Leyna":
+            sevkiyat = trendyol.sevkiyatadresid_4
+            iade = trendyol.iadeadresid_2
+
+        elif p.product.product.dropshipping == "Bella Notte":
+            sevkiyat = trendyol.sevkiyatadresid_3
+            iade = trendyol.iadeadresid_2
+
         for a in TrendyolAttributes.objects.filter(trendyol_product=p):
             if a.name == 'undefined' or a.value == '':
                pass
@@ -262,8 +277,8 @@ def trendyol_urun_gonder(request):
                                 desi=1,
                                 list_price=p.product.trendyol_price, sale_price=p.product.trendyol_price, cargoid=10,
                                 description=detail, vatRate=10, deliveryDuration=2,
-                                shipmentid=trendyol.sevkiyatadresid_1,
-                                returningid=trendyol.iadeadresid_1, images=images,
+                                shipmentid=sevkiyat,
+                                returningid=iade, images=images,
                                 data_attributes=attributes))
 
         product_data = items
@@ -294,6 +309,15 @@ def trendyol_urun_gonder(request):
 
 def trendyol_engtegrasyon_islemleri(request):
     context = {}
+    reports = TrendyolReport.objects.all().order_by('-created_at')[:10]
+    logs = list()
+    for l1 in LogRecords.objects.filter(log_type=1)[:5]:
+        logs.append(l1)
+    for l2 in LogRecords.objects.filter(log_type=2)[:5]:
+        logs.append(l2)
+    for l3 in LogRecords.objects.filter(log_type=3)[:5]:
+        logs.append(l3)
+    context.update({'reports': reports, 'logs':logs,})
     return render(request, 'backend/yonetim/sayfalar/trendyol/entegrasyon_islemleri.html', context)
 
 @login_required(login_url="/yonetim/giris-yap/")

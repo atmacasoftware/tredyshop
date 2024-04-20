@@ -1,27 +1,17 @@
 from io import BytesIO
-from django.core.mail import EmailMessage, send_mail, EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives
 from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpResponse
 import xlwt
-from datetime import timedelta, datetime, date
-import requests
+from datetime import datetime
 from django.shortcuts import get_object_or_404
-from django.utils.encoding import force_bytes
 from django.template.loader import get_template, render_to_string
-from django.utils.http import urlsafe_base64_encode
 from xhtml2pdf import pisa
-from django.contrib.auth.tokens import default_token_generator
-from adminpage.models import Notification, Izinler, ProductSellStatistic, Trendyol
-from categorymodel.models import SubBottomCategory
-from ecommerce import settings
+from adminpage.models import Notification, Izinler, ProductSellStatistic
 from ecommerce.settings import EMAIL_HOST_USER
-from product.models import Product, ProductVariant
 from user_accounts.models import User
 from django.utils.html import strip_tags
-from trendyol.api import TrendyolApiClient
-from trendyol.models import LogRecords, TrendyolMoreProductOrder
-from trendyol.services import ProductIntegrationService, OrderIntegrationService
-
+from openpyxl import load_workbook
 
 def exportExcel(filename, sheetname, columns, rows):
     response = HttpResponse(content_type="application/ms-excel")
@@ -305,15 +295,14 @@ def productStatistic(barcode, title, quantity, satis, harcama=None):
         ProductSellStatistic.objects.create(barcode=barcode, name=title, sell_count=quantity,
                                             satis=satis, maliyet=harcama)
 
-
-def trendyolDeleteData(products):
-    data = []
-
-    for p in products:
-        data.append(
-            {
-                "barcode": str(p.barcode)
-            }
-        )
+def read_excel(excel_file):
+    wb = load_workbook(excel_file)
+    ws = wb.active
+    data = list()
+    for row in ws.iter_rows(min_row=2):
+        row_data = list()
+        for cell in row:
+            row_data.append(str(cell.value))
+        data.append(row_data)
 
     return data

@@ -102,8 +102,6 @@ CORS_ALLOWED_ORIGINS = [
     "https://www.tredyshop.com",
 ]
 
-USER_AGENTS_CACHE = 'default'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',

@@ -38,7 +38,7 @@ def trendyol_update_function(products):
             if saleprice > trendyol.secondbarem and saleprice <= 220:
                 saleprice = trendyol.secondbarem
 
-            if p.quantity > 2:
+            if p.quantity > 4:
                 items.append(
                     trendyolUpdateData(barcode=p.barcode, quantity=p.quantity, list_price=listprice,
                                        sale_price=saleprice)
@@ -141,6 +141,22 @@ def trendyol_schedule_send_product():
                     attributes.append({
                         "attributeId": a.code,
                         "attributeValueId": a.value})
+
+        sevkiyat = trendyol.sevkiyatadresid_2
+        iade = trendyol.iadeadresid_2
+
+        if p.product.product.dropshipping == "Modaymış":
+            sevkiyat = trendyol.sevkiyatadresid_1
+            iade = trendyol.iadeadresid_1
+
+        elif p.product.product.dropshipping == "Leyna":
+            sevkiyat = trendyol.sevkiyatadresid_4
+            iade = trendyol.iadeadresid_2
+
+        elif p.product.product.dropshipping == "Bella Notte":
+            sevkiyat = trendyol.sevkiyatadresid_3
+            iade = trendyol.iadeadresid_2
+
         p.is_publish = True
         p.product.is_publish_trendyol = True
         p.product.save()
@@ -154,8 +170,8 @@ def trendyol_schedule_send_product():
                                 desi=1,
                                 list_price=p.product.trendyol_price, sale_price=p.product.trendyol_price, cargoid=10,
                                 description=detail, vatRate=10, deliveryDuration=2,
-                                shipmentid=trendyol.sevkiyatadresid_1,
-                                returningid=trendyol.iadeadresid_1, images=images,
+                                shipmentid=sevkiyat,
+                                returningid=iade, images=images,
                                 data_attributes=attributes))
         product_data = items
 

@@ -1254,7 +1254,6 @@ def products(request):
         else:
             product = product.filter(quantity=0)
 
-
     paginator = Paginator(product, 20)
     page = request.GET.get('page')
 
@@ -1438,12 +1437,14 @@ def product_detail(request, barkod):
         return redirect('product_detail', barkod)
     return render(request, 'backend/yonetim/sayfalar/urun_yonetimi/urun_detay.html', context)
 
-def urun_sil(request,barcode):
+
+def urun_sil(request, barcode):
     product = get_object_or_404(ProductVariant, barcode=barcode)
     product_title = product.title
     product.delete()
     messages.info(request, f'{product_title} ürünü silindi.')
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
 
 def urun_trendyol_yayina_al_kaldir(request, barcode):
     product = ProductVariant.objects.get(barcode=barcode)
@@ -1473,22 +1474,24 @@ def urun_varyant_islemleri(request, barcode):
 
     return JsonResponse(data=data, safe=False)
 
-
 @login_required(login_url="/yonetim/giris-yap/")
 def urun_islemleri(request):
     context = {}
+    if 'toplu-sil-btn' in request.POST:
+        excel_file = request.FILES['delete-excel_file']
+        data = read_excel(excel_file)
 
-    if 'pasif-urunleri-kaldir-btn' in request.POST:
-        urunler = Product.objects.filter(is_publish=False)
-        for urun in urunler:
+        try:
+            for i in data:
+                if ProductVariant.objects.filter(barcode=i[0]).exists():
+                    ProductVariant.objects.filter(barcode=i[0]).delete()
 
-            try:
-                ProductVariant.objects.get(product__barcode=urun.barcode).delete()
-            except:
-                pass
-            urun.delete()
-        messages.success(request, 'Pasif ürünler kaldırıldı!')
+        except:
+            pass
+
+        messages.success(request, 'Toplu şekilde başarıyla ürünler silindi !')
         return redirect('urun_islemleri')
+
 
     return render(request, 'backend/yonetim/sayfalar/urun_yonetimi/urun_islemleri.html', context)
 
@@ -1833,146 +1836,75 @@ def kategori_guncelle(request):
 @login_required(login_url="/yonetim/giris-yap/")
 def product_export_excel(request):
     data = 'success'
-    columns = ['Başlık', 'Kategori', 'Barkod', 'Model Kodu', 'Stok Kodu', 'Stok', 'Beden', 'Renk', 'Fiyat',
-               'İndirimli Fiyat', 'Yayında mı?']
-    rows = Product.objects.all().values_list('title', 'subbottomcategory__title',
-                                             'barcode',
-                                             'model_code',
-                                             'stock_code',
-                                             'quantity',
-                                             'size__name',
-                                             'color__name',
-                                             'price',
-                                             'discountprice',
-                                             'is_publish')
+    columns = ['Başlık', 'Kategori', 'Barkod', 'Model Kodu', 'Stok', 'Stok Kodu', 'Fiyat', 'Trendyol Fiyat',
+               'Çiçeksepeti Fiyat',
+               'Beden/Boyut', 'Renk', 'Yayında mı?']
+    rows = ProductVariant.objects.all().values_list('title', 'product__subbottomcategory__title',
+                                                    'barcode',
+                                                    'model_code',
+                                                    'stock_code',
+                                                    'quantity',
+                                                    'product__price',
+                                                    'trendyol_price',
+                                                    'ciceksepeti_price',
+                                                    'size__name',
+                                                    'color__name',
+                                                    'is_publish')
 
     yayin_durumu = request.GET.get('publish', '')
     kategori = request.GET.get('kategori', '')
-    stok = request.GET.get('stock', '')
 
-    if yayin_durumu != '' and kategori != '' and stok != '':
-        if stok == True:
-            rows = rows.filter(is_publish=yayin_durumu, subbottomcategory_id=kategori,
-                               quantity__gte=1).values_list('title', 'subbottomcategory__title',
-                                                            'barcode',
-                                                            'model_code',
-                                                            'stock_code',
-                                                            'quantity',
-                                                            'size__name',
-                                                            'color__name',
-                                                            'price',
-                                                            'discountprice',
-                                                            'is_publish')
-        else:
-            rows = rows.filter(is_publish=yayin_durumu, subbottomcategory_id=kategori,
-                               quantity=0).values_list('title', 'subbottomcategory__title',
-                                                       'barcode',
-                                                       'model_code',
-                                                       'stock_code',
-                                                       'quantity',
-                                                       'size__name',
-                                                       'color__name',
-                                                       'price',
-                                                       'discountprice',
-                                                       'is_publish')
-    if yayin_durumu and stok != '':
-        if stok == True:
-            rows = rows.filter(is_publish=yayin_durumu,
-                               quantity__gte=1).values_list('title', 'subbottomcategory__title',
-                                                            'barcode',
-                                                            'model_code',
-                                                            'stock_code',
-                                                            'quantity',
-                                                            'size__name',
-                                                            'color__name',
-                                                            'price',
-                                                            'discountprice',
-                                                            'is_publish')
-        else:
-            rows = rows.filter(is_publish=yayin_durumu, quantity=0)
-    if kategori and stok != '':
-        if stok == True:
-            rows = rows.filter(is_publish=yayin_durumu, subbottomcategory_id=kategori,
-                               quantity__gte=1).values_list('title', 'subbottomcategory__title',
-                                                            'barcode',
-                                                            'model_code',
-                                                            'stock_code',
-                                                            'quantity',
-                                                            'size__name',
-                                                            'color__name',
-                                                            'price',
-                                                            'discountprice',
-                                                            'is_publish')
-        else:
-            rows = rows.filter(is_publish=yayin_durumu, subbottomcategory_id=kategori,
-                               quantity=0).values_list('title', 'subbottomcategory__title',
-                                                       'barcode',
-                                                       'model_code',
-                                                       'stock_code',
-                                                       'quantity',
-                                                       'size__name',
-                                                       'color__name',
-                                                       'price',
-                                                       'discountprice',
-                                                       'is_publish')
+    if yayin_durumu != '' and kategori != '':
+        rows = rows.filter(is_publish=yayin_durumu, subbottomcategory_id=kategori,
+                           quantity=0).values_list('title', 'product__subbottomcategory__title',
+                                                   'barcode',
+                                                   'model_code',
+                                                   'stock_code',
+                                                   'quantity',
+                                                   'product__price',
+                                                   'trendyol_price',
+                                                   'ciceksepeti_price',
+                                                   'size__name',
+                                                   'color__name',
+                                                   'is_publish')
+
     if kategori:
-        rows = rows.filter(subbottomcategory_id=kategori).values_list('title', 'subbottomcategory__title',
+        rows = rows.filter(subbottomcategory_id=kategori).values_list('title', 'product__subbottomcategory__title',
                                                                       'barcode',
                                                                       'model_code',
-                                                                      'stock_code',
                                                                       'quantity',
+                                                                      'stock_code',
+                                                                      'product__price',
+                                                                      'trendyol_price',
+                                                                      'ciceksepeti_price',
                                                                       'size__name',
                                                                       'color__name',
-                                                                      'price',
-                                                                      'discountprice',
                                                                       'is_publish')
     if yayin_durumu != '':
-        rows = rows.filter(is_publish=yayin_durumu).values_list('title', 'subbottomcategory__title',
+        rows = rows.filter(is_publish=yayin_durumu).values_list('title', 'product__subbottomcategory__title',
                                                                 'barcode',
                                                                 'model_code',
-                                                                'stock_code',
                                                                 'quantity',
+                                                                'stock_code',
+                                                                'product__price',
+                                                                'trendyol_price',
+                                                                'ciceksepeti_price',
                                                                 'size__name',
                                                                 'color__name',
-                                                                'price',
-                                                                'discountprice',
                                                                 'is_publish')
     if kategori and yayin_durumu:
         rows = rows.filter(is_publish=yayin_durumu, subbottomcategory_id=kategori).values_list('title',
-                                                                                               'subbottomcategory__title',
+                                                                                               'product__subbottomcategory__title',
                                                                                                'barcode',
                                                                                                'model_code',
-                                                                                               'stock_code',
                                                                                                'quantity',
+                                                                                               'stock_code',
+                                                                                               'product__price',
+                                                                                               'trendyol_price',
+                                                                                               'ciceksepeti_price',
                                                                                                'size__name',
                                                                                                'color__name',
-                                                                                               'price',
-                                                                                               'discountprice',
                                                                                                'is_publish')
-
-    if stok != None:
-        if stok == True:
-            rows = rows.filter(quantity__gte=1).values_list('title', 'subbottomcategory__title',
-                                                            'barcode',
-                                                            'model_code',
-                                                            'stock_code',
-                                                            'quantity',
-                                                            'size__name',
-                                                            'color__name',
-                                                            'price',
-                                                            'discountprice',
-                                                            'is_publish')
-        else:
-            rows = rows.filter(quantity=0).values_list('title', 'subbottomcategory__title',
-                                                       'barcode',
-                                                       'model_code',
-                                                       'stock_code',
-                                                       'quantity',
-                                                       'size__name',
-                                                       'color__name',
-                                                       'price',
-                                                       'discountprice',
-                                                       'is_publish')
 
     return exportExcel('products', 'Ürünler', columns=columns, rows=rows)
 
@@ -2722,6 +2654,7 @@ def gecelikdolabi_find_not_active_product(request):
     messages.success(request, 'Bella Notte ürünlerde aktif olmayanlar bulundu')
     return redirect("haydigiy_product")
 
+
 @login_required(login_url="/yonetim/giris-yap/")
 def leyna_product(request):
     context = {}
@@ -2754,6 +2687,7 @@ def leyna_find_not_active_product(request):
                        detail="Leyna ürünlerinde aktif olmayan ürünler aktif değildir olarak güncellendi.")
     messages.success(request, 'Modaymış ürünlerde aktif olmayanlar bulundu')
     return redirect("leyna_product")
+
 
 @login_required(login_url="/yonetim/giris-yap/")
 def xml_fiyat_ayarla(request):
@@ -3270,6 +3204,7 @@ def trendyol_indirim_kaydet(request):
     data = "success"
     return JsonResponse(data=data, safe=False)
 
+
 @login_required(login_url="/yonetim/giris-yap/")
 def trendyol_beden_eslestir(request):
     context = {}
@@ -3429,19 +3364,19 @@ def trendyol_ozellik_eslestir(request):
         'bijuteri_tema': bijuteri_tema,
         'legtype': legtype,
         'material': material,
-        'yaka_tipi':yaka_tipi,
-        'desen':desen,
-        'paket_icerigi':paket_icerigi,
-        'koleksiyon':koleksiyon,
-        'dokumaTipi':dokumaTipi,
-        'ozellik':ozellik,
-        'kol_tipi':kol_tipi,
-        'urun_detay':urun_detay,
-        'persona':persona,
-        'siluet':siluet,
-        'altsiluet':altsiluet,
-        'ustsiluet':ustsiluet,
-        'paddetay':paddetay,
+        'yaka_tipi': yaka_tipi,
+        'desen': desen,
+        'paket_icerigi': paket_icerigi,
+        'koleksiyon': koleksiyon,
+        'dokumaTipi': dokumaTipi,
+        'ozellik': ozellik,
+        'kol_tipi': kol_tipi,
+        'urun_detay': urun_detay,
+        'persona': persona,
+        'siluet': siluet,
+        'altsiluet': altsiluet,
+        'ustsiluet': ustsiluet,
+        'paddetay': paddetay,
     })
     return render(request, "backend/yonetim/sayfalar/trendyol/ozellik_eslestir.html", context)
 

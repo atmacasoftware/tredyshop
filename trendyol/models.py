@@ -169,6 +169,9 @@ class TrendyolReport(models.Model):
     def __str__(self):
         return f"{str(self.name)}"
 
+    def get_sending_product(self):
+        return TrendyolReportProduct.objects.filter(report=self)
+
 class TrendyolReportProduct(models.Model):
     report = models.ForeignKey(TrendyolReport, on_delete=models.CASCADE, null=True)
     product = models.ForeignKey(ProductVariant, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Ürünler")
