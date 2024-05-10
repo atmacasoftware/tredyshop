@@ -50,7 +50,7 @@ class SecondCategoryApiView(APIView):
 class ThirdCategoryApiView(APIView):
     def get(self, request):
         try:
-            sub_id = self.request.query_params.get('sub_id')
+            
             category = SubBottomCategory.objects.filter(subcategory_id=sub_id, is_active=True)
             serializer = ThirdCategorySerializer(category, many=True)
 

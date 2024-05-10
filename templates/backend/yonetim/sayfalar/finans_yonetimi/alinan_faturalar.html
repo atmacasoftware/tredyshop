@@ -2,7 +2,9 @@
 {% load static %}
 
 {% block title %}<title>Alınan Faturalar</title>{% endblock %}
-
+{% block extra_style %}
+    <link rel="stylesheet" href="{% static 'backend/css/table.css' %}">
+{% endblock %}
 {% block finans_yonetimi %}
 
     <section class="section">
@@ -140,11 +142,11 @@
                                     <tbody>
                                     {% for fatura in faturalar %}
                                         <tr>
-                                            <th>{% if fatura.is_cancelling == True %}
+                                            <td>{% if fatura.is_cancelling == True %}
                                                 <span class="badge badge-danger btn-sm"><i
                                                         class="fa fa-times"></i></span>{% else %}
                                                 <span class="badge badge-success btn-sm"><i
-                                                        class="fa fa-check"></i></span>{% endif %}</th>
+                                                        class="fa fa-check"></i></span>{% endif %}</td>
                                             <td>{{ fatura.bill_number }}</td>
                                             <td>{{ fatura.get_year_display }}</td>
                                             <td>{{ fatura.get_month_display }}</td>
@@ -153,7 +155,11 @@
                                             <td>{{ fatura.tax_amount|floatformat:2 }}</td>
                                             <td>{{ fatura.price_amount|floatformat:2 }}</td>
                                             <td>
-
+                                                <a href="{{ fatura.file.url }}"
+                                                   download
+                                                   class="btn btn-sm btn-warning">
+                                                    <i class="fas fa-download"></i>
+                                                </a>
                                                 <a href="{% url 'update_alinan_fatura' fatura.id %}"
                                                    target="_blank"
                                                    class="btn btn-sm btn-success">
